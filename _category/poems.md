@@ -3,4 +3,4 @@ layout: category
 category: poems
 meta: poem posts
 ---
-poems
+{% include blog_introduce.html %}
