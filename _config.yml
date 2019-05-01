@@ -2,7 +2,9 @@ baseurl: /blog
 title: 白楊博客
 author: 白楊
 description: 咬定青山不放松，立根原在破巖中
-
+collections:
+  category:
+    output: true
 
 # Build settings
 markdown: kramdown
