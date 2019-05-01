@@ -6,14 +6,14 @@ layout: default
 	<div class="col-sm-12">
 		<div class="post-area">
 			<div class="post-list-header">
-				博文目錄
-			</div>
+                博文分類
+            </div>
 			<div class="post-list-body">
 				<div class="all-posts" post-cate="All">
 					{% for category in site.category %}
 					<a class="post-list-item" href="{{ category.url | prepend: site.baseurl }}">
 						<h2>
-							{{ category.category }}
+							{{ category.name }}
 						</h2>
 					</a>
 					{% endfor %}

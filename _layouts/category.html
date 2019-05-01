@@ -21,7 +21,7 @@ layout: default
 				博文目錄
 			</div>
 			<div class="post-list-body">
-				{% assign filtered_posts = site.posts | where: 'categories', page.category %}
+				{% assign filtered_posts = site.posts | where: 'categories', page.name %}
 				<div class="all-posts" post-cate="All">
 					{% for post in filtered_posts %}
 						<a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">

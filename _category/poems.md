@@ -1,6 +1,6 @@
 ---
 layout: category
-category: poems
+name: poems
 meta: poem posts
 ---
 {% include blog_introduce.html %}
