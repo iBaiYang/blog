@@ -473,7 +473,7 @@ blockquote:last-child {
 /**
  * includes
  */
-p .blog_introduce_p {
+.blog_introduce_p {
 	lign-height: 24px;
 	margin-bottom: 0px;
 }
