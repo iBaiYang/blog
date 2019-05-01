@@ -1,0 +1,75 @@
+---
+layout: post
+categories: Linux
+title: Linux 下安装Composer
+meta: 记录一下 Linux 下安装安装Composer流程
+---
+* content
+{:toc}
+
+### 正文
+
+按照下面的参考地址一步一步安装就好，顺便附一下自己安装的流程图：
+
+到/usr/local/src/composer下操作：
+
+```
+> php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+
+> php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+
+> php composer-setup.php
+
+> php -r "unlink('composer-setup.php');" 
+```
+
+（捎带一提：php -r 意思是  Run PHP code without using script tags，<?...?> 也就是不必使用前后闭合标签）
+
+![](http://s11.sinaimg.cn/mw690/001XbchKzy7cVfSusiKca)
+
+（从这里可以看到，我把composer安装到了/home目录下。里面有多次错误示范，可以注意辨别学习。）
+
+```
+> vim /etc/profile
+
+> cp composer.phar /usr/bin/composer
+
+> mv composer.phar /usr/local/bin/composer
+
+> composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+> composer --version
+ ```
+
+vim 修改/etc/profile文件的内容，以设置环境变量（在文件最后加上下面这句，这样就可以用shell调用composer了）：
+```
+export PATH="$PATH:/home/composer"
+```
+
+![](http://s14.sinaimg.cn/mw690/001XbchKzy7cVfU9O2N0d)
+
+
+
+<br/><br/><br/><br/><br/>
+### 参考资料
+
+<https://getcomposer.org/download/>
+
+<http://blog.csdn.net/AnglePYou/article/details/69568478>
+
+<http://jingyan.baidu.com/article/a65957f4d23de824e77f9b70.html>
+
+<http://blog.csdn.net/yangbbenyang/article/details/52457666>
+
+<https://pkg.phpcomposer.com/>
+
+<https://pkg.phpcomposer.com/>
+
+Composer简介 <https://docs.phpcomposer.com/00-intro.html>
+
+PHP 的命令行模式  <https://www.cnblogs.com/myjavawork/articles/1869205.html>
+
+Linux /etc/profile文件详解及修改后如何立即生效（使用source命令） <https://blog.csdn.net/weixin_38233274/article/details/80092837>
+	
+Linux下配置环境变量最常用的两种方法—— .bashrc 和 /etc/profile <https://blog.csdn.net/sun8112133/article/details/79901527>
+

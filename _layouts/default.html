@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>{{site.title}}</title>
+
+	<link rel="stylesheet" type="text/css" href="{{"/static/bootstrap/css/bootstrap.min.css" | prepend: site.baseurl }}">
+    <link rel="stylesheet" type="text/css" href="{{ "/static/css/index.css" | prepend: site.baseurl }}">
+</head>
+<body>
+	<header>
+		<!-- navbar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="{{ site.baseurl }}">{{site.title}}</a>
+					<p class="navbar-text">{{site.description}}</p>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<div class="container main">
+		{{content}}
+	</div>
+
+	<div id="top" data-toggle="tooltip" data-placement="left" title="back to top">
+		<a href="javascript:;">
+			<div class="arrow"></div>
+			<div class="stick"></div>
+		</a>
+	</div>
+
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<span>路漫漫其修遠兮，吾將上下而求索</span>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script type="text/javascript" src="{{ "/static/js/jquery-1.11.1.min.js" | prepend:site.baseurl }}"></script>
+	<script type="text/javascript" src="{{ "/static/bootstrap/js/bootstrap.min.js" | prepend:site.baseurl }}"></script>
+	<script type="text/javascript" src="{{ "/static/js/index.js" | prepend:site.baseurl }}"></script>
+</body>
+</html>
