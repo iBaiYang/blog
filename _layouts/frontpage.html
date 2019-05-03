@@ -15,7 +15,23 @@ layout: default
 <p><br/></p>
 
 <div id="index" class="row">
-	<div class="col-sm-9">
+	<div class="col-sm-3 col-sm-push-9 col-xs-12">
+		<div class="shadow-corner-curl hidden-xs">
+			<div class="categories-list-header">
+				博文分類
+			</div>
+			<a href="javascript:;" class="categories-list-item" cate="All">
+				全部<span class="my-badge"> {{site.posts | size}}</span>
+			</a>
+			{% for category in site.categories %}
+			<a href="#{{ category | first }}" class="categories-list-item" cate="{{ category | first }}">
+				{{ category | first }} <span class="my-badge">{{ category | last | size }}</span>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="clearfix visible-xs"></div>
+	<div class="col-sm-9 col-sm-pull-3 col-xs-12">
 		<div class="post-area">
 			<div class="post-list-header">
 				博文目錄
@@ -50,21 +66,6 @@ layout: default
 				{% endfor %}
 				<!-- </div> -->
 			</div>
-		</div>
-	</div>
-	<div class="col-sm-3">
-		<div class="shadow-corner-curl hidden-xs">
-			<div class="categories-list-header">
-				博文分類
-			</div>
-			<a href="javascript:;" class="categories-list-item" cate="All">
-				全部<span class="my-badge"> {{site.posts | size}}</span>
-			</a>
-			{% for category in site.categories %}
-				<a href="#{{ category | first }}" class="categories-list-item" cate="{{ category | first }}">
-					{{ category | first }} <span class="my-badge">{{ category | last | size }}</span>
-				</a>
-			{% endfor %}
 		</div>
 	</div>
 </div>
