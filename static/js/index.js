@@ -86,6 +86,16 @@ function getFooterMarginTop() {
 function categoryDisplay() {
     /*only show All*/
     $('.post-list-body>div[post-cate!=All]').hide();
+
+    /*only show #anchor*/
+    var url = document.location.toString();
+    if (url.indexOf("#") != -1) {
+        var arrUrl = url.split("#");
+        var cate = arrUrl[1];
+        $('.post-list-body>div[post-cate!=' + cate + ']').hide();
+        $('.post-list-body>div[post-cate=' + cate + ']').show();
+    }
+
     /*show category when click categories list*/
     $('.categories-list-item').click(function() {
         var cate = $(this).attr('cate'); //get category's name
