@@ -469,10 +469,3 @@ blockquote:last-child {
 		padding-left: 25px;
 	}
 }
-
-/**
- * includes
- */
-.blog_introduce_p {
-	margin-bottom: 0px;
-}
