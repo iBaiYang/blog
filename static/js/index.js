@@ -91,7 +91,7 @@ function categoryDisplay() {
     var url = document.location.toString();
     if (url.indexOf("#") != -1) {
         var arrUrl = url.split("#");
-        var cate = arrUrl[1];
+        var cate = decodeURI(arrUrl[1]);
         $('.post-list-body>div[post-cate!=' + cate + ']').hide();
         $('.post-list-body>div[post-cate=' + cate + ']').show();
     }
