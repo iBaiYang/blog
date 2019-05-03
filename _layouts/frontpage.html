@@ -21,7 +21,7 @@ layout: default
 				博文目錄
 			</div>
 			<div class="post-list-body">
-				<div class="all-posts" post-cate="All">
+				<div class="all-posts" post-cate="All" id="All">
 					{% for post in site.posts %}
 						<a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">
 							<h2>
@@ -33,7 +33,7 @@ layout: default
 				</div>
 				<!-- <div class="posts-in-categories"> -->
 				{% for category in site.categories %}
-					<div post-cate="{{category | first}}">
+					<div post-cate="{{category | first}}" id="{{category | first}}">
 						{% for posts in category  %}
 							{% for post in posts %}
 								{% if post.url %}
@@ -61,7 +61,7 @@ layout: default
 				全部<span class="my-badge"> {{site.posts | size}}</span>
 			</a>
 			{% for category in site.categories %}
-				<a href="javascript:;" class="categories-list-item" cate="{{ category | first }}">
+				<a href="#{{ category | first }}" class="categories-list-item" cate="{{ category | first }}">
 					{{ category | first }} <span class="my-badge">{{ category | last | size }}</span>
 				</a>
 			{% endfor %}
