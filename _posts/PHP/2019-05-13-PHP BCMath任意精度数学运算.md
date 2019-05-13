@@ -2,7 +2,7 @@
 layout: post
 categories: PHP
 title: PHP BCMath任意精度数学运算
-meta: bcMath 数学拓展函数库使用记录
+meta: BCMath 数学拓展函数库使用记录
 ---
 * content
 {:toc}
