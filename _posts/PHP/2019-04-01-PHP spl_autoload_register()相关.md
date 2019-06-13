@@ -108,7 +108,7 @@ $obj->doPrint();?>
 
 #### spl_autoload_register()
 
-再看spl_autoload_register()，这个函数与__autoload有与曲同工之妙，看个简单的例子
+再看spl_autoload_register()，这个函数与__autoload有异曲同工之妙，看个简单的例子
 ```php
 <?php
 function loadprint( $class ) {
