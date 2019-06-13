@@ -127,7 +127,8 @@ $obj->doPrint();
 将__autoload换成loadprint函数。但是loadprint不会像__autoload自动触发，
 这时spl_autoload_register()就起作用了，它告诉PHP碰到没有定义的类就执行loadprint()。
 
-spl_autoload_register() 调用静态方法
+上面是spl_autoload_register()直接调用函数实现文件自动加载，
+下面看一下spl_autoload_register()调用类静态方法实现文件自动加载：
 ```php
 <?
 class test 
