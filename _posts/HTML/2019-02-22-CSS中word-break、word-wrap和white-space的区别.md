@@ -13,18 +13,24 @@ meta: CSS中word-break、word-wrap和white-space的区别
 系统查阅资料后才发现word-wrap只有normal|break-word两个属性值。
 所以有必要总结一下CSS中word-break、word-wrap和white-space的区别，以防日后忘记又不能快速定位用法。
 
+```
 word-break: normal|break-all|keep-all;
+```
 
-定义单词内部的换行规则，特别注意word-break:break-all会立即发生单词内断行。
+word-break 定义单词内部的换行规则，特别注意word-break:break-all会立即发生单词内断行。
 
+```
 word-wrap: normal|break-word;
+```
 
-定义单词是否换行，特别注意word-wrap:break-word首先会判断该长单词在当前行能否放下，
+word-wrap 定义单词是否换行，特别注意word-wrap:break-word首先会判断该长单词在当前行能否放下，
 如果不能，会换行，倘若第二行也放不下，才会发生单词内断行。
 
+```
 white-space: normal | pre | nowrap | pre-wrap | pre-line | inherit
+```
 
-规定文本中空白符的换行规则。
+white-space 规定文本中空白符的换行规则。
 
 
 
