@@ -89,7 +89,7 @@ Person::printQianDao4();  // 报错1：Non-static method Person::printQianDao4()
 
 self 可以用于访问类的静态属性、静态方法和常量，但 self 指向的是当前定义所在的类，表示类本身，这是 self 的限制。
 
-self 和 __CLASS__，都是对当前类的静态引用，取决于定义当前方法所在的类。也就是说，self 写在哪个类里面， 它引用的就是谁。
+self 和 `__CLASS__`，都是对当前类的静态引用，取决于定义当前方法所在的类。也就是说，self 写在哪个类里面， 它引用的就是谁。
 
 #### const
 
@@ -110,6 +110,90 @@ class Person
 
 Person::printPi();
 ```
+
+#### 后期静态绑定
+
+```
+class A {
+    protected $name = 'A';
+    static $alias = 'a';
+    const HASH = 'md5';
+ 
+    public function dd() {
+        echo $this->name; echo '--';
+        echo static::$alias; echo '--';     // 后期静态绑定
+        echo static::HASH; echo '--';     // 后期静态绑定
+        echo self::$alias; echo '--';
+        echo self::HASH; echo '--';
+ 
+        var_dump(new self); echo '--';
+        var_dump($this); echo '--';
+        var_dump(new static); echo '<br>';   // 后期静态绑定
+    }
+ 
+    public static function who() {
+        echo __CLASS__;
+        echo ' [ This is A ]'; echo '<br>';
+    }
+ 
+    public static function test() {
+        self::who();
+    }
+ 
+    public static function test2() {
+        static::who();  // 后期静态绑定
+    }
+ 
+    public static function getInstance() {
+        var_dump(new self); echo '--';
+        var_dump(new static); echo '<br>';  // 后期静态绑定
+    }
+}
+ 
+class B extends A {
+    protected $name = 'B';
+    static $alias = 'b';
+    const HASH = 'sha1';
+ 
+    public static function who() {
+        echo __CLASS__;
+        echo ' [ This is B ]'; echo '<br>';
+    }
+}
+ 
+class C extends B {
+    public static function who() {
+        echo __CLASS__;
+        echo ' [ This is C]'; echo '<br>';
+    }
+}
+
+(new A)->dd();  // A--a--md5--a--md5--object(A)#2 (1) { ["name":protected]=> string(1) "A" } --object(A)#1 (1) { ["name":protected]=> string(1) "A" } --object(A)#2 (1) { ["name":protected]=> string(1) "A" }
+(new B)->dd();  // B--b--sha1--a--md5--object(A)#2 (1) { ["name":protected]=> string(1) "A" } --object(B)#1 (1) { ["name":protected]=> string(1) "B" } --object(B)#2 (1) { ["name":protected]=> string(1) "B" }
+ 
+A::who();  // A [ This is A ]
+B::who();  // B [ This is B ]
+ 
+A::test();  // A [ This is A ]
+B::test();  // A [ This is A ]
+ 
+A::test2(); // A [ This is A ]
+B::test2(); // B [ This is B ]
+C::test2(); // C [ This is C]
+ 
+A::getInstance();   // object(A)#1 (1) { ["name":protected]=> string(1) "A" } --object(A)#1 (1) { ["name":protected]=> string(1) "A" }
+B::getInstance();   // object(A)#1 (1) { ["name":protected]=> string(1) "A" } --object(B)#1 (1) { ["name":protected]=> string(1) "B" }
+```
+
+总结说明：
+* self 和 __CLASS__，都是对当前类的静态引用，取决于定义当前方法所在的类。也就是说，self 写在哪个类里面， 它引用的就是谁。
+* $this 指向的是实际调用时的对象，也就是说，实际运行过程中，谁调用了类的属性或方法，$this 指向的就是哪个对象。但 $this 不能访问类的静态属性和常量，且 $this 不能存在于静态方法中。
+* static 关键字除了可以声明类的静态成员（属性和方法）外，还有一个非常重要的作用就是后期静态绑定。
+* self 可以用于访问类的静态属性、静态方法和常量，但 self 指向的是当前定义所在的类，这是 self 的限制。
+* $this 指向的对象所属的类和 static 指向的类相同。
+* static 可以用于静态或非静态方法中，也可以访问类的静态属性、静态方法、常量和非静态方法，但不能访问非静态属性。
+* 静态调用时，static 指向的是实际调用时的类；非静态调用时，static 指向的是实际调用时的对象所属的类。
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
