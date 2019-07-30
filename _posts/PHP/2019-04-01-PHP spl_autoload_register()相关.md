@@ -188,3 +188,5 @@ PHP中spl_autoload_register()函数用法实例详解 <https://www.jianshu.com/p
 Yii的类自动加载机制 <http://www.digpage.com/autoload.html>
 
 Inversion of Control Containers and the Dependency Injection pattern <https://martinfowler.com/articles/injection.html> 
+
+依赖注入（DI）在PHP中的实现 <https://www.cnblogs.com/aksir/p/6781220.html>
