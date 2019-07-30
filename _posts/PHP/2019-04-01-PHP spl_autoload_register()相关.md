@@ -186,3 +186,5 @@ spl_autoload_register() <https://www.php.net/manual/zh/function.spl-autoload-reg
 PHP中spl_autoload_register()函数用法实例详解 <https://www.jianshu.com/p/cc7ed9f0b378>
 
 Yii的类自动加载机制 <http://www.digpage.com/autoload.html>
+
+Inversion of Control Containers and the Dependency Injection pattern <https://martinfowler.com/articles/injection.html> 

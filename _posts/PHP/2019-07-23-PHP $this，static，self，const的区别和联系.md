@@ -415,3 +415,10 @@ php类中的$this，static，const，self这几个关键字使用方法 <https:/
 
 PHP 中 self、static、$this 的区别 & 后期静态绑定详解 <https://blog.csdn.net/lamp_yang_3533/article/details/79912453>
 
+PHP static延迟静态绑定 <https://ibaiyang.github.io/blog/php/2017/09/12/PHP-static%E5%BB%B6%E8%BF%9F%E9%9D%99%E6%80%81%E7%BB%91%E5%AE%9A.html>
+
+php中static 静态关键字 <https://www.cnblogs.com/haizizhu/p/8040236.html>
+
+PHP中静态方法和实例化方法的区别 <https://www.cnblogs.com/-mrl/p/6485616.html>
+
+
