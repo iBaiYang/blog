@@ -222,9 +222,7 @@ pcntl_fork() 执行过程详解 <https://www.cnblogs.com/php-linux/p/7070865.htm
 
 linux系统编程之进程（八）：守护进程详解及创建，daemon()使用 <http://www.cnblogs.com/mickole/p/3188321.html>
 
-守护进程以及PHP的实现  <https://yuanxuxu.com/2013/11/24/shou-hu-jin-cheng-yi-ji-phpde-shi-xian--2/>
-
-
+守护进程以及PHP的实现 <https://yuanxuxu.com/2013/11/24/shou-hu-jin-cheng-yi-ji-phpde-shi-xian--2/>
 
 
 

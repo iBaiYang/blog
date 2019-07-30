@@ -465,7 +465,7 @@ RabbitMQ官方中文入门教程(PHP版) 第三部分:发布／订阅（Publish/
 
 RabbitMQ官方中文入门教程(PHP版) 第四部分:路由(Routing) <https://yuanxuxu.com/2013/05/31/rabbitmqguan-fang-zhong-wen-ru-men-jiao-cheng-phpban--di-si-bu-fen-lu-you-routing/>
 
-rabbitmq-tutorial-php-demo <https://github.com/yuansir/rabbitmq-tutorial-php-demo>
+RabbitMQ官方中文入门教程(PHP版) Demo 源码 <https://github.com/yuansir/rabbitmq-tutorial-php-demo>
 
 初识RabbitMQ,附RabbitMQ+PHP演示实例 <https://www.cnblogs.com/miketwais/p/RabbitMQ.html>
 
@@ -504,8 +504,6 @@ MQ对比之RabbitMQ & Redis <https://zhuanlan.zhihu.com/p/41850085?utm_source=we
 RabbitMQ 消息顺序、消息幂等、消息重复、消息事务、集群 <https://www.cnblogs.com/xishuai/p/9174719.html>
 
 RabbitMQ的几种应用场景 <https://blog.csdn.net/zyz511919766/article/details/41946521>
-
-
 
 
 
