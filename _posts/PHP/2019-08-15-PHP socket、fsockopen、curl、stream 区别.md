@@ -959,3 +959,5 @@ php中socket、fsockopen、curl、stream 区别 <https://blog.csdn.net/chadxia88
 
 PHP 兼容 Curl/Socket/Stream 的 HTTP 操作类 <https://www.cnblogs.com/softwaredevelop/archive/2010/04/08/1707018.html>
 
+了解PHP中Stream（流）的概念与用法 <http://www.nowamagic.net/librarys/veda/detail/2587>
+
