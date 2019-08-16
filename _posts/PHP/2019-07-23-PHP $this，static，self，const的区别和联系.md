@@ -377,7 +377,7 @@ C A C C C C
 D A D D D D
 ```
 
-static 后期静态绑定的工作原理是存储了上一个非转发调用（non-forwarding call）的类名。请记住这句话。
+**static 后期静态绑定的工作原理是存储了上一个非转发调用（non-forwarding call）的类名**。请记住这句话。
 
 下面的例子是非转发调用。
 ```
