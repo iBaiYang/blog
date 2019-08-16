@@ -11,7 +11,8 @@ meta: 大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190816/20190816134124.png)
 
-<br>引入参考：<br>
+引入参考：
+
 <div class="answer fmt" data-id="1020000000259560">
 <p>刚开始对这个问题我也挺纠结的，看了《HTTP权威指南》后，感觉清晰了不少。</p>
 <p>首先，CGI（Common Gateway Interface/通用网关接口）是干嘛的？CGI是为了保证web server传递过来的数据是标准格式的，方便CGI程序的编写者。</p>
@@ -51,7 +52,7 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 </div>
 <font style="font-size: 18px;"><font style="font-size: 16px;"><font style="font-size: 18px;"><font style="font-size: 16px;"><br><br><a href="http://album.sina.com.cn/pic/001XbchKzy7itHuTWVDe5" target="_blank"><img src="http://s6.sinaimg.cn/mw690/001XbchKzy7itHuTWVDe5&amp;690" id="image_operate_83911519638885299" width="690" height="521"></a>
 
-<br><br><br><br><br><br><br>
-### 参考资料：
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://segmentfault.com/q/1010000000256516" target="_blank">https://segmentfault.com/q/1010000000256516</a><br><br><br><br><br><br><br></font></font></font></font>
+<br/><br/><br/><br/><br/>
+### 参考资料
 
+<https://segmentfault.com/q/1010000000256516>
