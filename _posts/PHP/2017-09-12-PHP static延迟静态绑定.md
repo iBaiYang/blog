@@ -233,6 +233,8 @@ $two->static_use();
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+PHP $this，static，self，const的区别和联系 <https://ibaiyang.github.io/blog/php/2019/07/23/PHP-$this-static-self-const%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB.html#%E8%BD%AC%E5%8F%91%E8%B0%83%E7%94%A8forwarding-call>
+
 <http://www.jellythink.com/archives/956>
 
 <http://www.jianshu.com/p/1d39fa27b2fb>
