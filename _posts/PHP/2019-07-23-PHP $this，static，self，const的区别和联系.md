@@ -20,7 +20,8 @@ $this 会先到所在定义范围内(如在父类中则在父类)寻找私有方
 
 $this 不能访问类的静态属性和常量，且 $this 不能存在于静态方法中。
 
-$this表示当前实例，在类的内部方法访问未声明为const及static的属性时，使用$this->属性, $this->方法 的形式。如：
+$this表示当前实例，在类的内部方法访问**未声明**为const及static的**属性**时，使用$this->属性 的形式；
+申明为const及static的属性，须用 ::属性 的形式(self::/parent::/static::)。如：
 
 ```
 class Person
