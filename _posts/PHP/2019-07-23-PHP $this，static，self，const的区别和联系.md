@@ -560,6 +560,20 @@ $obj = new Demo();
 $obj->test();
 ```
 
+这里发现使用类名通过 :: 直接调用类的非静态方法，也是挺神奇。但是不建议使用类名::直接调用类的非静态方法，PHP这样设计的初衷不是这样使用的，
+具体原因可以参考下[这里](http://www.laruence.com/2012/06/14/2628.html) 。 看一下这个熟悉不：
+```
+class A {
+    public function __construct() {
+    }
+}
+class B extends A {
+    public function __construct() {
+        parent::__construct();
+    }
+}
+```
+
 存在继承关系的时候
 * self调用的方法和属性始终表示当前类的方法和属性
 * static调用的方法和属性为当前执行的类的方法和属性
@@ -715,7 +729,7 @@ PHP常见概念混淆（七）之self、static、parent的区别 <https://www.cn
 
 PHP 手册 函数参考 变量与类型相关扩展 函数处理 函数处理 函数 forward_static_call <https://www.php.net/manual/zh/function.forward-static-call.php>
 
-
+PHP的Calling Scope <http://www.laruence.com/2012/06/14/2628.html>
 
 
 
