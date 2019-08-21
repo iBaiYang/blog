@@ -731,7 +731,7 @@ PHP 手册 函数参考 变量与类型相关扩展 函数处理 函数处理 �
 
 PHP的Calling Scope <http://www.laruence.com/2012/06/14/2628.html>
 
-
+这是php中__call和__callStatic在被继承后会产生的bug? <https://segmentfault.com/q/1010000000095833>
 
 
 
