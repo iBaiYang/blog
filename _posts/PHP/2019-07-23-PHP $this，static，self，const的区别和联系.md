@@ -610,7 +610,8 @@ class A{
     
 class B extends A{
     public static $test = "BBB";
-        static function getClassName(){
+    
+    public static function getClassName(){
         return "B";
     }
     
