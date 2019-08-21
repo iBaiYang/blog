@@ -539,10 +539,11 @@ class Demo
     }
     
     public function show(){
+        // 注意，$this不能使用在static静态方法中
         return "this is function show with ".$this->Nostatic;
     }
     
-    public function test(){
+    public function test() {
         echo Demo::$static."\n";                //使用类型调用静态属性     static
         echo Demo::get()."\n";                  //使用类名调用静态方法    Demo
         echo Demo::show()."\n";      //使用类名调用非静态方法   this is function show with Nostatic
