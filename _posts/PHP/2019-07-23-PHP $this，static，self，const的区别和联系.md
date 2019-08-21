@@ -514,7 +514,7 @@ echo get_class(test3::test_parent());                //test
 
 概念：
 1. 转发调用（forwarding call）:所谓的"转发调用"指的是通过以下几种方式进行的静态调用：
-self::，parent::，static:: 以及 forward_static_call().即在进行静态调用时未指名类名的调用属于转发调用。
+self::、 parent::、 static:: 以及 forward_static_call()，即在进行静态调用时未指名类名的调用属于转发调用。
 2. 非转发调度（non-forwarding call）:非转发调用其实就是明确指定类名的静态调用（foo::bar()）和非静态调用($foo->bar())。
 即明确地指定类名的静态调用和非静态调用。
 3. 后期静态绑定（Late Static Bindings ）："后期静态绑定"的意思是说，static:: 不再被解析为定义当前方法所在的类，而是在实际运行时计算的。
@@ -711,3 +711,13 @@ php中static 静态关键字 <https://www.cnblogs.com/haizizhu/p/8040236.html>
 PHP中静态方法和实例化方法的区别 <https://www.cnblogs.com/-mrl/p/6485616.html>
 
 PHP常见概念混淆（七）之self、static、parent的区别 <https://www.cnblogs.com/qiye5757/p/9437971.html>
+
+PHP 手册 函数参考 变量与类型相关扩展 函数处理 函数处理 函数 forward_static_call <https://www.php.net/manual/zh/function.forward-static-call.php>
+
+
+
+
+
+
+
+
