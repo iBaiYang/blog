@@ -234,10 +234,12 @@ B::getInstance();   // object(A)#1 (1) { ["name":protected]=> string(1) "A" } --
 
 总结说明：
 * self 和` __CLASS__`，都是对当前类的静态引用，取决于定义当前方法所在的类。也就是说，self 写在哪个类里面， 它引用的就是谁。
-* $this 指向的是实际调用时的对象，也就是说，实际运行过程中，谁调用了类的属性或方法，$this 指向的就是哪个对象。但 $this 不能访问类的静态属性和常量，且 $this 不能存在于静态方法中。
+* $this 指向的是实际调用时的对象，也就是说，实际运行过程中，谁调用了类的属性或方法，$this 指向的就是哪个对象。
+但 $this 不能访问类的静态属性和常量，且 $this 不能存在于静态方法中。
 * static 关键字除了可以声明类的静态成员（属性和方法）外，还有一个非常重要的作用就是后期静态绑定。
 * self 可以用于访问类的静态属性、静态方法和常量，但 self 指向的是当前定义所在的类，这是 self 的限制。
-* $this 指向的对象所属的类和 static 指向的类相同。哪个调用，$this 指向的就是哪个对象。如B继承A，实例化B后调用到了A的方法，此时A的$this指向的还是B这个实际调用的对象，如果B中$this指向的方法或属性不存在，则取A中的指向内容（与static有点类似了）。
+* $this 指向的对象所属的类和 static 指向的类相同。哪个调用，$this 指向的就是哪个对象。如B继承A，实例化B后调用到了A的方法，
+此时A的$this指向的还是B这个实际调用的对象，如果B中$this指向的方法或属性不存在，则取A中的指向内容（与static有点类似了）。
 * static 可以用于静态或非静态方法中，也可以访问类的静态属性、静态方法、常量和非静态方法，但不能访问非静态属性。
 * 静态调用时，static 指向的是实际调用时的类；非静态调用时，static 指向的是实际调用时的对象所属的类。
 
@@ -274,7 +276,8 @@ static 和 $this 有点类似，但又有区别：
 
 ##### 转发调用（forwarding call）
 
-所谓的转发调用（forwarding call）指的是通过以下几种方式进行的静态调用：self::，parent::，static:: 以及 forward_static_call() 。
+所谓的转发调用（forwarding call）：指的是通过以下几种方式进行的静态调用：self::，parent::，static:: 以及 forward_static_call() 。
+即在进行静态调用时未指名类名的调用属于转发调用。
 
 可用 get_called_class() 函数来获取被调用的方法所在的类名。
 
@@ -287,6 +290,11 @@ static 和 $this 有点类似，但又有区别：
 除此之外的调用，就是非转发调用。
 
 ##### 非转发调用（non-forwarding call）
+
+非转发调度（non-forwarding call）：非转发调用其实就是明确指定类名的静态调用（foo::bar()）和非静态调用($foo->bar())。
+即明确地指定类名的静态调用和非静态调用。
+
+后期静态绑定（Late Static Bindings ）："后期静态绑定"的意思是说，static:: 不再被解析为定义当前方法所在的类，而是在实际运行时计算的。
 
 后期静态绑定的工作原理是存储了上一个非转发调用（non-forwarding call）的类名。
 
@@ -452,6 +460,242 @@ public static function test2() {
 那么，就以 test2() 方法为准 ... 依次类推。
 
 也就是说，在使用了后期静态绑定的基类中，后期静态绑定所在的方法如果被转发调用，则 static 的指向，会一直向上追溯，直到遇到非转发调用的形式。
+
+#### self、static、parent的区别
+
+首先，这个 static 符号跟 static（静态）关键字不是一个东西。这三个符号在PHP对象中共有两种用法:
+1. 在类内部，可以使用 new self 、 new static 、 new parent 创建新对象
+2. 可以使用 self::、 static::、 parent::调用静态变量和静态或非静态方法。
+
+##### 创建新对象
+
+```
+class test{
+    public static function test_self(){
+        return new self();
+    }
+
+    public static function test_static(){
+        return new static();
+    }
+
+    public static function test_parent(){
+        return new parent();
+    }
+}
+
+class test2 extends test{
+
+    public static function test_parent(){
+        return new parent();
+    }
+}
+
+class test3 extends test2{
+
+}
+
+echo get_class(test::test_self());                  //test
+echo get_class(test::test_static());                 //test
+echo get_class(test2::test_self());                 //test
+echo get_class(test2::test_static());                //test2
+echo get_class(test2::test_parent());                //test
+echo get_class(test3::test_self());                //test
+echo get_class(test3::test_static());                //test3 
+echo get_class(test3::test_parent());                //test
+```
+
+由以上这个例子可以得出：
+* new self 创建的对象 是**定义** new self的类创建的对象
+* new static 创建的对象 是**执行** new static的类创建的对象
+* new parent 创建的对象 是**定义 new parent 的类**的父类创建的对象（PHP5.3引进）
+
+##### 调用静态变量
+
+概念：
+1. 转发调用（forwarding call）:所谓的"转发调用"指的是通过以下几种方式进行的静态调用：
+self::，parent::，static:: 以及 forward_static_call().即在进行静态调用时未指名类名的调用属于转发调用。
+2. 非转发调度（non-forwarding call）:非转发调用其实就是明确指定类名的静态调用（foo::bar()）和非静态调用($foo->bar())。
+即明确地指定类名的静态调用和非静态调用。
+3. 后期静态绑定（Late Static Bindings ）："后期静态绑定"的意思是说，static:: 不再被解析为定义当前方法所在的类，而是在实际运行时计算的。
+
+不存在继承的时候，self和static无区别。
+* 在静态函数中，self和static可以调用静态属性和静态方法（沒有实例化类，因此不能呼叫非静态的属性和方法）。
+* 在非静态函数中, self和static可以调用非静态属性和非静态方法。
+
+```
+class Demo
+{     
+    public static $static;     
+    public $Nostatic;      
+    
+    public function __construct(){         
+        self::$static = "static";         
+        $this->Nostatic = "Nostatic";
+    }
+    
+    public static function get(){
+        return __CLASS__;
+    }
+    
+    public function show(){
+        return "this is function show with ".$this->Nostatic;
+    }
+    
+    public function test(){
+        echo Demo::$static."\n";                //使用类型调用静态属性     static
+        echo Demo::get()."\n";                  //使用类名调用非静态方法    Demo
+        echo Demo::show()."\n";                 //使用类名调用静态方法   this is function show with Nostatic
+        echo self::$static."\n";                 //self调用静态属性       static
+        echo self::get()."\n";                  //self调用非静态方法      Demo
+        echo self::show()."\n";                  //self调用静态方法       this is function show with Nostatic
+        echo static::$static."\n";               //static调用静态属性     static
+        echo static::get()."\n";                //static调用非静态方法    Demo
+        echo static::show()."\n";                //static调用静态方法   this is function show with Nostatic
+    }
+}
+
+$obj = new Demo();
+$obj->test();
+```
+
+存在继承关系的时候
+* self调用的方法和属性始终表示当前类的方法和属性
+* static调用的方法和属性为当前执行的类的方法和属性
+* parent调用的方法和属性为父类的方法和属性
+
+```
+class A{
+    public static $test = "AAA";
+    
+    public static function getClassName(){
+        return "A";
+    }
+    
+    public function getClassName2(){
+        return "AA";
+    }
+    
+    public static function testSelf(){
+        echo self::getClassName();
+        echo "\n";
+        echo self::getClassName2();  
+        echo "\n";
+        echo self::$test;
+    }
+    
+    public static function testStatic(){
+        echo static::getClassName();
+        echo "\n";
+        echo static::getClassName2();
+        echo "\n";
+        echo static::$test;
+    }
+}
+    
+class B extends A{
+    public static $test = "BBB";
+        static function getClassName(){
+        return "B";
+    }
+    
+    public function getClassName2(){
+        return "BB";
+    }
+    
+    public static function testParent(){
+        echo parent::getClassName();
+        echo "\n";
+        echo parent::getClassName2();
+        echo "\n";
+        echo parent::$test;
+    }
+}
+    
+class C extends B{
+    public static $test = "CCC";
+    
+    public static function getClassName(){
+        return "C";
+    }
+    
+    public function getClassName2(){
+        return "CC";
+    }
+    
+    public static function testParent(){
+        echo parent::getClassName();
+        echo "\n";
+        echo parent::getClassName2();
+        echo "\n";
+        echo parent::$test;
+    }
+}
+
+B::testSelf();                  // A AA AAA
+echo "\n";
+B::testStatic();                 // B BB BBB
+echo "\n";
+B::testParent();                 // A AA AAA
+echo "\n";
+C::testSelf();                  // A AA AAA
+echo "\n";
+C::testStatic();                  // C CC CCC
+echo "\n";
+C::testParent();                  // B BB BBB
+```
+
+再看一下手册里的例子：
+```
+class A {     
+   public static function foo() {         
+        static::who();     
+   }     
+   public static function who() {         
+       echo __CLASS__."\n";     
+   } 
+} 
+
+class B extends A {     
+   public static function test() {         
+       A::foo();         
+       parent::foo();         
+       self::foo();     
+   }     
+   public static function who() {         
+        echo __CLASS__."\n";     
+    } 
+} 
+
+class C extends B {     
+    public static function who() {         
+       echo __CLASS__."\n";     
+    }
+} 
+
+C::test(); 
+```
+
+最后输出为 A C C
+
+单独拿出进行分析
+```
+public static function test() {         
+   A::foo();         
+   parent::foo();         
+   self::foo();     
+} 
+```
+
+1. A::foo()：非转发请求，直接调用A的foo()方法，在任何地方调用结果都是一样的
+2. parent::foo():在B类中写着，调用B的父类A的方法foo()（parent的用法）；A类中的foo()中执行 static::who()，
+寻找上一个非转发请求的类名（在A类的foo()方法中写上get_called_class()，可得为C，由此可知就是当前执行的类），
+所以调用C类的who()方法（这一步就可以理解为后期静态绑定，即为static的用法）；C类中重写了who()方法，所以结果为C；
+如果去掉C类中的who()方法，会调用B类中的who()方法；如果再去掉B类中的who()方法，会调用A类中的who()方法。
+3. self::foo():执行B类中的foo()方法（self的用法），B类中没有foo()方法，于是继承了A类的foo()方法，如果B类中定义了foo()方法,
+则执行B类中的foo()方法;执行A类的foo()方法，如上.
+
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
