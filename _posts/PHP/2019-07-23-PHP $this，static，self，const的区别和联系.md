@@ -466,4 +466,4 @@ php中static 静态关键字 <https://www.cnblogs.com/haizizhu/p/8040236.html>
 
 PHP中静态方法和实例化方法的区别 <https://www.cnblogs.com/-mrl/p/6485616.html>
 
-
+PHP常见概念混淆（七）之self、static、parent的区别 <https://www.cnblogs.com/qiye5757/p/9437971.html>
