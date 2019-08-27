@@ -361,7 +361,7 @@ socket_close($socket);
 
 ##### 客户端socket
 
-1. 创建socket
+1.创建socket
 
 $socket = socket_create(AF_INET, SOCK_STREAM, 0);
 
@@ -381,7 +381,7 @@ $socket = socket_create(AF_INET, SOCK_STREAM, 0);
 ```
 【注意】
 除了 SOCK_STREAM  类型的socket协议之外， 还有 SOCK_DGRAM 的类型 表示 UDP协议，因此需要知道远程服务器的 ip 地址
-2. 连接到服务器
+2.连接到服务器
 ```
     if(!socket_connect($socket,'104.193.88.77',80)){
         $errorcode = socket_last_error();
@@ -398,7 +398,7 @@ $ php socket.php
 $ip_address = gethostbyname('www.baidu.com');
 
 连接的概念适用于 SOCK_STREAM/TCP ，而 UDP，ICMP，ARP等其他基于非连接的通信没有连接的概念
-3. 发送数据
+3.发送数据
 
 函数 send 只会发送数据，它需要socket描述符，发送的数据及其大小。
 ```
@@ -413,7 +413,7 @@ $ip_address = gethostbyname('www.baidu.com');
 
 【注意】
 将数据发送到socket时，您基本上是将数据写入socket 类似于将数据写入文件，因此还可以使用 write 函数 将数据发送到socket。
-4. 接收数据
+4.接收数据
 
 使用 recv 函数接收套接字上的数据
 ```
@@ -440,7 +440,7 @@ socket_close($socket);
 
 ##### 服务端socket
 
-1. 创建一个服务端master socket
+1.创建一个服务端master socket
 ```
     if(!($socket = socket_create(AF_INET,SOCK_STAREAM,0))){
         $errorcode = socket_last_error();
@@ -448,7 +448,7 @@ socket_close($socket);
         die("create socket failed ");
     }
 ```
-2. 绑定到地址(和端口)
+2.绑定到地址(和端口)
 
 函数 bind 可用于套接字绑定到特定的地址和端口，他需要一个类似 connect 函数的结构 服务socket、ip 和端口
 ```
@@ -459,13 +459,13 @@ socket_close($socket);
     }
 ```
 如果你想接收所有的 ip 可以将 ip 改为 0.0.0.0
-3. 监听连接
+3.监听连接
 
 socket_listen($socket, 10);
 
 第二个参数是控制程序在已经很忙碌的时候保持等待的传入连接数，比如 已经有10个连接等待处理，第11个连接请求将会被拒绝
 
-4. 接受连接，关闭连接
+4.接受连接，关闭连接
 ```
     $client = socket_accept($socket);
     if(socket_getpeername($client,$address,$port)){
@@ -485,7 +485,7 @@ socket_getpeername 函数用于获取有关通过特定socket连接到服务器�
 
 我们建立了连接，并立即关闭了他，这并没有什么实际的用处，那我们回复客户端，我们可以使用socket_write 函数向传入的套接字
 写入内容
-5. 读取/发送数据
+5.读取/发送数据
 ```
 $input = socket_read($client,102400);
 $response = "ok ... $input";
@@ -503,7 +503,7 @@ Connection closed by foreign host
 
 我们收到回复之后，连接被立即关闭了，而像百度这样的服务器总是一直在接收传入的链接，这意味着服务器应该一直在
 运行，所以我们想让自己的服务器一直运行，最简单的方法是将 accept 置于一个循环中以便他能一直接收传入的连接
-6. 在线服务器
+6.在线服务器
 ```
 $address = '0.0.0.0';
 $port = '5001';
@@ -518,7 +518,7 @@ while(true){
 }
 ```
 这里我们将 accpet 加入了循环，但是每个发起的客户端，仍然没有有效的通信，他无法一次处理多个连接
-7. 多连接处理
+7.多连接处理
 
 为了处理每个连接，我们需要一个单独的处理代码来与主服务器接受连接一起运行。实现此目的的一种方法是使用线程。主服务器程序接受连接并创建一个新线程来处理连接的通信，然后服务器返回以接受更多连接。但是php不直接支持线程。
 
