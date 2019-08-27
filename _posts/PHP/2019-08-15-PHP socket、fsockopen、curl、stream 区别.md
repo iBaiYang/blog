@@ -9,29 +9,26 @@ meta: socket、fsockopen、curl、stream 区别
 
 ### 正文
 
-
-
 socket 水泥、沙子，底层的东西
 
-fsockopen 水泥预制件，可以用来搭房子
+fsockopen 、 stream_socket_client 水泥预制件，可以用来搭房子
 
 curl 毛坯房，自己装修一下就能住了
 
-水泥、沙子不但可以修房子，还能修路、修桥、大型雕塑。socket也是，不但可以用于网页传输，还能传送其他东西，可以做聊天工具、下载器、ftp……几乎可以用网络传送的东西都能用它写出来，当然，需要掌握的知识也不少，例如建墙你就要知道怎么让墙笔直、不易倒、防冻、隔热等等都需要自己学
+水泥、沙子不但可以修房子，还能修路、修桥、大型雕塑。socket也是，不但可以用于网页传输，还能传送其他东西，可以做聊天工具、下载器、ftp……
+几乎可以用网络传送的东西都能用它写出来，当然，需要掌握的知识也不少，例如建墙你就要知道怎么让墙笔直、不易倒、防冻、隔热等等都需要自己学。
 
-预制件你就不用管它是否笔直、结构如何、怎样隔热了，这些造的人帮你想好了，你想的就是怎样搭成你想要的形状就行。fsockopen就是，你可以忽略socket里面的creat, connect, send, recv等等函数的用法，直接就open了
+预制件你就不用管它是否笔直、结构如何、怎样隔热了，这些造的人帮你想好了，你想的就是怎样搭成你想要的形状就行。fsockopen就是，
+你可以忽略socket里面的creat, connect, send, recv等等函数的用法，直接就open了。
 
 毛坯房就更简单了，你装修就能住，最简单刷墙就行了，但想更舒适，就用更多更好的装修材料吧，但缺点就是——这是房子，你不能把它改造为渡河、
-交通的用途，只能住curl也一样，各种连接什么的都帮你做好了，底层容错处理也做了，你就传参数给它就能得到你想要的结果，
-但缺点就是只能http / ftp，你想把它改成聊天工具，那就难难难了
+交通的用途，只能住。curl也一样，各种连接什么的都帮你做好了，底层容错处理也做了，你就传参数给它就能得到你想要的结果，
+但缺点就是只能http / ftp，你想把它改成聊天工具，那就难了。
 
-stream_socket_client 和 fsockopen 没有本质上的区别
+socket 是一个封装了 TCP/IP 操作的工具包。
 
-socket 是一个封装了 TCP/IP 操作的工具包
-stream_socket_client 和 fsockopen 分属不同流派的对 socket 的封装
-
-就好比有人喜欢用 zf 框架，有人喜欢 tp 框架一般
-都不喜欢的就直接用原生 php 代码，好比直接用 socket 函数集
+stream_socket_client 和 fsockopen 没有本质上的区别。stream_socket_client 和 fsockopen 分属不同流派的对 socket 的封装。
+stream_socket_client 属于流操作，而 fsockopen 属于文件操作。
 
 fsockopen 是比较底层的调用，属于网络系统的socket调用，而curl经过的包装支持HTTPS认证，HTTP POST方法， HTTP PUT方法， FTP上传， 
 kerberos认证，HTTP上传，代理服务器， cookies，用户名/密码认证，下载文件断点续传，上载文件断点续传，http代理服务器管道（ proxy tunneling），
@@ -68,6 +65,168 @@ PS：file_get_contents()函数获取https链接内容的时候，需要php 中mo
 
 结论就是，curl 效率及稳定都比 file_get_contents() 要好，fsockopen 也很强大，但是比较偏底层。
 
+#### socket
+
+在PHP中，通过官方自带的Sockets扩展库，Stream 函数扩展库可以创建多种协议的服务器和客户端。Stream 函数扩展库是封装好了的Sockets扩展库，更容易使用。
+
+TCP通信过程:
+```
+  +-------------------------------
+  *    @socket通信整个过程
+  +-------------------------------
+  *    @socket_create
+  *    @socket_bind
+  *    @socket_listen
+  *    @socket_accept
+  *    @socket_read
+  *    @socket_write
+  *    @socket_close
+```
+
+TCP服务端：
+```
+<?php
+
+//确保在连接客户端时不会超时
+set_time_limit(0);
+
+$ip = '127.0.0.1';
+$port = 1222;
+
+if(($sock = socket_create(AF_INET,SOCK_STREAM,SOL_TCP)) < 0) {
+    echo "socket_create() 失败的原因是:".socket_strerror($sock)."\n";
+}
+
+if(($ret = socket_bind($sock,$ip,$port)) < 0) {
+    echo "socket_bind() 失败的原因是:".socket_strerror($ret)."\n";
+}
+ 
+if(($ret = socket_listen($sock,4)) < 0) {
+    echo "socket_listen() 失败的原因是:".socket_strerror($ret)."\n";
+}
+
+do {
+    if (($msgsock = socket_accept($sock)) < 0) {
+        echo "socket_accept() failed: reason: " . socket_strerror($msgsock) . "\n";
+        break;
+    } else {
+        
+        //发到客户端
+        $msg = "发送成功";
+        socket_write($msgsock, $msg, strlen($msg));
+        
+        //接收客户端数据
+        $buf = socket_read($msgsock,8192);
+      
+    }
+    //echo $buf;
+    socket_close($msgsock);
+
+} while (true);
+
+socket_close($sock);
+```
+
+TCP客户端：
+```
+private function tcp_client($port, $ip, $in)
+{
+    set_time_limit(0);
+
+    //创建socket
+    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    if ($socket < 0) {
+        $this->return_data(null, "socket创建失败，原因：". socket_strerror($socket)  ,RESPONSE_SOCKET_ERROR);
+    }
+
+    //进行socket连接
+    $result = socket_connect($socket, $ip, $port);
+    if ($result < 0) {
+        $this->return_data(null, "socket连接失败，原因：". socket_strerror($result)  ,RESPONSE_SOCKET_ERROR);
+    }
+    $result_data = '';
+
+    //发送socket数据到服务器
+    if(!socket_write($socket, $in, strlen($in))) {
+        $this->return_data(null, "socket发送数据失败，原因：". socket_strerror($socket)  ,RESPONSE_SOCKET_ERROR);
+    }
+
+    //获取socket返回值
+    while($out = socket_read($socket, 8192)) {
+        $result_data = $out;
+    }
+
+    //关闭socket
+    socket_close($socket);
+
+    return $result_data;
+}
+```
+
+##### UDP协议
+
+UDP服务端：
+```
+<?php
+
+//Reduce errors
+error_reporting(~E_WARNING);
+ 
+//Create a UDP socket
+if(!($sock = socket_create(AF_INET, SOCK_DGRAM, 0)))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Couldn't create socket: [$errorcode] $errormsg \n");
+}
+ 
+echo "Socket created \n";
+ 
+// Bind the source address
+if( !socket_bind($sock, "127.0.0.1" , 9999) )
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Could not bind socket : [$errorcode] $errormsg \n");
+}
+ 
+echo "Socket bind OK \n";
+ 
+//Do some communication, this loop can handle multiple clients
+while(1)
+{
+    echo "Waiting for data ... \n";
+     
+    //Receive some data
+    $r = socket_recvfrom($sock, $buf, 512, 0, $remote_ip, $remote_port);
+    echo "$remote_ip : $remote_port -- " . $buf;
+     
+    //Send back the data to the client
+    socket_sendto($sock, "OK " . $buf , 100 , 0 , $remote_ip , $remote_port);
+}
+ 
+socket_close($sock);
+```
+
+UDP客户端：
+```
+private function udp_client($port, $ip, $sendMsg)
+{
+    set_time_limit(0);
+    $handle = stream_socket_client("udp://{$ip}:{$port}", $errno, $errstr);
+    if( !$handle ){
+        $this->return_data(null, "连接失败，{$errno} - {$errstr}"  ,RESPONSE_UNDATA_ERROR);
+    }
+    fwrite($handle, $sendMsg);
+    $result = fread($handle, 1024);
+    fclose($handle);
+    return $result;
+}
+```
+
+#### HTTP功能工厂方法类
 
 兼容 Curl/Socket/Stream 的 HTTP 操作类：
 
@@ -955,9 +1114,13 @@ class Http_Stream
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+深入浅出讲解：php的socket通信 <https://www.cnblogs.com/aipiaoborensheng/p/6708963.html>
+
 php中socket、fsockopen、curl、stream 区别 <https://blog.csdn.net/chadxia88_go/article/details/78465072>
 
 PHP 兼容 Curl/Socket/Stream 的 HTTP 操作类 <https://www.cnblogs.com/softwaredevelop/archive/2010/04/08/1707018.html>
 
 了解PHP中Stream（流）的概念与用法 <http://www.nowamagic.net/librarys/veda/detail/2587>
+
+PHP常用技术（五）之socket的简单使用 <https://www.cnblogs.com/qiye5757/p/9721401.html>
 
