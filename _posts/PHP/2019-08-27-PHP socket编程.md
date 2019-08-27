@@ -686,3 +686,5 @@ php socket简单原理及实现笔记 <https://blog.csdn.net/u012728971/article/
      
 PHP socket初探 先从一个简单的socket服务器开始 <https://segmentfault.com/a/1190000016226578>
 
+PHP常用技术（五）之socket的简单使用 <https://www.cnblogs.com/qiye5757/p/9721401.html>
+
