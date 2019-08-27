@@ -682,4 +682,7 @@ PHP 手册 函数参考 其它服务 <https://www.php.net/manual/zh/book.sockets
 
 深入理解HTTP协议、HTTP协议原理分析 <https://www.cnblogs.com/chenliyang/p/6558756.html>
 
+php socket简单原理及实现笔记 <https://blog.csdn.net/u012728971/article/details/80685796>
      
+PHP socket初探 --- 先从一个简单的socket服务器开始 <https://segmentfault.com/a/1190000016226578>
+
