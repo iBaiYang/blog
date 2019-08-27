@@ -519,3 +519,6 @@ windows命令行中
 ### 参考资料
 
 <https://stackoverflow.com/questions/9479117/vagrant-virtualbox-apache2-strange-cache-behaviour#>
+
+Nginx学习（一）之安装、控制、配置 <https://www.cnblogs.com/qiye5757/p/9614571.html>
+
