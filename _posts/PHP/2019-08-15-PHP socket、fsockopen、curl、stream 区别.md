@@ -11,7 +11,7 @@ meta: socket、fsockopen、curl、stream 区别
 
 socket 水泥、沙子，底层的东西
 
-fsockopen 、 stream_socket_client 水泥预制件，可以用来搭房子
+fsockopen 、 stream 水泥预制件，可以用来搭房子
 
 curl 毛坯房，自己装修一下就能住了
 
@@ -36,6 +36,16 @@ kerberos认证，HTTP上传，代理服务器， cookies，用户名/密码认�
 包括数据的长度数据内容和数据的结束符。而curl是处理后的内容。
 
 在用户使用时，curl 更加方便，但其参数很多，配置稍微复杂，fsockopen 则有固定的几个参数，简单，但获取结果可能需要再做处理。
+
+上面提到的相关内容，过去都有过记录：
+
+socket <https://ibaiyang.github.io/blog/php/2019/08/27/PHP-socket%E7%BC%96%E7%A8%8B.html>
+
+stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
+
+curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL%E8%AF%A6%E8%A7%A3.html>
+
+#### file_get_contents
 
 那么file_get_contents呢？
 
