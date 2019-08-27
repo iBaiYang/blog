@@ -500,6 +500,7 @@ socket_write($client,$response);
 socket_close($client);
 ```
 在终端中运行
+```
 $ telnet localhost 5001
 Trying 127.0.0.1...
 Connected to localhost.
@@ -507,6 +508,7 @@ Escape character is '^]'.
 happy
 OK .. h
 Connection closed by foreign host
+```
 
 我们收到回复之后，连接被立即关闭了，而像百度这样的服务器总是一直在接收传入的链接，这意味着服务器应该一直在
 运行，所以我们想让自己的服务器一直运行，最简单的方法是将 accept 置于一个循环中以便他能一直接收传入的连接
