@@ -41,13 +41,19 @@ setting->Developer settings->Personal access tokens->Generate new token按钮，
 
 本地开发环境域名配置：
 
-C:\Windows\System32\drivers\etc\hosts
+windows下  C:\Windows\System32\drivers\etc\hosts
+
+linux下  /etc/hosts
+
+重定向配置：
 
 127.0.0.1 yii2_advanced_backend.host
 
 127.0.0.1 yii2_advanced_frontend.host
 
 vhost配置：
+
+/etc/nginx/nginx.conf
 
 ![](http://s13.sinaimg.cn/mw690/001XbchKzy7ewchcMpe0c)
 
@@ -94,6 +100,8 @@ server {
 ![](http://s6.sinaimg.cn/mw690/001XbchKzy7ewctHIP305)
 
 开始初始化：
+
+运行项目根目录下的init文件
 
 > php init
 
