@@ -45,14 +45,13 @@ yii\web\Application实例化会调用父类yii\base\Application中的 __construc
 public function __construct($config = [])
 {
     Yii::$app = $this;
+    
     static::setInstance($this);
 
     $this->state = self::STATE_BEGIN;
 
-    // 会让我们写在配置文件中的errorHandler替代yii\web\Application中写在coreComponents()的 'errorHandler' => ['class' => 'yii\web\ErrorHandler'
     $this->preInit($config);
 
-    // 异常及错误处理程序注册代码
     $this->registerErrorHandler($config);
 
     Component::__construct($config);
