@@ -17,11 +17,11 @@ $_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本
 
 我们可以把$_SERVER 数组打印出来看一下：
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy76uyQzjrA62&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190831233043.jpeg)
 
 再放一张最近的，有对比，更明了：
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7b1e64CY262&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001448.jpeg)
 
 看一下linux下的：
 ```
@@ -131,7 +131,7 @@ $_SERVER['PHP_AUTH_PW'] #当 PHP 运行在 Apache 模块方式下，并且正在
 $_SERVER['AUTH_TYPE'] #当 PHP 运行在 Apache 模块方式下，并且正在使用 HTTP 认证功能，这个变量便是认证的类型 
 ```
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy73SUWv7Orfb&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001514.jpeg)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
