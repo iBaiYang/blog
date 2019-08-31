@@ -17,7 +17,7 @@ $_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本
 
 我们可以把$_SERVER 数组打印出来看一下：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190831233043.jpeg)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001413.jpeg)
 
 再放一张最近的，有对比，更明了：
 
