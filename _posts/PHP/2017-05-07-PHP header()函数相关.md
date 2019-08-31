@@ -29,11 +29,11 @@ header()的语法：header(string,replace,http_response_code)
 
 说明：
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7aSSJ7NkX2f&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190831/20190831233043.jpeg)
 
 常见用法：
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7aSTbICX3d5&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190831/20190831233141.jpeg)
 
 详细例子：
 
