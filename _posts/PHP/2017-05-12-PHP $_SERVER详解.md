@@ -22,74 +22,40 @@ $_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本
 看一下linux下的：
 ```
 array(34) {
-  ["USER"]=>
-  string(8) "www-data"
-  ["HOME"]=>
-  string(8) "/var/www"
-  ["HTTP_COOKIE"]=>
-  string(420) "_identity=a8d00b623A2%3A%3A%22_identity%22%3Bi%3A13B%7D; PHPSESSID=6qrpjm5kvk4; _csrf=4c446993231ac7695850e1d4cA5%3A%22_csrf%22%3Bi%qKP56CeKoyskz87%22%3B%7D"
-  ["HTTP_CONNECTION"]=>
-  string(10) "keep-alive"
-  ["HTTP_X_REQUESTED_WITH"]=>
-  string(14) "XMLHttpRequest"
-  ["HTTP_REFERER"]=>
-  string(18) "http://admin.host/"
-  ["HTTP_ACCEPT_ENCODING"]=>
-  string(13) "gzip, deflate"
-  ["HTTP_ACCEPT_LANGUAGE"]=>
-  string(59) "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2"
-  ["HTTP_ACCEPT"]=>
-  string(22) "text/html, */*; q=0.01"
-  ["HTTP_USER_AGENT"]=>
-  string(68) "Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0"
-  ["HTTP_HOST"]=>
-  string(10) "admin.host"
-  ["SCRIPT_FILENAME"]=>
-  string(39) "/var/www/YiiAdmin/admin/web/index.php"
-  ["REDIRECT_STATUS"]=>
-  string(3) "200"
-  ["SERVER_NAME"]=>
-  string(10) "admin.host"
-  ["SERVER_PORT"]=>
-  string(2) "80"
-  ["SERVER_ADDR"]=>
-  string(9) "127.0.0.1"
-  ["REMOTE_PORT"]=>
-  string(5) "34058"
-  ["REMOTE_ADDR"]=>
-  string(9) "127.0.0.1"
-  ["SERVER_SOFTWARE"]=>
-  string(12) "nginx/1.10.3"
-  ["GATEWAY_INTERFACE"]=>
-  string(7) "CGI/1.1"
-  ["REQUEST_SCHEME"]=>
-  string(4) "http"
-  ["SERVER_PROTOCOL"]=>
-  string(8) "HTTP/1.1"
-  ["DOCUMENT_ROOT"]=>
-  string(29) "/var/www/YiiAdmin/admin/web"
-  ["DOCUMENT_URI"]=>
-  string(10) "/index.php"
-  ["REQUEST_URI"]=>
-  string(32) "/support/redpack?_=1567234611976"
-  ["SCRIPT_NAME"]=>
-  string(10) "/index.php"
-  ["CONTENT_LENGTH"]=>
-  string(0) ""
-  ["CONTENT_TYPE"]=>
-  string(0) ""
-  ["REQUEST_METHOD"]=>
-  string(3) "GET"
-  ["QUERY_STRING"]=>
-  string(15) "_=1567234611976"
-  ["FCGI_ROLE"]=>
-  string(9) "RESPONDER"YiiAdmin
-  ["PHP_SELF"]=>
-  string(10) "/index.php"
-  ["REQUEST_TIME_FLOAT"]=>
-  float(1567234621.2886)
-  ["REQUEST_TIME"]=>
-  int(1567234621)
+  ["USER"]=>  string(8) "www-data"
+  ["HOME"]=>  string(8) "/var/www"
+  ["HTTP_COOKIE"]=>  string(420) "_identity=a8d00b623A2%3A%3A%22_identity%22%3Bi%3A13B%7D; PHPSESSID=6qrpjm5kvk4; _csrf=4c446993231ac7695850e1d4cA5%3A%22_csrf%22%3Bi%qKP56CeKoyskz87%22%3B%7D"
+  ["HTTP_CONNECTION"]=>  string(10) "keep-alive"
+  ["HTTP_X_REQUESTED_WITH"]=>  string(14) "XMLHttpRequest"
+  ["HTTP_REFERER"]=>  string(18) "http://admin.host/"
+  ["HTTP_ACCEPT_ENCODING"]=>  string(13) "gzip, deflate"
+  ["HTTP_ACCEPT_LANGUAGE"]=>  string(59) "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2"
+  ["HTTP_ACCEPT"]=>  string(22) "text/html, */*; q=0.01"
+  ["HTTP_USER_AGENT"]=>  string(68) "Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0"
+  ["HTTP_HOST"]=>  string(10) "admin.host"
+  ["SCRIPT_FILENAME"]=>  string(39) "/var/www/YiiAdmin/admin/web/index.php"
+  ["REDIRECT_STATUS"]=>  string(3) "200"
+  ["SERVER_NAME"]=>  string(10) "admin.host"
+  ["SERVER_PORT"]=>  string(2) "80"
+  ["SERVER_ADDR"]=>  string(9) "127.0.0.1"
+  ["REMOTE_PORT"]=>  string(5) "34058"
+  ["REMOTE_ADDR"]=>  string(9) "127.0.0.1"
+  ["SERVER_SOFTWARE"]=>  string(12) "nginx/1.10.3"
+  ["GATEWAY_INTERFACE"]=>  string(7) "CGI/1.1"
+  ["REQUEST_SCHEME"]=>  string(4) "http"
+  ["SERVER_PROTOCOL"]=>  string(8) "HTTP/1.1"
+  ["DOCUMENT_ROOT"]=>  string(29) "/var/www/YiiAdmin/admin/web"
+  ["DOCUMENT_URI"]=>  string(10) "/index.php"
+  ["REQUEST_URI"]=>  string(32) "/support/redpack?_=1567234611976"
+  ["SCRIPT_NAME"]=>  string(10) "/index.php"
+  ["CONTENT_LENGTH"]=>  string(0) ""
+  ["CONTENT_TYPE"]=>  string(0) ""
+  ["REQUEST_METHOD"]=>  string(3) "GET"
+  ["QUERY_STRING"]=>  string(15) "_=1567234611976"
+  ["FCGI_ROLE"]=>  string(9) "RESPONDER"YiiAdmin
+  ["PHP_SELF"]=>  string(10) "/index.php"
+  ["REQUEST_TIME_FLOAT"]=>  float(1567234621.2886)
+  ["REQUEST_TIME"]=>  int(1567234621)
 }
 ```
 
