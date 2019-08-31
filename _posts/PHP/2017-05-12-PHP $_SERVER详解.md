@@ -9,6 +9,10 @@ meta: PHP $_SERVER详解
 
 ### 正文
 
+php提供了一些预定义变量，这些变量将所有的外部变量表示成内建环境变量，并且将错误信息表示成返回头。 
+
+#### $_SERVER
+
 $_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。这个数组中的项目由 Web 服务器创建。不能保证每个服务器都提供全部参数；服务器可能会忽略一些，或者提供一些没有在这里列举出来的参数。
 
 我们可以把$_SERVER 数组打印出来看一下：
@@ -131,6 +135,10 @@ $_SERVER['AUTH_TYPE'] #当 PHP 运行在 Apache 模块方式下，并且正在�
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
+
+PHP 手册 语言参考 预定义变量 $_SERVER <https://www.php.net/manual/zh/reserved.variables.server.php>
+
+PHP 手册 语言参考 预定义变量 <https://www.php.net/manual/zh/reserved.variables.php>
 
 <https://my.oschina.net/miaowang/blog/299553>
 
