@@ -64,7 +64,7 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 <p>不对。php-cgi只是解释PHP脚本的程序而已。</p>
 </blockquote>
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7itHuTWVDe5&690)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190902/20190902112145.jpeg)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
