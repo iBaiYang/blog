@@ -99,6 +99,8 @@ readfile('./test.xls');
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+PHP 手册 函数参考 其它服务 网络 网络 函数 header <https://www.php.net/manual/zh/function.header.php>
+
 [HTTP 函数](http://www.w3school.com.cn/php/php_ref_http.asp)
 
 [header() 函数](http://www.w3school.com.cn/php/func_http_header.asp)
