@@ -144,6 +144,37 @@ protected function bootstrap()
 
 这里可以看到$this->bootstrap属性，就是上面参数配置中赋的值。
 
+也使用到了服务定位，has()、get()方法等。在yii\di\ServiceLocator中：
+```
+public function has($id, $checkInstance = false)
+{
+    return $checkInstance ? isset($this->_components[$id]) : isset($this->_definitions[$id]);
+}
+
+public function get($id, $throwException = true)
+{
+    if (isset($this->_components[$id])) {
+        return $this->_components[$id];
+    }
+
+    if (isset($this->_definitions[$id])) {
+        $definition = $this->_definitions[$id];
+        if (is_object($definition) && !$definition instanceof Closure) {
+            return $this->_components[$id] = $definition;
+        } else {
+            return $this->_components[$id] = Yii::createObject($definition);
+        }
+    } elseif ($throwException) {
+        throw new InvalidConfigException("Unknown component ID: $id");
+    } else {
+        return null;
+    }
+}
+```
+
+在Yii::configure()时给$this->_components、$this->_definitions属性赋了值，其中就包括log配置，这里是实例化log组件，
+Yii::createObject($definition)。
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
