@@ -116,6 +116,25 @@ echo json_encode([
 输出：  [{},{},{}]
 ```
 
+#### 对象转为数组
+
+上面说了数组转为对象，这里说一下对象转为数组，对象转为数组可以使用 (array) 函数。
+
+```
+$user = new stdClass();
+$user->name = 'huanghe';
+
+$user_array = (array) $user;
+
+var_dump($user_array);
+
+// 输出
+array(1) {
+  ["name"]=>
+  string(7) "huanghe"
+}
+```
+
 
 #### 思考
 
