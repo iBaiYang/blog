@@ -42,7 +42,7 @@ $myUser = $user;
 
 $myUser = & $user;
 
-手册中说 stdClass由内建在 PHP 中的标准函数定义，那我们看一下 标准函数 是什么使用stdClass的。
+手册中说 stdClass由内建在 PHP 中的标准函数定义，那我们看一下 标准函数 是怎么使用stdClass的。
 
 #### 转换为对象
 
@@ -152,4 +152,8 @@ PHP 手册 附录 保留字列表 预定义类 <https://www.php.net/manual/zh/re
 PHP 手册 语言参考 类型 Object对象 转换为对象 <www.php.net/manual/zh/language.types.object.php#language.types.object.casting>
 
 理解PHP中的stdClass类 <https://www.jianshu.com/p/e4b4ed61e7b5>
+
+PHP 手册 函数参考 其它基本扩展 SPL 各种类及接口 The ArrayObject class <https://www.php.net/manual/zh/class.arrayobject.php>
+     
+PHP中ArrayObject的使用 <https://blog.csdn.net/qq_34908844/article/details/79216563>
 
