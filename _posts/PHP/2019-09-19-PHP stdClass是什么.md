@@ -155,5 +155,5 @@ PHP 手册 语言参考 类型 Object对象 转换为对象 <www.php.net/manual/
 
 PHP 手册 函数参考 其它基本扩展 SPL 各种类及接口 The ArrayObject class <https://www.php.net/manual/zh/class.arrayobject.php>
      
-PHP中ArrayObject的使用 <https://blog.csdn.net/qq_34908844/article/details/79216563>
+PHP中ArrayObject的使用 <https://www.jianshu.com/p/438a5a425870>
 
