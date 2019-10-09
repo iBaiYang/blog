@@ -15,7 +15,6 @@ WebSocket是HTML5开始提供的一种在单个 TCP 连接上进行全双工通�
 js 原生举例：
 
 ```
-<!DOCTYPE HTML>
 <html>
     <head>
     <meta charset="utf-8">
