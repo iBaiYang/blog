@@ -9,7 +9,7 @@ meta: Github Pages中Jekyll升级导致项目构建失败
 
 ### 正文
 
-今天更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知短信
+今天更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知u邮件：
 ```
 The page build failed for the `master` branch with the following error: 
 
@@ -22,7 +22,7 @@ For information on troubleshooting Jekyll see:
 If you have any questions you can contact us by replying to this email. 
 ```
 
-曾经几年一直用的好好的，今天突然出现这个情况，不会是NBA为港独站队，Github不让大陆这面使用了吧。然后各种搜索，发现有好多人过去也碰到过这个情况，
+过去几年一直用的好好的，今天突然出现这个情况，不会是NBA为港独站队，Github不让大陆这面使用了吧。然后各种搜索，发现有好多人过去也碰到过这个情况，
 所以应该是其他原因。查来查去，解决方法是只能本地安装Jekyll，然后构建寻找失败原因。邮件中给的网址一直看不到想要的解决办法，
 好多人说是Github Pages升级了jekyll，新版本导致的问题。所以只能本地想办法复现问题了。看文档，jekyll安装需要先安装Ruby,而且不同的版本对Ruby的版本有要求。
 
@@ -44,7 +44,16 @@ ruby 2.3.3p222 (2016-11-21) [x86_64-linux-gnu]
 
 准备安装rvm，切换到国内源：
 
+> sudo apt-get install gem
+> sudo apt-get install bundler
+
 > gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/
+
+再看一下gem的版本：
+
+> gem -v
+
+版本是3.0.6。
 
 安装rvm：
 ```
@@ -88,12 +97,6 @@ rvm 1.29.9 (latest) by Michal Papis, Piotr Kuczynski, Wayne E. Seguin [https://r
 > ruby -v
 
 结果是ruby-2.6.3。
-
-再看一下gem的版本：
-
-> gem -v
-
-版本是3.0.6。
 
 然后安装我们的主角Jekyll：
 
