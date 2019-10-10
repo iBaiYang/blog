@@ -9,7 +9,7 @@ meta: Github Pages中Jekyll升级导致项目构建失败
 
 ### 正文
 
-今天更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知u邮件：
+今天更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知邮件：
 ```
 The page build failed for the `master` branch with the following error: 
 
