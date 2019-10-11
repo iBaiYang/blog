@@ -131,10 +131,10 @@ Configuration file: /home/baiyang/www/blog/_config.yml
 
 这里已经点明了问题所在的文件，Rouge::Guesser::Ambiguous 这句话还是有些模糊，还需要在这个文件中一步一步缩小范围定位问题，多次jekyll build查看问题在哪一行。
 
-最后定下来居然是这个地方的问题：
+最后定下来居然是这个地方的问题，html文件头标记：
 
     ```
-    <!DOCTYPE html>
+    !DOCTYPE html  
     ```
 
 把这一行删了就好了，jekyll build看一下：
