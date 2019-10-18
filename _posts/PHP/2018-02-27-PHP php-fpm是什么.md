@@ -11,6 +11,8 @@ meta: 大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190816/20190816134124.png)
 
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191018/20191018105918.png)
+
 引入参考：
 
 刚开始对这个问题我也挺纠结的，看了《HTTP权威指南》后，感觉清晰了不少。
