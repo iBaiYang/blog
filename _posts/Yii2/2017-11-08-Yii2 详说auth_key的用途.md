@@ -23,7 +23,7 @@ _csrf-backend详细：
 
 v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c9x2vyg==
 
-关于csrf可以看这里：<https://ibaiyang.github.io/ibaiyang.github.io/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
+关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 
 ![](http://s9.sinaimg.cn/mw690/001XbchKzy7fFrCTMkEc8)
 
@@ -1045,5 +1045,5 @@ cookie自动登录不成功，也不能访问网站了。
 
 <http://www.yii-china.com/post/detail/323.html>
 
-Yii2 csrf综合 <https://ibaiyang.github.io/ibaiyang.github.io/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
+Yii2 csrf综合 <https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 

@@ -68,15 +68,15 @@ The WebSocket API (Windows) <https://technet.microsoft.com/en-us/windows/hh67356
 
 Window 对象 <http://www.runoob.com/jsref/obj-window.html>
 
-WebSocket-技术探究 <https://ibaiyang.github.io/ibaiyang.github.io/html/2018/05/25/WebSocket-技术探究.html>
+WebSocket-技术探究 <https://ibaiyang.github.io/blog/html/2018/05/25/WebSocket-技术探究.html>
 
 <https://www.cnblogs.com/yingge/p/5998606.html>
 
 <https://www.cnblogs.com/jiahuafu/p/4599959.html>
 
-Swoole学习 <https://ibaiyang.github.io/ibaiyang.github.io/php/2018/05/26/PHP-Swoole%E5%AD%A6%E4%B9%A0.html>
+Swoole学习 <https://ibaiyang.github.io/blog/php/2018/05/26/PHP-Swoole%E5%AD%A6%E4%B9%A0.html>
 
-PHP Stream实现服务器客户端 <https://ibaiyang.github.io/ibaiyang.github.io/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
+PHP Stream实现服务器客户端 <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
 
 WebSocket 前世今生 <https://www.ibm.com/developerworks/cn/java/j-lo-WebSocket/>
 
