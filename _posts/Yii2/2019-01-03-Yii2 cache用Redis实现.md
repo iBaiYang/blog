@@ -89,7 +89,7 @@ yii2-redis 扩展详解 <https://www.yiichina.com/doc/guide/2.0/yii2-redis>
 
 yii2-redis 扩展详解 <https://www.yiichina.com/tutorial/1608>
 
-Yii2 Redis使用 <https://ibaiyang.github.io/ibaiyang.github.io/yii2/2019/01/03/Yii2-Redis%E4%BD%BF%E7%94%A8.html>
+Yii2 Redis使用 <https://ibaiyang.github.io/blog/yii2/2019/01/03/Yii2-Redis%E4%BD%BF%E7%94%A8.html>
 
 查询缓存 <https://www.yiichina.com/doc/guide/2.0/caching-data#query-caching>
 

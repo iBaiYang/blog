@@ -184,11 +184,11 @@ PHP Socket实现websocket（三）Stream函数 <https://www.cnblogs.com/yangxunw
 
 Socket 深度探索 4 PHP （一） <https://blog.csdn.net/shagoo/article/details/6396089>
 
-Swoole学习 <https://ibaiyang.github.io/ibaiyang.github.io/php/2018/05/26/PHP-Swoole%E5%AD%A6%E4%B9%A0.html>
+Swoole学习 <https://ibaiyang.github.io/blog/php/2018/05/26/PHP-Swoole%E5%AD%A6%E4%B9%A0.html>
 
-客户端WebSocket实现 <https://ibaiyang.github.io/ibaiyang.github.io/html/2019/01/04/%E5%AE%A2%E6%88%B7%E7%AB%AFWebSocket%E5%AE%9E%E7%8E%B0.html>
+客户端WebSocket实现 <https://ibaiyang.github.io/blog/html/2019/01/04/%E5%AE%A2%E6%88%B7%E7%AB%AFWebSocket%E5%AE%9E%E7%8E%B0.html>
 
-PHP 文件处理相关函数 <https://ibaiyang.github.io/ibaiyang.github.io/php/2018/08/11/PHP-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0.html>
+PHP 文件处理相关函数 <https://ibaiyang.github.io/blog/php/2018/08/11/PHP-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0.html>
 
 system函数 <http://www.php.net/manual/zh/function.system.php>
 

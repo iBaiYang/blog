@@ -78,9 +78,9 @@ foreach ($session as $name => $value) ...
 
 Sessions 和 Cookies <https://www.yiichina.com/doc/guide/2.0/runtime-sessions-cookies>
 
-Yii2 session使用 <https://ibaiyang.github.io/ibaiyang.github.io/yii2/2018/07/20/Yii2-session%E4%BD%BF%E7%94%A8.html>
+Yii2 session使用 <https://ibaiyang.github.io/blog/yii2/2018/07/20/Yii2-session%E4%BD%BF%E7%94%A8.html>
 
 yii2-redis 扩展详解-会话组件 <https://www.yiichina.com/doc/guide/2.0/yii2-redis?language=zh-cn>
 
-Yii2 Redis使用 <https://ibaiyang.github.io/ibaiyang.github.io/yii2/2019/01/03/Yii2-Redis%E4%BD%BF%E7%94%A8.html>
+Yii2 Redis使用 <https://ibaiyang.github.io/blog/yii2/2019/01/03/Yii2-Redis%E4%BD%BF%E7%94%A8.html>
 
