@@ -119,7 +119,7 @@ Binding信息被保存到exchange中的查询表中，用于message的分发依�
 
 生产者发送消息到broker server（RabbitMQ）。
 在Broker内部，用户创建Exchange／Queue，通过Binding规则将两者联系在一起。
-Exchange分发消息，根据类型／binding的不同分发策略有区别。消息最后来到Queue中，等待消费者取走。
+Exchange分发消息，根据类型 binding 的不同分发策略有区别。消息最后来到Queue中，等待消费者取走。
 
 #### Exchange类型
 
