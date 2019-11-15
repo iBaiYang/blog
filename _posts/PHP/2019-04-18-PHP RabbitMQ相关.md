@@ -524,6 +524,10 @@ $this->bindSetting = [
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+RabbitMQ官网 <https://www.rabbitmq.com/>
+
+RabbitMQ官网 PHP <https://www.rabbitmq.com/tutorials/tutorial-one-php.html>
+
 RabbitMQ与AMQP协议详解 <http://www.cnblogs.com/frankyou/p/5283539.html>
 
 PHP RabbitMQ延迟队列实现 <https://ibaiyang.github.io/blog/php/2019/01/03/PHP-RabbitMQ%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E5%AE%9E%E7%8E%B0.html>
