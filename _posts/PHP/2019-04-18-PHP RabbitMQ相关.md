@@ -9,6 +9,8 @@ meta: RabbitMQ相关
 
 ### 正文
 
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191115/20191115175726.png)
+
 #### 简单介绍
 
 **什么叫消息队列?**
