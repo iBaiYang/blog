@@ -522,6 +522,8 @@ $this->bindSetting = [
 #### 其他说明
 
 命令行运行消费者，需要常驻进程，就需要守护进程程序，涉及到 pcntl_fork()、posix_setsid() 函数。
+队列消费者连接RabbitMQ使用的是TCP长连接，可能会连接断开，导致消费者无法消费。可以使用python开发的守护进程的小工具supervisor实现，
+消费者进程异常后，还会重新拉起。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -596,5 +598,5 @@ RabbitMQ 消息顺序、消息幂等、消息重复、消息事务、集群 <htt
 
 RabbitMQ的几种应用场景 <https://blog.csdn.net/zyz511919766/article/details/41946521>
 
-
+Supervisor-守护进程工具 <https://www.jianshu.com/p/39b476e808d8>
 
