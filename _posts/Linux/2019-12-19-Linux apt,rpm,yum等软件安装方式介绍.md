@@ -205,8 +205,6 @@ yum在线安装可以方便的解决依赖文件，一条命令就可以帮用�
 
 注：RedHat的yum是收费服务，而CentOS的yum是免费服务。
 
-#### apt
-
 #### dpkg
 
 dpkg ”是“Debian Packager ”的简写。
@@ -214,7 +212,67 @@ dpkg ”是“Debian Packager ”的简写。
 Debian包文件（Debian archive file）包含了可执行文件、库文件和相关程序的文档。deb文件是linux发行版debian系统的安装包格式，
 还有像基于debian系统的发型版ubuntu等系统就是使用的deb格式安装包，我们可以使用dpkg命令进行安装管理这些deb安装包文件。
 
+Linux继承了很多UNIX系统构建和程序设计的思想——一个应用程序会利用更多现有的工具或应用来实现自己的目的。
+这种设计哲学很大程度上使Linux成为了一个有机的、各个部分都充满了活力的操作系统，但是也正是这种高度灵活性使得Linux面临着两个复杂的问题：
+程序依赖性问题，以及由依赖性问题衍生出来的程序冲突问题。
 
+为了解决这些问题，Debian软件包管理系统引入了一套软件包“依赖性”定义，用来描述独立运行的程序A与现存系统中程序B之间存在的关联程度。
+
+dpkg本身是一个底层的安装工具，如果需要从远程服务器上获取软件包，或者由系统自己处理复杂的软件包依赖性都需要比dpkg更高层的前段工具，比如Debian系统使用APT。
+
+安装软件包：
+```
+dpkg -i package-name.deb
+```
+
+卸载软件包：
+```
+dpkg -r package-name # --remove， 移除软件包，但保留其配置文件，不是完全意义上的卸载
+
+dpkg -P package-name # --purge， 清除软件包的所有文件（removes everything,including conffiles），实现指定软件包的完全卸载
+```
+
+查询：
+```
+dpkg -l 用于获取当前系统中所有已安装的deb软件包信息
+eg: dpkg -l | grep -i vim
+
+dpkg -l package-name-pattern # --list, 查看系统中软件包名符合pattern模式的软件包
+eg: dpkg -l \*dpkg*
+
+dpkg -L vim 查询某一软件包所安装的文件
+
+dpkg -L package-name # --listfiles, 查看package-name对应的软件包安装的文件及目录
+eg: dpkg -L dpkg
+
+dpkg -s vim 进一步了解某一软件包的详细信息
+
+dpkg -s package-name # --status, 查看package-name（已安装）对应的软件包信息
+
+dpkg -S /bin/ls 查询系统中的某个文件属于哪个软件包
+
+dpkg -S filename-search-pattern # --search,从已经安装的软件包中查找包含filename的软件包名称 （Tip：也可使用子命令dpkg-query来进行查询操作）
+
+dpkg -p package-name # --print-avail, 显示包的具体信息
+```
+
+获取软件包的文件信息:
+```
+dpkg -I 软件包名    查看deb包文件的详细信息
+
+dpkg -c 软件包名    查询deb包文件中所包含的文件
+```
+
+重新配置软件包:
+```
+dpkg-reconfigure 软件包名 # 实现对指定的软件包进行配置
+```
+
+dpkg 与 dpkg-deb 的关系：
+dpkg可以认为是dpkg-deb的前端，只用在遇到一些特定的参数时才会调用dpkg-deb命令。用户通常只使用dpkg命令，dpkg命令再自动调用dpkg-deb来实现功能。
+
+
+#### apt
 
 #### 脚本安装
 
@@ -230,6 +288,12 @@ Debian包文件（Debian archive file）包含了可执行文件、库文件和�
 Linux中常见软件安装方法及常见管理方法 <https://blog.csdn.net/weixin_42373127/article/details/88605601> (重点讲了源代码安装和rpm安装)
 
 Linux系统中软件的“四”种安装原理详解：源码包安装、RPM二进制安装、YUM在线安装、脚本安装包 <https://segmentfault.com/a/1190000011325357>
+
+Linux软件安装管理之——源码安装详解 <https://segmentfault.com/a/1190000011200004?share_user=1030000007255638>
+
+Linux软件安装管理之——RPM与YUM详解 <https://segmentfault.com/a/1190000011200461?share_user=1030000007255638>
+
+Linux软件安装管理之——dpkg与apt-*详解 <https://segmentfault.com/a/1190000011463440?share_user=1030000007255638>
 
 RPM软件包软件素材参考 <http://rpmfind.net/>
 
