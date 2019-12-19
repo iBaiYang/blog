@@ -9,7 +9,9 @@ meta: Linux apt,rpm,yum等软件安装方式介绍
 
 ### 正文
 
-Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum等
+Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum等。
+
+虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制（RPM）包两种软件安装包，这些方式只是执行并优化了这两种软件安装包的过程。
 
 #### 源代码安装
 
@@ -24,8 +26,7 @@ Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum
 编译麻烦；
 缺乏自动依赖管理，软件升级麻烦；
 
-
-几乎所有的开源软件都支持在Linux下运行，而这些软件一般都以源码形式发放，只需要Linux安装了gcc、make、automake、autoconf都支持源码安装。
+几乎所有的开源软件都支持在Linux下运行，而这些软件一般都以源码形式发放（源码都是c语言写的），只需要Linux安装了gcc、make、automake、autoconf都支持源码安装。
 
 源代码安装4步骤：
 
@@ -126,12 +127,21 @@ RPM包管理工具（RPM Package Manager），由Red Hat公司提出，被众多
 
 Rpm包不是源代码,它是将源代码编译完成后（二进制包）,再去做成rpm包发布出来。
 
+优点：
+包管理系统简单，只通过几个命令就可以实现包的安装、升级、查询和卸载；
+安装速度比源码包安装快的多。
+
+缺点：
+经过编译，不再可以看到源代码；
+功能选择不如源码包灵活；
+依赖性。
+
 一般命名格式：
 ```
 bash-3.2-24.el5.i386.rpm
 ```
 
-bash：软件名称，3.2：版本号，24：发布次数（修正版），i386：硬件平台，rpm：拓展名。
+bash：软件名称，3.2：版本号，24：发布次数（修正版），el5：适合的Linux平台，i386：硬件平台，rpm：拓展名。
 
 我们可以在这里查询需要的软件包： http://rpmfind.net
 
@@ -162,6 +172,8 @@ rpm -Uvh bash-3.2-24.el5.i386.rpm
 rpm -evh bash
 ```
 
+注：若已安装了二进制包，则源码包也是可以继续安装的，因为两者安装目录不一样。但是，并不建议这样做，因为端口会冲突。
+ 
 #### SRPM
 
 SRPM 文件里面含有源代码( Source Code )。
@@ -185,19 +197,43 @@ rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打�
 rpmbuild --rebuild rp-pppoe-3.5-32.1.src.rpm
 ```
 
-#### apt
-
 #### yum
 
+可以方便的解决RPM安装依赖文件，一条命令就可以帮用户从网上（本地也可以）找到安装包进行安装。
+
+yum在线安装可以方便的解决依赖文件，一条命令就可以帮用户从网上（本地也可以）找到安装包进行安装。
+
+注：RedHat的yum是收费服务，而CentOS的yum是免费服务。
+
+#### apt
+
+#### dpkg
+
+dpkg ”是“Debian Packager ”的简写。
+
+Debian包文件（Debian archive file）包含了可执行文件、库文件和相关程序的文档。deb文件是linux发行版debian系统的安装包格式，
+还有像基于debian系统的发型版ubuntu等系统就是使用的deb格式安装包，我们可以使用dpkg命令进行安装管理这些deb安装包文件。
 
 
+
+#### 脚本安装
+
+所谓的脚本安装包，如：lnmp/lamp LNMP一键安装包，就是把复杂的软件包安装过程写成了程序脚本，使用者可以执行脚本实现一键安装。但实际安装的还是源码包和二进制包。
+
+优点：安装简单、快捷、方便；
+
+缺点：完全丧失了自定义性；
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-Linux中常见软件安装方法及常见管理方法(重点讲了源代码安装和rpm安装)  <https://blog.csdn.net/weixin_42373127/article/details/88605601> 
+Linux中常见软件安装方法及常见管理方法 <https://blog.csdn.net/weixin_42373127/article/details/88605601> (重点讲了源代码安装和rpm安装)
+
+Linux系统中软件的“四”种安装原理详解：源码包安装、RPM二进制安装、YUM在线安装、脚本安装包 <https://segmentfault.com/a/1190000011325357>
 
 RPM软件包软件素材参考 <http://rpmfind.net/>
+
+Linux rpm命令详解 <https://www.cnblogs.com/ftl1012/p/rpm.html>
 
 Linux wget命令详解 <https://www.cnblogs.com/ftl1012/p/9265699.html>
 
