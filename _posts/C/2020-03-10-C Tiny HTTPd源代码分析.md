@@ -34,7 +34,7 @@ int startup(u_short *);//开启http服务，包括绑定端口，监听，开启
 void unimplemented(int);//返回给浏览器表明收到的 HTTP 请求所用的 method 不被支持。
 ```
 
-建议源码阅读顺序： main -> startup -> accept_request -> execute_cgi　
+建议源码阅读顺序： main -> startup -> accept_request -> serve_file -> execute_cgi　
 
 httpd.c 源码：
 ```
