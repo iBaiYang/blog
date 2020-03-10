@@ -9,7 +9,25 @@ meta: tinyhttpd是一个超轻量型Http Server，使用C语言开发，全部�
 
 ### 正文
 
-httpd.c
+Tiny HTTPd 的函数有：
+```
+void accept_request(int);//处理从套接字上监听到的一个 HTTP 请求
+void bad_request(int);//返回给客户端这是个错误请求，400响应码
+void cat(int, FILE *);//读取服务器上某个文件写到 socket 套接字
+void cannot_execute(int);//处理发生在执行 cgi 程序时出现的错误
+void error_die(const char *);//把错误信息写到 perror 
+void execute_cgi(int, const char *, const char *, const char *);//运行cgi脚本，这个非常重要，涉及动态解析
+int get_line(int, char *, int);//读取一行HTTP报文
+void headers(int, const char *);//返回HTTP响应头
+void not_found(int);//返回找不到请求文件
+void serve_file(int, const char *);//调用 cat 把服务器文件内容返回给浏览器。
+int startup(u_short *);//开启http服务，包括绑定端口，监听，开启线程处理链接
+void unimplemented(int);//返回给浏览器表明收到的 HTTP 请求所用的 method 不被支持。
+```
+
+建议源码阅读顺序： main -> startup -> accept_request -> execute_cgi　
+
+httpd.c 源码：
 ```
 /* J. David's webserver */
 /* This is a simple webserver.
@@ -40,8 +58,12 @@ httpd.c
 #include <stdlib.h>
 
 #define ISspace(x) isspace((int)(x))
+//函数说明：检查参数c是否为空格字符，
+//也就是判断是否为空格(' ')、定位字符(' \t ')、CR(' \r ')、换行(' \n ')、垂直定位字符(' \v ')或翻页(' \f ')的情况。
+//返回值：若参数c 为空白字符，则返回非 0，否则返回 0。
 
 #define SERVER_STRING "Server: jdbhttpd/0.1.0\r\n"
+//定义server名称
 
 void accept_request(int);
 void bad_request(int);
@@ -61,6 +83,7 @@ void unimplemented(int);
  * return.  Process the request appropriately.
  * Parameters: the socket connected to the client */
 /**********************************************************************/
+//接收客户端的连接，并读取请求数据
 void accept_request(int client)
 {
  char buf[1024];
