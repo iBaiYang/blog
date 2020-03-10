@@ -634,14 +634,20 @@ int main(void)
     
     while (1)
     {
+        //接受请求，函数原型
+        //#include <sys/types.h>
+        //#include <sys/socket.h>  
+        //int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
         //接受客户端连接
         client_sock = accept(server_sock,
                            (struct sockaddr *)&client_name,
                            &client_name_len);
+                           
         if (client_sock == -1)
             error_die("accept");
             
-        /* accept_request(client_sock); 启动线程处理新的连接 */
+        /* accept_request(client_sock); */
+        // 启动线程处理新的连接。 每次收到请求，创建一个线程来处理接受到的请求，把client_sock转成地址作为参数传入pthread_create
         if (pthread_create(&newthread , NULL, accept_request, client_sock) != 0)
             perror("pthread_create");
     }
