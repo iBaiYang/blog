@@ -51,6 +51,11 @@ httpd.c 源码：
  *  3) Comment out the two lines that run pthread_create().
  *  4) Uncomment the line that runs accept_request().
  *  5) Remove -lsocket from the Makefile.
+ * 1）注释掉#include <pthread.h>行。
+ * 2）注释掉定义变量newthread的行。
+ * 3）注释掉运行pthread_create（）的两行。
+ * 4）取消注释运行accept_request（）的行。
+ * 5）从Makefile中删除-lsocket。
  */
 #include <stdio.h>
 #include <sys/socket.h>
@@ -62,7 +67,7 @@ httpd.c 源码：
 #include <strings.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <pthread.h>
+// #include <pthread.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 
@@ -482,7 +487,7 @@ void headers(int client, const char *filename)
     sprintf(buf, "Content-Type: text/html\r\n");
     send(client, buf, strlen(buf), 0);
     strcpy(buf, "\r\n");
-    send(client, buf, strlen(buf), 0);ssssssssssssssssss
+    send(client, buf, strlen(buf), 0);
 }
 
 /**********************************************************************/
@@ -627,7 +632,7 @@ int main(void)
     int client_sock = -1;
     struct sockaddr_in client_name;
     int client_name_len = sizeof(client_name);
-    pthread_t newthread;
+    // pthread_t newthread;
     
     server_sock = startup(&port);
     printf("httpd running on port %d\n", port);
@@ -646,10 +651,10 @@ int main(void)
         if (client_sock == -1)
             error_die("accept");
             
-        /* accept_request(client_sock); */
+        accept_request(client_sock);
         // 启动线程处理新的连接。 每次收到请求，创建一个线程来处理接受到的请求，把client_sock转成地址作为参数传入pthread_create
-        if (pthread_create(&newthread , NULL, accept_request, client_sock) != 0)
-            perror("pthread_create");
+        // if (pthread_create(&newthread , NULL, accept_request, client_sock) != 0)
+        //     perror("pthread_create");
     }
     
     //关闭server socketss
@@ -659,6 +664,66 @@ int main(void)
 }
 ```
 
+Makefile 编译文件内容：
+```
+all: httpd
+
+httpd: httpd.c
+	gcc -W -Wall -lpthread -o httpd httpd.c
+
+clean:
+	rm httpd
+```
+
+原项目中cgi是perl写的：
+```
+#!/usr/local/bin/perl -Tw
+
+use strict;
+use CGI;
+
+my($cgi) = new CGI;
+
+print $cgi->header;
+my($color) = "blue";
+$color = $cgi->param('color') if defined $cgi->param('color');
+
+print $cgi->start_html(-title => uc($color),
+                       -BGCOLOR => $color);
+print $cgi->h1("This is $color");
+print $cgi->end_html;
+```
+
+cgi文件改成支持php的：
+```
+#!/usr/bin/env php
+
+<?php
+echo "<html>";
+echo "<head>";
+echo "<title>POST</title>";
+echo "</head>";
+echo "<body>";
+echo "<CENTER>Today is:</CENTER>";
+echo "<CENTER><B>";
+echo date('Y-m-d H:i:s');
+echo "</B></CENTER>";
+echo "</body></html>";
+```
+
+cgi文件改成支持shell的：
+```
+#!/bin/bash
+
+echo "Content-Type: text/html"
+echo
+echo "<HTML><BODY>"
+echo "<CENTER>Today is:</CENTER>"
+echo "<CENTER><B>"
+date
+echo "</B></CENTER>"
+echo "</BODY></HTML>"
+```
 
 
 <br/><br/><br/><br/><br/>
