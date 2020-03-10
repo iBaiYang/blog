@@ -677,6 +677,8 @@ clean:
 
 命令行 make 编译，然后 ./httpd 运行服务器。
 
+通过浏览器访问 127.0.0.1:端口/index2.html 访问指定文件，post提交可以查看cgi处理结果。
+
 #### cgi脚本
 
 原项目中cgi是perl写的：
