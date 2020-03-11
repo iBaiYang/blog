@@ -307,7 +307,7 @@ void execute_cgi(int client, const char *path,
     //如果是GET请求
     if (strcasecmp(method, "GET") == 0)
         while ((numchars > 0) && strcmp("\n", buf))  /* read & discard headers 读取并且丢弃头信息 */
-        numchars = get_line(client, buf, sizeof(buf));
+            numchars = get_line(client, buf, sizeof(buf));
         
     //处理的请求为POST
     else    /* POST */
@@ -571,7 +571,7 @@ int startup(u_short *port)
     if (httpd == -1)
         error_die("socket");
     memset(&name, 0, sizeof(name));
-    name.sin_family = AF_INET;
+    name.sin_family = AF_INET;  // AF_INET  Supported address families -> Internet IP Protocol
     name.sin_port = htons(*port);
     name.sin_addr.s_addr = htonl(INADDR_ANY);
     
@@ -628,7 +628,7 @@ void unimplemented(int client)
 int main(void)
 {
     int server_sock = -1;
-    u_short port = 0;
+    u_short port = 0;  // unsigned short
     int client_sock = -1;
     struct sockaddr_in client_name;
     int client_name_len = sizeof(client_name);
@@ -804,6 +804,8 @@ int main(int argc, char *argv[])
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+Tiny HTTPd 分析源码 <https://github.com/iBaiYang/TinyHTTPd>
+
 Tiny HTTPd's tiny homepage <https://sourceforge.net/projects/tinyhttpd/files/>
 
 HTTP服务器的本质:tinyhttpd源码分析及拓展 <https://www.cnblogs.com/qiyeboy/p/6296387.html>
@@ -817,3 +819,8 @@ Tinyhttpd精读解析git源码 <https://github.com/nengm/Tinyhttpd>
 十个最值得阅读学习的C开源项目代码 <https://blog.csdn.net/deeplee021/article/details/40583877>
 
 源码阅读——十个C开源项目 <https://my.oschina.net/zhoukuo/blog/335788>
+
+linux c——dup( )和dup2( )函数详解 <https://blog.csdn.net/tiandc/article/details/81489447>
+
+Linux pipe详解 <https://blog.csdn.net/acs713/article/details/27500663>
+
