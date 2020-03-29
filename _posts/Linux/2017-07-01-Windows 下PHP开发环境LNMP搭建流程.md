@@ -190,25 +190,25 @@ move到当前目录前：
 
 如图：
     
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciEKvw5J4b)
+![]({{site.baseurl}}/images/20200329/20200329191558.jpg)
 
 进入swoole目录：cd swoole-src-1.9.9
 
 给php添加动态拓展：phpize
     
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7ciF5hDFcbe)
+![]({{site.baseurl}}/images/20200329/20200329191559.jpg)
 
 源码安装前，配置： 
 
 > ./configure
  
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciFwjVmU38)
+![]({{site.baseurl}}/images/20200329/20200329191560.jpg)
 
 编译，并安装：
 
 > make && make install  
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7ciFMAfh59f)
+![]({{site.baseurl}}/images/20200329/20200329191561.jpg)
 
 到/etc/php.d/下： 
 
@@ -222,7 +222,7 @@ move到当前目录前：
 
 > echo 'extension=swoole.so' > swoole.ini
     
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciGA19Gzeb)
+![]({{site.baseurl}}/images/20200329/20200329191562.jpg)
 
 至此：swoole安装完成。
     
@@ -236,7 +236,7 @@ vim编辑配置文件：
 
 > vim /etc/yum.repos.d/nginx.repo
             
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7ciHbQWRM1e)
+![]({{site.baseurl}}/images/20200329/20200329191563.jpg)
 
 写入并保存：
 
@@ -248,19 +248,19 @@ gpgcheck=0
 enabled=1
 ```
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7ciHkq6gyaa)
+![]({{site.baseurl}}/images/20200329/20200329191564.jpg)
 
 安装操作： 
 
 > yum -y install nginx
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciIdDFwY38)
+![]({{site.baseurl}}/images/20200329/20200329191565.jpg)
 
 启动nginx服务器： 
 
 > /etc/init.d/nginx start
       
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7ciRhRB2G82)
+![]({{site.baseurl}}/images/20200329/20200329191566.jpg)
 
 至此，nginx安装完成。
  
@@ -278,7 +278,7 @@ enabled=1
 
 > rpm -Uvh mysql57-community-release-el6-11.noarch.rpm
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7ciIJFwmy7e)
+![]({{site.baseurl}}/images/20200329/20200329191567.jpg)
 
 创建配置文件： 
 
@@ -292,7 +292,7 @@ enabled=1
 
 > vi /etc/yum.repos.d/mysql-community.repo
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7ciJqMG0sc4)
+![]({{site.baseurl}}/images/20200329/20200329191568.jpg)
 
 写入下面源码并保存：
 
@@ -307,7 +307,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
 ```
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7ciJuEXko5c)
+![]({{site.baseurl}}/images/20200329/20200329191569.jpg)
 
 查看仓库列表中的mysql： 
 
@@ -317,31 +317,31 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
 
 > yum install mysql-community-server 
             
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7ciK50Sj587)
+![]({{site.baseurl}}/images/20200329/20200329191570.jpg)
 
 一路确定：y
  
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciNNpcN5bb)
+![]({{site.baseurl}}/images/20200329/20200329191571.jpg)
 
 mysql安装完成，我们启动它：
 
 > /etc/init.d/mysqld start
  
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7ciO2zUjxe3)
+![]({{site.baseurl}}/images/20200329/20200329191572.jpg)
 
 MySQL安全配置向导：  
 
 > mysql_secure_installation
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7ciOsHN6V19)
+![]({{site.baseurl}}/images/20200329/20200329191573.jpg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7ciOxp2oL8f)
+![]({{site.baseurl}}/images/20200329/20200329191574.jpg)
 
 进入MySQL管理界面： 
 
 > mysql -uroot -p
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7ciOX9MaN05)
+![]({{site.baseurl}}/images/20200329/20200329191575.jpg)
 
 选定mysql表：
 
@@ -355,7 +355,7 @@ MySQL安全配置向导：
 
 > quit;
             
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7ciPjkxRw2a)
+![]({{site.baseurl}}/images/20200329/20200329191576.jpg)
 
 至此，MySQL的所有安装和配置都完成了。
 
