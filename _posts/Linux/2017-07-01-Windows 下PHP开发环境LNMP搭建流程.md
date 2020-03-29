@@ -15,37 +15,37 @@ meta: Windows 下PHP开发环境LNMP搭建流程
 
 首先，我们要安装VirtualBox和vagrant，这两个软件：
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7cirVCyx60c)
+![]({{site.baseurl}}/images/20200329/20200329191533.png)
 
 VirtualBox 是一款开源虚拟机软件；Vagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。 
 
 我们要选择我们的虚拟化开发环境位置，因为已经在本地安装过一个虚拟开发环境了，所以这次安装第二个虚拟化开发环境。我们选择在D:/vagrant2下。我们要把将要安装的Linux包放在这个目录下，我这次用的box包是vagrant-centos-6.7.box，把它copy到D:/vagrant2/box下并重命名一下，如图：
     
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7cisZWm7E32)
+![]({{site.baseurl}}/images/20200329/20200329191534.png)
 
 接下来，我们按下win+R打开运行窗口，输入cmd调出命令行窗口：
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7cis6w7ppa3)
+![]({{site.baseurl}}/images/20200329/20200329191535.png)
 
 我们cd到D:/vagrant2下：
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7cit9PW4Peb)
+![]({{site.baseurl}}/images/20200329/20200329191536.png)
 
 用box add命令添加运行环境：
 
 > vagrant box add centos67 box/centos67.box
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7citiL7csa8)
+![]({{site.baseurl}}/images/20200329/20200329191537.png)
 
 用init初始化：
 
 > vagrant init
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7citDdeDka6)
+![]({{site.baseurl}}/images/20200329/20200329191538.png)
 
 初始化后，我们会在D:/vagrant2下看到新增了一个文件Vagrantfile：
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciutPSTS58)
+![]({{site.baseurl}}/images/20200329/20200329191539.png)
 
 我们需要修改这个配置文件，像这样：
 
@@ -66,25 +66,25 @@ config.vm.box = "centos67"
   end
 ```
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7ciuWCpeB1d)
+![]({{site.baseurl}}/images/20200329/20200329191540.png)
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciuZVve3ab)
+![]({{site.baseurl}}/images/20200329/20200329191541.png)
 
 接着用up启动：
 
 > vagrant up
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7civ8VqrW84)
+![]({{site.baseurl}}/images/20200329/20200329191543.png)
 
 我们会在D:/vagrant2下看到新增了文件：
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7civhNWtR4b)
+![]({{site.baseurl}}/images/20200329/20200329191544.png)
 
 现在，我们的Linux已经安装好了，并且已经成功启动。
 
 附带一句，我们可以用-help查看可用命令，用 box list命令可以查看有几个虚拟运行环境：
     
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7citZ8NFs3e)
+![]({{site.baseurl}}/images/20200329/20200329191542.png)
 
 与Linux交流信息，比如安装php、nginx、mysql等，我们需要通过shell工具，我这里用的是putty：
    
