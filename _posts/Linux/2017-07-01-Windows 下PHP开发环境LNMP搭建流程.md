@@ -88,11 +88,11 @@ config.vm.box = "centos67"
 
 与Linux交流信息，比如安装php、nginx、mysql等，我们需要通过shell工具，我这里用的是putty：
    
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7ciwg2Ewme6)
+![]({{site.baseurl}}/images/20200329/20200329191545.jpg)
 
 双击运行，进行连接配置，ip为127.0.0.1，端口是2222，用户名为vagrant。保存配置为vagrant2：
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7ciwrz2wJ0d)
+![]({{site.baseurl}}/images/20200329/20200329191546.jpg)
 
 点击open连接，输入密码：
 
@@ -108,7 +108,7 @@ config.vm.box = "centos67"
 
 ；如图：
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciwPLhRC78)
+![]({{site.baseurl}}/images/20200329/20200329191547.jpg)
 
 #### 安装PHP：
 
@@ -130,21 +130,21 @@ config.vm.box = "centos67"
 
 如图：
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7ciypAiMyba)
+![]({{site.baseurl}}/images/20200329/20200329191548.jpg)
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7ciyuNsFu14)
+![]({{site.baseurl}}/images/20200329/20200329191549.jpg)
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7cizCCqHf31)
+![]({{site.baseurl}}/images/20200329/20200329191550.jpg)
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7cizQFJMJ99)
+![]({{site.baseurl}}/images/20200329/20200329191551.jpg)
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7ciA8l34W16)
+![]({{site.baseurl}}/images/20200329/20200329191552.jpg)
 
 启动php服务：
 
 > /etc/init.d/php-fpm start
  
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7ciRsVlvNdf)
+![]({{site.baseurl}}/images/20200329/20200329191553.jpg)
 
 至此，php安装为完成。
 
@@ -154,7 +154,7 @@ config.vm.box = "centos67"
 
 > yum install zip
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7ciBBcuU6de)
+![]({{site.baseurl}}/images/20200329/20200329191554.jpg)
 
 #### 安装unzip
 
@@ -162,7 +162,7 @@ config.vm.box = "centos67"
 
 > yum install unzip
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7ciByyovred)
+![]({{site.baseurl}}/images/20200329/20200329191555.jpg)
 
 #### 安装vim
 
@@ -170,9 +170,9 @@ config.vm.box = "centos67"
 
 > yum install vim
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7ciBKJc5sda)
+![]({{site.baseurl}}/images/20200329/20200329191556.jpg)
 
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7ciBMRVZB07)
+![]({{site.baseurl}}/images/20200329/20200329191557.jpg)
 
 #### 安装Swoole拓展：
 
