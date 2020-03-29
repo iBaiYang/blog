@@ -371,7 +371,7 @@ MySQL安全配置向导：
 
 > vi default.conf
             
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7ciQQe0ff81)
+![]({{site.baseurl}}/images/20200329/20200329191577.jpg)
 
 接着写入配置并保存：
  
@@ -422,43 +422,43 @@ server {
 
 如图：
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciQMwLKH0b)
+![]({{site.baseurl}}/images/20200329/20200329191578.jpg)
 
 或者，只在default.conf中最下面加一行：include /var/www/vhost/*.conf;
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7gXn3gDZv11)
+![]({{site.baseurl}}/images/20200329/20200329191579.jpg)
 
 然后，在D:\www\vhost目录下新建后缀名为conf的文件，这样以后就可以在window窗口中管理站点配置文件了：
  
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7gXnaCbor67)
+![]({{site.baseurl}}/images/20200329/20200329191580.jpg)
 
 在相应文件中写入配置：
         
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7gXnzfIeMdc)
+![]({{site.baseurl}}/images/20200329/20200329191581.jpg)
 
 为了对比学习，可以看下yii2的配置：
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7gXnMJ6468e)
+![]({{site.baseurl}}/images/20200329/20200329191582.jpg)
 
 生成该站点操作日志目录：
 
 > mkdir /var/www/test/logs
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7ciR8OjBT49)
+![]({{site.baseurl}}/images/20200329/20200329191583.jpg)
 
 到windows的安装目录下的修改hosts文件，如C:\Windows\System32\drivers\etc下
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7ciRL6Mhza1)
+![]({{site.baseurl}}/images/20200329/20200329191584.jpg)
 
 点击打开后添加一行：
  
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7ciRWG2wx19)
+![]({{site.baseurl}}/images/20200329/20200329191585.jpg)
 
 重启nginx服务器： 
 
 > /etc/init.d/nginx restart
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7ciRm8dDQda)
+![]({{site.baseurl}}/images/20200329/20200329191586.jpg)
 
 至此，站点配置完成。
   
@@ -466,19 +466,19 @@ server {
 
 > ps aux
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciS3J1WMc8)
+![]({{site.baseurl}}/images/20200329/20200329191587.jpg)
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciS9eNNCa8)
+![]({{site.baseurl}}/images/20200329/20200329191588.jpg)
 
 全部启动了。
 
 如果D:\www\test\index.php中写入的内容如下：
  
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciSEoO034b)
+![]({{site.baseurl}}/images/20200329/20200329191589.jpg)
 
 我们访问一下test.host，访问内容如图：
  
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7ciSGYv4L23)
+![]({{site.baseurl}}/images/20200329/20200329191590.jpg)
 
 说明，该虚拟开发环境正常。接下来就是我们大展身手进行项目开发的操作了。
 
@@ -486,7 +486,7 @@ server {
 
 1、 exit退出root账户：
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7ciT1Zsn8d2)
+![]({{site.baseurl}}/images/20200329/20200329191591.jpg)
 
 windows命令行中
 
@@ -494,23 +494,23 @@ windows命令行中
 
 停止vagrant服务：
  
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ciTg2G9268)
+![]({{site.baseurl}}/images/20200329/20200329191592.jpg)
 
 2、每日启动vagrant服务用vagrant up，不过要进入到相应的虚拟开发环境目录下：
   
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7ciToO5Yy4e)
+![]({{site.baseurl}}/images/20200329/20200329191593.jpg)
 
 别忘了在putty中用ps aux查看LNMP服务是否全部启动（请用root账户——sudo su），如果有未启动的，请手动启动，如：
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7ciTFxTAvdb)
+![]({{site.baseurl}}/images/20200329/20200329191594.jpg)
 
 3、另外，如果发现页面样式修改后，预览时总是没有效果，这是nginx配置导致的。我们要修改nginx.conf的sendfile on为off，修改后别忘了nginx的restart：
   
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7gXpeZtTn75)
+![]({{site.baseurl}}/images/20200329/20200329191595.jpg)
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7gXpc22Tvc9)
+![]({{site.baseurl}}/images/20200329/20200329191596.jpg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7gXpdlKuhd5)
+![]({{site.baseurl}}/images/20200329/20200329191597.jpg)
 
 
 
