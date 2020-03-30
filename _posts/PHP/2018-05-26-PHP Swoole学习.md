@@ -96,7 +96,7 @@ $client->connect();
 
 调试看一下：
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7kRRvtSfx43)
+![](http://s4.sinaimg.cn/mw690/001XbchKzy7kRRvtSfx43&690)
 
 #### Swoole的异步任务Task
 
@@ -230,7 +230,7 @@ $cli->connect();
 
 调试看一下：
 
-![](http://s6.sinaimg.cn/orignal/001XbchKzy7kRRwb6Tzd5)
+![](http://s6.sinaimg.cn/orignal/001XbchKzy7kRRwb6Tzd5&690)
 
 
 #### 服务模式
