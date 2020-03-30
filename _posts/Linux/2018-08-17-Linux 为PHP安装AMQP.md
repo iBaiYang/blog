@@ -126,7 +126,7 @@ phpize化：
 
 > make && make install
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7nzANESTsd6&690)
+![]({{site.baseurl}}/images/20200330/20200330191560.jpeg)
 
 查看一下php.ini的位置：
  

@@ -41,7 +41,7 @@ win10下命令行到VirtualBox安装目录下，查看有哪些虚拟机：
 
 过程图：
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7oZdhpqnx03&690)
+![]({{site.baseurl}}/images/20200330/20200330191561.jpeg)
 
 然后 “以管理者身份运行” VirtualBox。
 
@@ -52,7 +52,7 @@ win10下命令行到VirtualBox安装目录下，查看有哪些虚拟机：
 
 再去ln试一下：
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7oZdhM2eca8&690)
+![]({{site.baseurl}}/images/20200330/20200330191562.jpeg)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
