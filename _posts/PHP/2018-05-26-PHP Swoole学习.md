@@ -11,7 +11,7 @@ meta: 想用php实现一个聊天功能，怎么做呢？js定时每秒获取一
 
 #### swoole进程模型
 
-![]({{site.baseurl}}/images/20200329/20200329191532.png)
+![]({{site.baseurl}}/images/20200330/20200330191533.jpeg)
 
 #### 基于swoole的echo服务器
 
