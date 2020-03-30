@@ -118,7 +118,7 @@ wrapHandlingUserInput      resource://gre/modules/E10SUtils.jsm:326:7
 
 一不小心强迫症犯了，上面把所有可见的调试信息都打了出来，方便加深理解。
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7mKlUUlJfe9&690)
+![]({{site.baseurl}}/images/20200330/20200330191538.jpeg)
 
 
 既然提到了__FILE__ ， 也打印出来看一下：

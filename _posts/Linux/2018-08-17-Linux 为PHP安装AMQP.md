@@ -146,49 +146,49 @@ phpize化：
 
 rabbitmq-c：
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7mU02WAG511&690)
+![]({{site.baseurl}}/images/20200330/20200330191539.jpeg)
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7mU031rvI42&690)
+![]({{site.baseurl}}/images/20200330/20200330191540.jpeg)
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7mU03lP7E2e&690)
+![]({{site.baseurl}}/images/20200330/20200330191541.jpeg)
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7mU03bDAs48&690)
+![]({{site.baseurl}}/images/20200330/20200330191542.jpeg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7mU03JdDN9f&690)
+![]({{site.baseurl}}/images/20200330/20200330191548.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7mU03MXrW60&690)
+![]({{site.baseurl}}/images/20200330/20200330191549.jpeg)
 
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7nzoBcpkr87&690)
+![]({{site.baseurl}}/images/20200330/20200330191550.jpeg)
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7nzuI38UR0d&690)
+![]({{site.baseurl}}/images/20200330/20200330191551.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7nzuJby4Ja5&690)
+![]({{site.baseurl}}/images/20200330/20200330191552.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7nzuJBdXfb5&690)
+![]({{site.baseurl}}/images/20200330/20200330191553.jpeg)
 
 amqp：
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7mU03fmZkea&690)
+![]({{site.baseurl}}/images/20200330/20200330191543.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7mU03zpRP85&690)
+![]({{site.baseurl}}/images/20200330/20200330191544.jpeg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7mU03tBzp6f&690)
+![]({{site.baseurl}}/images/20200330/20200330191545.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7mU03wmycd0&690)
+![]({{site.baseurl}}/images/20200330/20200330191546.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7mU03PpoV05&690)
+![]({{site.baseurl}}/images/20200330/20200330191547.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7nzxCDirC40&690)
+![]({{site.baseurl}}/images/20200330/20200330191554.jpeg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7nzxD0Vbh2f&690)
+![]({{site.baseurl}}/images/20200330/20200330191555.jpeg)
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7nzxDzUj2f4&690)
+![]({{site.baseurl}}/images/20200330/20200330191556.jpeg)
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7nzxEIPfsca&690)
+![]({{site.baseurl}}/images/20200330/20200330191557.jpeg)
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7nzyV9FBF0b&690)
+![]({{site.baseurl}}/images/20200330/20200330191558.jpeg)
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7nzyVNV5T59&690)
+![]({{site.baseurl}}/images/20200330/20200330191559.jpeg)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
