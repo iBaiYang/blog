@@ -152,7 +152,7 @@ rabbitmq-c：
 
 ![](http://s15.sinaimg.cn/mw690/001XbchKzy7mU03lP7E2e&690)
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7mU03bDAs48&690)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7mU03bDAs48&690)
 
 ![](http://s16.sinaimg.cn/mw690/001XbchKzy7mU03JdDN9f&690)
 

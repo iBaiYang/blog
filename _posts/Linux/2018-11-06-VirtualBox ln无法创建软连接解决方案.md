@@ -52,7 +52,7 @@ win10下命令行到VirtualBox安装目录下，查看有哪些虚拟机：
 
 再去ln试一下：
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7oZdhM2eca8&690)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7oZdhM2eca8&690)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料

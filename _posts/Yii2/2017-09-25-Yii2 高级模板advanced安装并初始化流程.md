@@ -117,7 +117,7 @@ server {
 
 > php yii migrate
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7ewd4uhra88)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7ewd4uhra88)
 
 
 

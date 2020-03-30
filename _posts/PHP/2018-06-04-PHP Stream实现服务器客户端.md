@@ -92,7 +92,7 @@ if ( isset($argv[1]) ) {
 
 缩略图：
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7kZxJHsPm78)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7kZxJHsPm78)
 
 ```
 CLIENT-4|| start：0

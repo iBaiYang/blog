@@ -25,7 +25,7 @@ v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c
 
 关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7fFrCTMkEc8)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7fFrCTMkEc8)
 
 请求Cookie中：
 

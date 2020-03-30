@@ -108,7 +108,7 @@ $(function(){
 
 > $("ul li").remove("li[title!=菠萝]");  // 把li元素中属性title不等于"菠萝"的li元素删除 
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7h8TTtCUU88)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7h8TTtCUU88)
 
 > $("ul li:eq(1)").empty(); // 找到第二个li元素节点后，清空此元素里的内容 
 
@@ -296,7 +296,7 @@ $(function(){
 
 ![](http://s13.sinaimg.cn/mw690/001XbchKzy7h8WyVIIs0c)
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7h8Wx5anC08)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7h8Wx5anC08)
 
 ![](http://s5.sinaimg.cn/mw690/001XbchKzy7h8WECQ3W54)
 
@@ -380,7 +380,7 @@ $(function(){
 </html>
 ```
 
-![](http://s9.sinaimg.cn/mw690/001XbchKzy7haa3eeik28)
+![](http://s9.sinaimg.cn/orignal/001XbchKzy7haa3eeik28)
 
 ![](http://s6.sinaimg.cn/mw690/001XbchKzy7haabgyKpb5)
 
