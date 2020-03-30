@@ -9,6 +9,8 @@ meta: Yii2 详说auth_key的用途
 
 ### 正文
 
+<http://blog.sina.com.cn/s/blog_6aba78b40102x6vw.html>
+
 当我们用yii2开始项目时，在migrate初始生成user表时，会看到里面有一个auth_key字段，这个字段是做什么用的呢？查阅好多资料后，还是云里雾里，莫名其妙，不知所从。其实这个字段是用来用cookie自动登录验证的，这样即使session丢失了，只要cookie信息还存在，那么就可以用cookie中的相关信息完成自动登录并写入session。
 
 这里有详细的解说过程，可以看看：<http://www.yii-china.com/post/detail/323.html>

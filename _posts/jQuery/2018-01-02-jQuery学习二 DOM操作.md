@@ -9,6 +9,8 @@ meta: DOM （文档对象模型(Document Object Model)）。
 
 ### 正文
 
+<http://blog.sina.com.cn/s/blog_6aba78b40102xafy.html>
+
 #### 第三章：jQuery中的DOM操作
 
 DOM （文档对象模型(Document Object Model)）。

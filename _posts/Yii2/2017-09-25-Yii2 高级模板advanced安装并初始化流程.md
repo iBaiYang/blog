@@ -9,6 +9,8 @@ meta: Yii2 高级模板advanced安装并初始化流程
 
 ### 正文
 
+<http://blog.sina.com.cn/s/blog_6aba78b40102x55u.html>
+
 下面流程：
 
 先安装yii2包，有多种方式，或composer、或归档文件等。这里举一下composer的例子：
