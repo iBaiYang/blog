@@ -14,13 +14,28 @@ AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应
 
 我们这里环境是CentOS，看一下安装过程。
 
+#### apt 安装
+
+> sudo apt-get install php7.1-amqp
+
+然后在php.ini配置文件中加入一行：
+```
+extension=amqp.so
+```
+
+这样就完成了amqp拓展的安装。
+
+下面看下比较复杂的编译安装流程。
+
+#### 编译安装
+
 两个包：
 
 1.rabbitmq-c的包
  
 2.amqp的包
 
-#### 安装rabbitmq-c
+##### 安装rabbitmq-c
 
 php的amqp依赖rabbitmq-c，所以需要先安装rabbitmq-c。
 
@@ -85,7 +100,7 @@ cmake --build . --target install
 > ln -s lib64 lib
 
 
-#### 安装amqp
+##### 安装amqp
 
 我们先要访问[http://pecl.php.net/package/amqp](http://pecl.php.net/package/amqp)，看看最新的稳定版本是哪一个。
 记下来。比如：amqp-1.9.3.tgz。
@@ -142,7 +157,7 @@ phpize化：
 
 完成。
 
-### 截图
+##### 截图
 
 rabbitmq-c：
 
