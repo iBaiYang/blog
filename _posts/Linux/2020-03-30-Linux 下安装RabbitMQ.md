@@ -91,7 +91,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 ![]({{site.baseurl}}/images/20200330/20200330190203.png)
 
-现在,就可以通过http://localhost:15672访问web管理页面，使用 guest,guest 进行登陆了：
+现在,就可以通过 http://localhost:15672 访问web管理页面，使用 guest,guest 进行登陆了：
 
 ![]({{site.baseurl}}/images/20200330/20200330190553.png)
 
@@ -122,6 +122,33 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 ![]({{site.baseurl}}/images/20200330/20200330194512.png)
 
 现在可以在项目代码中使用这个用户连接RabbitMQ写入数据或消费队列数据了。
+
+#### 项目准备
+
+现在RabbitMQ队列服务器好了，但项目代码使用我们还需要做一些准备工作，不然项目投递过来的数据到不了队列中。
+
+在web端管理页面，我们需要新建 Exchanges ,如 async：
+```
+Name:          async
+Type:          direct
+Durability:    Durable
+```
+
+然后在 Queues 中新建队列，如 queue_mail ：
+```
+Name:           queue_mail
+Durability:     Durable
+Auto delete:    No
+```
+
+然后把 队列 queue_mail 与 Exchanges的async 通过 Routing 绑定起来：
+```
+From exchange:      async
+Routing key:        mail
+TO queue:           queue_mail
+```
+
+现在我们项目中就可以给 async 的 mail 投送数据了，数据会自动保存在 queue_mail 队列中。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
