@@ -29,22 +29,33 @@ meta: 记录一下 Linux 下安装安装Composer流程
 
 （从这里可以看到，我把composer安装到了/home目录下。里面有多次错误示范，可以注意辨别学习。）
 
-```
+现在安装好了，不过使用是必须如下命令：
+
+> php composer.phar install
+
+install、update 等等，不方便，我们要把composer命令加入环境变量：
+
 > vim /etc/profile
-
-> cp composer.phar /usr/bin/composer
-
-> mv composer.phar /usr/local/bin/composer
-
-> composer config -g repo.packagist composer https://packagist.phpcomposer.com
-
-> composer --version
- ```
 
 vim 修改/etc/profile文件的内容，以设置环境变量（在文件最后加上下面这句，这样就可以用shell调用composer了）：
 ```
 export PATH="$PATH:/home/composer"
 ```
+
+移动到环境搜索目录下：
+
+> cp composer.phar /usr/bin/composer
+
+> mv composer.phar /usr/local/bin/composer
+
+设置包源：
+
+> composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+查看版本：
+
+> composer --version
+
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191114/20191114105457.jpeg)
 
