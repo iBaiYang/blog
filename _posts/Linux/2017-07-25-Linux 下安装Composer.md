@@ -48,7 +48,32 @@ export PATH="$PATH:/home/composer"
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191114/20191114105457.jpeg)
 
+#### 其他问题
 
+在安装过程中，可能会碰到这个错误提示：
+
+```
+The phar extension is missing.
+Install it or recompile php without --disable-phar
+```
+
+phar拓展缺失。我们要给php安装这个拓展：
+
+> sudo apt install php7.1-phar
+
+修改php.ini文件：
+
+> sudo find / -name php.ini
+
+> sudo vim /etc/php/7.1/cli/php.ini 
+
+加入一行：
+
+```
+extension=phar.so 
+```
+
+然后就可以了。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
