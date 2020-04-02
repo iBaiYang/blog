@@ -75,7 +75,9 @@ systemd系统操作如下 -->
 
 保存 repository definition 到 /etc/apt/sources.list.d/elastic-7.x.list 中：
 
-> echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+```
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+```
 
 安装 Elasticsearch Debian 包：
 
