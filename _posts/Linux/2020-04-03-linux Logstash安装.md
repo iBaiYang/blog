@@ -166,15 +166,16 @@ logstash.conf
 input {
     rabbitmq {
         exclusive => false
-        host => '172-16-56-23'
+        host => '172.16.5.101'
         user => 'mquser'
         password => 'ABCabc123'
         vhost => '/'
         ack => false
         prefetct_count => 50
-        auto_delete => true
+        auto_delete => flase
+        durable => true
         exchange => 'exname'
-        key => 'log_routing'
+        key => 'logs_routing'
         queue => 'logs'
         threads => 2
     }
