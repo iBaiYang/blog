@@ -43,6 +43,12 @@ meta: linux kafka安装
 
 > bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
+消费logstash中的队列数据：
+
+> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash --from-beginning
+
+可以实时看到数据内容。
+
 #### 停止服务
 
 停止ZooKeeper服务：
