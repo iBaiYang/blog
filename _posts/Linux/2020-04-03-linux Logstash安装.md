@@ -47,7 +47,7 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee 
 
 > sudo apt-get update && sudo apt-get install logstash
 
-apt安装这个很费劲，还是手动下载软件包安装吧。
+apt安装这个很费劲，网速极差，还是手动下载软件包安装吧。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
