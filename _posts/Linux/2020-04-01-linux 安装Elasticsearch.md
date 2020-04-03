@@ -242,3 +242,5 @@ ubuntu 安装 ES (ElasticSearch) <https://blog.csdn.net/weixin_44596128/article/
 
 Elasticsearch教程（一），全程直播（小白级别） <https://www.sojson.com/blog/81.html>
 
+es安装和应用 <https://www.jianshu.com/p/c596caf31688?from=singlemessage>
+

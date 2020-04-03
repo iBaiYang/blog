@@ -75,16 +75,86 @@ logstash.conf
 ```
 input {
     kafka {
-        bootstrap_servers => "localhost:9092",
-        topics => ["logstash"],
+        bootstrap_servers => "localhost:9092"
+        topics => ["logstash"]
         codec => "json"
+    }
+}
+output {
+    elasticsearch {
+        hosts => ["http://127.0.0.1:9200"]
+        index => "%{indexname}-%{+YYYY.MM.dd}"
+    }
+}
+```
+
+运行：
+
+> cd /usr/local/src
+
+> ./bin/logstash -f logstash.conf
+
+数据就会从kafka到elasticsearch中了，%{indexname}就是数据源中的 "indexname":"demo_logs_dev" ，生成的Es数据如下：
+```
+{
+  "_index": "demo_logs_dev-2020.04.03",
+  "_type": "_doc",
+  "_id": "9nEWQHEBzd1pqLGtXylI",
+  "_version": 1,
+  "_score": 0,
+  "_source": {
+    "ip_address": "127.0.0.1",
+    "@timestamp": "2020-04-03T12:49:00.093Z",
+    "msg": "Rendering view file: /var/www/pear-adminlte/backend/views/user/users-page.php",
+    "step": 7,
+    "@version": "1",
+    "time": "2020-04-03 20:49:00",
+    "indexname": "demo_logs_dev",
+    "category": "yii\\base\\View::renderFile",
+    "level": "trace",
+    "log_id": "5e8730bc014ec405091"
+  },
+  "fields": {
+    "@timestamp": [
+      "2020-04-03T12:49:00.093Z"
+    ]
+  }
+}
+```
+
+说一个碰到的问题，期间调试了半天，发现每个属性最后居然不能加','分隔相邻变量。这个语法看起来虽然像json，但不是json。
+
+看个kafka源复杂点的：
+```
+input {
+    kafka {
+        bootstrap_servers => ["192.168.40.001:9092,192.168.40.002:9092,192.168.40.003:9092"]
+        client_id => "test"
+        group_id => "test"
+        #auto_offset_reset => "latest"
+        consumer_threads => 6
+        #decorate_events => true
+        topics => ["logstash"]
+        codec => json
     }
 }
 
 output {
-    elasticsearch {
-        hosts => ["http://localhost:9200"]
-        index => "demo_logs_dev-%{+YYYY.MM.dd}"
+    if [indexname] =~ "demo_log*" {
+        elasticsearch {
+            hosts => ["192.168.40.101:9200"]
+            index => "%{indexname}-%{+YYYY.MM.dd}"
+        }
+        elasticsearch {
+            hosts => ["192.168.40.102:9200"]
+            index => "%{indexname}-%{+YYYY.MM.dd}"
+        }
+    }
+    if [indexname] !~ "demo_log*" {
+        elasticsearch {
+            hosts => ["192.168.76.103:9200"]
+            index => "%{indexname}-%{+YYYY.MM}"
+        }
     }
 }
 ```
@@ -95,35 +165,28 @@ logstash.conf
 ```
 input {
     rabbitmq {
-        exclusive => false,
-        host => '172-16-56-23',
-        user => 'mquser',
-        password => 'ABCabc123',
-        vhost => '/',
-        ack => false,
-        prefetct_count => 50,
-        auto_delete => true,
-        exchange => 'exname'.
-        key => 'log_routing',
-        queue => 'logs',
+        exclusive => false
+        host => '172-16-56-23'
+        user => 'mquser'
+        password => 'ABCabc123'
+        vhost => '/'
+        ack => false
+        prefetct_count => 50
+        auto_delete => true
+        exchange => 'exname'
+        key => 'log_routing'
+        queue => 'logs'
         threads => 2
     }
 }
 
 output {
     elasticsearch {
-        hosts => ["http://localhost:9200"]
-        index => "demo_logs_dev-%{+YYYY.MM.dd}"
+        hosts => ["http://127.0.0.1:9200"]
+        index => "%{indexname}-%{+YYYY.MM.dd}"
     }
 }
 ```
-
-
-运行：
-
-> cd /usr/local/src
-
-> ./bin/logstash -f logstash.conf
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -137,3 +200,5 @@ Yii2 错误计入日志可查询方案学习 <https://ibaiyang.github.io/blog/yi
 Yii2 kafka使用 <https://ibaiyang.github.io/blog/yii2/2018/08/09/Yii2-kafka%E4%BD%BF%E7%94%A8.html>
 
 使用Logstash将Kafka中的数据导入到ElasticSearch <https://www.jianshu.com/p/166af5b76435>
+
+Structure of a Config File <https://www.elastic.co/guide/en/logstash/current/configuration-file-structure.html>
