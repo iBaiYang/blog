@@ -49,6 +49,12 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee 
 
 apt安装这个很费劲，网速极差，还是手动下载软件包安装吧。
 
+#### 具体使用
+
+Logstash是数据源与目的库之间的中间服务，如从RabbitMQ/kafka等队列服务中获取数据，然后保存到Es库中。
+
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -56,6 +62,6 @@ Download Logstash <https://www.elastic.co/cn/downloads/logstash>
 
 Installing Logstash <https://www.elastic.co/guide/en/logstash/current/installing-logstash.html>
 
+Yii2 错误计入日志可查询方案学习 <https://ibaiyang.github.io/blog/yii2/2018/01/24/Yii2-%E9%94%99%E8%AF%AF%E8%AE%A1%E5%85%A5%E6%97%A5%E5%BF%97%E5%8F%AF%E6%9F%A5%E8%AF%A2%E6%96%B9%E6%A1%88%E5%AD%A6%E4%B9%A0.html> 
 
-
-
+Yii2 kafka使用 <https://ibaiyang.github.io/blog/yii2/2018/08/09/Yii2-kafka%E4%BD%BF%E7%94%A8.html>
