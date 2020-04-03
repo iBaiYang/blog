@@ -174,8 +174,6 @@ http://127.0.0.1:5601/app/kibana#/home/tutorial_directory/sampleData
 
 建议安装 Version: 5.2.2 版本，越新版越难用。
 
-#### 安装Logstash
-
 
 
 <br/><br/><br/><br/><br/>
