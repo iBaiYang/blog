@@ -19,9 +19,23 @@ meta: linux 安装redis服务
 
 > redis-server
 
+```
+22708:C 03 Apr 11:30:21.826 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+22708:M 03 Apr 11:30:21.827 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+22708:M 03 Apr 11:30:21.827 # Creating Server TCP listening socket *:6379: bind: Address already in use
+```
+
 查看 redis 是否启动：
 
 > redis-cli
+
+查看版本：
+
+> redis-server -v
+
+```
+Redis server v=3.2.6 sha=00000000:0 malloc=jemalloc-3.6.0 bits=64 build=c9ca860b301a190d
+```
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
