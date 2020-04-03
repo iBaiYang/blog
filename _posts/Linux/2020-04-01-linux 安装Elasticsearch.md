@@ -174,7 +174,46 @@ http://127.0.0.1:5601/app/kibana#/home/tutorial_directory/sampleData
 
 建议安装 Version: 5.2.2 版本，越新版越难用。
 
+#### 具体使用
 
+命令行下curl请求：
+```
+curl -XPUT '127.0.0.1:9200/demo_logs_dev_2020.04.03/2/AXE_baZOxB5-91nMXmB1?pretty'  
+-H 'content-Type:application/json'  
+-d '{"log_id":"5e86e67015791405619","indexname":"demo_logs_dev","time":"2020-04-03 15:32:00",
+"category":"yii\\base\\View::renderFile","level":"trace","step":7,"ip_address":"127.0.0.1",
+"msg":"Rendering view file: \/var\/www\/pear-adminlte\/backend\/views\/user\/users-lists.php"}'
+```
+
+返回：
+```
+{
+  "_index" : "demo_logs_dev_2020.04.03",
+  "_type" : "2",
+  "_id" : "AXE_baZOxB5-91nMXmB1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+```
+
+Kibana页面创建Index patterns：
+
+![]({{site.baseurl}}/images/20200403/20200403183339.png)
+
+![]({{site.baseurl}}/images/20200403/20200403183434.png)
+
+![]({{site.baseurl}}/images/20200403/20200403183458.png)
+
+然后就可以看到刚才添加那条数据了：
+
+![]({{site.baseurl}}/images/20200403/20200403183656.png)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
