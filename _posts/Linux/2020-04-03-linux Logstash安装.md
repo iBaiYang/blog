@@ -195,6 +195,8 @@ Download Logstash <https://www.elastic.co/cn/downloads/logstash>
 
 Installing Logstash <https://www.elastic.co/guide/en/logstash/current/installing-logstash.html>
 
+logstash使用相关 <{{ site.baseurl }}/linux/2019/03/11/logstash%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%85%B3.html>
+
 Yii2 错误计入日志可查询方案学习 <https://ibaiyang.github.io/blog/yii2/2018/01/24/Yii2-%E9%94%99%E8%AF%AF%E8%AE%A1%E5%85%A5%E6%97%A5%E5%BF%97%E5%8F%AF%E6%9F%A5%E8%AF%A2%E6%96%B9%E6%A1%88%E5%AD%A6%E4%B9%A0.html> 
 
 Yii2 kafka使用 <https://ibaiyang.github.io/blog/yii2/2018/08/09/Yii2-kafka%E4%BD%BF%E7%94%A8.html>
