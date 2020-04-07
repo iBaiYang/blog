@@ -51,13 +51,13 @@ meta: linux kafka安装
 
 #### 停止服务
 
+停止Kafka服务：
+
+> sudo bin/kafka-server-stop.sh
+
 停止ZooKeeper服务：
 
 > sudo bin/zookeeper-server-stop.sh
-
-启动Kafka服务：
-
-> sudo bin/kafka-server-stop.sh
 
 #### 其他问题
 
