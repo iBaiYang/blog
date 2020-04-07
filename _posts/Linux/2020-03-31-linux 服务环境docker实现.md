@@ -36,7 +36,9 @@ meta: linux 服务环境docker实现
 
 发现列出了很长的一个列表，既有7.0，又有7.1，还有7.4。既然无法一个一个卸载，那就物理删除吧：
 
-> find / -name 'php7*'|xargs rm -rf
+```
+find / -name 'php7*'|xargs rm -rf
+```
 
 操作完成后，再搜索看一下：
 
