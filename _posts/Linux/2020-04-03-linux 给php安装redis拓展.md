@@ -70,7 +70,7 @@ W: APT had planned for dpkg to do more than it reported back (0 vs 4).
    Affected packages: php-redis:amd64
 ```
 
-搜索后说是包的问题，因为你的电脑是i386的，包确实amd64的，所以安装不上。
+搜索后说是包的问题，因为你的电脑是i386的，包却是amd64的，所以安装不上。
 
 看来需要编译安装了。
 
@@ -117,7 +117,9 @@ extension=redis.so
 
 再看一下就有了：
 
-> php -m | grep redis
+```
+php -m | grep redis
+```
 
 如果是php-fpm，需要重启服务：
 
