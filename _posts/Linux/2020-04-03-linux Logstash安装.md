@@ -21,8 +21,7 @@ meta: linux Logstash安装
 
 > sudo tar zxvf logstash-7.6.2.tar.gz
 
-准备logstash.conf ：
-
+准备logstash.conf，针对kafka、RabbitMQ等不同的队列服务有相应不同的配置，具体见下面的具体使用说明。
 
 运行：
 
