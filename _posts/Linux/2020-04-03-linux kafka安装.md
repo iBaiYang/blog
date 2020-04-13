@@ -9,7 +9,7 @@ meta: linux kafka安装
 
 ### 正文
 
-#### 编译安装
+#### 源码包安装
 
 在/usr/local/src目录下下载：
 
@@ -61,7 +61,7 @@ meta: linux kafka安装
 
 #### 其他问题
 
-启动启动ZooKeeper服务时发现报错了：
+启动ZooKeeper服务时发现报错了：
 ```
 [2020-04-03 14:56:53,228] INFO binding to port 0.0.0.0/0.0.0.0:2181 (org.apache.zookeeper.server.NIOServerCnxnFactory)
 [2020-04-03 14:56:53,229] ERROR Unexpected exception, exiting abnormally (org.apache.zookeeper.server.ZooKeeperServerMain)
