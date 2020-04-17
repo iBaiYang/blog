@@ -212,7 +212,6 @@ backend/controllers/SiteController中：
 ```
 
 这里user组件：
-
 ```
 'components' => [
     'user' => [
@@ -222,6 +221,14 @@ backend/controllers/SiteController中：
     ],
 ],   
 ```
+
+这里user组件还有一个属性在 yii\web\Application中：
+```
+'user' => ['class' => 'yii\web\User'],
+```
+
+yii\web\User 重点是用户行为相关的方法，如登录、登出、检查权限等； 
+identityClass 则是用户属性相关的方法集，如 AR操作、密码设置等。如果有其他要求，我们可以继承并拓展这两个类。
 
 common\models\Adminuser继承\yii\db\ActiveRecord，实现yii\web\IdentityInterface：
 
