@@ -34,17 +34,15 @@ v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c
 
 _csrf-backend详细： 
 ```
-
-```
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
+```
 
 响应Cookie中：
 
 _identity-backend的value详细：
 ```
-
-```
 bb2e3c9536c3fe6a1399519c4d43c3e7a0565fdeed79f33d95efbad9e1486781a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
+```
 
 这里既有advanced-backend、又有_csrf-backend、还有_identity-backend，是由于在配置文件backend/config/main.php中有：
 
