@@ -19,26 +19,31 @@ meta: Yii2 详说auth_key的用途
  
 我们看看cookie中发生了什么，后台login登录时，用F12可以查看：
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7fFrt8S98fe)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132763.jpeg)
 
 _csrf-backend详细： 
-
+```
 v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c9x2vyg==
+```
 
 关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7fFrCTMkEc8)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132764.jpeg)
 
 请求Cookie中：
 
 _csrf-backend详细： 
+```
 
+```
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
 
 响应Cookie中：
 
 _identity-backend的value详细：
+```
 
+```
 bb2e3c9536c3fe6a1399519c4d43c3e7a0565fdeed79f33d95efbad9e1486781a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
 
 这里既有advanced-backend、又有_csrf-backend、还有_identity-backend，是由于在配置文件backend/config/main.php中有：
@@ -79,43 +84,49 @@ cookie就是服务器辨识浏览器的标志，浏览器每一次访问服务�
 
 登录后，访问页面admin-user/index时：
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7fFoIxUVE4e)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132765.jpeg)
 
 响应Cookie中：
 
 _identity-backend的value详细：
-
+```
 bb2e3c9536c3fe6a1399519c4d43c3e7a0565fdeed79f33d95efbad9e1486781a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
+```
 
 请求Cookie中：
 
 _identity-backend详细： 
-
+```
 bb2e3c9536c3fe6a1399519c4d43c3e7a0565fdeed79f33d95efbad9e1486781a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
+```
 
 _csrf-backend详细：
-
+```
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
+```
 
 退出时：
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7fFszplib63)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132766.jpeg)
 
 _csrf-backend详细：
-
+```
 CuwhawBszNhDMPHaMKuybDNL1spYBVZl0jTvsCdMB9M-vXszSFz7ujpiwoUD3PM2cSSQ-wFGCTOze7rGES5svg==
+```
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7fFtO5DaZ5d)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132767.jpeg)
 
 请求Cookie中：
 
 _identity-backend详细： 
-
+```
 bb2e3c9536c3fe6a1399519c4d43c3e7a0565fdeed79f33d95efbad9e1486781a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
+```
 
 _csrf-backend详细：
-
+```
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
+```
 
 响应Cookie中：
 
@@ -123,19 +134,20 @@ _identity-backend做删除（deleted）操作。
 
 退出后，访问页面site/index时：
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7fFubquB553)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132768.jpeg)
 
 _csrf-backend详细：
-
+```
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
+```
 
 可以看到没有_identity-backend。
 
 紧接着再次登录：
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7fFuE3T1Zbf)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132769.jpeg)
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7fFuHIW9369)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132770.jpeg)
 
 注意对比上面的异同。
 
