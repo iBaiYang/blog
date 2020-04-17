@@ -934,104 +934,93 @@ $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
 backend\controllers\SiteController中：
 
 ```
-    /**
-     * Logout action.
-     *
-     * @return string
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
+/**
+ * Logout action.
+ *
+ * @return string
+ */
+public function actionLogout()
+{
+    Yii::$app->user->logout();
 
-        return $this->goHome();
-    }
+    return $this->goHome();
+}
 ```
 
 yii\web\User中：
 
 ```
-    /**
-     * Logs out the current user.
-     * This will remove authentication-related session data.
-     * If `$destroySession` is true, all session data will be removed.
-     * @param bool $destroySession whether to destroy the whole session. Defaults to true.
-     * This parameter is ignored if [[enableSession]] is false.
-     * @return bool whether the user is logged out
-     */
-    public function logout($destroySession = true)
-    {
-        $identity = $this->getIdentity();
-        if ($identity !== null && $this->beforeLogout($identity)) {
-            $this->switchIdentity(null);
-            $id = $identity->getId();
-            $ip = Yii::$app->getRequest()->getUserIP();
-            Yii::info("User '$id' logged out from $ip.", __METHOD__);
-            if ($destroySession && $this->enableSession) {
-                Yii::$app->getSession()->destroy();
-            }
-            $this->afterLogout($identity);
+/**
+ * Logs out the current user.
+ * This will remove authentication-related session data.
+ * If `$destroySession` is true, all session data will be removed.
+ * @param bool $destroySession whether to destroy the whole session. Defaults to true.
+ * This parameter is ignored if [[enableSession]] is false.
+ * @return bool whether the user is logged out
+ */
+public function logout($destroySession = true)
+{
+    $identity = $this->getIdentity();
+    if ($identity !== null && $this->beforeLogout($identity)) {
+        $this->switchIdentity(null);
+        $id = $identity->getId();
+        $ip = Yii::$app->getRequest()->getUserIP();
+        Yii::info("User '$id' logged out from $ip.", __METHOD__);
+        if ($destroySession && $this->enableSession) {
+            Yii::$app->getSession()->destroy();
         }
-
-        return $this->getIsGuest();
+        $this->afterLogout($identity);
     }
 
-    /**
-     * Switches to a new identity for the current user.
-     *
-     * When [[enableSession]] is true, this method may use session and/or cookie to store the user identity information,
-     * according to the value of `$duration`. Please refer to [[login()]] for more details.
-     *
-     * This method is mainly called by [[login()]], [[logout()]] and [[loginByCookie()]]
-     * when the current user needs to be associated with the corresponding identity information.
-     *
-     * @param IdentityInterface|null $identity the identity information to be associated with the current user.
-     * If null, it means switching the current user to be a guest.
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * This parameter is used only when `$identity` is not null.
-     */
-    public function switchIdentity($identity, $duration = 0)
-    {
-        $this->setIdentity($identity);
+    return $this->getIsGuest();
+}
 
-        if (!$this->enableSession) {
-            return;
-        }
+/**
+ * Switches to a new identity for the current user.
+ *
+public function switchIdentity($identity, $duration = 0)
+{
+    $this->setIdentity($identity);
 
-        /* Ensure any existing identity cookies are removed. */
-        if ($this->enableAutoLogin) {
-            $this->removeIdentityCookie();
-        }
-
-        $session = Yii::$app->getSession();
-        if (!YII_ENV_TEST) {
-            $session->regenerateID(true);
-        }
-        $session->remove($this->idParam);
-        $session->remove($this->authTimeoutParam);
-
-        if ($identity) {
-            $session->set($this->idParam, $identity->getId());
-            if ($this->authTimeout !== null) {
-                $session->set($this->authTimeoutParam, time() + $this->authTimeout);
-            }
-            if ($this->absoluteAuthTimeout !== null) {
-                $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
-            }
-            if ($duration > 0 && $this->enableAutoLogin) {
-                $this->sendIdentityCookie($identity, $duration);
-            }
-        }
+    if (!$this->enableSession) {
+        return;
     }
 
-    /**
-     * Removes the identity cookie.
-     * This method is used when [[enableAutoLogin]] is true.
-     * @since 2.0.9
-     */
-    protected function removeIdentityCookie()
-    {
-        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+    /* Ensure any existing identity cookies are removed. */
+    if ($this->enableAutoLogin) {
+        $this->removeIdentityCookie();
     }
+
+    $session = Yii::$app->getSession();
+    if (!YII_ENV_TEST) {
+        $session->regenerateID(true);
+    }
+    $session->remove($this->idParam);
+    $session->remove($this->authTimeoutParam);
+
+    if ($identity) {
+        $session->set($this->idParam, $identity->getId());
+        if ($this->authTimeout !== null) {
+            $session->set($this->authTimeoutParam, time() + $this->authTimeout);
+        }
+        if ($this->absoluteAuthTimeout !== null) {
+            $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
+        }
+        if ($duration > 0 && $this->enableAutoLogin) {
+            $this->sendIdentityCookie($identity, $duration);
+        }
+    }
+}
+
+/**
+ * Removes the identity cookie.
+ * This method is used when [[enableAutoLogin]] is true.
+ * @since 2.0.9
+ */
+protected function removeIdentityCookie()
+{
+    Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+}
 ```
 
 退出的时候先把当前的认证设置为null，然后再判断如果是自动登录功能则再删除相关的cookie信息。
