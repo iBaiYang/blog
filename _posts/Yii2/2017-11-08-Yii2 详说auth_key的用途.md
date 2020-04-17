@@ -9,8 +9,6 @@ meta: Yii2 详说auth_key的用途
 
 ### 正文
 
-<http://blog.sina.com.cn/s/blog_6aba78b40102x6vw.html>
-
 当我们用yii2开始项目时，在migrate初始生成user表时，会看到里面有一个auth_key字段，这个字段是做什么用的呢？查阅好多资料后，还是云里雾里，莫名其妙，不知所从。其实这个字段是用来用cookie自动登录验证的，这样即使session丢失了，只要cookie信息还存在，那么就可以用cookie中的相关信息完成自动登录并写入session。
 
 这里有详细的解说过程，可以看看：<http://www.yii-china.com/post/detail/323.html>
@@ -84,13 +82,14 @@ advanced-backend是session中配置的，可以换个名字，如：session-back
 20分钟内不会再发这个性质的session了。
 
 _csrf-backend是request中配置的，用户用浏览器第一次访问网站域名时，并不会传递过来，
-第一次访问网站页面（Yii2框架配置的）时，才会传递过来。以后访问该网站的页面，都会带上这个cookie参数，
-网站也不再传递这个值过来。
+第一次访问网站页面（Yii2框架配置的）时，网站服务器会把这个cookie发送到客户端；
+客户端第二次访问网站页面时，才会把这个cookie传递过来。以后访问该网站的页面，都会带上这个cookie参数，
+网站也不再传递这个值给客户端。
 
-_identity-backend是user组件中配置的，正如其名，是用户post登陆成功后传递过来的。在在线情况下，
-每次都会传递这个值过来以更新有效期。退出时又传递这个值过来，不过这个值为空。
+_identity-backend是user组件中配置的，正如其名，是用户post登陆成功后服务器传递给客户端的。在在线情况下，
+客户端每次都会传递这个值给服务器以更新有效期。退出时又传递这个值过来，不过这个值为空。
 
-传递过来的cookie值：value是值的内容；path是存在浏览器上的位置，
+传递过来的cookie值：value是值的内容；path是服务器要把这个cookie保存在浏览器上的地址，
 httpOnly:true说明只有http请求才会传递这个值到服务器，expires是这个cookie存到什么时间截至。
 
 cookie就是服务器辨识浏览器的标志，浏览器每一次访问服务器，都会带上这个服务器存在这个浏览器上的所有cookie信息。
@@ -163,6 +162,9 @@ e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132770.jpeg)
 
 注意对比上面的异同。
+
+可以看出，服务器除了发送 _identity-backend 这个cookie过来，还修改了 advanced-backend 这个session相关的cookie的值，
+想想也对，session是记录登录状态的，如果不变，怎么区分是不是同一个人、有没有登录呢。
 
 #### 过程研究
 
@@ -292,111 +294,110 @@ yii\web\Application中：
 yii\web\User中：
 
 ```
-    /**
-     * Logs in a user.
-     *
-     * After logging in a user:
-     * - the user's identity information is obtainable from the [[identity]] property
-     *
-     * If [[enableSession]] is `true`:
-     * - the identity information will be stored in session and be available in the next requests
-     * - in case of `$duration == 0`: as long as the session remains active or till the user closes the browser
-     * - in case of `$duration > 0`: as long as the session remains active or as long as the cookie
-     *   remains valid by it's `$duration` in seconds when [[enableAutoLogin]] is set `true`.
-     *
-     * If [[enableSession]] is `false`:
-     * - the `$duration` parameter will be ignored
-     *
-     * @param IdentityInterface $identity the user identity (which should already be authenticated)
-     * @param int $duration number of seconds that the user can remain in logged-in status, defaults to `0`
-     * @return bool whether the user is logged in
-     */
-    public function login(IdentityInterface $identity, $duration = 0)
-    {
-        if ($this->beforeLogin($identity, false, $duration)) {
-            $this->switchIdentity($identity, $duration);
-            $id = $identity->getId();
-            $ip = Yii::$app->getRequest()->getUserIP();
-            if ($this->enableSession) {
-                $log = "User '$id' logged in from $ip with duration $duration.";
-            } else {
-                $log = "User '$id' logged in from $ip. Session not enabled.";
-            }
-            Yii::info($log, __METHOD__);
-            $this->afterLogin($identity, false, $duration);
+/**
+ * 用户登录
+ *
+ * 用户登录成功后:
+ * - 用户的身份信息可从[[identity]]属性获得
+ *
+ * 如果[[enableSession]]为“ true”:
+ * - 身份信息将存储在session中，并在以后的请求中可用
+ * - `$duration == 0`时: session 持久有效，直到用户关闭浏览器
+ * - `$duration > 0`时: 当 [[enableAutoLogin]] 设置为 `true`时， 在cookie 的 `$duration` 可用秒内，session 持久有效
+ *
+ * 如果[[enableSession]]为`false`:
+ * - `$duration` 参数将会被忽略
+ *
+ * @param IdentityInterface $identity 用户身份信息 (应该已经通过了授权认证，即账号和密码正确)
+ * @param int $duration 用户可以保持登录状态的秒数，默认为0
+ * @return bool 用户是否已登录
+ */
+public function login(IdentityInterface $identity, $duration = 0)
+{
+    if ($this->beforeLogin($identity, false, $duration)) {
+        $this->switchIdentity($identity, $duration);
+        $id = $identity->getId();
+        $ip = Yii::$app->getRequest()->getUserIP();
+        if ($this->enableSession) {
+            $log = "User '$id' logged in from $ip with duration $duration.";
+        } else {
+            $log = "User '$id' logged in from $ip. Session not enabled.";
         }
-
-        return !$this->getIsGuest();
+        Yii::info($log, __METHOD__);
+        $this->afterLogin($identity, false, $duration);
     }
 
-    /**
-     * Switches to a new identity for the current user.
-     *
-     * When [[enableSession]] is true, this method may use session and/or cookie to store the user identity information,
-     * according to the value of `$duration`. Please refer to [[login()]] for more details.
-     *
-     * This method is mainly called by [[login()]], [[logout()]] and [[loginByCookie()]]
-     * when the current user needs to be associated with the corresponding identity information.
-     *
-     * @param IdentityInterface|null $identity the identity information to be associated with the current user.
-     * If null, it means switching the current user to be a guest.
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * This parameter is used only when `$identity` is not null.
-     */
-    public function switchIdentity($identity, $duration = 0)
-    {
-        $this->setIdentity($identity);
+    return !$this->getIsGuest();
+}
 
-        if (!$this->enableSession) {
-            return;
-        }
+/**
+ * 切换到当前用户的新身份
+ *
+ * 当 [[enableSession]] 为true时，此方法可以根据`$ duration`的值使用 session / cookie 来存储用户身份信息。
+ * 有关更多详细信息，请参考[[login()]]。
+ *
+ * 此方法主要由 [[login()]], [[logout()]] and [[loginByCookie()]] 调用，当前用户需要与相应的身份信息相关联时。
+ *
+ * @param IdentityInterface|null $identity 与当前用户关联的身份信息；如果为null，则表示切换当前用户为访客。
+ * @param int $duration 用户可以保持登录状态的秒数。仅当$ identity不为null时，才使用此参数。
+ */
+public function switchIdentity($identity, $duration = 0)
+{
+    $this->setIdentity($identity);
 
-        /* Ensure any existing identity cookies are removed. */
-        if ($this->enableAutoLogin) {
-            $this->removeIdentityCookie();
-        }
-
-        $session = Yii::$app->getSession();
-        if (!YII_ENV_TEST) {
-            $session->regenerateID(true);
-        }
-        $session->remove($this->idParam);
-        $session->remove($this->authTimeoutParam);
-
-        if ($identity) {
-            $session->set($this->idParam, $identity->getId());
-            if ($this->authTimeout !== null) {
-                $session->set($this->authTimeoutParam, time() + $this->authTimeout);
-            }
-            if ($this->absoluteAuthTimeout !== null) {
-                $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
-            }
-            if ($duration > 0 && $this->enableAutoLogin) {
-                $this->sendIdentityCookie($identity, $duration);
-            }
-        }
+    /* 如果不能session登录，直接返回 */
+    if (!$this->enableSession) {
+        return;
     }
 
-    /**
-     * Sends an identity cookie.
-     * This method is used when [[enableAutoLogin]] is true.
-     * It saves [[id]], [[IdentityInterface::getAuthKey()|auth key]], and the duration of cookie-based login
-     * information in the cookie.
-     * @param IdentityInterface $identity
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * @see loginByCookie()
-     */
-    protected function sendIdentityCookie($identity, $duration)
-    {
-        $cookie = new Cookie($this->identityCookie);
-        $cookie->value = json_encode([
-            $identity->getId(),
-            $identity->getAuthKey(),
-            $duration,
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $cookie->expire = time() + $duration;
-        Yii::$app->getResponse()->getCookies()->add($cookie);
+    /* Ensure any existing identity cookies are removed. */
+    if ($this->enableAutoLogin) {
+        // 如果可以自动登录，则把旧的identity cookies清空
+        $this->removeIdentityCookie();
     }
+
+    $session = Yii::$app->getSession();  // session组件
+    if (!YII_ENV_TEST) {
+        $session->regenerateID(true);
+    }
+    $session->remove($this->idParam);
+    $session->remove($this->authTimeoutParam);
+
+    /* 用户身份信息不为空，设置session */
+    if ($identity) {
+        $session->set($this->idParam, $identity->getId());
+        if ($this->authTimeout !== null) {
+            $session->set($this->authTimeoutParam, time() + $this->authTimeout);
+        }
+        if ($this->absoluteAuthTimeout !== null) {
+            $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
+        }
+        if ($duration > 0 && $this->enableAutoLogin) {
+            // 如果 $duration 时长大于0，并且可以自动登录，发送 identity cookie
+            $this->sendIdentityCookie($identity, $duration);
+        }
+    }
+}
+
+/**
+ * 发送identity身份 cookie
+ * [[enableAutoLogin]]为true时使用此方法
+ * cookie中包含有： [[id]], [[IdentityInterface::getAuthKey()|auth key]], 基于cookie登录的时长
+ * @param IdentityInterface $identity
+ * @param int $duration 用户可以保持登录状态的秒数。
+ * @see loginByCookie()
+ */
+protected function sendIdentityCookie($identity, $duration)
+{
+    $cookie = new Cookie($this->identityCookie);
+    $cookie->value = json_encode([
+        $identity->getId(),       // 用户id
+        $identity->getAuthKey(),  // 这里就是我们说的 auth_key
+        $duration,                // 时长
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    $cookie->expire = time() + $duration;  // cookie到期时间
+    Yii::$app->getResponse()->getCookies()->add($cookie); 
+}
 ```
 
 switchIdentity设置认证信息，登录说到底就是在设置认证信息。
