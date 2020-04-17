@@ -17,7 +17,7 @@ meta: Yii2 高级模板advanced安装并初始化流程
 
 > composer global require "fxp/composer-asset-plugin:~1.1"
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7eWGPwUwL3f)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132730.jpeg)
 
 这一步命令安装 Composer asset plugin， 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 
@@ -27,11 +27,11 @@ composer create-project --prefer-dist yiisoft/yii2-app-advanced yii2_test
 
 setting->Developer settings->Personal access tokens->Generate new token按钮，全勾生成，复制生成的字符串后，在箭头那里粘贴，回车。
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7eWLgESqe92)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132731.jpeg)
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7eWLqIv2rf3)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132732.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7eWLtEv1m00)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132733.jpeg)
 
 运行途中遇到bug类问题，可以去这看一下：
 
@@ -57,7 +57,7 @@ vhost配置：
 
 /etc/nginx/nginx.conf
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7ewchcMpe0c)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132734jpeg)
 
 ```php
 server {
@@ -99,7 +99,7 @@ server {
 }
 ```
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7ewctHIP305)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132735.jpeg)
 
 开始初始化：
 
@@ -107,19 +107,19 @@ server {
 
 > php init
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7ewcFnZjJ13)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132736.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7ewcHkURq60)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132737.jpeg)
 
 配置数据库：
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7ewcTyNlnd1)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132738.jpeg)
 
 数据库迁移：
 
 > php yii migrate
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7ewd4uhra88)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132739.jpeg)
 
 
 
