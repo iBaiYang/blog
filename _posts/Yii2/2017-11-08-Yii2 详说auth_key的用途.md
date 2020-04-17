@@ -26,6 +26,21 @@ _csrf-backend详细：
 v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c9x2vyg==
 ```
 
+解码看一下：
+```
+$input = "v5G4eIFl_Lel0yPkbWPqDw1l7jJWYknp9AXY6sF_xKeLwOIgyVXL1dyBELteFKtVTwqoAw8hFr-VSo2c9x2vyg==";
+
+function byteSubstr($string, $start, $length = null) {
+    return mb_substr($string, $start, $length === null ? mb_strlen($string, '8bit') : $length, '8bit');
+}
+
+$decoded = base64_decode(strtr($input, '-_', '+/'));
+$length = mb_strlen($decoded, '8bit') / 2;
+
+echo byteSubstr($decoded, $length, $length) ^ byteSubstr($decoded, 0, $length);  
+// 输出 4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm
+```
+
 关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132764.jpeg)
