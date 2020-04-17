@@ -181,7 +181,7 @@ public static function isPasswordResetTokenValid($token)
 } 
 ```
 
-这里会校验操作用户的password_reset_token，在找回密码时常内则不能再发送邮件；如果超出找回密码时常则不能重设密码。
+这里会校验操作用户的password_reset_token，在找回密码时长内则不能再发送邮件；如果超出找回密码时长则不能重设密码。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料 
