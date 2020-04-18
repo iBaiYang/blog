@@ -512,7 +512,25 @@ windows命令行中
 
 ![]({{site.baseurl}}/images/20200329/20200329191597.jpg)
 
+#### 每日启动
 
+win + R 调出命令行，启动VirtualBox虚拟机中的Vagrant服务：
+
+> d:
+>
+> cd vagrant
+>
+> vagrant halt
+>
+> vagrant up
+
+点击PuTTY.exe连接vagrant，重启nginx和php：
+
+> sudo /etc/init.d/nginx restart
+> 
+> sudo /etc/init.d/php-fpm restart
+
+然后浏览器就可以访问站点服务了。
 
 
 <br/><br/><br/><br/><br/>
