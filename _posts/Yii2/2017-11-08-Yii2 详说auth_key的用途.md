@@ -117,6 +117,52 @@ _csrf-backend详细：
 e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm";}
 ```
 
+我们打印一下请求时的$_COOKIE看一下：
+````
+array(2) {
+  ["advanced-backend"]=>
+  string(26) "pa82frto4p6npookbm6d2bjdp6"
+  ["_identity-backend"]=>
+  string(157) "f9d6c533d3e73cbadc9efc60bf74a0a9f477504acf6bfb93a3d2078d07eaa8a2a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}"
+}
+````
+
+_identity-backend经过security组件解码后:
+```
+// $value 是$_COOKIE["_identity-backend"] ， $this->cookieValidationKey  值为  0w8Wb50OEKfNeJbmuLuG3XQb4hKn2ykw
+// $data = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey);
+a:2:{i:0;s:17:"_identity-backend";i:1;s:46:"[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]";}
+// $data = @unserialize($data);
+array(2) {
+  [0]=>
+  string(17) "_identity-backend"
+  [1]=>
+  string(46) "[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]"
+}
+// $cookies[$name] = Yii::createObject([ 'class' => 'yii\web\Cookie',  'name' => $name, 'value' => $data[1], 'expire' => null, ]);
+array(1) {
+  ["_identity-backend"]=>
+  object(yii\web\Cookie)#75 (7) {
+    ["name"]=>
+    string(17) "_identity-backend"
+    ["value"]=>
+    string(46) "[1,"ZvB1Jn0NvP9M0vdLt82W9zVs8ROo8NSS",2592000]"
+    ["domain"]=>
+    string(0) ""
+    ["expire"]=>
+    NULL
+    ["path"]=>
+    string(1) "/"
+    ["secure"]=>
+    bool(false)
+    ["httpOnly"]=>
+    bool(true)
+  }
+}
+```
+
+Yii2的security安全组件功能比较复杂，值得研究，以备以后做安全时借鉴。
+
 退出时：
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132766.jpeg)
