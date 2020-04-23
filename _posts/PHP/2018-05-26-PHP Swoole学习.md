@@ -241,6 +241,182 @@ $cli->connect();
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190123/20190123150130.jpg)
 
+#### 实例分析
+
+看一个实例：工单服务器 推送数据到 队列服务器，队列消费者 通过stream_socket_client连接把信息推送到 swoole服务器，
+swoole主进程 通过监听message消息事件异步调用 Task进程，Task进程 再把信息推送到 proxy代理服务器，
+proxy代理服务器 通过判断把信息推送到 另一台客户端连接的 相应swoole服务器， swoole服务器 最后把信息推送到 客户端。
+
+看起来过程比较复杂，我们追踪数据结构看一下。
+
+工单服务器生成一条提示客户的信息：
+```
+$msg = [
+    "url" => "/worksheet/send-message",
+    "chat_token" => "sdfd3sdfsd3324cx",
+    "data" => [
+        [
+            “uuid” => "badf677b-23df-2a5b-23ds-81d18g23ec69",    // 客服的唯一标示
+            "data" => [
+                "type" => "new_worksheet_to_deal",
+                "infos" => "你有一条新工单待处理"
+            ] 
+        ]
+    ]
+];
+```
+
+然后把这条信息推送到队列，队列消费者连接swoole服务器，再把这条信息推送过去。
+
+swoole主进程监听message消息事件，在收到的信息中把连接swoole服务器的客户端标示fd也补充道信息中：
+```
+$msg = [
+    "url" => "/worksheet/send-message",
+    "chat_token" => "sdfd3sdfsd3324cx",
+    "data" => [
+        [
+            “uuid” => "badf677b-23df-2a5b-23ds-81d18g23ec69",
+            "data" => [
+                "type" => "new_worksheet_to_deal",
+                "infos" => "你有一条新工单待处理"
+            ] 
+        ]
+    ],
+    "consumer_fd" => 2093
+];
+```
+
+swoole主进程异步调用Task进程，Task进程初步判断（如果发生错误，就把错误信息发送到数据包的"consumer_fd"标示的客户端），
+把调用它的swoole主进程的相关信息整理到数据包中（这里同时可以把消费者连接swoole服务器的日志记录下来）：
+```
+$msg = [
+    "server" => {***},   // swoole主进程信息，
+    "data" => [
+        "port" => "9605",    // swoole主进程服务端口
+        "url" => "/worksheet/send-message",
+        "chat_token" => "sdfd3sdfsd3324cx",
+        "data" => [
+            [
+                “uuid” => "badf677b-23df-2a5b-23ds-81d18g23ec69",
+                "data" => [
+                    "type" => "new_worksheet_to_deal",
+                    "infos" => "你有一条新工单待处理"
+                ] 
+            ]
+        ],
+        "consumer_fd" => 2093,
+    ]
+];
+```
+
+Task进程根据数据包中的"url"运行相应处理逻辑器并把数据包也发过去。处理逻辑器整理真正要推送给客服的数据：
+```
+[
+    "event" => "WorksheetMsg",
+    "response" => [
+        "type" => "new_worksheet_to_deal",
+        "infos" => "你有一条新工单待处理"
+    ] 
+]
+```
+
+然后处理逻辑器通过数据包中的客服唯一标示"uuid"从数据库的在线客服表中获取客服连接信息，
+其实想获取的就是这个客服连接在哪一个swoole服务器上及连接标示：swoole服务器IP_swoole服务器PORT_连接标示fd，
+对比运行Task进程的swoole服务器进程与客服连接的swoole服务器进程是不是一个，就是对比 服务器IP 和 进程端口 相不相等。
+如果相等，说明客服就连接在这台服务器的swoole主进程上，直接把整理好的数据包通过swoole连接推送给客服。
+
+如果不相等，说明客服连接的不是当前swoole服务，通过当前swoole主进程把信息发送到自己的proxy代理服务器，整理发送的数据包为：
+```
+[
+    "url" => "/chat/push-local",
+    "chat_token" => "sdfd3sdfsd3324cx",
+    "proxy_info" => [
+        "ip" => "127.0.12.2",        // 客服连接的swoole服务器IP
+        "port" => 9605               // 客服连接的swoole服务器PORT
+    ],
+    "client_id" => "",              // swoole服务器IP_swoole服务器PORT_连接标示fd  hash后的字符串
+    "remote_data" => [
+        "event" => "WorksheetMsg",
+        "response" => [
+            "type" => "new_worksheet_to_deal",
+            "infos" => "你有一条新工单待处理"
+        ] 
+    ]
+]
+```
+
+proxy代理服务器主进程监听receive消息事件，调用Task进程，通过数据包的"proxy_info"知道了客服连接的swoole服务器ip和进程端口，
+proxy代理服务器主进程通过stream_socket_client直接连接客服连接的swoole服务器进程，然后把数据包发送过去：
+```
+[
+    "url" => "/chat/push-local",
+    "chat_token" => "sdfd3sdfsd3324cx",
+    "client_id" => "",              // swoole服务器IP_swoole服务器PORT_连接标示fd  hash后的字符串
+    "remote_data" => [
+        "event" => "WorksheetMsg",
+        "response" => [
+            "type" => "new_worksheet_to_deal",
+            "infos" => "你有一条新工单待处理"
+        ] 
+    ]
+]
+```
+
+另一台swoole主进程监听message消息事件，在收到的信息中把连接swoole服务器的客户端标示fd也补充道信息中，
+这里的过程和消费者连接swoole服务器有点像了，把连接swoole服务器的客户端标示fd也补充道信息中：
+```
+[
+    "url" => "/chat/push-local",
+    "chat_token" => "sdfd3sdfsd3324cx",
+    "client_id" => "",              // swoole服务器IP_swoole服务器PORT_连接标示fd  hash后的字符串
+    "remote_data" => [
+        "event" => "WorksheetMsg",
+        "response" => [
+            "type" => "new_worksheet_to_deal",
+            "infos" => "你有一条新工单待处理"
+        ] 
+    ],
+    "proxy_fd" => 1212          
+]
+```
+
+swoole主进程异步调用Task进程，Task进程初步判断，把调用它的swoole主进程的相关信息整理到数据包中：
+```
+[
+    "server" => {***},   // swoole主进程信息，
+    "data" => [
+        "port" => "9605",    // swoole主进程服务端口
+        "url" => "/chat/push-local",
+        "chat_token" => "sdfd3sdfsd3324cx",
+        "client_id" => "",              // swoole服务器IP_swoole服务器PORT_连接标示fd  hash后的字符串
+        "remote_data" => [
+            "event" => "WorksheetMsg",
+            "response" => [
+                "type" => "new_worksheet_to_deal",
+                "infos" => "你有一条新工单待处理"
+            ] 
+        ],
+        "proxy_fd" => 1212     
+    ]
+];
+```
+
+Task进程根据数据包中的"url"运行相应处理逻辑器并把数据包也发过去。处理逻辑器整理出真正要推送给客服的数据：
+```
+[
+    "event" => "WorksheetMsg",
+    "response" => [
+        "type" => "new_worksheet_to_deal",
+        "infos" => "你有一条新工单待处理"
+    ] 
+]
+```
+
+然后处理逻辑器通过数据包中的"client_id"获取到客服连接swoole的连接标示fd，再通过"server"对象的send()方法把数据包直接推送给客服。
+客服可能是通过浏览器的websocket连接的swoole服务器。
+
+大致流程就是这样，理解下。
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
