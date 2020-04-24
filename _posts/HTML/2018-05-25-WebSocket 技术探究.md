@@ -24,7 +24,7 @@ js 原生举例：
         {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
-                var ws = new WebSocket("ws://localhost:9605");
+                var ws = new WebSocket("ws://192.168.0.23:9605");
             
                 // 通信发生错误
                 ws.onerror = function() {
@@ -39,7 +39,7 @@ js 原生举例：
             
                 // 收到服务端数据
                 ws.onmessage = function(event) {           
-                    var received_msg = evt.data;  // 收到的服务端数据
+                    var received_msg = event.data;  // 收到的服务端数据
                 }
             
                 // 连接关闭时触发
