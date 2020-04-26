@@ -11,6 +11,8 @@ meta: mysql mysqli pdo拓展比较
 
 mysql拓展在php7中被抛弃了，转而支持mysqli升级拓展，所以先写mysqli使用的例子。
 
+#### mysqli
+
 ```php
 // mysqli封装类
 class MysqliClass
@@ -83,6 +85,8 @@ class MysqliClass
      }
 } 
 ```
+
+#### pdo
 
 下面是pdo使用例子:
 
