@@ -98,9 +98,9 @@ $_SERVER['HTTP_CONNECTION']  // 当前请求的 Connection: 头部的内容。�
 
 $_SERVER['HTTP_HOST']  // 当前请求的 Host: 头部的内容。
 
-$_SERVER[' HTTP_REFERER']  // 链接到当前页面的前一页面的 URL 地址。引导用户代理到当前页的前一页的地址（如果存在）。由 user agent 设置决定。并不是所有的用户代理都会设置该项，有的还提供了修改 HTTP_REFERER 的功能。简言之，该值并不可信。)
+$_SERVER['HTTP_REFERER']  // 链接到当前页面的前一页面的 URL 地址。引导用户代理到当前页的前一页的地址（如果存在）。由 user agent 设置决定。并不是所有的用户代理都会设置该项，有的还提供了修改 HTTP_REFERER 的功能。简言之，该值并不可信。)
 
-$_SERVER[' HTTP_USER_AGENT']  // 当前请求的 User-Agent: 头部的内容。
+$_SERVER['HTTP_USER_AGENT']  // 当前请求的 User-Agent: 头部的内容。
 
 $_SERVER['HTTPS']  // 如果通过https访问,则被设为一个非空的值(on)，否则返回off
 
