@@ -104,16 +104,17 @@ echo BigCar::getSpeed();  // 输出20
 
 很明显，根据上面代码可知本类内调用可使用self关键字，子类访问父类可以使用parent关键字，
 那么父类如何访问子类的静态方法呢？
-这里给出static的另外一个用法，这里如果将调用的静态方法前面的作用域换成static的话，
+这里给出static的另外一个用法，这里如果在调用的方法前面的加static关键字的话，
 PHP会根据该类的继承层次来计算最终的静态方法，这就是延迟静态绑定。
 
 ```
 class Test1
 {
-    function t1()
+    public function t1()
     {
         static::t2();
     }
+    
     public static function t2()
     {
         echo 'Test1 ';
@@ -122,7 +123,7 @@ class Test1
 
 class Test2 extends Test1
 {
-    static function t2()
+    public static function t2()
     {
         echo 'Test2 ';
     }
