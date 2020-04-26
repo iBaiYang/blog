@@ -63,7 +63,7 @@ array(34) {
 }
 ```
 
-下表列出了所有 $_SERVER 变量中的重要元素:
+下表列出了一部分 $_SERVER 变量中的重要元素:
 
 ```php
 $_SERVER['PHP_SELF']  // 当前正在执行 脚本的文件名，与 document root相关。
