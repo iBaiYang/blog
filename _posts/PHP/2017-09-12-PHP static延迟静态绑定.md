@@ -231,6 +231,29 @@ $two->static_use();
 
 输出：456 456 first first 456 first second 
 
+再看下下面这个：
+```
+class first
+{    
+    static $num = 1;
+	
+    public static function self_use(){
+		static::$num += 1;
+    }
+}
+class second extends first{}
+
+echo first::$num;
+first::self_use();
+echo first::$num;
+
+echo second::$num;
+second::self_use();
+echo second::$num;
+```
+
+输出结果：1223，可以看出 函数体中的静态变量在函数调用的时候只会被初始化一次，继承也一样。
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
