@@ -519,12 +519,13 @@ echo get_class(test3::test_parent());                //test
 1. 转发调用（forwarding call）:所谓的"转发调用"指的是通过以下几种方式进行的静态调用：
 self::、 parent::、 static:: 以及 forward_static_call()，即在进行静态调用时未指名类名的调用属于转发调用。
 2. 非转发调度（non-forwarding call）:非转发调用其实就是明确指定类名的静态调用（foo::bar()）和非静态调用($foo->bar())。
-即明确地指定类名的静态调用和非静态调用。
+即明确地指定类名的静态调用和非静态调用。也可以换个名字，叫 直接调用，这样更好理解。
 3. 后期静态绑定（Late Static Bindings ）："后期静态绑定"的意思是说，static:: 不再被解析为定义当前方法所在的类，而是在实际运行时计算的。
+也叫 延迟静态绑定。
 
 不存在继承的时候，self和static无区别。
-* 在静态函数中，self和static可以调用静态属性和静态方法（沒有实例化类，因此不能呼叫非静态的属性和方法）。
-* 在非静态函数中, self和static可以调用非静态属性和非静态方法。
+* 在静态函数中，self和static可以调用静态属性和静态方法（沒有实例化类，因此不能调用非静态的属性和方法）。
+* 在非静态函数中, self和static除了可以调用静态属性和静态方法；还可以调用非静态属性和非静态方法，但是不推荐。
 
 ```
 class Demo
@@ -549,13 +550,13 @@ class Demo
     public function test() {
         echo Demo::$static."\n";                //使用类型调用静态属性     static
         echo Demo::get()."\n";                  //使用类名调用静态方法    Demo
-        echo Demo::show()."\n";    //使用类名调用非静态方法 this is function show with Nostatic
+        echo Demo::show()."\n";     // 使用类名以静态方式调用非静态方法 会报错： this is function show with Nostatic
         echo self::$static."\n";                 //self调用静态属性       static
         echo self::get()."\n";                  //self调用静态方法      Demo
-        echo self::show()."\n";     //self调用非静态方法 this is function show with Nostatic
+        echo self::show()."\n";     // self以静态方式调用非静态方法 会报错： this is function show with Nostatic
         echo static::$static."\n";               //static调用静态属性     static
         echo static::get()."\n";                //static调用静态方法    Demo
-        echo static::show()."\n";   //static调用非静态方法 this is function show with Nostatic
+        echo static::show()."\n";   //static以静态方式调用非静态方法 会报错： this is function show with Nostatic
     }
 }
 
