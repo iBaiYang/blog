@@ -55,8 +55,9 @@ ACCAABB，你答对了吗？
 
 #### 解说
 
-静态属性与方法可以在不实例化类的情况下调用，
-直接使用类名::方法名的方式进行调用。静态属性不允许对象使用 -> 操作符调用；不过静态方法在类实例化为对象后可以使用 -> 操作符调用。
+静态属性与静态方法可以在不实例化类的情况下调用，直接使用类名::方法名的方式进行调用。
+静态属性只能用::方式访问，即使类实例化为对象后也不允许对象使用 -> 操作符访问；
+不过静态方法在类实例化为对象后可以使用 -> 操作符调用。
 
 ```
 class Car {
@@ -102,18 +103,19 @@ BigCar::start();
 echo BigCar::getSpeed();  // 输出20
 ```
 
-很明显，根据上面代码可知本类内调用可使用self关键字，子类访问父类可以使用parent关键字，
-那么父类如何访问子类的静态方法呢？
-这里给出static的另外一个用法，这里如果将调用的静态方法前面的作用域换成static的话，
-PHP会根据该类的继承层次来计算最终的静态方法，这就是延迟静态绑定。
+很明显，根据上面代码可知调用本类方法可以使用self关键字，调用父类方法可以使用parent关键字，但是如果想在父类中调用子类方法呢？
+这就是static关键字设计出来的原因：根据延迟静态绑定，父类调用子类方法。
+这里给出static的另外一个用法，这里如果在调用的方法前面的加static关键字的话，PHP会根据该类的继承层次来计算最终的静态方法，
+这就是延迟静态绑定。延迟静态绑定丰富了类的设计，使类的使用更加灵活。
 
 ```
 class Test1
 {
-    function t1()
+    public function t1()
     {
         static::t2();
     }
+    
     public static function t2()
     {
         echo 'Test1 ';
@@ -122,7 +124,7 @@ class Test1
 
 class Test2 extends Test1
 {
-    static function t2()
+    public static function t2()
     {
         echo 'Test2 ';
     }
@@ -229,6 +231,29 @@ $two->static_use();
 ```
 
 输出：456 456 first first 456 first second 
+
+再看下下面这个：
+```
+class first
+{    
+    static $num = 1;
+	
+    public static function self_use(){
+		static::$num += 1;
+    }
+}
+class second extends first{}
+
+echo first::$num;
+first::self_use();
+echo first::$num;
+
+echo second::$num;
+second::self_use();
+echo second::$num;
+```
+
+输出结果：1223，可以看出 函数体中的静态变量在函数调用的时候只会被初始化一次，继承也一样。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料

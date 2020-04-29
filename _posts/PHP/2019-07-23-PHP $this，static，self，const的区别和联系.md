@@ -13,7 +13,7 @@ meta: $this，static，self，const的区别和联系
 
 $this 指向的是实际调用时的对象，也就是说，实际运行过程中，谁调用了类的属性或方法，
 $this 指向的就是哪个对象。如B继承A，实例化B后调用到了A的方法，此时A的$this指向的还是B这个实际调用的对象，
-如果B中$this指向的方法或属性不存在，则取A中的指向内容（与static有点类似了）。
+如果B中$this指向的方法或属性不存在，则取A中的指向内容。
 
 $this 会先到所在定义范围内(如在父类中则在父类)寻找私有方法，再到它指向的对象所属的类中(当前子类)寻找私有方法， 
 然后(当前子类)寻找公有方法，最后到所在定义范围内(如在父类中)寻找公共方法。只要找到了匹配的方法，就调用，并停止查找。
@@ -90,19 +90,22 @@ class Person
     static  $sex=1;
     public  $name='张三';
     
-    static function qianDao(){
+    public static function qianDao(){
         return self::$sex++;
     }
     
+    /**
+     * 不加 public 、protected、private 范围限定关键字，默认为public，属性也一样
+     */
     static function printQianDao(){
         echo self::qianDao();
     }
     
-    static function printQianDao2(){
+    public static function printQianDao2(){
         echo $this->qianDao();
     }
     
-    static function printQianDao3(){
+    public static function printQianDao3(){
         echo $this->name;
     }
     
@@ -128,11 +131,11 @@ Person::printQianDao4();  // 报错1：Non-static method Person::printQianDao4()
 4. 静态方法执行之后变量的值不会丢失，只会初始化一次，这个值对所有实例都是有效的
 
 static 是先到它指向的类中(当前子类)寻找私有方法，再(当前子类)寻找共有方法；
-然后到所在定义范围内(如在父类中则在父类)寻找私有方法， 再(如在父类中)寻找共有方法。只要找到了匹配的方法，就调用，并停止查找。
+然后到方法体定义所在范围内(如在父类中)寻找私有方法， 再(如在父类中)寻找共有方法。只要找到了匹配的方法，就调用，并停止查找。
 
 #### self
 
-self 可以用于访问类的静态属性、静态方法和常量，但 self 指向的是当前定义所在的类，表示类本身，这是 self 的限制。
+self 可以用于访问类的静态属性、静态方法和常量，但 self 指向的是当前方法体定义所在的类，表示类本身，这是 self 的限制。
 
 self 和 `__CLASS__`，都是对当前类的静态引用，取决于定义当前方法所在的类。也就是说，self 写在哪个类里面， 它引用的就是谁。
 
@@ -516,12 +519,13 @@ echo get_class(test3::test_parent());                //test
 1. 转发调用（forwarding call）:所谓的"转发调用"指的是通过以下几种方式进行的静态调用：
 self::、 parent::、 static:: 以及 forward_static_call()，即在进行静态调用时未指名类名的调用属于转发调用。
 2. 非转发调度（non-forwarding call）:非转发调用其实就是明确指定类名的静态调用（foo::bar()）和非静态调用($foo->bar())。
-即明确地指定类名的静态调用和非静态调用。
+即明确地指定类名的静态调用和非静态调用。也可以换个名字，叫 直接调用，这样更好理解。
 3. 后期静态绑定（Late Static Bindings ）："后期静态绑定"的意思是说，static:: 不再被解析为定义当前方法所在的类，而是在实际运行时计算的。
+也叫 延迟静态绑定。
 
 不存在继承的时候，self和static无区别。
-* 在静态函数中，self和static可以调用静态属性和静态方法（沒有实例化类，因此不能呼叫非静态的属性和方法）。
-* 在非静态函数中, self和static可以调用非静态属性和非静态方法。
+* 在静态函数中，self和static可以调用静态属性和静态方法（沒有实例化类，因此不能调用非静态的属性和方法）。
+* 在非静态函数中, self和static除了可以调用静态属性和静态方法；还可以调用非静态方法，但是不推荐。
 
 ```
 class Demo
@@ -546,13 +550,13 @@ class Demo
     public function test() {
         echo Demo::$static."\n";                //使用类型调用静态属性     static
         echo Demo::get()."\n";                  //使用类名调用静态方法    Demo
-        echo Demo::show()."\n";    //使用类名调用非静态方法 this is function show with Nostatic
+        echo Demo::show()."\n";     // 使用类名以静态方式调用非静态方法 会报错： this is function show with Nostatic
         echo self::$static."\n";                 //self调用静态属性       static
         echo self::get()."\n";                  //self调用静态方法      Demo
-        echo self::show()."\n";     //self调用非静态方法 this is function show with Nostatic
+        echo self::show()."\n";     // self以静态方式调用非静态方法 会报错： this is function show with Nostatic
         echo static::$static."\n";               //static调用静态属性     static
         echo static::get()."\n";                //static调用静态方法    Demo
-        echo static::show()."\n";   //static调用非静态方法 this is function show with Nostatic
+        echo static::show()."\n";   //static以静态方式调用非静态方法 会报错： this is function show with Nostatic
     }
 }
 
