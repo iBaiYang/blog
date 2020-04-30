@@ -514,7 +514,7 @@ windows命令行中
 
 #### 每日启动
 
-win + R 调出命令行，启动VirtualBox虚拟机中的Vagrant服务：
+win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant服务：
 
 > d:
 >
