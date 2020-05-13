@@ -91,6 +91,22 @@ console.log(window.global1);     // global1
 
 2、变量释放时的副作用：使用 var 关键字声明的全局变量，不能删除；不使用 var 关键字声明的隐含全局变量，可以删除。
 这表明隐含全局变量严格来讲不是真正的变量，而是全局对象的属性。属性可以通过 delete 操作符删除，而变量不行。
+```
+// 明确定义的全局变量
+var global1 = "global1";
+// 隐含全局变量
+function func() {
+    global2 = "global2";
+}
+func();
+// 删除这两个全局变量
+delete global1;
+delete global2;
+
+// 测试删除情况
+console.log(typeof global1);    // string
+console.log(typeof global2);    // undefined
+```
 
 3、全局变量保存在静态存贮区，程序开始运行时为其分配内存，程序结束释放该内存。
 与局部变量的动态分配、动态释放相比，生存期比较长，因此过多的全局变量会占用较多的内存单元。
@@ -103,6 +119,256 @@ console.log(window.global1);     // global1
 对于程序的查错和调试都非常不利。
 
 因此，如果不是万不得已，最好不要使用全局变量。
+
+看例子：
+```
+function func() {
+    var a = b = 0;
+    /*
+     * a 为局部变量，b 为全局变量
+     * 产生的原因很简单：从右到左的操作符优先级。先执行 b = 0，而此刻 b 未声明，
+     * 因此 b 为全局变量。整个过程等价于：
+     * var a;
+     * b = 0;
+     * a = b;
+     */
+}
+// 正确的做法：
+function func() {
+    var a, b;
+    a = b = 0;
+}
+```
+
+```
+myName = "global"; // 全局变量 
+function func() {
+    alert(myName); // "undefined" 
+    var myName = "local"; 
+    alert(myName); // 局部变量 
+} 
+func(); 
+ 
+// 前面代码片段运行结果等同于下述代码 
+
+myName = "global"; // 全局变量 
+function func() { 
+    var myName; // 等同于 -> var myName = undefined 
+    alert(myName); // undefined 
+    myName = "local"; 
+    alert(myName); // 局部变量 
+} 
+```
+
+#### 实际使用
+
+##### 访问全局对象
+
+在浏览器下，可通过 window 属性在代码的任意位置访问到全局对象（除非做了特别处理而发生了意外，如声明了一个名为 window 的局部对象）。
+
+存在的问题：在其他环境下，全局对象的标识可能不叫 window，而是其他名字，甚至可能对于程序员是看不见的。那么在这种情况下，如何访问全局对象呢？
+
+解决的方法：从内嵌函数的作用域访问。按这种通常能获得全局对象，因为 this 在函数内部作为一个函数调用（不通过构造器 new 创建）时，往往指向该全局对象。
+
+```
+var global = (function() {
+    return this;
+}());
+console.log(global);    // window 对象
+```
+
+注意事项：在 ECMAScript 5 的严格模式下不能这么做。
+
+##### 单一 var 模式（Single var Pattern）
+
+使用一个 var 关键字在函数顶部用逗号进行多个变量声明。
+
+好处：
+* 提供一个单一的地址以查找到函数需要的所有局部变量。
+* 防止出现变量在定义（赋值）前就被使用的逻辑错误。
+* 帮助牢记要声明变量，以尽可能少地使用全局变量。
+* 更少的编码（无论是输入代码还是传输代码）。
+
+示例：
+```
+function func() {
+    var a = 1,
+        b = 2,
+        sum = a + b,
+        myObject = {},
+        i,
+        j;
+        
+    // 函数体...
+}
+```
+
+##### 初始化变量
+
+声明变量的同时初始化变量（为变量赋初值）。
+
+好处：
+* 防止逻辑错误（所有未初始化且未声明的变量，其值都为 undefined）。
+* 提高代码可读性（当你在以后重新看到这段代码时，你可以根据变量的初始值知道使用这些变量的意图，比如该变量应该是对象还是数组？）。
+
+##### 提升：凌散变量的问题
+
+提升：允许在函数的任意地方声明多个变量，无论在哪里声明，效果都等同于在函数顶部进行声明。
+
+存在的问题：在变量声明前使用变量，会导致逻辑错误。因为变量提升，在同一个范围（同一函数）里声明的变量会默认提到函数顶部，
+因此无论在函数哪个位置使用该变量，该变量都可以视为已经声明。
+
+```
+myName = "global"; // 全局变量 
+function func() {
+    alert(myName); // "undefined" 
+    var myName = "local"; 
+    alert(myName); // 局部变量 
+} 
+func(); 
+ 
+// 前面代码片段运行结果等同于下述代码 
+
+myName = "global"; // 全局变量 
+function func() { 
+    var myName; // 等同于 -> var myName = undefined 
+    alert(myName); // undefined 
+    myName = "local"; 
+    alert(myName); // 局部变量 
+} 
+```
+
+##### 命名空间
+
+简单的通过全局对象的单一属性表示的功能性分组。
+
+* 举例：
+YUI 依照命名空间的思路来管理其代码，例如 Y.DOM 下的所有方法都是和 DOM 操作相关，Y.Event 下的所有方法都是和事件相关，以此类推。
+
+* 优点：
+将功能按照命名空间进行分组，可以让你的单全局对象变得井然有序，同时可以让团队成员能够知晓新功能应该属于哪个部分，或者知道去哪里查找已有的功能。
+
+创建命名空间的方法：
+
+* 对象字面量：
+创建一个简单的对象字面量来打包所有的相关对象与函数，达到模拟命名空间的作用。
+```
+// 创建一个命名空间
+var namespace = {};
+
+// 在该命名空间上挂载一个名为 DOM 的对象
+namespace.DOM = {};
+// 在该命名空间上挂载一个名为 Event 的对象
+namespace.Event = {};
+```
+
+* 函数创建：
+通过声明 function 实现，函数里设置初始变量，公共方法写入 prototype。
+
+1. 普通写法：
+```
+// 创建一个命名空间
+var NameSpace = NameSpace || {};
+// 在该命名空间上挂载一个名为 Hello 的构造函数
+NameSpace.Hello = function() {
+    this.name = 'world';
+};
+// 为 Hello 对象写入公共方法
+NameSpace.Hello.prototype.sayHello = function(_name) {
+    return 'Hello ' + (_name || this.name);
+};
+var hello = new NameSpace.Hello();
+```
+
+2. 简洁写法：
+```
+var NameSpace = window.NameSpace || {};
+NameSpace.Hello = new function() {
+    var self = this,
+        name = 'world';
+    self.sayHello = function(_name) {
+        return 'Hello' + (_name || name);
+    };
+};
+```
+
+* 闭包和 Object 实现：
+在闭包中声明好所有变量和方法，并通过一个 JSON Object 返回公有接口。
+```
+NameSpace.Hello = (function() {
+    // 待返回的公有对象
+    var self = {};
+    // 私有变量或方法
+    var name = 'world';
+    // 公有方法或变量
+    self.sayHello = function(_name) {
+        return 'Hello' + (_name || name);
+    }
+    // 返回的公有对象
+    return self;
+}());
+```
+
+* 注意事项：
+命名空间本身也是一个全局对象，在添加该“命名空间”时，有可能覆盖全局空间中的同名对象。因此我们需要在声明命名空间前进行检查，保证全局空间的安全。
+
+```
+var NameSpace = NameSpace || {};
+```
+
+如果已存在同名的全局对象，那么就将所有的函数与变量都挂载到这同名的全局对象上。如果不存在，就创建一个新的全局对象。
+
+除了上述对全局对象是否存在进行判断之外，还能使用非破坏性处理命名空间的方式。
+
+```
+var YourGlobal = {
+    namespace : function(ns) {
+        var parts = ns.split("."),
+            object = this,
+            len = 0,
+            i = 0;
+        
+        for(i = 0, len = parts.length; i < len; i++) {
+            if(!object[parts[i]]) {
+                object[parts[i]] = {};
+            }
+            object = object[parts[i]];
+        }
+        
+        return object;
+    }
+};
+
+/*
+ * 同时创建 YourGlobal.Books 和 YourGlobal.Books.Event
+ * 因为之前没有创建过它们，因此每个都是全新创建的
+ */
+YourGlobal.namespace("Books.Event");
+
+// 现在你可以使用这个命名空间
+YourGlobal.Books.Event.click = function() {
+    //...
+}
+
+/*
+ * 不会操作 YourGlobal.Books 本身，只给它添加 DOM 对象
+ * 它会保持 YourGlobal.Books.Event 保持不变
+ */
+YourGlobal.namespace("Books.DOM");
+
+// 仍然是合法的引用
+console.log(YourGlobal.Books.Event.click);
+
+// 同样可以在方法调用之后立即给它添加新属性
+YourGlobal.namespace("Books").ANewBook = {};
+```
+
+优点：
+
+基于你的单全局对象使用 namespace() 方法可以让开发者放心地认为命名空间总是存在的。
+这样，每个文件都可以首先调用 namespace() 来声明开发者将要使用的命名空间，这样做不会对已有的命名空间造成任何破坏。
+这个方法可以让开发者从使用命名空间之前判断是否存在中解放出来。
+
 
 #### JavaScript 全局属性
 
