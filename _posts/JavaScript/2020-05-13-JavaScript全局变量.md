@@ -252,6 +252,7 @@ YUI 依照命名空间的思路来管理其代码，例如 Y.DOM 下的所有方
 
 * 对象字面量：
 创建一个简单的对象字面量来打包所有的相关对象与函数，达到模拟命名空间的作用。
+
 ```
 // 创建一个命名空间
 var namespace = {};
@@ -266,6 +267,7 @@ namespace.Event = {};
 通过声明 function 实现，函数里设置初始变量，公共方法写入 prototype。
 
 1. 普通写法：
+
 ```
 // 创建一个命名空间
 var NameSpace = NameSpace || {};
@@ -281,6 +283,7 @@ var hello = new NameSpace.Hello();
 ```
 
 2. 简洁写法：
+
 ```
 var NameSpace = window.NameSpace || {};
 NameSpace.Hello = new function() {
@@ -294,6 +297,7 @@ NameSpace.Hello = new function() {
 
 * 闭包和 Object 实现：
 在闭包中声明好所有变量和方法，并通过一个 JSON Object 返回公有接口。
+
 ```
 NameSpace.Hello = (function() {
     // 待返回的公有对象
