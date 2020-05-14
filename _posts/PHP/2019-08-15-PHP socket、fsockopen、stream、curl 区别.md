@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: PHP
-title: PHP socket、fsockopen、curl、stream 区别
-meta: socket、fsockopen、curl、stream 区别
+title: PHP socket、fsockopen、stream、curl 区别
+meta: socket 水泥、沙子，底层的东西；fsockopen 、 stream 水泥预制件，可以用来搭房子；curl 毛坯房，自己装修一下就能住了。
 ---
 * content
 {:toc}
