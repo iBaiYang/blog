@@ -30,9 +30,9 @@ socket 是一个封装了 TCP/IP 操作的工具包。
 stream_socket_client 和 fsockopen 没有本质上的区别。stream_socket_client 和 fsockopen 分属不同流派的对 socket 的封装。
 stream_socket_client 属于流操作，而 fsockopen 属于文件操作。
 
-fsockopen 是比较底层的调用，属于网络系统的socket调用，而curl经过的包装支持HTTPS认证，HTTP POST方法， HTTP PUT方法， FTP上传， 
+fsockopen 是比较底层的调用，属于网络系统的socket调用，而curl经过的包装支持HTTPS认证，fsockopen支持 HTTP POST方法， HTTP PUT方法， FTP上传， 
 kerberos认证，HTTP上传，代理服务器， cookies，用户名/密码认证，下载文件断点续传，上载文件断点续传，http代理服务器管道（ proxy tunneling），
-甚至它还支持IPv6， socks5代理服务器,，通过http代理服务器上传文件到FTP服务器等等，功能十分强大。fsockopen 返回的是没有处理过的数据，
+甚至它还支持IPv6， socks5代理服务器，通过http代理服务器上传文件到FTP服务器等等，功能十分强大。fsockopen 返回的是没有处理过的数据，
 包括数据的长度数据内容和数据的结束符。而curl是处理后的内容。
 
 在用户使用时，curl 更加方便，但其参数很多，配置稍微复杂，fsockopen 则有固定的几个参数，简单，但获取结果可能需要再做处理。
@@ -49,7 +49,7 @@ curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL%E8%AF%A6%E8%A7%A3.
 
 那么file_get_contents呢？
 
-有些时候用 file_get_contents() 调用外部文件容易超时报错。curl 效率比 file_get_contents() 和 fsockopen() 高一些，原因是CURL会自动对DNS信息进行缓存。
+有些时候用 file_get_contents() 调用外部文件容易超时报错。curl 效率比 file_get_contents() 和 fsockopen() 高一些，原因是cURL会自动对DNS信息进行缓存。
 
 file_get_contents / curl / fsockopen 在当前所请求环境下选择性操作，没有一概而论。
 
@@ -63,7 +63,7 @@ fsockopen 较底层，可以设置基于UDP或是TCP协议去交互，配置麻�
 
 只讨论 curl 与file_get_contents 的话，有这么一些结论：
 
-1. fopen /file_get_contents 每次请求都会重新做DNS查询，并不对DNS信息进行缓存。但是CURL会自动对DNS信息进行缓存。对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以CURL的性能比fopen /file_get_contents 好很多。
+1. fopen /file_get_contents 每次请求都会重新做DNS查询，并不对DNS信息进行缓存。但是cURL会自动对DNS信息进行缓存。对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以cURL的性能比fopen /file_get_contents 好很多。
 
 2. fopen /file_get_contents在请求HTTP时，使用的是http_fopen_wrapper，不会keeplive。而curl却可以。这样在多次请求多个链接时，curl效率会好一些。
 
@@ -261,9 +261,9 @@ private function udp_client($port, $ip, $sendMsg)
 class Http   
 {   
  /**  
-  * @var 使用 CURL  
+  * @var 使用 cURL  
   */  
- const TYPE_CURL   = 1;   
+ const TYPE_cURL   = 1;   
  /**  
   * @var 使用 Socket  
   */    
@@ -297,9 +297,9 @@ class Http
    $type = self::TYPE_SOCK;   
   }   
   switch($type) {   
-   case self::TYPE_CURL :   
+   case self::TYPE_cURL :   
     if (!function_exists('curl_init')){   
-     throw new Exception(__CLASS__ . " PHP CURL extension not install");   
+     throw new Exception(__CLASS__ . " PHP cURL extension not install");   
     }   
     $obj = Http_Curl::getInstance($url);   
     break;   
@@ -344,9 +344,9 @@ class Http
   
   
 /**  
- * 使用CURL 作为核心操作的HTTP访问类  
+ * 使用cURL 作为核心操作的HTTP访问类  
  *  
- * @desc CURL 以稳定、高效、移植性强作为很重要的HTTP协议访问客户端，必须在PHP中安装 CURL 扩展才能使用本功能  
+ * @desc cURL 以稳定、高效、移植性强作为很重要的HTTP协议访问客户端，必须在PHP中安装 cURL 扩展才能使用本功能  
  */  
 class Http_Curl   
 {   
@@ -530,12 +530,12 @@ class Http_Curl
    throw new Exception(__CLASS__ .": Access url is empty");   
   }   
        
-  //初始化CURL   
+  //初始化cURL   
         $ch = curl_init();   
-        curl_setopt($ch, CURLOPT_HEADER, 0);   
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);   
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);   
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);   
+        curl_setopt($ch, cURLOPT_HEADER, 0);   
+        curl_setopt($ch, cURLOPT_FOLLOWLOCATION, 1);   
+        curl_setopt($ch, cURLOPT_RETURNTRANSFER, 1);   
+        curl_setopt($ch, cURLOPT_TIMEOUT, $timeout);   
            
         //设置特殊属性   
         if (!emptyempty($options)){   
@@ -550,13 +550,13 @@ class Http_Curl
         }   
         //处理POST请求数据   
         if ($method == 'POST'){   
-            curl_setopt($ch, CURLOPT_POST, 1 );   
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->vars);   
+            curl_setopt($ch, cURLOPT_POST, 1 );   
+            curl_setopt($ch, cURLOPT_POSTFIELDS, $this->vars);   
         }   
            
         //设置cookie信息   
         if (!emptyempty($this->cookies)){   
-            curl_setopt($ch, CURLOPT_COOKIE, $this->cookies);   
+            curl_setopt($ch, cURLOPT_COOKIE, $this->cookies);   
         }   
         //设置HTTP缺省头   
         if (emptyempty($this->header)){   
@@ -566,10 +566,10 @@ class Http_Curl
           //'Cache-Control: no-cache',   
          );   
         }   
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->header);   
+        curl_setopt($ch, cURLOPT_HTTPHEADER, $this->header);   
   
         //发送请求读取输数据   
-        curl_setopt($ch, CURLOPT_URL, $this->uri);           
+        curl_setopt($ch, cURLOPT_URL, $this->uri);           
         $data = curl_exec($ch);   
         if( ($err = curl_error($ch)) ){   
             curl_close($ch);   
