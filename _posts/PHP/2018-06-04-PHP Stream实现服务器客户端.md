@@ -168,6 +168,12 @@ fclose($handle);
 3. php://memory：从系统内存中读取数据，或者把数据写入系统内存。缺点是系统内存有限，所有使用 php://temp 更安全；
 4. php://temp：和 php://memory 类似，不过，没有可用内存时，PHP 会把数据写入这个临时文件。
 
+PHP有基本的php://stdin，php://stdout，php://stderr包装器对应默认的I/O资源。还有一个php://input流，它是一个只读的流，
+流内容是post请求的数据。当我们将数据放在一个post请求的body体内用来请求一个远程服务的时候，这个流特别好用。
+
+因为php://input是最常用到的流，所以这里列出一些知识点：
+1. php://input可以读取没有处理过的POST数据。相较于$_POST数据与php://input数据才是”一致”(打上引号，表示它们格式不一致，内容一致)的。其它情况，它们都不一致
+2. php://input读取不到GET数据。是因为_GET数据作为query_path写在http请求头部(header)的PATH字段，而不是写在http请求的body部分。
 
 ##### 其他流封装协议
 
