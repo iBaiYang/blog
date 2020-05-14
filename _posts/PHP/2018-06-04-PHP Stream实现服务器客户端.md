@@ -130,6 +130,34 @@ var_dump(stream_get_filters());
 
 ##### http://流封装协议
 
+下面使用 HTTP 流封装协议创建了一个与 Flicker API 通信的 PHP 流：
+```
+<?php
+$json = file_get_contents(
+    'http://api.flickr.com/services/feeds/photos_public.gne?format=json'
+);
+```
+
+不要以为这是普通的网页 URL，file_get_contents() 函数的字符串参数其实是一个流标识符。http 协议会让 PHP 使用 HTTP 流封装协议，
+在这个参数中，http 之后是流的目标。
+
+注：很多 PHP 开发者可能并不知道普通的 URL 其实是 PHP 流封装协议标识符的伪装。
+
+##### file://流封装协议
+
+我们通常使用 file_get_contents()、fopen()、fwrite() 和 fclose() 等函数读写文件系统，
+因为 PHP 默认使用的流封装协议是 file://，所以我们很少认为这些函数使用的是 PHP 流。
+下面的示例演示了使用 file:// 流封装协议创建一个读写 /etc/hosts 文件的流：
+```
+$handle = fopen('file:///etc/hosts', 'rb');
+while (feof($handle) !== TRUE) {
+    echo fgets($handle);
+}
+fclose($handle);
+```
+
+我们通常会省略掉 file:// 协议，因为这是 PHP 使用的默认值。
+
 ##### php://流封装协议
 
 编写命令行脚本的 PHP 开发会用到 php:// 流封装协议，这个流封装协议的作用是与 PHP 脚本的标准输入、标准输出和标准错误文件描述符通信。
