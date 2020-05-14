@@ -585,6 +585,8 @@ PHP7 学习笔记（十二）Stream 函数详解 <https://blog.csdn.net/qq756684
 
 php中stream(流)的用法 <http://www.luyixian.cn/php_show_111303.aspx>
 
+PHP 手册 语言参考 支持的协议和封装协议 php:// <https://www.php.net/manual/zh/wrappers.php.php>
+
 PHP Socket实现websocket（三）Stream函数 <https://www.cnblogs.com/yangxunwu1992/p/5563450.html>
 
 Socket 深度探索 4 PHP （一） <https://blog.csdn.net/shagoo/article/details/6396089>
