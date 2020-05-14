@@ -30,6 +30,267 @@ PHP中流的形式：<scheme>://<target>。其中<scheme>是包装器的名字�
 readfile('/path/to/somefile.txt') 和 readfile('file:///path/to/somefile.txt')，
 使用这两种方式读取文件，可以得到相同的结果。
 
+```
+$content = readfile('/home/www/bin/count.sh');
+var_dump($content); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+$content2 = readfile('file:///home/www/bin/count.sh');
+var_dump($content2); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+// 逐行读取文件
+$file = fopen("file:///home/www/bin/count.sh", "r") or exit("无法打开文件!");
+// 读取文件每一行，直到文件结尾
+while (!feof($file)) {
+    echo fgets($file) . "<br>";
+}
+fclose($file);
+// #!/bin/bash
+// for ((COUNT = 1; COUNT <= 10; COUNT++)); do
+// echo $COUNT
+// sleep 1
+// done
+// 逐字符读取文件
+$file2 = fopen("file:///home/www/bin/count.sh", "r") or exit("无法打开文件!");
+while (!feof($file2)) {
+    echo fgetc($file2); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+}
+fclose($file2);
+```
+
+PHP 内置的包装器：
+```
+/**
+ * 获取已注册的套接字传输协议列表
+ */
+var_dump(stream_get_transports());
+//array (size=9)
+//  0 => string 'tcp' (length=3)
+//  1 => string 'udp' (length=3)
+//  2 => string 'unix' (length=4)
+//  3 => string 'udg' (length=3)
+//  4 => string 'ssl' (length=3)
+//  5 => string 'tls' (length=3)
+//  6 => string 'tlsv1.0' (length=7)
+//  7 => string 'tlsv1.1' (length=7)
+//  8 => string 'tlsv1.2' (length=7)
+
+/**
+ * 获取已注册的流类型
+ */
+var_dump(stream_get_wrappers());
+// array (size=17)
+//   0 => string 'https' (length=5)
+//   1 => string 'ftps' (length=4)
+//   2 => string 'compress.zlib' (length=13)
+//   3 => string 'compress.bzip2' ength=14)
+//   4 => string 'php' (length=3)
+//   5 => string 'file' (length=4)
+//   6 => string 'glob' (length=4)
+//   7 => string 'data' (length=4)
+//   8 => string 'http' (length=4)
+//   9 => string 'ftp' (length=3)
+//   10 => string 'phar' (length=4)
+//   11 => string 'zip' (length=3)
+//   12 => string 'ssh2.shell' (length=10)
+//   13 => string 'ssh2.exec' (length=9)
+//   14 => string 'ssh2.tunnel' (length=11)
+//   15 => string 'ssh2.scp' (length=8)
+//   16 => string 'ssh2.sftp' (length=9)
+
+/**
+ * 获取已注册的数据流过滤器列表
+ */
+var_dump(stream_get_filters());
+//array (size=12)
+//  0 => string 'zlib.*' (length=6)
+//  1 => string 'bzip2.*' (length=7)
+//  2 => string 'convert.iconv.*' (length=15)
+//  3 => string 'mcrypt.*' (length=8)
+//  4 => string 'mdecrypt.*' (length=10)
+//  5 => string 'string.rot13' (length=12)
+//  6 => string 'string.toupper' (length=14)
+//  7 => string 'string.tolower' (length=14)
+//  8 => string 'string.strip_tags' (length=17)
+//  9 => string 'convert.*' (length=9)
+//  10 => string 'consumed' (length=8)
+//  11 => string 'dechunk' (length=7)
+```
+
+#### 流封装协议
+
+流式数据的种类各异，每种类型需要独特的协议，以便读写数据，我们称这些协议为流封装协议。例如，我们可以读写文件系统，
+可以通过 HTTP、HTTPS 或 SSH 与远程 Web 服务器通信，还可以打开并读写 ZIP、RAR 或 PHAR 压缩文件。这些通信方式都包含下述相同的过程：
+
+1. 开始通信
+2. 读取数据
+3. 写入数据
+4. 结束通信
+
+虽然过程是一样的，但是读写文件系统中文件的方式与收发 HTTP 消息的方式有所不同，流封装协议的作用是使用通用的接口封装这种差异。
+
+每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：<scheme>://<target>，其中 <scheme> 是流的封装协议，<target> 是流的数据源。
+
+##### http://流封装协议
+
+##### php://流封装协议
+
+编写命令行脚本的 PHP 开发会用到 php:// 流封装协议，这个流封装协议的作用是与 PHP 脚本的标准输入、标准输出和标准错误文件描述符通信。
+我们可以使用 PHP 提供的文件系统函数打开、读取或写入下面四个流：
+
+1. php://stdin：这是个只读 PHP 流，其中的数据来自标准输入。PHP 脚本可以使用这个流接收命令行传入脚本的信息；
+2. php://stdout：把数据写入当前的输出缓冲区，这个流只能写，无法读或寻址；
+3. php://memory：从系统内存中读取数据，或者把数据写入系统内存。缺点是系统内存有限，所有使用 php://temp 更安全；
+4. php://temp：和 php://memory 类似，不过，没有可用内存时，PHP 会把数据写入这个临时文件。
+
+
+##### 其他流封装协议
+
+```
+file:// — 访问本地文件系统
+http:// — 访问 HTTP(s) 网址
+ftp:// — 访问 FTP(s) URLs
+php:// — 访问各个输入/输出流（I/O streams）
+zlib:// — 压缩流
+data:// — 数据（RFC 2397）
+glob:// — 查找匹配的文件路径模式
+phar:// — PHP 归档
+ssh2:// — Secure Shell 2
+rar:// — RAR
+ogg:// — 音频流
+expect:// — 处理交互式的流
+```
+
+#### 流上下文
+
+有些 PHP 流能够接受一系列可选的参数，这些参数叫流上下文，用于定制流的行为。不同的流封装协议使用的流上下文有所不同，
+流上下文使用 stream_context_create() 函数创建，这个函数返回的上下文对象可以传入大多数文件系统函数。
+
+例如，我们可以使用 file_get_contents() 发送 HTTP POST 请求，使用一个流上下文对象即可实现：
+```
+$requestBody = '{"username":"nonfu"}';
+$context = stream_context_create([
+    'http' => [
+        'method' => 'POST',
+        'header' => "Content-Type: application/json;charset=utf-8;\r\nContent-Length: " . mb_strlen($requestBody),
+        'content' => $requestBody
+    ]
+]);
+$response = file_get_contents('https://my-api.com/users', false, $context);
+```
+
+##### 流过滤器
+
+目前为止我们讨论了如何打开流，读取流中的数据，以及把数据写入流。不过，PHP 流真正强大的地方在于过滤、转换、添加或删除流中传输的数据，
+例如，我们可以打开一个流处理 Markdown 文件，在把文件内容读入内存的过程中自动将其转化为 HTML。
+
+若想把过滤器附加到现有的流上，要使用 stream_filter_append() 函数，下面我们以 string.toupper 过滤器演示如何把文件中的内容转换成大写字母：
+```
+$handle = fopen('test.txt', 'rb');
+stream_filter_append($handle, 'string.toupper');
+while (feof($handle) !== true) {
+    echo fgets($handle);
+}
+fclose($handle);
+```
+
+运行该脚本，输出的都是大写字母：
+```
+ABCDEEFGHIJKLMN
+HELLO LARAVELACADEMY!
+```
+
+PHP 所有可用流过滤器请参考官方文档：<http://php.net/manual/zh/filters.php>。
+
+我们还可以使用 php://filter 流封装协议把过滤器附加到流上，不过，使用这种方式之前必须先打开 PHP 流：
+```
+$handle = fopen('php://filter/read=string.toupper/resource=test.txt', 'rb');
+while (feof($handle) !== true) {
+    echo fgets($handle);
+}
+fclose($handle);
+```
+
+这个方式实现效果和 stream_filter_append() 函数一样，但是相比之下更为繁琐。
+不过，PHP 的某些文件系统函数在调用后无法附加过滤器，例如 file() 和 fpassthru()，
+使用这些函数时只能使用 php://filter 流封装协议附加流过滤器。
+
+###### 自定义流过滤器
+
+我们还可以编写自定义的流过滤器。其实，大多数情况下都要使用自定义的流过滤器，自定义的流过滤器是个 PHP 类，
+继承内置的 php_user_filter 类（http://php.net/manual/zh/class.php-user-filter.php），
+且必须实现 filter()、onCreate() 和 onClose() 方法，最后，必须使用 stream_filter_register() 函数注册自定义的流过滤器。
+
+注：PHP 流会把数据分成按次序排列的桶，一个桶中盛放的流数据是固定的（如 4096 字节），如果还用管道比喻，
+就是把水放在一个个水桶中，顺着管道从出发地漂流到目的地，在漂流过程中会经过过滤器，过滤器一次可以接收并处理一个或多个桶，
+一定时间内过滤器接收到的桶叫做桶队列。桶队列中的每个桶对象都有两个公共属性：data 和 datalen，分别表示桶的内容和长度。
+
+下面我们自定义一个流过滤器 DirtyWordsFilter，把流数据读入内存时审查其中的脏字：
+```
+<?php
+class DirtyWordsFilter extends php_user_filter
+{
+    /**
+     * @param resource $in 流入的桶队列
+     * @param resource $out 流出的桶队列
+     * @param int $consumed 处理的字节数
+     * @param bool $closing 是否是流中最后一个桶队列
+     * @return int
+     * 接收、处理再转运桶中的流数据，在该方法中，我们迭代桶队列对象，把脏字替换成审查后的值
+     */
+    public function filter($in, $out, &$consumed, $closing)
+    {
+        $words = ['grime', 'dirt', 'grease'];
+        $wordData = [];
+        foreach ($words as $word) {
+            $replacement = array_fill(0, mb_strlen($word), '*');
+            $wordData[$word] = implode('', $replacement);
+        }
+        $bad = array_keys($wordData);
+        $good = array_values($wordData);
+ 
+        // 迭代桶队列中的每个桶
+        while ($bucket = stream_bucket_make_writeable($in)) {
+            // 审查桶对象中的脏字
+            $bucket->data = str_replace($bad, $good, $bucket->data);
+            // 增加已处理的数据量
+            $consumed += $bucket->datalen;
+            // 把桶放入流向下游的队列中
+            stream_bucket_append($out, $bucket);
+        }
+ 
+        return PSFS_PASS_ON;
+    }
+}
+```
+
+然后，我们必须使用 stream_filter_register() 函数注册这个自定义的 DirtyWordsFilter 流过滤器：
+```
+stream_filter_register('dirty_words_filter', 'DirtyWordsFilter');
+```
+
+第一个参数用于标识这个自定义过滤器的过滤器名，第二个参数是这个自定义过滤器的类名。接下来就可以使用这个自定义的流过滤器了：
+```
+$handle = fopen('test.txt', 'rb');
+stream_filter_append($handle, 'dirty_words_filter');
+while (feof($handle) !== true) {
+    echo fgets($handle);
+}
+fclose($handle);
+```
+
+修改 test.txt 内容如下：
+```
+abcdeefghijklmn
+Hello LaravelAcademy!
+grime
+I hate dirty things!
+```
+
+运行上面的自定义过滤器脚本，结果如下：
+```
+abcdeefghijklmn
+Hello LaravelAcademy!
+*****
+I hate ****y things!
+```
 
 #### Stream实现服务器客户端
 
@@ -303,9 +564,9 @@ system函数 <http://www.php.net/manual/zh/function.system.php>
 
 PHP执行系统外部命令函数:exec()、passthru()、system()、shell_exec() <https://www.cnblogs.com/gaohj/p/3267692.html>
 
+PHP 手册 语言参考 支持的协议和封装协议 <https://www.php.net/manual/zh/wrappers.php>
 
-
-
+PHP 手册 附录 可用过滤器列表 <https://www.php.net/manual/zh/filters.php>
 
 
 
