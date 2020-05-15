@@ -378,7 +378,7 @@ YourGlobal.namespace("Books").ANewBook = {};
 在window.onload = function(){ } 中使用var 变量名 声明全局变量，以后可以在与浏览器该页面多次操作交互的子函数中随时访问和修改这个全局变量，
 这样就使这个变量像数据库中的具体字段值一样，可以保存唯一值，具体操作中也可以作为唯一的判断标准。
 
-同理，在Jquery中，$(function(){}) 或者 $(document).ready(function(){}) 中使用var 变量名 也是为声明全局变量。
+同理，在Jquery中，$(function(){}) 或者 $(document).ready(function(){}) 中使用var 变量名 也是声明为全局变量。
 
 #### JavaScript 全局属性
 
