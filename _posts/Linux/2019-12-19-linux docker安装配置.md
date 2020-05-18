@@ -2,7 +2,7 @@
 layout: post
 categories: Linux
 title: Linux docker安装配置
-meta: Linux docker安装配置
+meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。
 ---
 * content
 {:toc}
@@ -17,7 +17,8 @@ meta: Linux docker安装配置
 这就是虚拟化技术。有一种传统的方式是虚拟机。虚拟机，类似于“子电脑”，占用空间大、启动慢，一般要几GB到几十GB的空间。
 还有一种新的虚拟化技术就是Docker这样的容器技术，属于轻量级的虚拟化，只需要MB级甚至KB级的空间，启动时间很快，几秒钟就能完成。
 
-所有我们选中的就是Docker技术。
+所有我们选中的就是Docker技术。Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，
+然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。
 
 #### Docker信息查看
 
@@ -95,6 +96,11 @@ sudo apt-get install \
 添加 Docker 的官方 GPG 密钥:
 ```
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+```
+
+如果不能成功，我们可以换成国内的源：
+```
+curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/debian/gpg | sudo apt-key add -
 ```
 
 可以看出我们是在debian系上安装，如果要在ubuntu上安装，可用：
