@@ -15,7 +15,7 @@ meta: linux 给php安装redis拓展
 
 > sudo apt-get install php7.1-redis 
 
-提示：
+如果提示：
 ```
 注意，选中 'php-redis' 而非 'php7.1-redis'
 php-redis 已经是最新版 (5.2.1+4.3.0-1+0~20200321.20+debian9~1.gbp9fe0ce)。
