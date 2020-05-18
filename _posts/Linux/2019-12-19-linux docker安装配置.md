@@ -171,7 +171,9 @@ sudo add-apt-repository \
 ```
 
 我们可以安装上面看到的指定版本， 例如 5:19.03.8~3-0~debian-stretch 版：
-> sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
+```
+sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
+```
 
 `<VERSION_STRING>`, 替换为 5:19.03.8~3-0~debian-stretch 。
 
