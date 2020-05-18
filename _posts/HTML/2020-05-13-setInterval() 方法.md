@@ -47,7 +47,7 @@ setInterval(function(){ alert("Hello"); }, 3000);
 var myVar;
  
 function myFunction() {
-    myVar = setTimeout(alertFunc, 3000);
+    myVar = setInterval(alertFunc, 3000);
 }
  
 function alertFunc() {
