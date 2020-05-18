@@ -74,7 +74,7 @@ REPOSITORY                              TAG                 IMAGE ID            
 hub.c.163.com/liuchao110119163/ubuntu   tcpip               396485da9bdd        21 months ago       345MB
 ```
 
-#### Docker安装
+#### 安装Docker引擎
 
 Docker 的旧版本被称为 docker，docker.io 或 docker-engine 。如果已安装，请卸载它们:
 > sudo apt-get remove docker docker-engine docker.io containerd runc
@@ -102,8 +102,118 @@ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
+通过搜索指纹的最后8个字符，验证您现在拥有指纹9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88的密钥:
+> sudo apt-key fingerprint 0EBFCD88
 
+输出：
+```
+pub   4096R/0EBFCD88 2017-02-22
+      Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
+uid                  Docker Release (CE deb) <docker@docker.com>
+sub   4096R/F273FCD8 2017-02-22
+```
 
+我们设置docker稳定版储存库：
+```
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \
+   stable"
+```
+
+上面把软件储存库设置好了，下面我们进行安装。
+
+更新 apt 包索引：
+> sudo apt-get update
+
+列出可用版本：
+> apt-cache madison docker-ce
+
+输出：
+```
+ docker-ce | 5:19.03.8~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.7~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.6~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.5~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.4~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.3~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.2~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.1~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:19.03.0~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.9~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.8~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.7~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.6~3-0~debian-stretch | http://packages.deepin.com/deepin lion/non-free amd64 Packages
+ docker-ce | 5:18.09.6~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.5~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.4~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.3~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.2~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.1~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 5:18.09.0~3-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.06.3~ce~3-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.06.2~ce~3-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.06.1~ce~3-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.06.0~ce~3-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.03.1~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 18.03.0~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.12.1~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.12.0~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.09.1~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.09.0~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.06.2~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.06.1~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.06.0~ce-0~debian | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.03.3~ce-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.03.2~ce-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.03.1~ce-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+ docker-ce | 17.03.0~ce-0~debian-stretch | https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch/stable amd64 Packages
+```
+
+我们可以安装上面看到的指定版本， 例如 5:19.03.8~3-0~debian-stretch 版：
+> sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
+
+<VERSION_STRING>, 替换为 5:19.03.8~3-0~debian-stretch 。
+
+或者我们可以通过下面的命令直接安装最新版，不过有可能不是稳定版：
+> sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+通过以上步骤，Docker就安装好了。
+
+Docker是虚拟化容器引擎，我们可以运行hello world映像，验证Docker引擎是否正确安装：
+> sudo docker run hello-world
+
+输出：
+```
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+0e03bdcc26d7: Pull complete 
+Digest: sha256:6a65f928fb91fcfbc963f7aa6d57c8eeb426ad9a20c7ee045538ef34847f44f1
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+```
+
+此命令下载测试映像并在容器中运行它。当容器运行时，它会打印一条信息性消息并退出。
 
 #### 示例配置
 
