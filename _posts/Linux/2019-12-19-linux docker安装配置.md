@@ -24,7 +24,6 @@ meta: Linux docker安装配置
 我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
 
 我们电脑上可能已经安装好了Docker，我们查看一下版本：
-
 > docker -v
 
 输出：
@@ -33,7 +32,6 @@ Docker version 19.03.5, build 633a0ea838
 ```
 
 也可以通过下面这条命令查看详情：
-
 > docker version
 
 输出：
@@ -68,7 +66,6 @@ Server: Docker Engine - Community
 ```
 
 查看镜像有哪些：
-
 > docker images
 
 输出：
@@ -80,7 +77,6 @@ hub.c.163.com/liuchao110119163/ubuntu   tcpip               396485da9bdd        
 #### Docker安装
 
 Docker 的旧版本被称为 docker，docker.io 或 docker-engine 。如果已安装，请卸载它们:
-
 > sudo apt-get remove docker docker-engine docker.io containerd runc
 
 更新 apt 包索引:
@@ -97,10 +93,15 @@ sudo apt-get install \
 ```
 
 添加 Docker 的官方 GPG 密钥:
-> curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+```
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+```
 
 可以看出我们是在debian系上安装，如果要在ubuntu上安装，可用：
-> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
 
 
 
