@@ -279,12 +279,13 @@ ENTRYPOINT ["docker-php-entrypoint"]
 EOF
 ```
 
+##### 构建镜像
 
+Dockerfile 文件:
 ```
-
 FROM centos:7
 
-MAINTAINER www  qing@iw16.com
+MAINTAINER www  ibaiyang@126.com
 
 ENV PHPIZE_DEPS \
 		autoconf \
