@@ -9,6 +9,103 @@ meta: Linux docker安装配置
 
 ### 正文
 
+在未使用虚拟化技术的机子上，长期使用后，上面的软件和版本就变得乱七八器，很混乱和庞杂，比如一个机子上可能既有PHP7.1、又有PHP7.0、还有PHP5.6，
+其他软件也一样，而且由于Linux上安装方式的多样性，既有源码编译安装，又有apt、rpm、yum、dpkg等包管理工具安装，
+导致PHP7.1是编译安装的、PHP7.0是apt方式安装的、PHP5.6又是dpkg方式安装的等等，最后自己也记不清哪个软件的哪个版本是通过哪种方式安装的了，
+卸载都不知道通过什么方式卸载，看着这一摊子不头大才怪：如果一个机子上面每个软件版本都有自己的一个容器，不想要这个版本了，直接把容器删了就好了。
+
+这就是虚拟化技术。有一种传统的方式是虚拟机。虚拟机，类似于“子电脑”，占用空间大、启动慢，一般要几GB到几十GB的空间。
+还有一种新的虚拟化技术就是Docker这样的容器技术，属于轻量级的虚拟化，只需要MB级甚至KB级，启动时间很快，几秒钟就能完成。
+
+所有我们选中的就是Docker技术。
+
+#### Docker信息查看
+
+我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
+
+我们电脑上可能已经安装好了Docker，我们查看一下版本：
+
+> docker -v
+
+输出：
+```
+Docker version 19.03.5, build 633a0ea838
+```
+
+也可以通过下面这条命令查看详情：
+
+> docker version
+
+输出：
+```
+Client: Docker Engine - Community
+ Version:           19.03.5
+ API version:       1.40
+ Go version:        go1.12.12
+ Git commit:        633a0ea838
+ Built:             Wed Nov 13 07:25:58 2019
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          19.03.5
+  API version:      1.40 (minimum version 1.12)
+  Go version:       go1.12.12
+  Git commit:       633a0ea838
+  Built:            Wed Nov 13 07:24:29 2019
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.2.10
+  GitCommit:        b34a5c8af56e510852c35414db4c1f4fa6172339
+ runc:
+  Version:          1.0.0-rc8+dev
+  GitCommit:        3e425f80a8c931f88e6d94a8c831b9d5aa481657
+ docker-init:
+  Version:          0.18.0
+  GitCommit:        fec3683
+```
+
+查看镜像有哪些：
+
+> docker images
+
+输出：
+```
+REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+hub.c.163.com/liuchao110119163/ubuntu   tcpip               396485da9bdd        21 months ago       345MB
+```
+
+#### Docker安装
+
+Docker 的旧版本被称为 docker，docker.io 或 docker-engine 。如果已安装，请卸载它们:
+
+> sudo apt-get remove docker docker-engine docker.io containerd runc
+
+更新 apt 包索引:
+> sudo apt-get update
+
+安装 apt 依赖包，用于通过HTTPS来获取仓库:
+```
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+```
+
+添加 Docker 的官方 GPG 密钥:
+> curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+
+可以看出我们是在debian系上安装，如果要在ubuntu上安装，可用：
+> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+
+
+#### 示例配置
+
 ```
 cat > docker-php-entrypoint << EOF
 #!/bin/sh
@@ -109,9 +206,13 @@ yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-cli
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-<https://docs.docker.com/install/linux/docker-ce/debian/>
+Install Docker Engine on Debian <https://docs.docker.com/install/linux/docker-ce/debian/>
 
-<https://wiki.deepin.org/wiki/Docker>
+Deepin 中的 Docker <https://wiki.deepin.org/wiki/Docker>
 
 干货满满！10分钟看懂Docker和K8S <https://my.oschina.net/jamesview/blog/2994112>
+
+搭建TCP-IP实验环境 <https://ibaiyang.github.io/blog/it%E6%8A%80%E6%9C%AF/2019/12/03/%E6%90%AD%E5%BB%BATCP-IP%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83.html>
+
+Linux和Docker常用命令 <https://www.cnblogs.com/mq0036/p/8520605.html>
 
