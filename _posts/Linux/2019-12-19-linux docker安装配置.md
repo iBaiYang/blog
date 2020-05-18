@@ -257,11 +257,11 @@ cat > Dockerfile << EOF
 FROM vipcloud/vipcloud-php-fpm-apcu:7.1.24
 RUN mkdir /var/www/html/ -pv
 RUN mkdir /config/dev/ -pv
-COPY --chown=nginx:nginx VIPSales.json /config/dev/
-COPY --chown=nginx:nginx dist/VIPSales.${BUILD_NUMBER}.${BUILD_ID}.tar.gz /var/www/html/
+COPY --chown=nginx:nginx crm.json /config/dev/
+COPY --chown=nginx:nginx dist/crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz /var/www/html/
 WORKDIR /var/www/html/
 RUN /bin/sh -xe \
-&& tar -xf ./VIPSales.${BUILD_NUMBER}.${BUILD_ID}.tar.gz && rm -f ./VIPSales.${BUILD_NUMBER}.${BUILD_ID}.tar.gz \
+&& tar -xf ./crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz && rm -f ./crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz \
 && cd /var/www/html/ \
 && mkdir -p runtime \
 && mkdir -p web/assets \
