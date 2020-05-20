@@ -543,6 +543,8 @@ yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-cli
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+Docker仓库 <https://hub.docker.com/>
+
 Install Docker Engine on Debian <https://docs.docker.com/install/linux/docker-ce/debian/>
 
 Deepin 中的 Docker <https://wiki.deepin.org/wiki/Docker>
