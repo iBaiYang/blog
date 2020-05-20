@@ -338,7 +338,7 @@ docker.io/library/mysql:5.7
 -d 指定容器的运行模式为后台运行，默认不会进入容器
 -e 内置环境变量 这里是给ROOT 帐号设置密码
 ```
-hub.c.163.com/liuchao110119163/ubuntu
+
 #### 示例配置
 
 ##### 启动脚本start_docker_phpfpm.sh
