@@ -479,7 +479,7 @@ EOF
 粘贴到命令行执行生成文件：docker-php-entrypoint 和 Dockerfile 。
 
 生成镜像：
-> docker build -t phpfpm:test .
+> docker build -t crm:test .
 
 输出：
 ```
@@ -515,10 +515,10 @@ Step 10/10 : ENTRYPOINT ["docker-php-entrypoint"]
 Removing intermediate container 0befd0acc74c
  ---> 5e849ed7a72d
 Successfully built 5e849ed7a72d
-Successfully tagged phpfpm:test
+Successfully tagged crm:test
 ```
 
-镜像phpfpm:test生成成功。
+镜像crm:test生成成功。
 
 配置文件./crm.json，压缩包文件./dist/crm.tar.gz，我们需要在当前目录下准备好。
 
