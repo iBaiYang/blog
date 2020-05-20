@@ -127,6 +127,32 @@ sudo add-apt-repository \
    stable"
 ```
 
+过程可能报错：
+```
+Traceback (most recent call last):
+  File "/usr/bin/add-apt-repository", line 95, in <module>
+    sp = SoftwareProperties(options=options)
+  File "/usr/lib/python3/dist-packages/softwareproperties/SoftwareProperties.py", line 109, in __init__
+    self.reload_sourceslist()
+  File "/usr/lib/python3/dist-packages/softwareproperties/SoftwareProperties.py", line 599, in reload_sourceslist
+    self.distro.get_sources(self.sourceslist)    
+  File "/usr/lib/python3/dist-packages/aptsources/distro.py", line 93, in get_sources
+    (self.id, self.codename))
+aptsources.distro.NoDistroTemplateException: Error: could not find a distribution template for Deepin/stable
+```
+
+看来我们需要把源直接写进配置了：
+
+> sudo vim /etc/apt/sources.list
+
+把下面内容补充进去，保存并退出：
+```
+# 官方源
+# deb [arch=amd64] https://download.docker.com/linux/debian wheezy stable
+# 国内中科大源
+deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch stable
+```
+
 上面把软件储存库设置好了，下面我们进行安装。
 
 更新 apt 包索引：
@@ -283,7 +309,7 @@ docker.io/library/mysql:5.7
 -d 指定容器的运行模式为后台运行，默认不会进入容器
 -e 内置环境变量 这里是给ROOT 帐号设置密码
 ```
-
+hub.c.163.com/liuchao110119163/ubuntu
 #### 示例配置
 
 ##### 启动脚本start_docker_phpfpm.sh
