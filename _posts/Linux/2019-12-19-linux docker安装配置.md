@@ -328,8 +328,9 @@ docker.io/library/mysql:5.7
 我们输入docker images可以查看到下载的mysql的5.7版的镜像。
 
 创建容器并运行：
-
-> docker run --name mysql_server -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=123456 -d mysql:5.7
+```
+docker run --name mysql_server -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=123456 -d mysql:5.7
+```
 
 ```
 --name 指定容器名字，links特性需要使用名字    
