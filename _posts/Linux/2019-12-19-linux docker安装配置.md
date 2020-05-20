@@ -243,6 +243,47 @@ For more examples and ideas, visit:
 Docker引擎已安装并运行。docker组已创建，但未添加任何用户。你需要用sudo来运行Docker命令。
 继续Linux postinstall以允许非特权用户运行Docker命令和其他可选配置步骤。
 
+原则上一个容器只提供一种服务，这样可以方便以后服务的维护。所以我们mysql独立一个容器、nginx独立一个容器、php-fpm独立一个容器。
+
+#### mysql安装
+
+下载mysql镜像：
+
+> docker pull mysql:5.7
+
+随后看到下载信息：
+```
+5.7: Pulling from library/mysql
+afb6ec6fdc1c: Already exists 
+0bdc5971ba40: Pull complete 
+97ae94a2c729: Pull complete 
+f777521d340e: Pull complete 
+1393ff7fc871: Pull complete 
+a499b89994d9: Pull complete 
+7ebe8eefbafe: Pull complete 
+4eec965ae405: Pull complete 
+a531a782d709: Pull complete 
+10e94c02b508: Pull complete 
+799a94b968ef: Pull complete 
+Digest: sha256:5c9fd7949bc0f076429fa2c40d0e7406e095bdb5216a923257b31972a6f3ae4f
+Status: Downloaded newer image for mysql:5.7
+docker.io/library/mysql:5.7
+```
+
+我们输入docker images可以查看到下载的mysql的5.7版的镜像。
+
+创建容器并运行：
+
+> docker run --name mysql_server -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=123456 -d mysql:5.7
+
+```
+--name 指定容器名字，links特性需要使用名字    
+-i 交互式操作，允许你对容器内的标准输入 (STDIN) 进行交互
+-t 终端，在新容器内指定一个伪终端或终端
+-d 指定容器的运行模式为后台运行，默认不会进入容器
+-e 内置环境变量 这里是给ROOT 帐号设置密码
+```
+
 #### 示例配置
 
 ##### 启动脚本start_docker_phpfpm.sh
