@@ -245,6 +245,8 @@ Docker引擎已安装并运行。docker组已创建，但未添加任何用户�
 
 #### 示例配置
 
+##### 启动脚本start_docker_phpfpm.sh
+
 ```
 cat > docker-php-entrypoint << EOF
 #!/bin/sh
