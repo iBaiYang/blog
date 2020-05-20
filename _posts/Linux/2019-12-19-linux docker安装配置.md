@@ -340,6 +340,102 @@ docker run --name mysql_server -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=123456 -d m
 -e 内置环境变量 这里是给ROOT 帐号设置密码
 ```
 
+#### nginx安装
+
+> docker pull nginx
+
+输出：
+```
+Using default tag: latest
+latest: Pulling from library/nginx
+afb6ec6fdc1c: Already exists 
+b90c53a0b692: Pull complete 
+11fa52a0fdc0: Pull complete 
+Digest: sha256:30dfa439718a17baafefadf16c5e7c9d0a1cde97b4fd84f63b69e13513be7097
+Status: Downloaded newer image for nginx:latest
+docker.io/library/nginx:latest
+```
+
+新建几个文件夹，分别用来映射：网站根目录、nginx配置文件、日志文件:
+
+> mkdir -p /var/www/docker/nginx/www /var/www/docker/nginx/logs /var/www/docker/nginx/conf
+
+在新建的www目录中新建：index.php用来检测php环境是否搭建成功:
+```
+<?php
+   phpinfo();
+?>
+```
+
+在nginx配置文件目录conf下新建：test-php.conf，后缀是.conf即可：
+```
+server {
+    listen       80;
+    server_name  localhost;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm index.php;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   php:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /www/$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
+
+#### php-fpm安装
+
+> docker pull php:7.1.30-fpm
+
+输出：
+```
+7.1.30-fpm: Pulling from library/php
+f5d23c7fed46: Pull complete 
+4f36b8588ea0: Pull complete 
+6f4f95ddefa8: Pull complete 
+187af28c9b1d: Pull complete 
+7ba9cd8f12bd: Pull complete 
+19ce450f6a80: Pull complete 
+6a0aa94e79c7: Pull complete 
+3097ec58d870: Pull complete 
+05ecbde01690: Pull complete 
+ab28ea58dda0: Pull complete 
+Digest: sha256:a0f0773dc2f92ca8f4dab7c7c525574d467d3aa4bb27424bb7f0540a7c9efcd0
+Status: Downloaded newer image for php:7.1.30-fpm
+docker.io/library/php:7.1.30-fpm
+```
+
+实例化php：
+```
+docker run --name server-phpfpm71 -v /var/www/docker/nginx/www:/www  -d php:7.1.30-fpm
+```
+
+实例化nginx，指定端口，网站根目录，网站配置文件目录:
+```
+docker run --name server-nginx -p 80:80 -v /var/www/docker/nginx/www:/usr/share/nginx/html -v /var/www/docker/nginx/conf:/etc/nginx/conf.d --link server-phpfpm71:php -d nginx
+```
+
+#### 容器自动停止问题
+
+以 docker run -d 运行之后，还是会自动停止，docker ps 看不到运行的容器， docker ps -a 后看到容器状态为 Exited，
+这是因为 基于的centos dockerfile 具有默认命令 bash ，这意味着当在后台运行（-d）时，shell会立即退出。
+-d 选项有问题。 您的容器立即停止，除非命令不在前台运行。
+Docker要求您的命令在前台继续运行。否则，它会认为您的应用程序停止并关闭该容器。
+问题是某些应用程序不会在前台运行。在这种情况下，您可以将 tail -f /dev/null 添加到您的命令。
+通过这样做，即使您的主命令在后台运行，您的容器也不会停止，因为tail在前台继续运行。
+如：
+
+>  docker run -d centos tail -f /dev/null 
+
 #### 示例配置
 
 ##### 启动脚本docker-php-entrypoint
@@ -460,4 +556,11 @@ Docker runoob教程 <https://www.runoob.com/docker/docker-tutorial.html>
 使用 Docker 搭建 PHP 开发环境 <https://www.linuxidc.com/Linux/2019-08/160149.htm>
 
 php7.2运行tp5项目时,报could not find driver解决办法 <https://blog.csdn.net/resilient/article/details/86736759>
+
+docker一键搭建Nginx+PHP环境(含自动部署命令) <https://www.cnblogs.com/lz0925/p/10985700.html>
+
+Docker秒搭建Php7开发环境 <https://www.jianshu.com/p/43037ce40b00>
+
+Docker容器将在“docker run -d”之后自动停止 <https://www.it1352.com/646432.html>
+
 
