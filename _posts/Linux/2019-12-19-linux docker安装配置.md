@@ -440,7 +440,7 @@ Docker要求您的命令在前台继续运行。否则，它会认为您的应�
 
 #### 示例配置
 
-##### 启动脚本docker-php-entrypoint
+##### 项目镜像build脚本
 
 ```
 cat > docker-php-entrypoint << EOF
@@ -476,7 +476,53 @@ ENTRYPOINT ["docker-php-entrypoint"]
 EOF
 ```
 
-##### 构建镜像
+粘贴到命令行执行生成文件：docker-php-entrypoint 和 Dockerfile 。
+
+生成镜像：
+> docker build -t phpfpm:test .
+
+输出：
+```
+Sending build context to Docker daemon  12.29kB
+Step 1/10 : FROM vipcloud/vipcloud-php-fpm-apcu:7.1.24
+ ---> bedff48e5f51
+Step 2/10 : RUN mkdir /var/www/html/ -pv
+ ---> Using cache
+ ---> e4c45ddc515a
+Step 3/10 : RUN mkdir /config/dev/ -pv
+ ---> Using cache
+ ---> b488b7aea6ce
+Step 4/10 : COPY --chown=nginx:nginx crm.json /config/dev/
+ ---> Using cache
+ ---> 7496eb7eecbc
+Step 5/10 : COPY --chown=nginx:nginx dist/crm.tar.gz /var/www/html/
+ ---> Using cache
+ ---> 33339f9db58f
+Step 6/10 : WORKDIR /var/www/html/
+ ---> Using cache
+ ---> 506aeb020038
+Step 7/10 : RUN /bin/sh -xe && tar -xf ./crm.tar.gz && rm -f ./crm.tar.gz && cd /var/www/html/ && mkdir -p runtime && mkdir -p web/assets && mkdir -p web/tmp && chown -R nginx:nginx runtime && chown -R nginx:nginx web/assets && chown -R nginx:nginx web/tmp && chmod -R 0777 runtime && chmod -R 0777 web/assets && chmod -R 0777 web/tmp
+ ---> Using cache
+ ---> 02d25f41d4c9
+Step 8/10 : COPY docker-php-entrypoint /usr/local/bin/
+ ---> 29abd2526ca9
+Step 9/10 : EXPOSE 80
+ ---> Running in 45bb46463296
+Removing intermediate container 45bb46463296
+ ---> 3d580d103b69
+Step 10/10 : ENTRYPOINT ["docker-php-entrypoint"]
+ ---> Running in 0befd0acc74c
+Removing intermediate container 0befd0acc74c
+ ---> 5e849ed7a72d
+Successfully built 5e849ed7a72d
+Successfully tagged phpfpm:test
+```
+
+镜像phpfpm:test生成成功。
+
+配置文件./crm.json，压缩包文件./dist/crm.tar.gz，我们需要在当前目录下准备好。
+
+##### phpfpm镜像build脚本
 
 Dockerfile 文件:
 ```
