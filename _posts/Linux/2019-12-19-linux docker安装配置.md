@@ -341,7 +341,7 @@ docker.io/library/mysql:5.7
 
 #### 示例配置
 
-##### 启动脚本start_docker_phpfpm.sh
+##### 启动脚本docker-php-entrypoint
 
 ```
 cat > docker-php-entrypoint << EOF
