@@ -424,6 +424,8 @@ docker run --name server-phpfpm71 -v /var/www/docker/nginx/www:/www  -d php:7.1.
 docker run --name server-nginx -p 80:80 -v /var/www/docker/nginx/www:/usr/share/nginx/html -v /var/www/docker/nginx/conf:/etc/nginx/conf.d --link server-phpfpm71:php -d nginx
 ```
 
+访问：127.0.0.1，可以看到效果。
+
 #### 容器自动停止问题
 
 以 docker run -d 运行之后，还是会自动停止，docker ps 看不到运行的容器， docker ps -a 后看到容器状态为 Exited，
