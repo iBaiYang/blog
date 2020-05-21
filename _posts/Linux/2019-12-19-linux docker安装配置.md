@@ -423,12 +423,12 @@ server {
 
 实例化php：
 ```
-docker run --name server-phpfpm71 -v /var/www/docker/nginx/www:/www  -d php:7.1.30-fpm
+docker run --name server-phpfpm71 --privileged=true -v /var/www/docker/nginx/www:/www  -d php:7.1.30-fpm
 ```
 
 实例化nginx，指定端口，网站根目录，网站配置文件目录:
 ```
-docker run --name server-nginx -p 80:80 -v /var/www/docker/nginx/www:/usr/share/nginx/html -v /var/www/docker/nginx/conf:/etc/nginx/conf.d --link server-phpfpm71:php -d nginx
+docker run --name server-nginx --privileged=true -p 80:80 -v /var/www/docker/nginx/www:/usr/share/nginx/html -v /var/www/docker/nginx/conf:/etc/nginx/conf.d --link server-phpfpm71:php -d nginx
 ```
 
 访问：127.0.0.1，可以看到效果。
