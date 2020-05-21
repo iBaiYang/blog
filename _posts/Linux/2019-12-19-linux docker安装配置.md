@@ -634,9 +634,10 @@ docker一键搭建Nginx+PHP环境(含自动部署命令) <https://www.cnblogs.co
 
 Docker秒搭建Php7开发环境 <https://www.jianshu.com/p/43037ce40b00>
 
-Docker容器将在“docker run -d”之后自动停止 <https://www.it1352.com/646432.html>
-
 基于Docker搭建LNPM环境 <https://www.jianshu.com/p/beb8cebaafb8>
 
 使用 Docker 搭建 PHP 开发环境 <https://www.centos.bz/2019/07/%E9%81%BF%E5%9D%91%EF%BC%81%E7%94%A8-docker-%E6%90%9E%E5%AE%9A-php-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%88mac%E3%80%81docker%E3%80%81nginx%E3%80%81php-fpm%E3%80%81xdebug/>
 
+Docker run 命令的使用方法 <http://dockone.io/article/152>
+
+Docker容器将在“docker run -d”之后自动停止 <https://www.it1352.com/646432.html>
