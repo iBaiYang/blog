@@ -431,7 +431,7 @@ docker run --name server-phpfpm71 --privileged=true -v /var/www/docker/nginx/www
 docker run --name server-nginx --privileged=true -p 80:80 -v /var/www/docker/nginx/www:/usr/share/nginx/html -v /var/www/docker/nginx/conf:/etc/nginx/conf.d --link server-phpfpm71:php -d nginx
 ```
 
-访问：127.0.0.1，可以看到效果。
+访问：127.0.0.1，可以看到效果，展示了phpinfo()详情。
 
 #### 容器自动停止问题
 
