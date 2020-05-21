@@ -428,8 +428,31 @@ docker run --name server-nginx -p 80:80 -v /var/www/docker/nginx/www:/usr/share/
 
 #### 容器自动停止问题
 
-以 docker run -d 运行之后，还是会自动停止，docker ps 看不到运行的容器， docker ps -a 后看到容器状态为 Exited，
-这是因为 基于的centos dockerfile 具有默认命令 bash ，这意味着当在后台运行（-d）时，shell会立即退出。
+以 docker run -d 运行之后，还是会自动停止，docker ps 看不到运行的容器， docker ps -a 后看到容器状态为 Exited。
+
+可能原因1，容器中发生了错误，所以容器 Exited 了，我们可以用 docker logs CONTAINER 查看下日志，如：
+
+> docker logs 13528397216b
+
+输出：
+```
+[emerg] 1#1: socket() 0.0.0.0:80 failed (13: Permission denied)
+nginx: [emerg] socket() 0.0.0.0:80 failed (13: Permission denied)
+```
+
+可以看出是容器中执行命令权限不够，被拒绝执行了。
+
+我们可以在生成容器时加上privileged=true，如：
+```
+docker run --privileged=true -p 80:80  -d nginx
+```
+
+现在在ps看一下容器运行状态就处于Up状态了。
+
+大约在0.6版，privileged被引入docker。使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限。
+privileged启动的容器，可以看到很多host上的设备，并且可以执行mount。甚至允许你在docker容器中启动docker容器。
+
+可能原因2，这是因为 基于的centos dockerfile 具有默认命令 bash ，这意味着当在后台运行（-d）时，shell会立即退出。
 -d 选项有问题。 您的容器立即停止，除非命令不在前台运行。
 Docker要求您的命令在前台继续运行。否则，它会认为您的应用程序停止并关闭该容器。
 问题是某些应用程序不会在前台运行。在这种情况下，您可以将 tail -f /dev/null 添加到您的命令。
