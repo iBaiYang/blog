@@ -356,6 +356,35 @@ Status: Downloaded newer image for nginx:latest
 docker.io/library/nginx:latest
 ```
 
+创建容器并运行（加上privileged参数，以特权方式运行）：
+```
+docker run --privileged=true -p 81:80  -d nginx
+```
+
+现在我们通过浏览器访问一下127.0.0.1:81，就可以看到nginx的欢迎界面了。
+
+#### php-fpm安装
+
+> docker pull php:7.1.30-fpm
+
+输出：
+```
+7.1.30-fpm: Pulling from library/php
+f5d23c7fed46: Pull complete 
+4f36b8588ea0: Pull complete 
+6f4f95ddefa8: Pull complete 
+187af28c9b1d: Pull complete 
+7ba9cd8f12bd: Pull complete 
+19ce450f6a80: Pull complete 
+6a0aa94e79c7: Pull complete 
+3097ec58d870: Pull complete 
+05ecbde01690: Pull complete 
+ab28ea58dda0: Pull complete 
+Digest: sha256:a0f0773dc2f92ca8f4dab7c7c525574d467d3aa4bb27424bb7f0540a7c9efcd0
+Status: Downloaded newer image for php:7.1.30-fpm
+docker.io/library/php:7.1.30-fpm
+```
+
 新建几个文件夹，分别用来映射：网站根目录、nginx配置文件、日志文件:
 
 > mkdir -p /var/www/docker/nginx/www /var/www/docker/nginx/logs /var/www/docker/nginx/conf
@@ -390,28 +419,6 @@ server {
         include        fastcgi_params;
     }
 }
-```
-
-#### php-fpm安装
-
-> docker pull php:7.1.30-fpm
-
-输出：
-```
-7.1.30-fpm: Pulling from library/php
-f5d23c7fed46: Pull complete 
-4f36b8588ea0: Pull complete 
-6f4f95ddefa8: Pull complete 
-187af28c9b1d: Pull complete 
-7ba9cd8f12bd: Pull complete 
-19ce450f6a80: Pull complete 
-6a0aa94e79c7: Pull complete 
-3097ec58d870: Pull complete 
-05ecbde01690: Pull complete 
-ab28ea58dda0: Pull complete 
-Digest: sha256:a0f0773dc2f92ca8f4dab7c7c525574d467d3aa4bb27424bb7f0540a7c9efcd0
-Status: Downloaded newer image for php:7.1.30-fpm
-docker.io/library/php:7.1.30-fpm
 ```
 
 实例化php：
