@@ -116,9 +116,9 @@ class Person
 
 $person=new Person();
 $person->printQianDao();  // 输出1
-Person::printQianDao();  // 输出2
-$person->printQianDao2();  // 报错：Using $this when not in object context
-$person->printQianDao3();  // 报错：Using $this when not in object context
+Person::printQianDao();  // 输出2，从这里可以看到静态变量只会初始化1次
+$person->printQianDao2();  // 报错：Using $this when not in object context，非对象环境中使用了$this，也就是说不能在static方法体中使用$this
+$person->printQianDao3();  // 报错：Using $this when not in object context，非对象环境中使用了$this，也就是说不能在static方法体中使用$this
 $person->printQianDao4();  // 输出“张三”;
 Person::printQianDao4();  // 报错1：Non-static method Person::printQianDao4() should not be called statically，报错2：Using $this when not in object context
 ```
