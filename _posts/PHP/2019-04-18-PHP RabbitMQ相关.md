@@ -82,6 +82,8 @@ RabbitMQ 提供了许多插件，来从多方面进行扩展，也可以编写�
 
 #### 引入举例
 
+##### 生产者
+
 先看一个生产者的例子：
 ```
 $message = [
@@ -103,6 +105,7 @@ $setting => [
 
 // RabbitMQ连接
 $conn = new \AMQPConnection($setting);  // 创建对象
+$conn->connect();
 $channel = new \AMQPChannel($conn);  // 创建channel
 $ex = new \AMQPExchange($channel);  // 创建交换机
 $ex->setName($exchange);  // 创建交换机名字 
@@ -119,6 +122,333 @@ echo 'end';
 
 这里就是生产者发送信息到队列的实现。
 
+new \AMQPConnection($setting)，创建一个AMQPConnection实例。该实例表示与AMQP代理的连接：
+```
+/**
+ * Create an instance of AMQPConnection.
+ *
+ * Creates an AMQPConnection instance representing a connection to an AMQP
+ * broker. A connection will not be established until
+ * AMQPConnection::connect() is called.
+ *
+ *  $credentials = array(
+ *      'host'  => amqp.host The host to connect too. Note: Max 1024 characters.
+ *      'port'  => amqp.port Port on the host.
+ *      'vhost' => amqp.vhost The virtual host on the host. Note: Max 128 characters.
+ *      'login' => amqp.login The login name to use. Note: Max 128 characters.
+ *      'password' => amqp.password Password. Note: Max 128 characters.
+ *      'read_timeout'  => Timeout in for income activity. Note: 0 or greater seconds. May be fractional.
+ *      'write_timeout' => Timeout in for outcome activity. Note: 0 or greater seconds. May be fractional.
+ *      'connect_timeout' => Connection timeout. Note: 0 or greater seconds. May be fractional.
+ *
+ *      Connection tuning options (see https://www.rabbitmq.com/amqp-0-9-1-reference.html#connection.tune for details):
+ *      'channel_max' => Specifies highest channel number that the server permits. 0 means standard extension limit
+ *                       (see PHP_AMQP_MAX_CHANNELS constant)
+ *      'frame_max'   => The largest frame size that the server proposes for the connection, including frame header
+ *                       and end-byte. 0 means standard extension limit (depends on librabbimq default frame size limit)
+ *      'heartbeat'   => The delay, in seconds, of the connection heartbeat that the server wants.
+ *                       0 means the server does not want a heartbeat. Note, librabbitmq has limited heartbeat support,
+ *                       which means heartbeats checked only during blocking calls.
+ *
+ *      TLS support (see https://www.rabbitmq.com/ssl.html for details):
+ *      'cacert' => Path to the CA cert file in PEM format..
+ *      'cert'   => Path to the client certificate in PEM foramt.
+ *      'key'    => Path to the client key in PEM format.
+ *      'verify' => Enable or disable peer verification. If peer verification is enabled then the common name in the
+ *                  server certificate must match the server name. Peer verification is enabled by default.
+ * )
+ *
+ * @param array $credentials Optional array of credential information for
+ *                           connecting to the AMQP broker.
+ */
+public function __construct(array $credentials = array()) { }
+```
+
+这里说到 在调用AMQPConnection :: connect（）之前，不会建立连接。所以我们一般的做法是：
+```
+$conn = new \AMQPConnection($setting); 
+if (!$conn->->isConnected()) {
+    $conn->connect();
+}
+```
+
+```
+/**
+ * Establish a transient connection with the AMQP broker.
+ *
+ * This method will initiate a connection with the AMQP broker.
+ *
+ * @throws AMQPConnectionException
+ * @return boolean TRUE on success or throw an exception on failure.
+ */
+public function connect() { }
+
+/**
+ * Check whether the connection to the AMQP broker is still valid.
+ *
+ * It does so by checking the return status of the last connect-command.
+ *
+ * @return boolean True if connected, false otherwise.
+ */
+public function isConnected() { }
+```
+
+new \AMQPChannel($conn)，创建一个AMQPChannel对象的实例，与代理的活动连接的AMQPConnection的实例：
+```
+/**
+ * Create an instance of an AMQPChannel object.
+ *
+ * @param AMQPConnection $amqp_connection An instance of AMQPConnection
+ *                                        with an active connection to a broker.
+ *
+ * @throws AMQPConnectionException        If the connection to the broker was lost.
+ */
+public function __construct(AMQPConnection $amqp_connection) { }
+```
+
+ new \AMQPExchange($channel)，创建一个AMQPExchange实例，返回与给定的AMQPChannel对象关联的AMQPExchange对象的新实例：
+ ```
+/**
+ * Create an instance of AMQPExchange.
+ *
+ * Returns a new instance of an AMQPExchange object, associated with the
+ * given AMQPChannel object.
+ *
+ * @param AMQPChannel $amqp_channel A valid AMQPChannel object, connected to a broker.
+ *                                  
+ * @throws AMQPExchangeException   When amqp_channel is not connected to a broker.                           
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *                                 
+ */
+public function __construct(AMQPChannel $amqp_channel) { }
+```
+
+setName($exchange)，设置交换机名字：
+```
+/**
+ * Set the name of the exchange.
+ *
+ * @param string $exchange_name The name of the exchange to set as string.
+ *
+ * @return void
+ */
+public function setName($exchange_name) { }
+```
+
+setType() 设置交换机类型，有direct、fanout、topic三种类型，php中这里定义的常量为 AMQP_EX_TYPE_DIRECT 、 AMQP_EX_TYPE_FANOUT 、 AMQP_EX_TYPE_TOPIC，待会下面会详细解说：
+```
+/**
+ * Set the type of the exchange.
+ *
+ * Set the type of the exchange. This can be any of AMQP_EX_TYPE_DIRECT,
+ * AMQP_EX_TYPE_FANOUT, AMQP_EX_TYPE_HEADERS or AMQP_EX_TYPE_TOPIC.
+ *
+ * @param string $exchange_type The type of exchange as a string.
+ *
+ * @return void
+ */
+public function setType($exchange_type) { }
+```
+
+setFlags() 设置交换机模式：
+```
+/**
+ * Set the flags on an exchange.
+ *
+ * @param integer $flags A bitmask of flags. This call currently only
+ *                       considers the following flags:
+ *                       AMQP_DURABLE, AMQP_PASSIVE
+ *                       (and AMQP_DURABLE, if librabbitmq version >= 0.5.3)
+ *
+ * @return void
+ */
+public function setFlags($flags) { }
+```
+
+交换机模式有 AMQP_DURABLE, AMQP_PASSIVE 两种，表示了如果MQ服务器重启,这个交换机是否要重新建立(如果设置为AMQP_DURABLE，则重启mq，该交换机还是存在，相当于持久化。)
+
+AMQP_DURABLE，Durable exchanges and queues will survive a broker restart, complete with all of their data. 
+持久的交换和队列将在代理重新启动后幸存下来，并保留所有数据。
+
+AMQP_PASSIVE，Passive exchanges and queues will not be redeclared, but the broker will throw an error if the exchange or queue does not exist.
+不会重新声明被动交换和队列，但是如果交换或队列不存在，则代理将引发错误。
+
+declareExchange()，在broker代理上申明一个新的交换机：
+```
+/**
+ * Declare a new exchange on the broker.
+ *
+ * @throws AMQPExchangeException   On failure.
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return boolean TRUE on success or FALSE on failure.
+ */
+public function declareExchange() { }
+```
+
+publish() 将信息发布到交换机，将消息发布到由AMQPExchange对象表示的交换机：
+```
+/**
+ * Publish a message to an exchange.
+ *
+ * Publish a message to the exchange represented by the AMQPExchange object.
+ *
+ * @param string  $message     The message to publish.
+ * @param string  $routing_key The optional routing key to which to
+ *                             publish to.
+ * @param integer $flags       One or more of AMQP_MANDATORY and
+ *                             AMQP_IMMEDIATE.
+ * @param array   $attributes  One of content_type, content_encoding,
+ *                             message_id, user_id, app_id, delivery_mode,
+ *                             priority, timestamp, expiration, type
+ *                             or reply_to, headers.
+ *
+ * @throws AMQPExchangeException   On failure.
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return boolean TRUE on success or FALSE on failure.
+ */
+public function publish(
+    $message,
+    $routing_key = null,
+    $flags = AMQP_NOPARAM,
+    array $attributes = array()
+) {
+}
+```
+
+$message 要发布的信息体。
+$routing_key 要发布到的可选路由密钥。
+
+$flags ：
+```
+/**
+ * Passing in this constant as a flag will forcefully disable all other flags.
+ * Use this if you want to temporarily disable the amqp.auto_ack ini setting.
+ */
+define('AMQP_NOPARAM', 0);
+
+/**
+ * Passing in this constant as a flag to proper methods will forcefully ignore all other flags.
+ * Do not send basic.consume request during AMQPQueue::consume(). Use this if you want to run callback on top of previously
+ * declared consumers.
+ */
+define('AMQP_JUST_CONSUME', 1);
+
+/**
+ * Durable exchanges and queues will survive a broker restart, complete with all of their data.
+ */
+define('AMQP_DURABLE', 2);
+
+/**
+ * Passive exchanges and queues will not be redeclared, but the broker will throw an error if the exchange or queue does not exist.
+ */
+define('AMQP_PASSIVE', 4);
+
+/**
+ * Valid for queues only, this flag indicates that only one client can be listening to and consuming from this queue.
+ */
+define('AMQP_EXCLUSIVE', 8);
+
+/**
+ * For exchanges, the auto delete flag indicates that the exchange will be deleted as soon as no more queues are bound
+ * to it. If no queues were ever bound the exchange, the exchange will never be deleted. For queues, the auto delete
+ * flag indicates that the queue will be deleted as soon as there are no more listeners subscribed to it. If no
+ * subscription has ever been active, the queue will never be deleted. Note: Exclusive queues will always be
+ * automatically deleted with the client disconnects.
+ */
+define('AMQP_AUTODELETE', 16);
+
+/**
+ * Clients are not allowed to make specific queue bindings to exchanges defined with this flag.
+ */
+define('AMQP_INTERNAL', 32);
+
+/**
+ * When passed to the consume method for a clustered environment, do not consume from the local node.
+ */
+define('AMQP_NOLOCAL', 64);
+
+/**
+ * When passed to the {@link AMQPQueue::get()} and {@link AMQPQueue::consume()} methods as a flag,
+ * the messages will be immediately marked as acknowledged by the server upon delivery.
+ */
+define('AMQP_AUTOACK', 128);
+
+/**
+ * Passed on queue creation, this flag indicates that the queue should be deleted if it becomes empty.
+ */
+define('AMQP_IFEMPTY', 256);
+
+/**
+ * Passed on queue or exchange creation, this flag indicates that the queue or exchange should be
+ * deleted when no clients are connected to the given queue or exchange.
+ */
+define('AMQP_IFUNUSED', 512);
+
+/**
+ * When publishing a message, the message must be routed to a valid queue. If it is not, an error will be returned.
+ */
+define('AMQP_MANDATORY', 1024);
+
+/**
+ * When publishing a message, mark this message for immediate processing by the broker. (High priority message.)
+ */
+define('AMQP_IMMEDIATE', 2048);
+
+/**
+ * If set during a call to {@link AMQPQueue::ack()}, the delivery tag is treated as "up to and including", so that multiple
+ * messages can be acknowledged with a single method. If set to zero, the delivery tag refers to a single message.
+ * If the AMQP_MULTIPLE flag is set, and the delivery tag is zero, this indicates acknowledgement of all outstanding
+ * messages.
+ */
+define('AMQP_MULTIPLE', 4096);
+
+/**
+ * If set during a call to {@link AMQPExchange::bind()}, the server will not respond to the method.The client should not wait
+ * for a reply method. If the server could not complete the method it will raise a channel or connection exception.
+ */
+define('AMQP_NOWAIT', 8192);
+
+/**
+ * If set during a call to {@link AMQPQueue::nack()}, the message will be placed back to the queue.
+ */
+define('AMQP_REQUEUE', 16384);
+```
+
+array $attributes = array()， 可以设置一些参数：
+
+| 配置项   | 类型	| 说明 | 
+| --------   | :-----  | :----  |
+| content_type	| 短文本	| MIME类型表示消息是一种什么类型的格式,参考[MIME类型](https://baike.baidu.com/item/MIME/2900607)，默认的为text/plain | 
+| content_encoding		| 短文本		| 正文传输编码,比如内容是gzip压缩的.值就是gzip,[参考](https://www.tuicool.com/articles/b6BNNfN)，默认为UTF-8 | 
+| application_headers		|  数组 	| 	请求的headers信息 | 
+| delivery_mode		| 数字 	| 	表示是否持久化,1为否,2为是 [参考](https://www.cnblogs.com/xiazh/archive/2011/04/29/2004859.html)   | 
+| priority		| 数字 	| 	发送权重,也就是优先级  | 
+| correlation_id	| 短文本		| 相关性ID [参考](http://www.01happy.com/python-rabbitmq-rfc-correlation-id/)  | 
+| reply_to	| 	短文本	| 	消息被发送者处理完后,返回回复时执行的回调(在rpc时会用到)  | 
+| expiration		| 短文本	|    存活时间,毫秒数   | 
+| message_id	| 	短文本	| 	扩展属性   | 
+| timestamp	| 	数字 	| 	时间戳   | 
+| type	| 	短文本		| 扩展属性   | 
+| user_id		| 短文本	| 	扩展属性   | 
+| app_id   	|  短文本 	| 	扩展属性  | 
+| cluster_id 	|  短文本 	| 扩展属性  | 
+
+如延迟队列实现：
+```
+$attributes = [
+    "delivery_mode" => 2,
+    "expiration" => 10000
+];
+```
+
+delivery_mode，表示是否持久化,1为否,2为是
+
+expiration是延迟时长，单位是毫秒，1s=1000毫秒。
+
 在RabbitMQ中定义 名为async的Exchange交换机，
 在这个交换机上Binding绑定名为ticket的binding key虚拟连接到名为queue_ticket的Queue队列。
 
@@ -126,6 +456,8 @@ echo 'end';
 接着把要发送的信息连同routing key发送到目标Exchange交换机，
 目标交换机再把这条信息发送到交换机中binding key等于信息中routing key的目标Queue队列中，
 现在信息就在目标队列中了。
+
+##### 消费者
 
 再看消费者的例子：
 ```
@@ -155,6 +487,125 @@ if ($messages) {
     var_dump(json_decode($messages->getBody(), true));
 }
 $conn->disconnect();  // 断开连接
+```
+
+`new \AMQPConnection()` 、 `new \AMQPChannel()` 和生产者一样，声明连接和channel通道。
+
+`new AMQPQueue($channel)` 创建一个AMQPQueue对象的实例：
+```
+/**
+ * Create an instance of an AMQPQueue object.
+ *
+ * @param AMQPChannel $amqp_channel The amqp channel to use.
+ *
+ * @throws AMQPQueueException      When amqp_channel is not connected to a
+ *                                 broker.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ */
+public function __construct(AMQPChannel $amqp_channel) { }
+```
+
+setName() 设置队列名字：
+```
+/**
+ * Set the queue name.
+ *
+ * @param string $queue_name The name of the queue.
+ *
+ * @return boolean
+ */
+public function setName($queue_name) { }
+```
+
+setFlags() 设置队列模式：
+```
+/**
+ * Set the flags on the queue.
+ *
+ * @param integer $flags A bitmask of flags:
+ *                       AMQP_DURABLE, AMQP_PASSIVE,
+ *                       AMQP_EXCLUSIVE, AMQP_AUTODELETE.
+ *
+ * @return boolean
+ */
+public function setFlags($flags) { }
+```
+
+AMQP_EXCLUSIVE ， Valid for queues only, this flag indicates that only one client can be listening to and consuming from this queue.
+
+AMQP_AUTODELETE ， For exchanges, the auto delete flag indicates that the exchange will be deleted as soon as no more queues are bound
+ to it. If no queues were ever bound the exchange, the exchange will never be deleted. For queues, the auto delete
+ flag indicates that the queue will be deleted as soon as there are no more listeners subscribed to it. If no
+ subscription has ever been active, the queue will never be deleted. Note: Exclusive queues will always be
+ automatically deleted with the client disconnects.
+ 
+declareQueue() 在代理上声明一个新队列。：
+```
+/**
+ * Declare a new queue on the broker.
+ *
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return integer the message count.
+ */
+public function declareQueue() { }
+```
+
+bind() 将给定队列绑定到交换机上的routing_key：
+```
+/**
+ * Bind the given queue to a routing key on an exchange.
+ *
+ * @param string $exchange_name Name of the exchange to bind to.
+ * @param string $routing_key   Pattern or routing key to bind with.
+ * @param array  $arguments     Additional binding arguments.
+ *
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return boolean
+ */
+public function bind($exchange_name, $routing_key = null, array $arguments = array()) { }
+```
+
+get() 从队列中检索下一条消息：
+```
+/**
+ * Retrieve the next message from the queue.
+ *
+ * Retrieve the next available message from the queue. If no messages are
+ * present in the queue, this function will return FALSE immediately. This
+ * is a non blocking alternative to the AMQPQueue::consume() method.
+ * Currently, the only supported flag for the flags parameter is
+ * AMQP_AUTOACK. If this flag is passed in, then the message returned will
+ * automatically be marked as acknowledged by the broker as soon as the
+ * frames are sent to the client.
+ *
+ * @param integer $flags A bitmask of supported flags for the
+ *                       method call. Currently, the only the
+ *                       supported flag is AMQP_AUTOACK. If this
+ *                       value is not provided, it will use the
+ *                       value of ini-setting amqp.auto_ack.
+ *
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return AMQPEnvelope|boolean
+ */
+public function get($flags = AMQP_NOPARAM) { }
+```
+
+disconnect() 关闭与AMQP代理的瞬时连接： 
+```
+/**
+ * Closes the transient connection with the AMQP broker.
+ *
+ * This method will close an open connection with the AMQP broker.
+ *
+ * @return boolean true if connection was successfully closed, false otherwise.
+ */
+public function disconnect() { }
 ```
 
 #### AMQP messaging 中的基本概念
@@ -537,6 +988,8 @@ RabbitMQ与AMQP协议详解 <http://www.cnblogs.com/frankyou/p/5283539.html>
 PHP RabbitMQ延迟队列实现 <https://ibaiyang.github.io/blog/php/2019/01/03/PHP-RabbitMQ%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E5%AE%9E%E7%8E%B0.html>
 
 模拟器 <http://tryrabbitmq.com/>
+
+Rabbitmq各方法的作用详解 <https://blog.csdn.net/wwwwxyxy/article/details/84654787>
 
 安装 RabbitMQ – centos 6  <http://www.fancyecommerce.com/2017/06/02/%e5%ae%89%e8%a3%85-rabbitmq-centos-6/>
 
