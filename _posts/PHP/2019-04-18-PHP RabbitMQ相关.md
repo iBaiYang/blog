@@ -608,6 +608,83 @@ disconnect() 关闭与AMQP代理的瞬时连接：
 public function disconnect() { }
 ```
 
+看一下下面的方法。
+
+$channel->qos(0, $offset)：
+```
+/**
+ * Set the Quality Of Service settings for the given channel.
+ *
+ * Specify the amount of data to prefetch in terms of window size (octets)
+ * or number of messages from a queue during a AMQPQueue::consume() or
+ * AMQPQueue::get() method call. The client will prefetch data up to size
+ * octets or count messages from the server, whichever limit is hit first.
+ * Setting either value to 0 will instruct the client to ignore that
+ * particular setting. A call to AMQPChannel::qos() will overwrite any
+ * values set by calling AMQPChannel::setPrefetchSize() and
+ * AMQPChannel::setPrefetchCount(). If the call to either
+ * AMQPQueue::consume() or AMQPQueue::get() is done with the AMQP_AUTOACK
+ * flag set, the client will not do any prefetching of data, regardless of
+ * the QOS settings.
+ *
+ * @param integer $size  The window size, in octets, to prefetch.
+ * @param integer $count The number of messages to prefetch.
+ *
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return bool TRUE on success or FALSE on failure.
+ */
+public function qos($size, $count) { }
+```
+
+$q->consume($callback)：
+```
+/**
+ * Consume messages from a queue.
+ *
+ * Blocking function that will retrieve the next message from the queue as
+ * it becomes available and will pass it off to the callback.
+ *
+ * @param callable | null $callback    A callback function to which the
+ *                              consumed message will be passed. The
+ *                              function must accept at a minimum
+ *                              one parameter, an AMQPEnvelope object,
+ *                              and an optional second parameter
+ *                              the AMQPQueue object from which callback
+ *                              was invoked. The AMQPQueue::consume() will
+ *                              not return the processing thread back to
+ *                              the PHP script until the callback
+ *                              function returns FALSE.
+ *                              If the callback is omitted or null is passed,
+ *                              then the messages delivered to this client will
+ *                              be made available to the first real callback
+ *                              registered. That allows one to have a single
+ *                              callback consuming from multiple queues.
+ * @param integer $flags        A bitmask of any of the flags: AMQP_AUTOACK,
+ *                              AMQP_JUST_CONSUME. Note: when AMQP_JUST_CONSUME
+ *                              flag used all other flags are ignored and
+ *                              $consumerTag parameter has no sense.
+ *                              AMQP_JUST_CONSUME flag prevent from sending
+ *                              `basic.consume` request and just run $callback
+ *                              if it provided. Calling method with empty $callback
+ *                              and AMQP_JUST_CONSUME makes no sense.
+ * @param string   $consumerTag A string describing this consumer. Used
+ *                              for canceling subscriptions with cancel().
+ *
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ * @throws AMQPEnvelopeException   When no queue found for envelope.
+ *
+ * @return void
+ */
+public function consume(
+    callable $callback = null,
+    $flags = AMQP_NOPARAM,
+    $consumerTag = null
+) {
+}
+```
+
 #### AMQP messaging 中的基本概念
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418181901.jpg)
