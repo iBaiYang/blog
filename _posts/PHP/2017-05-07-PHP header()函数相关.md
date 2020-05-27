@@ -29,13 +29,83 @@ header()的语法：header(string,replace,http_response_code)
 
 说明：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190831/20190831233043.jpeg)
+| 参数 	|  描述  | 
+| :--------   | :--------   |
+| string 	| 必需。规定要发送的报头字符串。 | 
+| replace 	| 可选。指示该报头是否替换之前的报头，或添加第二个报头。默认是 true（替换）。false（允许相同类型的多个报头）。 | 
+| http_response_code 	|  可选。把 HTTP 响应代码强制为指定的值。（PHP 4 以及更高版本可用） | 
+
+```
+/**
+ * Send a raw HTTP header
+ * @link https://php.net/manual/en/function.header.php
+ * @param string $string <p>
+ * The header string.
+ * </p>
+ * <p>
+ * There are two special-case header calls. The first is a header
+ * that starts with the string "HTTP/" (case is not
+ * significant), which will be used to figure out the HTTP status
+ * code to send. For example, if you have configured Apache to
+ * use a PHP script to handle requests for missing files (using
+ * the ErrorDocument directive), you may want to
+ * make sure that your script generates the proper status code.
+ * </p>
+ * <p>
+ * The second special case is the "Location:" header. Not only does
+ * it send this header back to the browser, but it also returns a
+ * REDIRECT (302) status code to the browser
+ * unless the 201 or
+ * a 3xx status code has already been set.
+ * </p>
+ * @param bool $replace [optional] <p>
+ * The optional replace parameter indicates
+ * whether the header should replace a previous similar header, or
+ * add a second header of the same type. By default it will replace,
+ * but if you pass in false as the second argument you can force
+ * multiple headers of the same type. For example:
+ * </p>
+ * @param int $http_response_code [optional] <p>
+ * Forces the HTTP response code to the specified value.
+ * </p>
+ * @return void 
+ * @since 4.0
+ * @since 5.0
+ */
+function header ($string, $replace = true, $http_response_code = null) {}
+```
 
 常见用法：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190831/20190831233141.jpeg)
+1、重定向
 
-详细例子：
+    header('Location: http://www.example.com/');
+
+2、指定内容：
+
+    header('Content-type: application/pdf');
+
+3、附件：
+
+    header('Content-type: application/pdf');
+
+  //指定内容为附件，指定下载显示的名字
+
+    header('Content-Disposition: attachment; filename="downloaded.pdf"');
+
+  //打开文件，并输出
+
+    readfile('original.pdf');
+
+  以上代码可以在浏览器产生文件对话框的效果
+
+4、让用户获取最新的资料和数据而不是缓存
+
+    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");   // 设置临界时间
+
+
+#### 详细例子
 
 ```php
 header('HTTP/1.1 200 OK'); // ok 正常访问
