@@ -11,9 +11,32 @@ meta: PHP $_SERVER详解
 
 php提供了一些预定义变量，这些变量将所有的外部变量表示成内建环境变量，并且将错误信息表示成返回头。 
 
+外部变量 是说 来自 PHP 之外的变量，如 HTML 表单（GET 和 POST）、 HTTP Cookies 等。
+
+内建环境变量有：
+```
+超全局变量 — 超全局变量是在全部作用域中始终可用的内置变量
+    $GLOBALS — 引用全局作用域中可用的全部变量
+    $_SERVER — 服务器和执行环境信息
+    $_GET — HTTP GET 变量
+    $_POST — HTTP POST 变量
+    $_FILES — HTTP 文件上传变量
+    $_COOKIE — HTTP Cookies
+    $_SESSION — Session 变量
+    $_REQUEST — HTTP Request 变量
+    $_ENV — 环境变量
+    
+$php_errormsg — 前一个错误信息
+$HTTP_RAW_POST_DATA — 原生POST数据
+$http_response_header — HTTP 响应头
+$argc — 传递给脚本的参数数目
+$argv — 传递给脚本的参数数组
+```
+
 #### $_SERVER
 
-$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。这个数组中的项目由 Web 服务器创建。不能保证每个服务器都提供全部参数；服务器可能会忽略一些，或者提供一些没有在这里列举出来的参数。
+$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。
+这个数组中的项目由 Web 服务器创建。不能保证每个服务器都提供全部参数；服务器可能会忽略一些，或者提供一些没有在这里列举出来的参数。
 
 我们可以把$_SERVER 数组打印出来看一下：
 
@@ -133,12 +156,23 @@ $_SERVER['AUTH_TYPE'] #当 PHP 运行在 Apache 模块方式下，并且正在�
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001514.jpeg)
 
+
+$_SERVER 除了查看 外部服务器变量，又是获取到的可能是错误的，我们还可以修正为正确的环境变量，如：
+```
+// set correct script paths
+$_SERVER['SERVER_NAME'] = 'localhost';
+$_SERVER['SERVER_PORT'] = '80';
+```
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
 PHP 手册 语言参考 预定义变量 $_SERVER <https://www.php.net/manual/zh/reserved.variables.server.php>
 
 PHP 手册 语言参考 预定义变量 <https://www.php.net/manual/zh/reserved.variables.php>
+
+PHP 手册 语言参考 变量 来自 PHP 之外的变量 <https://www.php.net/manual/zh/language.variables.external.php>    
 
 <https://my.oschina.net/miaowang/blog/299553>
 
