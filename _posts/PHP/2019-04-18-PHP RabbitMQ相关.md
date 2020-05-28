@@ -704,7 +704,7 @@ public function qos($size, $count) { }
 如果对AMQPQueue :: consume（）或AMQPQueue :: get（）的调用是在设置了AMQP_AUTOACK标志的情况下完成的，
 则无论QOS设置如何，客户端都不会进行任何数据预取。
 
-$q->consume($callback)：
+$q->consume($callback) 调用回调函数从队列中消费信息，是个阻塞函数，它将在队列中可用时检索下一条消息，并将其传递给回调函数：
 ```
 /**
  * Consume messages from a queue.
@@ -751,6 +751,18 @@ public function consume(
 ) {
 }
 ```
+
+$callback 回调函数。消费消息将传递到的这个回调函数。 该回调函数有2个参数，第一个AMQPEnvelope对象和第二个可选的参数：
+即从中调用回调的AMQPQueue对象。 在回调函数返回FALSE之前，AMQPQueue :: consume()不会将处理线程返回到PHP脚本。 
+如果省略了该回调函数参数或传递了null，则传递给此客户端的消息将可用于已注册的第一个实际回调函数。 
+这样一来，一个回调函数就可以处理多个队列。
+
+$flags 标志位掩码：AMQP_AUTOACK，AMQP_JUST_CONSUME。 
+注意：使用AMQP_JUST_CONSUME标志时，将忽略所有其他标志，并且 $consumerTag 参数没有意义。 
+AMQP_JUST_CONSUME 标志阻止发送 `basic.consume` 请求，如果提供则只运行$callback。 
+如果调用的$callback方法为空，则AMQP_JUST_CONSUME没有意义。
+
+$consumerTag 描述此使用者的字符串。 用于通过cancel()取消订阅。
 
 #### AMQP messaging 中的基本概念
 
