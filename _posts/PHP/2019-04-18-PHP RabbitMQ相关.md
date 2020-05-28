@@ -625,6 +625,7 @@ function run($envelope, $queue)
     // 信息体逻辑处理
     ...
     
+    // 确认响应
     $queue->ack($envelope->getDeliveryTag());
 }
 $callback = "run";
