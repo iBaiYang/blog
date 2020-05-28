@@ -95,7 +95,7 @@ $exchange = 'async';
 // 路由名称，自己命名
 $routing = 'ticket';
 
-// RabbitMQ配置信息
+// RabbitMQ连接配置信息
 $setting => [
     'host'     => 'dev.rabbitmq.demo.com',
     'port'     => '5672',
@@ -193,7 +193,7 @@ public function connect() { }
 public function isConnected() { }
 ```
 
-new \AMQPChannel($conn)，创建一个AMQPChannel对象的实例，与代理的活动连接的AMQPConnection的实例：
+new \AMQPChannel($conn)，创建一个AMQPChannel对象的实例，AMQPConnection $amqp_connection 参数是与代理的活动连接的AMQPConnection的实例：
 ```
 /**
  * Create an instance of an AMQPChannel object.
@@ -223,7 +223,7 @@ public function __construct(AMQPConnection $amqp_connection) { }
 public function __construct(AMQPChannel $amqp_channel) { }
 ```
 
-setName($exchange)，设置交换机名字：
+$ex->setName($exchange)，设置交换机名字：
 ```
 /**
  * Set the name of the exchange.
@@ -235,7 +235,7 @@ setName($exchange)，设置交换机名字：
 public function setName($exchange_name) { }
 ```
 
-setType() 设置交换机类型，有direct、fanout、topic三种类型，php中这里定义的常量为 AMQP_EX_TYPE_DIRECT 、 AMQP_EX_TYPE_FANOUT 、 AMQP_EX_TYPE_TOPIC，待会下面会详细解说：
+$ex->setType() 设置交换机类型，有direct、fanout、topic三种类型，php中这里定义的常量为 AMQP_EX_TYPE_DIRECT 、 AMQP_EX_TYPE_FANOUT 、 AMQP_EX_TYPE_TOPIC，待会下面会详细解说：
 ```
 /**
  * Set the type of the exchange.
@@ -250,7 +250,7 @@ setType() 设置交换机类型，有direct、fanout、topic三种类型，php�
 public function setType($exchange_type) { }
 ```
 
-setFlags() 设置交换机模式：
+$ex->setFlags() 设置交换机模式：
 ```
 /**
  * Set the flags on an exchange.
@@ -273,7 +273,7 @@ AMQP_DURABLE，Durable exchanges and queues will survive a broker restart, compl
 AMQP_PASSIVE，Passive exchanges and queues will not be redeclared, but the broker will throw an error if the exchange or queue does not exist.
 不会重新声明被动交换和队列，但是如果交换或队列不存在，则代理将引发错误。
 
-declareExchange()，在broker代理上申明一个新的交换机：
+$ex->declareExchange()，在broker代理上申明一个新的交换机：
 ```
 /**
  * Declare a new exchange on the broker.
@@ -287,7 +287,7 @@ declareExchange()，在broker代理上申明一个新的交换机：
 public function declareExchange() { }
 ```
 
-publish() 将信息发布到交换机，将消息发布到由AMQPExchange对象表示的交换机：
+$ex->publish() 将信息发布到交换机，将消息发布到由AMQPExchange对象表示的交换机：
 ```
 /**
  * Publish a message to an exchange.
@@ -320,7 +320,7 @@ public function publish(
 ```
 
 $message 要发布的信息体。
-$routing_key 要发布到的可选路由密钥。
+$routing_key 要发布到的可选路由关键字。
 
 $flags ：
 ```
@@ -422,8 +422,8 @@ array $attributes = array()， 可以设置一些参数：
 
 | 配置项   | 类型	| 说明 | 
 | --------   | :-----  | :----  |
-| content_type	| 短文本	| MIME类型表示消息是一种什么类型的格式,参考[MIME类型](https://baike.baidu.com/item/MIME/2900607)，默认的为text/plain | 
-| content_encoding		| 短文本		| 正文传输编码,比如内容是gzip压缩的.值就是gzip,[参考](https://www.tuicool.com/articles/b6BNNfN)，默认为UTF-8 | 
+| content_type	| 短文本	| MIME类型表示消息是一种什么类型的格式,参考[MIME类型](https://baike.baidu.com/item/MIME/2900607)，一般为text/plain | 
+| content_encoding		| 短文本		| 正文传输编码,比如内容是gzip压缩的.值就是gzip,[参考](https://www.tuicool.com/articles/b6BNNfN)，一般为UTF-8 | 
 | application_headers		|  数组 	| 	请求的headers信息 | 
 | delivery_mode		| 数字 	| 	表示是否持久化,1为否,2为是 [参考](https://www.cnblogs.com/xiazh/archive/2011/04/29/2004859.html)   | 
 | priority		| 数字 	| 	发送权重,也就是优先级  | 
@@ -449,13 +449,10 @@ delivery_mode，表示是否持久化,1为否,2为是
 
 expiration是延迟时长，单位是毫秒，1s=1000毫秒。
 
-在RabbitMQ中定义 名为async的Exchange交换机，
-在这个交换机上Binding绑定名为ticket的binding key虚拟连接到名为queue_ticket的Queue队列。
+以上示例是说 在RabbitMQ中定义名为async的Exchange交换机，在这个交换机上推送信息到routing关键字为ticket的路由空间上。
 
-然后我们在生产者这端就可以声明AMQP高级信息队列协议对象并连接到目标Exchange交换机，
-接着把要发送的信息连同routing key发送到目标Exchange交换机，
-目标交换机再把这条信息发送到交换机中binding key等于信息中routing key的目标Queue队列中，
-现在信息就在目标队列中了。
+消费者那面连接到borker服务器，声明队列名queue_name，并声明与Exchange交换机连接的具体routing关键字。
+然后生产者这面通过Exchange交换机推送到指定routing关键字的信息就会被交换到指定的目标Queue队列中。
 
 ##### 消费者
 
