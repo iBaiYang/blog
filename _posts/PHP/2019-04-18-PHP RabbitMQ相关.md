@@ -164,7 +164,7 @@ new \AMQPConnection($setting)，创建一个AMQPConnection实例。该实例表�
 public function __construct(array $credentials = array()) { }
 ```
 
-这里说到 在调用AMQPConnection :: connect（）之前，不会建立连接。所以我们一般的做法是：
+这里说到 在调用AMQPConnection::connect（）之前，不会建立连接。所以我们一般的做法是：
 ```
 $conn = new \AMQPConnection($setting); 
 if (!$conn->->isConnected()) {
@@ -598,7 +598,7 @@ public function get($flags = AMQP_NOPARAM) { }
 ```
 
 从队列中检索下一条可用消息。 如果队列中没有消息，此函数将立即返回FALSE。 
-这是AMQPQueue :: consume（）方法的一种非阻塞替代方法。 当前，flags参数唯一受支持的标志是AMQP_AUTOACK。 
+这是AMQPQueue::consume（）方法的一种非阻塞替代方法。 当前，flags参数唯一受支持的标志是AMQP_AUTOACK。 
 如果传递了此标志，则将帧发送到客户端后，返回的消息将自动由代理标记为已确认。
 
 disconnect() 关闭与AMQP代理的瞬时连接： 
@@ -698,10 +698,10 @@ $channel->qos(0, $offset) 给给定channel通道设置服务质量：
 public function qos($size, $count) { }
 ```
 
-在AMQPQueue :: consume（）或AMQPQueue :: get（）方法调用期间从队列发送的消息数中，指定要预取的数据量条数 或 窗口大小（8位字节）。
+在AMQPQueue::consume（）或AMQPQueue::get（）方法调用期间从队列发送的消息数中，指定要预取的数据量条数 或 窗口大小（8位字节）。
 客户端将从服务器中预取最大为设定的八位字节的数据或条数消息，以先达到限制为准。 将任一值设置为0将指示客户端忽略该特定设置。 
-调用AMQPChannel :: qos（）将覆盖通过调用AMQPChannel :: setPrefetchSize（）和AMQPChannel :: setPrefetchCount（）设置的任何值。 
-如果对AMQPQueue :: consume（）或AMQPQueue :: get（）的调用是在设置了AMQP_AUTOACK标志的情况下完成的，
+调用AMQPChannel::qos（）将覆盖通过调用AMQPChannel::setPrefetchSize（）和AMQPChannel::setPrefetchCount（）设置的任何值。 
+如果对AMQPQueue::consume（）或AMQPQueue::get（）的调用是在设置了AMQP_AUTOACK标志的情况下完成的，
 则无论QOS设置如何，客户端都不会进行任何数据预取。
 
 $q->consume($callback) 调用回调函数从队列中消费信息，是个阻塞函数，它将在队列中可用时检索下一条消息，并将其传递给回调函数：
@@ -753,7 +753,7 @@ public function consume(
 ```
 
 $callback 回调函数。消费消息将传递到的这个回调函数。 该回调函数有2个参数，第一个AMQPEnvelope对象和第二个可选的参数：
-即从中调用回调的AMQPQueue对象。 在回调函数返回FALSE之前，AMQPQueue :: consume()不会将处理线程返回到PHP脚本。 
+即从中调用回调的AMQPQueue对象。 在回调函数返回FALSE之前，AMQPQueue::consume()不会将处理线程返回到PHP脚本。 
 如果省略了该回调函数参数或传递了null，则传递给此客户端的消息将可用于已注册的第一个实际回调函数。 
 这样一来，一个回调函数就可以处理多个队列。
 
@@ -763,6 +763,109 @@ AMQP_JUST_CONSUME 标志阻止发送 `basic.consume` 请求，如果提供则只
 如果调用的$callback方法为空，则AMQP_JUST_CONSUME没有意义。
 
 $consumerTag 描述此使用者的字符串。 用于通过cancel()取消订阅。
+
+AMQPEnvelope 结构体：
+```
+/**
+ * stub class representing AMQPEnvelope from pecl-amqp
+ */
+class AMQPEnvelope extends AMQPBasicProperties
+{
+    public function __construct() { }
+
+    /**
+     * Get the body of the message.
+     *
+     * @return string The contents of the message body.
+     */
+    public function getBody() { }
+
+    /**
+     * Get the routing key of the message.
+     *
+     * @return string The message routing key.
+     */
+    public function getRoutingKey() { }
+
+    /**
+     * Get the consumer tag of the message.
+     *
+     * @return string The consumer tag of the message.
+     */
+    public function getConsumerTag() { }
+
+    /**
+     * Get the delivery tag of the message.
+     *
+     * @return string The delivery tag of the message.
+     */
+    public function getDeliveryTag() { }
+
+    /**
+     * Get the exchange name on which the message was published.
+     *
+     * @return string The exchange name on which the message was published.
+     */
+    public function getExchangeName() { }
+
+    /**
+     * Whether this is a redelivery of the message.
+     *
+     * Whether this is a redelivery of a message. If this message has been
+     * delivered and AMQPEnvelope::nack() was called, the message will be put
+     * back on the queue to be redelivered, at which point the message will
+     * always return TRUE when this method is called.
+     *
+     * @return bool TRUE if this is a redelivery, FALSE otherwise.
+     */
+    public function isRedelivery() { }
+
+    /**
+     * Get a specific message header.
+     *
+     * @param string $header_key Name of the header to get the value from.
+     *
+     * @return string|boolean The contents of the specified header or FALSE
+     *                        if not set.
+     */
+    public function getHeader($header_key) { }
+
+    /**
+     * Check whether specific message header exists.
+     *
+     * @param string $header_key Name of the header to check.
+     *
+     * @return boolean
+     */
+    public function hasHeader($header_key) { }
+}
+```
+
+$envelope->getDeliveryTag() 获取信息的传递标签。
+
+$queue->ack($tag) 向队列确认收到$tag的消息：
+```
+/**
+ * Acknowledge the receipt of a message.
+ *
+ * This method allows the acknowledgement of a message that is retrieved
+ * without the AMQP_AUTOACK flag through AMQPQueue::get() or
+ * AMQPQueue::consume()
+ *
+ * @param string  $delivery_tag The message delivery tag of which to
+ *                              acknowledge receipt.
+ * @param integer $flags        The only valid flag that can be passed is
+ *                              AMQP_MULTIPLE.
+ *
+ * @throws AMQPChannelException    If the channel is not open.
+ * @throws AMQPConnectionException If the connection to the broker was lost.
+ *
+ * @return boolean
+ */
+public function ack($delivery_tag, $flags = AMQP_NOPARAM) { }
+```
+
+在没有 AMQP_AUTOACK 标志时，这个方法可以通过调用 AMQPQueue::get() 或 AMQPQueue::consume() 确认检索到的信息。
 
 #### AMQP messaging 中的基本概念
 
