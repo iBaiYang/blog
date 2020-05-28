@@ -669,7 +669,8 @@ $q->bind($exchange_name, $routing_key);  // 绑定交换机
 $channel-qos(0, $offset);
 
 $q->consume($callback);
-// 常驻进程，不断开连接
+
+$conn->disconnect();
 ```
 
 $channel->qos(0, $offset) 给给定channel通道设置服务质量：
@@ -1035,6 +1036,47 @@ class Queue
 
         return true;
     }
+    
+    /**
+     * 推送延迟队列
+     * @param $message
+     * @param $exchange
+     * @param $routing
+     * @param int $ttl 延迟时长，单位秒s
+     * @return bool
+     * @throws \AMQPChannelException
+     * @throws \AMQPConnectionException
+     * @throws \AMQPExchangeException
+     */
+    public static function produceTtl($message, $exchange, $routing, $ttl = 0)
+    {
+        $conn = new \AMQPConnection(Yii::$app->params['queue']);
+
+        if (!$conn->connect()){
+            return false;
+        }
+
+        $message = json_encode($message);
+
+        $channel = new \AMQPChannel($conn);
+        $ex = new \AMQPExchange($channel);
+        $ex->setName($exchange);
+        $ex->setType(AMQP_EX_TYPE_DIRECT);
+        $ex->setFlags(AMQP_DURABLE);
+
+        $ex->declareExchange();
+        
+        $attributes = [
+            'delivery_mode' => 2,
+            "expiration" => $ttl * 1000,  // 转化为毫秒，1s = 1000毫秒
+        ];
+
+        if (!$ex->publish($message,$routing,1, $attributes)) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * 通用批量进队方法,消息持久化
@@ -1133,6 +1175,8 @@ private function msgQueue()
 }
 ```
 
+可以看到每次消费后都断开了连接，我们需要用进程池来管理消费进程。
+
 参数举例：
 ```
 $this->setting = [
@@ -1171,7 +1215,9 @@ public function run($envelope, $queue)
 }
 ```
 
-再看一下延迟队列消费者的实现：
+#### 延迟队列声明
+
+延迟队列并不消费，只是交换器上延迟绑定的声明，我们需要声明这个延迟队列过了延迟时长应该推送到哪个常规队列中，所以我们只跑一次脚本就可以，不需要常驻进程：
 ```
 /**
  * 连接MQ并消费
