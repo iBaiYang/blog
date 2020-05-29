@@ -213,6 +213,8 @@ HTML5 WebSocket <http://www.runoob.com/html/html5-websocket.html>
 
 The WebSocket Protocol <https://tools.ietf.org/html/rfc6455>
 
+socket，tcp，http三者之间的区别和原理 <https://www.jianshu.com/p/a24ba459e306>
+
 <http://www.runoob.com/html/html5-websocket.html>
 
 <http://www.ruanyifeng.com/blog/2017/05/websocket.html>

@@ -688,3 +688,5 @@ PHP socket初探 先从一个简单的socket服务器开始 <https://segmentfaul
 
 PHP常用技术（五）之socket的简单使用 <https://www.cnblogs.com/qiye5757/p/9721401.html>
 
+socket，tcp，http三者之间的区别和原理 <https://www.jianshu.com/p/a24ba459e306>
+
