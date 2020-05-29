@@ -472,4 +472,4 @@ PHP Socket通信 <https://www.jianshu.com/p/36b8f31b41dc>
 
 PHP Stream实现服务器客户端 <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
 
-客户端WebSocket实现 <https://ibaiyang.github.io/blog/html/2019/01/04/%E5%AE%A2%E6%88%B7%E7%AB%AFWebSocket%E5%AE%9E%E7%8E%B0.html>
+WebSocket 技术探究 <https://ibaiyang.github.io/blog/html/2018/05/25/WebSocket-%E6%8A%80%E6%9C%AF%E6%8E%A2%E7%A9%B6.html>

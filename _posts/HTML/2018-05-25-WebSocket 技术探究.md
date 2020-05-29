@@ -35,7 +35,7 @@ if ("WebSocket" in window) {
     ws.onmessage = function(event) {
         alert("收到服务端数据");
 
-        var received_msg = evt.data;  // 收到的服务端数据
+        var received_msg = event.data;  // 收到的服务端数据
     }
 
     // 连接关闭时触发
