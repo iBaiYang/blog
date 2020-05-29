@@ -666,7 +666,7 @@ $q->setFlags(AMQP_DURABLE);　　// 设置模式
 $q->declareQueue();
 $q->bind($exchange_name, $routing_key);  // 绑定交换机
 
-$channel-qos(0, $offset);
+$channel->qos(0, $offset);
 
 $q->consume($callback);
 
