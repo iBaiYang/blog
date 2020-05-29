@@ -65,6 +65,8 @@ class Server
 $server = new Server();
 ```
 
+set()配置参数有些多，具体参看这里：<https://wiki.swoole.com/#/server/setting>
+
 client.php 文件内容：
 
 ```
