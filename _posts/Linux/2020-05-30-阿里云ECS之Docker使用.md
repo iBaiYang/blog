@@ -401,3 +401,5 @@ linux记录-docker配置mysql <https://www.cnblogs.com/xinfang520/p/11122638.htm
 
 阿里云ECS云服务器详细教程CentOS 7 <https://blog.csdn.net/qq_41399901/article/details/84953155>
 
+Docker 部署lnmp <https://blog.csdn.net/weixin_42890981/article/details/86749240>
+
