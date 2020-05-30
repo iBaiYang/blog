@@ -183,30 +183,9 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 点击 内网入方向全部规则，看到默认的内容：
 ```
 授权策略	协议类型	端口范围	授权类型(全部)授权对象	描述	优先级
-允许	自定义 TCP	
-22/22
-	IPv4地址段访问	
-
-0.0.0.0/0
-	
-System created rule.
-	100	
-允许	全部 ICMP(IPv4)	
--1/-1
-	IPv4地址段访问	
-
-0.0.0.0/0
-	
-System created rule.
-	100	
-允许	自定义 TCP	
-3389/3389
-	IPv4地址段访问	
-
-0.0.0.0/0
-	
-System created rule.
-	100	
+允许	自定义 TCP	22/22	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
+允许	全部 ICMP(IPv4)	-1/-1	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
+允许	自定义 TCP	3389/3389	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
 ```
 
 <br/><br/><br/><br/><br/>
