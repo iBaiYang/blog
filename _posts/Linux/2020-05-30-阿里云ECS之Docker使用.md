@@ -188,6 +188,11 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 允许	自定义 TCP	3389/3389	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
 ```
 
+我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
+
+
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
