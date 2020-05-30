@@ -190,6 +190,201 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
 
+#### mysql安装
+
+下载mysql镜像：
+
+> docker pull mysql:5.7
+
+输出：
+```
+Trying to pull repository docker.io/library/mysql ... 
+5.7: Pulling from docker.io/library/mysql
+afb6ec6fdc1c: Already exists 
+0bdc5971ba40: Pull complete 
+97ae94a2c729: Pull complete 
+f777521d340e: Pull complete 
+1393ff7fc871: Pull complete 
+a499b89994d9: Pull complete 
+7ebe8eefbafe: Pull complete 
+4eec965ae405: Pull complete 
+a531a782d709: Pull complete 
+270aeddb45e3: Pull complete 
+b25569b61008: Pull complete 
+Digest: sha256:d16d9ef7a4ecb29efcd1ba46d5a82bda3c28bd18c0f1e3b86ba54816211e1ac4
+Status: Downloaded newer image for docker.io/mysql:5.7
+```
+
+把-v与容器挂载的目录准备好：
+
+> mkdir -p /web/mysql /web/mysql/data /web/mysql/conf.d /web/mysql/logs 
+
+创建容器并运行：
+```
+docker run --name server-mysql -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=few#$dgd1@2dsd%^f \
+  -v /web/mysql/data:/var/lib/mysql \
+  -v /web/mysql/conf.d:/etc/mysql/conf.d \
+  -v /web/mysql/logs:/logs \
+  -v /etc/localtime:/etc/localtime:ro \
+  -d mysql:5.7
+```
+
+data目录将映射为mysql容器配置的数据文件存放路径
+
+logs目录将映射为mysql容器的日志目录
+
+conf.d目录里的配置文件将映射为mysql容器的配置文件
+
+`-v /etc/localtime:/etc/localtime:ro` 因为容器内的时间会跟宿主机相差 8 个小时，加载这个目录是为了校正时间跟宿主机时间一致。
+
+#### php-fpm安装
+
+下载镜像：
+
+> docker pull php:7.1.30-fpm
+
+输出：
+```
+Trying to pull repository docker.io/library/php ... 
+7.1.30-fpm: Pulling from docker.io/library/php
+f5d23c7fed46: Pull complete 
+4f36b8588ea0: Pull complete 
+6f4f95ddefa8: Pull complete 
+187af28c9b1d: Pull complete 
+7ba9cd8f12bd: Pull complete 
+19ce450f6a80: Pull complete 
+6a0aa94e79c7: Pull complete 
+3097ec58d870: Pull complete 
+05ecbde01690: Pull complete 
+ab28ea58dda0: Pull complete 
+Digest: sha256:a0f0773dc2f92ca8f4dab7c7c525574d467d3aa4bb27424bb7f0540a7c9efcd0
+Status: Downloaded newer image for docker.io/php:7.1.30-fpm
+```
+
+把-v与容器挂载的目录准备好：
+
+> mkdir -p /web/nginx /web/nginx/conf/vhost /web/nginx/logs \
+  /var/www 
+
+创建容器并运行：
+```
+docker run --name server-phpfpm71 -p 9000:9000 \
+  -v /var/www:/www \
+  -v /etc/localtime:/etc/localtime:ro \
+  -d php:7.1.30-fpm
+```
+
+#### web项目搭建
+
+我们上面已经运行了nginx容器，但这个容器并无法调用php脚本服务，我们需要做相应配置。
+
+把容器中的nginx.conf文件复制到服务器目录下：
+
+> docker cp 8a81faef1e1d:/etc/nginx/nginx.conf /web/nginx/conf/nginx.conf
+
+nginx.conf文件内容：
+```
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+```
+
+把容器中的conf.d/dafault.conf文件复制到服务器目录下：
+
+> docker cp 8a81faef1e1d:/etc/nginx/conf.d/dafault.conf /web/nginx/conf/vhost/
+
+dafault.conf文件内容：
+```
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+我们可以在 vhost 目录下写域名项目配置文件。
+
+把我们上面运行的nginx容器停止运行并删除
+
+> docker rm -f 8a81faef1e1d
+
+创建新的nginx容器并运行：
+```
+docker run --name server-nginx -p 80:80 \
+  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
+  -v /web/nginx/conf/vhost:/etc/nginx/conf.d \
+  -v /web/nginx/logs:/var/log/nginx \
+  -v /var/www:/usr/share/nginx/html \
+  -v /etc/localtime:/etc/localtime:ro \
+  --link server-phpfpm71:php \
+  -d nginx
+```
 
 
 
@@ -199,3 +394,10 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 阿里云ECS服务器安装docker <https://www.cnblogs.com/one-reader/p/11406047.html>
 
 阿里云ECS-yum 安装docker <https://blog.csdn.net/wxb880114/article/details/82219701>
+
+服务器部署docker lnmp环境 <https://www.cnblogs.com/cxscode/p/11070880.html>
+
+linux记录-docker配置mysql <https://www.cnblogs.com/xinfang520/p/11122638.html>
+
+阿里云ECS云服务器详细教程CentOS 7 <https://blog.csdn.net/qq_41399901/article/details/84953155>
+
