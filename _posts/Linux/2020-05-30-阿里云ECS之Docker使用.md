@@ -266,7 +266,7 @@ Status: Downloaded newer image for docker.io/php:7.1.30-fpm
 
 ```
 mkdir -p /web/nginx /web/nginx/conf/vhost /web/nginx/logs \
-  /var/www s
+  /var/www 
 ```
 
 创建容器并运行：
@@ -388,7 +388,11 @@ docker run --name server-nginx -p 80:80 \
   -d nginx
 ```
 
+```
+docker run --name server-phpfpm71 -p 9000:9000 -v /var/www/test:/var/www/html  -v /etc/localtime:/etc/localtime:ro  -d php:7.1.30-fpm
 
+docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/test:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-phpfpm71:php  -d nginx
+```
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
