@@ -264,8 +264,10 @@ Status: Downloaded newer image for docker.io/php:7.1.30-fpm
 
 把-v与容器挂载的目录准备好：
 
-> mkdir -p /web/nginx /web/nginx/conf/vhost /web/nginx/logs \
-  /var/www 
+```
+mkdir -p /web/nginx /web/nginx/conf/vhost /web/nginx/logs \
+  /var/www s
+```
 
 创建容器并运行：
 ```
