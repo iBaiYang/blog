@@ -279,7 +279,7 @@ docker run \
   -v /web/nginx/logs:/var/log/nginx \
   -v /var/www:/usr/share/nginx/html \
   -v /etc/localtime:/etc/localtime:ro \
-  --link server-phpfpm71:php \
+  --link server-php:php \
   -d nginx
 ```
 
@@ -349,7 +349,7 @@ http {
 }
 ```
 
-把容器中的conf.d/dafault.conf文件复制到服务器目录下：
+把容器中的 /etc/nginx/conf.d/dafault.conf 文件复制到服务器目录下：
 
 > docker cp server-nginx:/etc/nginx/conf.d/dafault.conf /web/nginx/conf/vhost/
 
@@ -401,7 +401,55 @@ server {
 }
 ```
 
-我们可以在 vhost 目录下写域名项目配置文件。
+我们可以在服务器 /web/nginx/conf/vhost 目录下写域名项目配置文件：
+
+test.com.conf文件内容：
+```
+server {
+    listen       80;
+    server_name  test.com www.test.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm index.php;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root           html;
+        fastcgi_pass   server-php:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /var/www/html/test$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
 
 把我们上面运行的nginx容器停止运行
 
@@ -434,4 +482,6 @@ linux记录-docker配置mysql <https://www.cnblogs.com/xinfang520/p/11122638.htm
 阿里云ECS云服务器详细教程CentOS 7 <https://blog.csdn.net/qq_41399901/article/details/84953155>
 
 Docker 部署lnmp <https://blog.csdn.net/weixin_42890981/article/details/86749240>
+
+docker的安装部署及使用docker安装mysql+php+nginx教程 <https://boke112.com/6402.html>
 
