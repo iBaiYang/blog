@@ -144,52 +144,6 @@ Server:
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-#### nginx安装
-
-> docker pull nginx
-
-输出：
-```
-Using default tag: latest
-Trying to pull repository docker.io/library/nginx ... 
-latest: Pulling from docker.io/library/nginx
-afb6ec6fdc1c: Pull complete 
-b90c53a0b692: Pull complete 
-11fa52a0fdc0: Pull complete 
-Digest: sha256:6fff55753e3b34e36e24e37039ee9eae1fe38a6420d8ae16ef37c92d1eb26699
-Status: Downloaded newer image for docker.io/nginx:latest
-```
-
-创建容器并运行：
-```
-docker run -p 80:80 -d nginx
-```
-
-查看容器：
-> docker ps
-
-可以看到nginx正在Up运行状态中：
-```
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
-8a81faef1e1d        nginx               "nginx -g 'daemon ..."   9 seconds ago       Up 8 seconds        0.0.0.0:80->80/tcp   unruffled_franklin
-```
-
-我们还需要配置实例安全组，外网才能访问服务器80端口。
-
-在阿里云配置中心——云服务器 ECS——点击实例，在实例管理处点击左侧菜单的本实例安全组，可以看到右侧三个栏目：
-
-内网入方向全部规则 | 内网出方向全部规则 | 安全组列表
-
-点击 内网入方向全部规则，看到默认的内容：
-```
-授权策略	协议类型	端口范围	授权类型(全部)授权对象	描述	优先级
-允许	自定义 TCP	22/22	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
-允许	全部 ICMP(IPv4)	-1/-1	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
-允许	自定义 TCP	3389/3389	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
-```
-
-我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
-
 #### mysql安装
 
 下载mysql镜像：
@@ -221,8 +175,10 @@ Status: Downloaded newer image for docker.io/mysql:5.7
 
 创建容器并运行：
 ```
-docker run --name server-mysql -p 3306:3306 \
-  -e MYSQL_ROOT_PASSWORD=few#$dgd1@2dsd%^f \
+docker run \
+  --name server-mysql \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=abc123!@# \
   -v /web/mysql/data:/var/lib/mysql \
   -v /web/mysql/conf.d:/etc/mysql/conf.d \
   -v /web/mysql/logs:/logs \
@@ -230,15 +186,15 @@ docker run --name server-mysql -p 3306:3306 \
   -d mysql:5.7
 ```
 
-data目录将映射为mysql容器配置的数据文件存放路径
+/web/mysql/data 目录将映射为mysql容器配置的数据文件存放路径
 
-logs目录将映射为mysql容器的日志目录
+/web/mysql/conf.d 目录里的配置文件将映射为mysql容器的配置文件
 
-conf.d目录里的配置文件将映射为mysql容器的配置文件
+/web/mysql/logs 目录将映射为mysql容器的日志目录
 
 `-v /etc/localtime:/etc/localtime:ro` 因为容器内的时间会跟宿主机相差 8 个小时，加载这个目录是为了校正时间跟宿主机时间一致。
 
-#### php-fpm安装
+#### php安装
 
 下载镜像：
 
@@ -265,17 +221,92 @@ Status: Downloaded newer image for docker.io/php:7.1.30-fpm
 把-v与容器挂载的目录准备好：
 
 ```
-mkdir -p /web/nginx /web/nginx/conf/vhost /web/nginx/logs \
-  /var/www 
+mkdir -p /web/php-fpm/etc /var/www 
 ```
 
 创建容器并运行：
 ```
-docker run --name server-phpfpm71 -p 9000:9000 \
-  -v /var/www:/www \
+docker run \
+  --name server-php \ 
+  -p 9000:9000 \
+  -v /web/php-fpm/etc/:/usr/local/etc/php \
+  -v /var/www:/var/www/html \
   -v /etc/localtime:/etc/localtime:ro \
   -d php:7.1.30-fpm
 ```
+
+默认的 php 镜像中不带有 mysqli 模块，我们需要给容器内的 php 安装 mysqli 模块：
+
+> docker exec -it server-php /bin/bash
+
+进入后：
+
+> docker-php-ext-install mysqli
+
+然后退出容器，回到服务器。
+
+#### nginx安装
+
+> docker pull nginx
+
+输出：
+```
+Using default tag: latest
+Trying to pull repository docker.io/library/nginx ... 
+latest: Pulling from docker.io/library/nginx
+afb6ec6fdc1c: Pull complete 
+b90c53a0b692: Pull complete 
+11fa52a0fdc0: Pull complete 
+Digest: sha256:6fff55753e3b34e36e24e37039ee9eae1fe38a6420d8ae16ef37c92d1eb26699
+Status: Downloaded newer image for docker.io/nginx:latest
+```
+
+把-v与容器挂载的目录和文件准备好：
+
+```
+//touch /web/nginx/conf/nginx.conf
+
+mkdir -p /web/nginx/conf/vhost /web/nginx/logs
+```
+
+创建容器并运行：
+```
+docker run \
+  --name server-nginx \
+  -p 80:80 \
+  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
+  -v /web/nginx/conf/vhost:/etc/nginx/conf.d \
+  -v /web/nginx/logs:/var/log/nginx \
+  -v /var/www:/usr/share/nginx/html \
+  -v /etc/localtime:/etc/localtime:ro \
+  --link server-phpfpm71:php \
+  -d nginx
+```
+
+查看容器：
+> docker ps
+
+可以看到nginx正在Up运行状态中：
+```
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+8a81faef1e1d        nginx               "nginx -g 'daemon ..."   9 seconds ago       Up 8 seconds        0.0.0.0:80->80/tcp   server-nginx
+```
+
+我们还需要配置实例安全组，外网才能访问服务器80端口。
+
+在阿里云配置中心——云服务器 ECS——点击实例，在实例管理处点击左侧菜单的本实例安全组，可以看到右侧三个栏目：
+
+内网入方向全部规则 | 内网出方向全部规则 | 安全组列表
+
+点击 内网入方向全部规则，看到默认的内容：
+```
+授权策略	协议类型	端口范围	授权类型(全部)授权对象	描述	优先级
+允许	自定义 TCP	22/22	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
+允许	全部 ICMP(IPv4)	-1/-1	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
+允许	自定义 TCP	3389/3389	IPv4地址段访问	0.0.0.0/0	System created rule.	100	
+```
+
+我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
 
 #### web项目搭建
 
@@ -283,9 +314,9 @@ docker run --name server-phpfpm71 -p 9000:9000 \
 
 把容器中的nginx.conf文件复制到服务器目录下：
 
-> docker cp 8a81faef1e1d:/etc/nginx/nginx.conf /web/nginx/conf/nginx.conf
+> docker cp server-nginx:/etc/nginx/nginx.conf /web/nginx/conf/nginx.conf
 
-nginx.conf文件内容：
+nginx.conf 文件内容：
 ```
 user  nginx;
 worker_processes  1;
@@ -320,7 +351,7 @@ http {
 
 把容器中的conf.d/dafault.conf文件复制到服务器目录下：
 
-> docker cp 8a81faef1e1d:/etc/nginx/conf.d/dafault.conf /web/nginx/conf/vhost/
+> docker cp server-nginx:/etc/nginx/conf.d/dafault.conf /web/nginx/conf/vhost/
 
 dafault.conf文件内容：
 ```
@@ -372,26 +403,21 @@ server {
 
 我们可以在 vhost 目录下写域名项目配置文件。
 
-把我们上面运行的nginx容器停止运行并删除
+把我们上面运行的nginx容器停止运行
 
-> docker rm -f 8a81faef1e1d
+> docker stop server-nginx
 
-创建新的nginx容器并运行：
-```
-docker run --name server-nginx -p 80:80 \
-  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
-  -v /web/nginx/conf/vhost:/etc/nginx/conf.d \
-  -v /web/nginx/logs:/var/log/nginx \
-  -v /var/www:/usr/share/nginx/html \
-  -v /etc/localtime:/etc/localtime:ro \
-  --link server-phpfpm71:php \
-  -d nginx
-```
+然后重新运行，让我们修改的配置文件生效：
+
+> docker start server-nginx
+
+
+
 
 ```
 docker run --name server-phpfpm71 -p 9000:9000 -v /var/www/test:/var/www/html  -v /etc/localtime:/etc/localtime:ro  -d php:7.1.30-fpm
 
-docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/test:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-phpfpm71:php  -d nginx
+docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/test:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-php71:php  -d nginx
 ```
 
 <br/><br/><br/><br/><br/>
