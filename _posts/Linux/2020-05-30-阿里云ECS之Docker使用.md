@@ -264,9 +264,7 @@ Status: Downloaded newer image for docker.io/nginx:latest
 把-v与容器挂载的目录和文件准备好：
 
 ```
-//touch /web/nginx/conf/nginx.conf
-
-mkdir -p /web/nginx/conf/vhost /web/nginx/logs
+mkdir -p /web/nginx/conf /web/nginx/conf/vhost /web/nginx/logs
 ```
 
 创建容器并运行：
@@ -282,6 +280,8 @@ docker run \
   --link server-php:php \
   -d nginx
 ```
+
+说明： /web/nginx/conf/nginx.conf 是nginx配置文件，现在暂时还没有，只是把容器与宿主服务器的连接关系先写好。
 
 查看容器：
 > docker ps
