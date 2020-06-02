@@ -404,7 +404,7 @@ Installing header files:          /usr/local/include/php/
 /usr/local/bin/docker-php-ext-enable: 108: /usr/local/bin/docker-php-ext-enable: cannot create /usr/local/etc/php/conf.d/docker-php-ext-mysqli.ini: Directory nonexistent
 ```
 
-然后退出容器，回到服务器：
+然后退出容器，回到宿主服务器：
 
 > exit
 
@@ -440,19 +440,23 @@ docker run \
   -v /web/nginx/logs:/var/log/nginx \
   -v /var/www/html:/usr/share/nginx/html \
   -v /etc/localtime:/etc/localtime:ro \
-  --link server-php:php \
+  --link server-phpfpm:php \
   -d nginx
 ```
 
 说明： /web/nginx/conf/nginx.conf 是nginx配置文件，现在暂时还没有，只是把容器与宿主服务器的连接关系先写好。
 
 查看容器：
-> docker ps
+
+> docker ps -a
 
 可以看到nginx正在Up运行状态中：
+
 ```
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
-8a81faef1e1d        nginx               "nginx -g 'daemon ..."   9 seconds ago       Up 8 seconds        0.0.0.0:80->80/tcp   server-nginx
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                               NAMES
+4f3bd8406cbc        nginx               "nginx -g 'daemon ..."   14 seconds ago      Up 13 seconds       0.0.0.0:80->80/tcp                  server-nginx
+3a03eba032c0        php:7.1.30-fpm      "docker-php-entryp..."   12 minutes ago      Up 12 minutes       0.0.0.0:9000->9000/tcp              server-phpfpm
+2bfff24639a3        mysql:5.7           "docker-entrypoint..."   40 minutes ago      Up 40 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
 我们还需要配置实例安全组，外网才能访问服务器80端口。
@@ -576,7 +580,7 @@ server {
     #access_log  /var/log/nginx/host.access.log  main;
 
     location / {
-        root   /usr/share/nginx/html;
+        root   /usr/share/nginx/html/test;
         index  index.html index.htm index.php;
     }
 
@@ -598,10 +602,10 @@ server {
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     #
     location ~ \.php$ {
-        root           html;
-        fastcgi_pass   server-php:9000;
+        root           /var/www/html/test;
+        fastcgi_pass   php:9000;
         fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  /var/www/html/test$fastcgi_script_name;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
     }
 
@@ -622,6 +626,10 @@ server {
 
 > docker start server-nginx
 
+可以看出我们test项目的代码在宿主服务器文件夹 /var/www/html/test 下，我们把项目内容发布到这个文件夹下就可以了。
+然后我们就可以用 test.com 访问项目了（这里省略 域名/服务器配置相关内容）。 
+
+同样，其他项目我们也可以像test项目这样部署，共用nginx和php容器。
 
 
 
@@ -630,7 +638,7 @@ docker run --name server-mysql  -p 3306:3306  -e MYSQL_ROOT_PASSWORD=abc$123* -v
 
 docker run --name server-phpfpm -p 9000:9000 -v /web/php-fpm/etc/:/usr/local/etc/php -v /var/www/html:/var/www/html -v /etc/localtime:/etc/localtime:ro -d php:7.1.30-fpm
 
-docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/html/test:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-php71:php  -d nginx
+docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/html:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-phpfpm:php  -d nginx
 ```
 
 <br/><br/><br/><br/><br/>
