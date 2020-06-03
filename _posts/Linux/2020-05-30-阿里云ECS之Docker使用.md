@@ -186,6 +186,8 @@ docker run \
   -d mysql:5.7
 ```
 
+MYSQL_ROOT_PASSWORD 是 root 用户连接数据库服务的密码。 
+
 /web/mysql/data 目录将映射为mysql容器配置的数据文件存放路径
 
 /web/mysql/conf.d 目录里的配置文件将映射为mysql容器的配置文件
@@ -238,7 +240,7 @@ mkdir -p /web/php-fpm/etc /var/www/html
 docker run \
   --name server-phpfpm \ 
   -p 9000:9000 \
-  -v /web/php-fpm/etc/:/usr/local/etc/php \
+  -v /web/php-fpm/etc:/usr/local/etc/php \
   -v /var/www/html:/var/www/html \
   -v /etc/localtime:/etc/localtime:ro \
   -d php:7.1.30-fpm
@@ -635,18 +637,18 @@ server {
 
 我们打印phpinfo信息看一下：
 
-![]({{site.baseurl}}/images/20200602/20200602154735.jpeg)
+![]({{site.baseurl}}/images/20200602/20200602154735.png)
 
-![]({{site.baseurl}}/images/20200602/20200602154737.jpeg)
+![]({{site.baseurl}}/images/20200602/20200602154737.png)
 
-![]({{site.baseurl}}/images/20200602/20200602154739.jpeg)
+![]({{site.baseurl}}/images/20200602/20200602154739.png)
 
-![]({{site.baseurl}}/images/20200602/20200602154741.jpeg)
+![]({{site.baseurl}}/images/20200602/20200602154741.png)
 
 ```
 docker run --name server-mysql  -p 3306:3306  -e MYSQL_ROOT_PASSWORD=abc$123* -v /web/mysql/data:/var/lib/mysql -v /web/mysql/conf.d:/etc/mysql/conf.d -v /web/mysql/logs:/logs  -v /etc/localtime:/etc/localtime:ro -d mysql:5.7
 
-docker run --name server-phpfpm -p 9000:9000 -v /web/php-fpm/etc/:/usr/local/etc/php -v /var/www/html:/var/www/html -v /etc/localtime:/etc/localtime:ro -d php:7.1.30-fpm
+docker run --name server-phpfpm -p 9000:9000 -v /web/php-fpm/etc:/usr/local/etc/php -v /var/www/html:/var/www/html -v /etc/localtime:/etc/localtime:ro -d php:7.1.30-fpm
 
 docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/html:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-phpfpm:php  -d nginx
 ```
