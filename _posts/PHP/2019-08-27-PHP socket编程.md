@@ -340,7 +340,7 @@ PHP CODE:
 $input = socket_read($spawn, 1024) or die("Could not read input\n");
 ?&gt;
 
-socker_read的第而个参数用以指定读入的字节数,你可以通过它来限制从客户端获取数据的大小.
+socker_read的第二个参数用以指定读入的字节数,你可以通过它来限制从客户端获取数据的大小.
 
 注意:socket_read函数会一直读取壳户端数据,直到遇见\n,\t或者\0字符.PHP脚本把这写字符看做是输入的结束符.
 
@@ -428,7 +428,7 @@ $ip_address = gethostbyname('www.baidu.com');
     echo $buf;
 ```
 
-5. 关闭socket
+5.关闭socket
 
 socket_close($socket);
 
@@ -480,11 +480,12 @@ socket_listen($socket, 10);
     socket_close($client);
     socket_close($socket);
 ```
-$ php server.php
+
+> php server.php
 
 此时该程序正在等待端口5001上的传入连接我们新开一个窗口
 
-$ telnet localhost 5001
+> telnet localhost 5001
 
 【注意】
 socket_getpeername 函数用于获取有关通过特定socket连接到服务器的客户端详细信息
