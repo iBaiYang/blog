@@ -9,6 +9,8 @@ meta: linux 安装webbench及服务压测
 
 ### 正文
 
+webbench最多可以模拟3万个并发连接去测试网站的负载能力，我们可以安装使用。
+
 #### webbench安装
 
 > cd /usr/local/src
