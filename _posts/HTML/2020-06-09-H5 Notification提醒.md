@@ -50,6 +50,37 @@ if (window.Notification && window.Notification.permission !== 'granted') {
 }
 ```
 
+解读语法：
+```
+let myNotification = new Notification(title, options);
+```
+
+title  定义一个通知的标题，当它被触发时，它将显示在通知窗口的顶部。
+
+options 可选
+    options对象包含应用于通知的任何自定义设置选项。选项有： 
+
+    dir: 显示通知的方向。默认是auto，跟随浏览器语言设置行为，你也可以通过设置ltr和rtl的值来覆盖该行为（虽然大多数浏览器似乎忽略这些设置）
+    lang: 通知的语言，如使用代表一个BCP 47语言标签的  DOMString 指定的。请参阅Sitepoint ISO 2字母语言代码页面，以获得简单的参考。
+    badge: 一个 USVString 包含用于表示通知的图像的URL, 当没有足够的空间来显示通知本身时。
+    body: 一个 DOMString 表示通知的正文，将显示在标题下方。
+    tag:  一个 DOMString 代表通知的 一个识别标签。
+    icon:  一个 USVString 包含要在通知中显示的图标的URL。
+    image: 一个 USVSTring包含要在通知中显示的图像的URL。
+    data: 您想要与通知相关联的任意数据。这可以是任何数据类型。
+    vibrate: 一个振动模式 vibration pattern 设备的振动硬件在通知触发时发出。
+    renotify: 一个 Boolean 指定在新通知替换旧通知后是否应通知用户。默认值为false，这意味着它们不会被通知。
+    requireInteraction: 表示通知应保持有效，直到用户点击或关闭它，而不是自动关闭。默认值为false。
+    
+以下选项列在最新规范中，浏览器中暂不支持：
+
+    silent: 一个 Boolean 指明通知是否应该是无声的,即,不需要发出声音或振动，无论设备设置如何。默认值为false，这意味着它不会保持静默。
+    sound:一个 USVString 包含通知触发时要播放的音频文件的URL。
+    noscreen: 一个 Boolean 指定通知触发是否应启用设备的屏幕。 默认值为false，这意味着它将启用屏幕。
+    sticky: 一个 Boolean 指明通知是否应该是“粘”, 即不易被用户清理。默认值为false，这意味着它不会粘。
+
+
+
 #### 封装示例
 
 notify.js：
