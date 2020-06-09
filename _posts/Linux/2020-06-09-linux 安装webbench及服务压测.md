@@ -124,9 +124,9 @@ webbench [option]... URL
 
 ![]({{site.baseurl}}/images/20200609/20200609111332.png)
 
-Speed 为每分钟多少个请求
+Speed 为每分钟多少个请求，是根据Requests计算出来的
 
-Requests 成功多少个请求，失败多少个请求
+Requests 指定时间内成功多少个请求，失败多少个请求
 
 
 <br/><br/><br/><br/><br/>
@@ -134,10 +134,16 @@ Requests 成功多少个请求，失败多少个请求
 
 网站性能Web压力测试工具webbench <http://www.ha97.com/533.html>
 
+webbench 压力测试软件 <https://www.jianshu.com/p/dc1032b19c8d>
+
+webbench进行web服务器压力测试思路 <https://blog.csdn.net/yanggd1987/article/details/40147985>
+
 linux下Webbench的安装及使用 <https://blog.csdn.net/pamelay/article/details/77401374>
 
 configure、make 和 make install 的区别 <https://www.cnblogs.com/pjl1119/p/9875507.html>
 
 php方法压力测试 <https://cloud.tencent.com/developer/information/php%E6%96%B9%E6%B3%95%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95>
+
+WebBench压力测试工具（详细源码注释+分析） <https://www.bbsmax.com/A/QV5ZDRn2zy/>
 
 大家须知简单的php性能优化注意点 <https://www.jb51.net/article/77446.htm>
