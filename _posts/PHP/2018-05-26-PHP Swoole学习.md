@@ -243,6 +243,8 @@ $cli->connect();
 
 ![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190123/20190123150130.jpg)
 
+其实这个就是负载均衡。
+
 #### 实例分析
 
 看一个实例：工单服务器 推送数据到 队列服务器，队列消费者 通过stream_socket_client连接把信息推送到 swoole服务器，
