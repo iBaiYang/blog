@@ -79,7 +79,39 @@ options 可选
     noscreen: 一个 Boolean 指定通知触发是否应启用设备的屏幕。 默认值为false，这意味着它将启用屏幕。
     sticky: 一个 Boolean 指明通知是否应该是“粘”, 即不易被用户清理。默认值为false，这意味着它不会粘。
 
+上面的示例只有在浏览器给当前站点给了通知权限时，才会有桌面通知，如果是默认授权是弹不出的，我们需要询问授权，看一下下面的用法：
+```
+Notification.requestPermission(function (permission) {
+    if (permission === "granted") {
+        var notification = new Notification(
+            "工单新信息",{
+                body: "您有1条工单信息，快去查看吧",
+                dir: "auto",
+                lang: "zh-CN",
+                tag: "WoDealNotice",
+                icon:'/images/icon.jpg',
+                requireInteraction: true,
+                renotify: false
+            });
+        // 点击事件监听
+        notification.onclick = function () {
+            window.focus();
+            notification.close();
+            $(".notification-box").trigger("click");
+        };
+        // 监听显示事件
+        notification.onshow = function () { console.log('onshow'); };
+        // 监听错误事件
+        notification.onerror = function () { console.log('onerror'); };
+        // 监听关闭事件
+        notification.onclose = function () { console.log('onclose'); };
+    } else {
+        $(".notification-box").show();
+    }
+});
+```
 
+Notification 接口的 requestPermission() 方法请求用户当前来源的权限以显示通知。
 
 #### 封装示例
 
@@ -195,9 +227,11 @@ this[typeMap[type]["dataWrapper"]].notifyMessage();
 
 Web 开发技术请参见 Web API 接口参考请参见 notificationNotification.Notification() <https://developer.mozilla.org/zh-CN/docs/Web/API/Notification/Notification>
 
+Web 开发技术请参见 Web API 接口参考请参见 notificationNotification.requestPermission() <https://developer.mozilla.org/zh-CN/docs/Web/API/notification/requestPermission>
+
 H5 Notification桌面推送消息 <https://blog.csdn.net/CodingNoob/article/details/81090779>
 
 H5的Notification特性 - Web的桌面通知功能 <https://segmentfault.com/a/1190000012127653>
 
-
+Notification 桌面通知 <https://www.jianshu.com/p/22c408dcf2f7>
 
