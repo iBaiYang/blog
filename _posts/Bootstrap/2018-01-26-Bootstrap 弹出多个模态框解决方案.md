@@ -9,6 +9,20 @@ meta: 有时需要在页面上弹出多个模态框，但Bootstrap只允许弹�
 
 ### 正文
 
+模态框（Modal）是覆盖在父窗体上的子窗体。通常，目的是显示来自一个单独的源的内容，可以在不离开父窗体的情况下有一些互动。子窗体可提供信息、交互等。
+引用 bootstrap.js 或压缩版的 bootstrap.min.js，就可以使用模态框（Modal）插件。如果您想要单独引用该插件的功能，那么您需要引用 modal.js。
+
+您可以有以下两种方式切换模态框（Modal）：
+
+方式1，通过 data 属性：在控制器元素（比如按钮或者链接）上设置属性 data-toggle="modal"，
+同时设置 data-target="#identifier" 或 href="#identifier" 来指定要切换的特定的模态框（带有 id="identifier"）。
+
+方式2，通过 JavaScript：使用这种技术，您可以通过简单的一行 JavaScript 来调用带有 id="identifier" 的模态框： 
+```
+$('#identifier').modal(options)
+```
+
+实例：
 ```
 <!doctype html>
 <html lang="en">
@@ -129,6 +143,8 @@ meta: 有时需要在页面上弹出多个模态框，但Bootstrap只允许弹�
 
 <br/><br/><br/><br/><br/>
 ### 参考资料 
+
+Bootstrap 模态框（Modal）插件 <https://www.runoob.com/bootstrap/bootstrap-modal-plugin.html>
 
 <http://blog.csdn.net/k358971707/article/details/71908862>
 
