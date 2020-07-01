@@ -453,7 +453,8 @@ $eventBase->loop();
 将代码保存为tick.php，然后php tick.php执行一下，如下图所示：
 ![](http://static.ti-node.com/6397075325490036736)
 
-这种定时器是持久的定时器（每隔X时间一定会执行一次），如果想要一次性的定时器（隔X时间后就会执行一次，执行过后再也不执行了），那么将上述代码中的“Event::TIMEOUT | Event::PERSIST”修改为“Event::TIMEOUT”即可。
+这种定时器是持久的定时器（每隔X时间一定会执行一次），如果想要一次性的定时器（隔X时间后就会执行一次，执行过后再也不执行了），
+那么将上述代码中的`Event::TIMEOUT | Event::PERSIST`修改为`Event::TIMEOUT`即可。
 
 如果你有一些自定义用户数据传递给回调函数，可以利用new Event()的第五个参数，这五个参数可以给回调函数用，如下所示：
 ```php
@@ -471,8 +472,10 @@ $timer = new Event( $eventBase, -1, Event::TIMEOUT | Event::PERSIST, function() 
 public Event::__construct ( EventBase $base , mixed $fd , int $what , callable $cb [, mixed $arg = NULL ] )
 ```
 - 第一个参数是一个eventBase对象即可
-- 第二个参数是文件描述符，可以是一个监听socket、一个连接socket、一个fopen打开的文件或者stream流等。如果是时钟时间，则传入-1。如果是其他信号事件，用相应的信号常量即可，比如SIGHUP、SIGTERM等等
-- 第三个参数表示事件类型，依次是Event::READ、Event::WRITE、Event::SIGNAL、Event::TIMEOUT。其中，加上Event::PERSIST则表示是持久发生，而不是只发生一次就再也没反应了。比如Event::READ | Event::PERSIST就表示某个文件描述第一次可读的时候发生一次，后面如果又可读就绪了那么还会继续发生一次。
+- 第二个参数是文件描述符，可以是一个监听socket、一个连接socket、一个fopen打开的文件或者stream流等。如果是时钟时间，
+则传入-1。如果是其他信号事件，用相应的信号常量即可，比如SIGHUP、SIGTERM等等
+- 第三个参数表示事件类型，依次是Event::READ、Event::WRITE、Event::SIGNAL、Event::TIMEOUT。其中，加上Event::PERSIST则表示是持久发生，
+而不是只发生一次就再也没反应了。比如`Event::READ | Event::PERSIST`就表示某个文件描述第一次可读的时候发生一次，后面如果又可读就绪了那么还会继续发生一次。
 - 第四个参数就熟悉的很了，就是事件回调了，意思就是当某个事件发生后那么应该具体做什么相应
 - 第五个参数是自定义数据，这个数据会传递给第四个参数的回调函数，回调函数中可以用这个数据。
 
