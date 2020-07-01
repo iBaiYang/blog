@@ -589,15 +589,8 @@ if( $features & EventConfig::FEATURE_FDS ){
 
 #### 14 PHP socket初探 --- 含着泪也要磕完libevent（三）
 
-这段时间相比大家也看到了，本人离职了，一是在家偷懒实在懒得动手，二是好不容易想写点儿时间全部砸到数据结构和算法那里了。
-
-今儿回过头来，继续这里的文章。那句话是怎么说的：
-
-“**自己选择的课题，含着泪也得磕完！**”（图文无关，[详情点击这里](https://tieba.baidu.com/p/3504775033?red_tag=1379561293 "详情点击这里")）。
-
-![](http://static.ti-node.com/6402086624192102400)
-
-其实在上一篇libevent文章中（[《PHP socket初探 --- 硬着头皮继续libevent（二）》](<https://t.ti-node.com/thread/6445811931654651905> "《PHP socket初探 --- 硬着头皮继续libevent（二）》")），如果你总结能力很好的话，可以观察出来我们尝试利用libevent做了至少两件事情：
+其实在上一篇libevent文章中 《PHP socket初探 --- 硬着头皮继续libevent（二）》，如果你总结能力很好的话，
+可以观察出来我们尝试利用libevent做了至少两件事情：
 - 毫秒级别定时器
 - 信号监听工具
 
