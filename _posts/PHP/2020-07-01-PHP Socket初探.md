@@ -486,7 +486,9 @@ public Event::__construct ( EventBase $base , mixed $fd , int $what , callable $
 4. 将Event挂起，也就是执行了Event对象的add方法，不执行add方法那么这个event对象就无法挂起，也就不会执行
 5. 将EventBase执行进入循环中，也就是loop方法
 
-捋清楚了定时器代码，我们尝试来解决一个信号的问题。比如我们的进程是常驻内存的daemon，再接收到某个信号后就会作出相应的动作，比如收到term信号后进程就会退出、收到usr1信号就会执行reload等等。
+捋清楚了定时器代码，我们尝试来解决一个信号的问题。比如我们的进程是常驻内存的daemon，再接收到某个信号后就会作出相应的动作，
+比如收到term信号后进程就会退出、收到usr1信号就会执行reload等等。
+
 ```php
 <?php
 // 依然是照例行事，尽管暂时没什么实际意义上的配置
@@ -503,9 +505,12 @@ $event->add();
 echo "进入循环".PHP_EOL;
 $eventBase->loop();
 ```
-将代码保存成tick.php，然后执行php tick.php，代码已经进入循环了，然后我们打开另外一个终端，输入ps aux|grep tick查看一个php进程的pid进程号，对这个进程发送term信号，如下图所示：
+
+将代码保存成tick.php，然后执行php tick.php，代码已经进入循环了，然后我们打开另外一个终端，
+输入`ps aux|grep tick`查看一个php进程的pid进程号，对这个进程发送term信号，如下图所示：
 
 ![](http://static.ti-node.com/6397300737826619393)
+
 ![](http://static.ti-node.com/6397300801726840833)
 
 奇怪啊，从第一张图看到确实收到term信号了，但是很奇怪为什么这个php进程退出了呢？是因为没有添加Event::PERSIST，修改如下代码如下：
@@ -515,8 +520,10 @@ $event = new Event( $eventBase, SIGTERM, Event::SIGNAL | Event::PERSIST, functio
   echo "signal term.".PHP_EOL;
 } );
 ```
+
 可能还有一些同学觉得php进程退出就退出,收到kill就退出,好正常,你仔细看下,tick.php进程只要求收到一个term就echo输出,并没有说规定进程退出,
 而且使用kill要看发送什么信号的,kill -15,这个参数通过kill -l查看多种信号值,-15是属于SIGTERM
+
 ```shell
 root@jingmian:/# kill -l
  1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
@@ -572,7 +579,9 @@ if( $features & EventConfig::FEATURE_FDS ){
   echo "任意文件描述符，不光socket".PHP_EOL;
 }
 ```
+
 运行结果如下图所示：
+
 ![](http://static.ti-node.com/6397315528683159552)
 
 小小装个逼总结一下，今儿这些个内容就是讲述event的基础三大类，下个篇章依然是围绕这三个家伙和IO操作结合到一起。
