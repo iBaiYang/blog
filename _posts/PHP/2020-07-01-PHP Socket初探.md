@@ -763,14 +763,15 @@ socket_listen( $listen );
 // ⚠️⚠️⚠️⚠️⚠️⚠️ 这里设置非阻塞！
 socket_set_nonblock( $listen );
 while( true ){
-     $connect = socket_accept( $listen );
-     if( $connect ){
-       echo "有新的客户端".PHP_EOL;
-     } else {
-	   echo "客户端连接失败".PHP_EOL;
-	 }
+    $connect = socket_accept( $listen );
+    if ( $connect ) {
+        echo "有新的客户端".PHP_EOL;
+    } else {
+        echo "客户端连接失败".PHP_EOL;
+    }
 }
 ```
+
 将代码保存了运行一下，告诉我：
 
 ![](http://static.ti-node.com/6343008084142587905.gif)
