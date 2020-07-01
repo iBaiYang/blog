@@ -871,7 +871,7 @@ $async_mysql->on( 'connect', function( $async_mysql ){
             $sql = "select * from pinglun limit 5";
             $async_mysql->query( $sql, function( $async_mysql, $result ){
                 // 获取成功后拿数据
-                if( true == $result ){
+                if ( true == $result ) {
                     print_r( $result->fetchAll() );
                 } else {
                     echo "获取失败".PHP_EOL;
