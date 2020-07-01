@@ -788,7 +788,8 @@ while( true ){
 
 #### 16 swoole的协程是个什么鬼
 
-swoole的用法实际上对于大多数新手来说一直并不怎么友好，其实这不怪swoole，只能怪萌新们确实底子不够，有些东西理解起来可能真的比较困难。今天斗胆尝试引入一个应用场景和简单的代码案例来做个简单的入门，算是抛砖头引和田玉吧。
+swoole的用法实际上对于大多数新手来说一直并不怎么友好，其实这不怪swoole，只能怪萌新们确实底子不够，有些东西理解起来可能真的比较困难。
+今天斗胆尝试引入一个应用场景和简单的代码案例来做个简单的入门，算是抛砖头引和田玉吧。
 
 ![](http://static.ti-node.com/6411754043550466048)
 
@@ -834,42 +835,55 @@ $http->start();
 
 异步模式
 
-这种模式下整个服务器是异步非阻塞的，服务器可以应对大规模的并发连接和并发请求。但编程方式需要完全使用异步API，如MySQL、redis、http_client、file_get_contents、sleep等阻塞IO操作必须切换为异步的方式，如异步swoole_client，swoole_event_add，swoole_timer，swoole_get_mysqli_sock等API。
+这种模式下整个服务器是异步非阻塞的，服务器可以应对大规模的并发连接和并发请求。但编程方式需要完全使用异步API，
+如MySQL、redis、http_client、file_get_contents、sleep等阻塞IO操作必须切换为异步的方式，
+如异步swoole_client，swoole_event_add，swoole_timer，swoole_get_mysqli_sock等API。
 
-个人认为最后这段引用是非常具备价值的，仔细品读或许能够从中得到一些感悟。我在前面曾经写过一篇[swoole的进程模型 ](https://t.ti-node.com/thread/6445811931285553153 "swoole的进程模型 ")，实际上你可以这么理解，就是master进程可以hold住上万个TCP连接是没有任何问题的，因为master进程内部异步非阻塞的，但是仅仅hold住上万个TCP连接本身是没有任何意义的，因为有数据传输的TCP连接才是有意义的。一旦有数据传输就意味着有业务逻辑产生了，那么master进程并不负责具体业务逻辑代码了，处理这个业务逻辑的活儿交给worker进程来干，然后干完后再由master进程返回给客户端。
+个人认为最后这段引用是非常具备价值的，仔细品读或许能够从中得到一些感悟。
+我在前面曾经写过一篇[swoole的进程模型 ](https://t.ti-node.com/thread/6445811931285553153 "swoole的进程模型 ")，
+实际上你可以这么理解，就是master进程可以hold住上万个TCP连接是没有任何问题的，因为master进程内部异步非阻塞的，
+但是仅仅hold住上万个TCP连接本身是没有任何意义的，因为有数据传输的TCP连接才是有意义的。一旦有数据传输就意味着有业务逻辑产生了，
+那么master进程并不负责具体业务逻辑代码了，处理这个业务逻辑的活儿交给worker进程来干，然后干完后再由master进程返回给客户端。
 
-同步阻塞模式下，如果说worker进程1秒钟完成1个客户端的业务逻辑，尽管master进程同时hold住了1W个TCP连接，但是1个worker进程只能服务于1个客户端，1W个客户端全部处理完毕，需要1W秒钟。所以，同步阻塞模式下，如果你想干活猛，就只能增加worker进程的数量，比如1000个甚至2000个。当然了，看到这里有为青年就会提出问题了，这样一味地增加进程数量岂不是意味着进程再多的话进程间切换都是极为耗费CPU的？是的，所以很简单，横向扩展加机器就是了![](http://static.ti-node.com/6345443000872599553)![](http://static.ti-node.com/6345443000872599553)![](http://static.ti-node.com/6345443000872599553)... ...或者，选择异步。
+同步阻塞模式下，如果说worker进程1秒钟完成1个客户端的业务逻辑，尽管master进程同时hold住了1W个TCP连接，
+但是1个worker进程只能服务于1个客户端，1W个客户端全部处理完毕，需要1W秒钟。所以，同步阻塞模式下，如果你想干活猛，
+就只能增加worker进程的数量，比如1000个甚至2000个。当然了，看到这里有为青年就会提出问题了，
+这样一味地增加进程数量岂不是意味着进程再多的话进程间切换都是极为耗费CPU的？是的，所以很简单，
+横向扩展加机器就是了![](http://static.ti-node.com/6345443000872599553)... ...或者，选择异步。
 
-异步非阻塞模式下，这个时候除了master进程是异步非阻塞外，要求worker进程中的业务逻辑代码也得是异步非阻塞工作的方式。也就说worker进程在处理1个客户端业务逻辑的时候，如果没处理完毕就会立马开始处理第2个客户端的业务逻辑，然后继续第3个... ...持续...一旦某个客户端的业务逻辑处理完毕了就有回调通知，从此可以做到即便只有少量worker进程但依然可以维持高速高效地处理速度。所以，这种情况，对编写业务逻辑代码就有了很高的要求了。假如业务逻辑就是“插入1条评论，然后返回最新5条评论”，用伪代码演示如下：
+异步非阻塞模式下，这个时候除了master进程是异步非阻塞外，要求worker进程中的业务逻辑代码也得是异步非阻塞工作的方式。
+也就说worker进程在处理1个客户端业务逻辑的时候，如果没处理完毕就会立马开始处理第2个客户端的业务逻辑，然后继续第3个... ...持续...
+一旦某个客户端的业务逻辑处理完毕了就有回调通知，从此可以做到即便只有少量worker进程但依然可以维持高速高效地处理速度。
+所以，这种情况，对编写业务逻辑代码就有了很高的要求了。假如业务逻辑就是“插入1条评论，然后返回最新5条评论”，用伪代码演示如下：
 
 ```php
 <?php
 // 你要创建异步的MySQL客户端，而不是普普通通的pdo mysqli
 $async_mysql = new async_mysql();
 $async_mysql->on( 'connect', function( $async_mysql ){
-  echo '连接成功'.PHP_EOL;
-  // 插入评论
-  $sql = "insert into pinglun() values()";
-  $async_mysql->query( $sql, function( $async_mysql, $result ) {
-    // 如果插入成功
-    if( true == $result ){
-	  // 获取5条最新评论
-      $sql = "select * from pinglun limit 5";
-      $async_mysql->query( $sql, function( $async_mysql, $result ){
-	    // 获取成功后拿数据
-        if( true == $result ){
-		  print_r( $result->fetchAll() );
-		} else {
-		  echo "获取失败".PHP_EOL;
-		}
-	  } );
-	} 
-	// 如果插入失败
-	else {
-	  echo "插入数据失败".PHP_EOL;
-	}
-  });
-} );
+    echo '连接成功'.PHP_EOL;
+    // 插入评论
+    $sql = "insert into pinglun() values()";
+    $async_mysql->query( $sql, function( $async_mysql, $result ) {
+        // 如果插入成功
+        if ( true == $result ) {
+            // 获取5条最新评论
+            $sql = "select * from pinglun limit 5";
+            $async_mysql->query( $sql, function( $async_mysql, $result ){
+                // 获取成功后拿数据
+                if( true == $result ){
+                    print_r( $result->fetchAll() );
+                } else {
+                    echo "获取失败".PHP_EOL;
+                }
+            });
+        
+        // 如果插入失败
+        } else {
+            echo "插入数据失败".PHP_EOL;
+        }
+    });
+});
 ```
 
 这种代码里，将不可避免地产生大量的类似于on这种回调，如果再有一些条件依赖话，可能不得不层层回调。比如插入最新评论需要依赖connect，只有connect成功了才能执行插入操作，然后是查询最新5条评论功能依赖插入操作，只有插入操作成功才能继续查询5条最新评论。最重要的是，需要IO操作的这些函数等等都必须得是异步的才行，传统的pdo、mysqli是统统不可以用的。因为只要有一处是同步阻塞了，整个worker进程中的业务逻辑代码就算是彻底完蛋沦为同步阻塞了。所以说，如果你要在这种代码里用sleep( 100 )，你会死得惨烈。
