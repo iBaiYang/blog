@@ -256,21 +256,6 @@ filter
 }
 ```
 
-如：      
-```
-{
-    "bool": {
-        "must":     { "match": { "title": "how to make millions" }},
-        "must_not": { "match": { "tag":   "spam" }},
-        "should": [
-            { "match": { "tag": "starred" }}
-        ],
-        "filter": {
-          "range": { "date": { "gte": "2014-01-01" }} 
-        }
-    }
-}
-```
 通过将 range 查询移到 filter 语句中，我们将它转成不评分的查询，将不再影响文档的相关性排名。
 由于它现在是一个不评分的查询，可以使用各种对 filter 查询有效的优化手段来提升性能。
 
@@ -366,6 +351,8 @@ Elasticsearch-PHP <https://www.elastic.co/guide/en/elasticsearch/client/php-api/
 Elasticsearch 中文官方 <https://www.elastic.co/cn/>
 
 Elasticsearch: 权威指南 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html>
+
+该怎么学elasticsearch？ <https://www.zhihu.com/question/323811022/answer/981341195>
 
 查询表达式 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/query-dsl-intro.html#_%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E7%BB%93%E6%9E%84>
 
