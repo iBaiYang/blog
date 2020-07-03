@@ -20,6 +20,10 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 所有我们选中的就是Docker技术。Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，
 然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。
 
+放一张总结的图：
+
+![]({{site.baseurl}}/images/20200703/20200703111105.png)
+
 #### Docker信息查看
 
 我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
@@ -484,6 +488,29 @@ Docker要求您的命令在前台继续运行。否则，它会认为您的应�
 
 >  docker run -d centos tail -f /dev/null 
 
+#### Dockerfile
+
+Dockerfile是用来构建Docker镜像的文件，是由一系列命令和参数构成的脚本。
+
+Docker镜像的特点：
+1. 由Dockerfile生成
+2. 呈现层级结构
+3. 每层镜像包含：镜像文件以及镜像json元数据信息
+
+![]({{site.baseurl}}/images/20200703/20200703111106.png)
+
+Docker镜像可以通过分层来进行继承。
+
+例如，hello-world的Dockerfile镜像FROM scratch镜像，scratch在Docker中是一个基础镜像，Centos的Dockerfile镜像也是FROM scratch镜像。
+那么Centos镜像和hello-world共享同一个基础镜像层scratch，提高了存储效率。
+
+Docker每一层镜像的json文件，都扮演着一个非常重要的角色，其主要的作用如下：
+* 记录 Docker 镜像中与容器动态信息相关的内容
+* 记录父子 Docker 镜像之间真实的差异关系
+* 弥补 Docker 镜像内容的完整性与动态内容的缺失
+
+Docker镜像的json文件可以认为是镜像的元数据信息。
+
 #### 示例配置
 
 ##### 项目镜像build脚本
@@ -647,6 +674,10 @@ Deepin 中的 Docker <https://wiki.deepin.org/wiki/Docker>
 
 Linux和Docker常用命令 <https://www.cnblogs.com/mq0036/p/8520605.html>
 
+Docker入门为什么可以这么简单  <https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484631&idx=1&sn=ffca3c18cce7392ef96dce268cd7d6df&chksm=ebd745d6dca0ccc0964a4c99afaa030c997ee75379e14b5d7fc0beacc4c59f33318af266a7ce###rd>
+
+聊聊Docker镜像 <https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484674&idx=1&sn=e3ea5efe00fde6ebd3c73d5bf2155813&chksm=ebd74403dca0cd15bb3f5e288f28ce2058f8031ee18c2912cec05d886552c24e6e8d8e5ff1ce&token=1676899695&lang=zh_CN###rd>
+
 Docker runoob教程 <https://www.runoob.com/docker/docker-tutorial.html>
 
 使用 Docker 搭建 PHP 开发环境 <https://www.linuxidc.com/Linux/2019-08/160149.htm>
@@ -666,3 +697,5 @@ Docker run 命令的使用方法 <http://dockone.io/article/152>
 docker之Dockerfile实践 <https://www.cnblogs.com/jsonhc/p/7767669.html>
 
 Docker容器将在“docker run -d”之后自动停止 <https://www.it1352.com/646432.html>
+
+ZhongFuCheng3y/3y 博客 <https://github.com/ZhongFuCheng3y/3y>
