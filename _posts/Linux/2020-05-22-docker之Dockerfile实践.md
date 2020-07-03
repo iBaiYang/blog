@@ -135,7 +135,9 @@ CMD ["-g", "daemon off;"]
 
 然后生成镜像，注意，最后有个点，centos7_nginx 是镜像名称，1.18.0 是打的标签，跟版本号一样的意思：
 
-> docker build --network host -t centos7_nginx:1.18.0 .
+```
+docker build --network host -t centos7_nginx:1.18.0 .
+```
 
 `-t` 或者 `--tag`： 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。
 
