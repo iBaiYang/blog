@@ -17,7 +17,7 @@ meta: Yii2 详说auth_key的用途
  
 我们看看cookie中发生了什么，后台login登录时，用F12可以查看：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132763.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132763.jpeg)
 
 _csrf-backend详细： 
 ```
@@ -41,7 +41,7 @@ echo byteSubstr($decoded, $length, $length) ^ byteSubstr($decoded, 0, $length);
 
 关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132764.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132764.jpeg)
 
 请求Cookie中：
 
@@ -96,7 +96,7 @@ cookie就是服务器辨识浏览器的标志，浏览器每一次访问服务�
 
 登录后，访问页面admin-user/index时：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132765.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132765.jpeg)
 
 响应Cookie中：
 
@@ -165,14 +165,14 @@ Yii2的security安全组件功能比较复杂，值得研究，以备以后做�
 
 退出时：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132766.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132766.jpeg)
 
 _csrf-backend详细：
 ```
 CuwhawBszNhDMPHaMKuybDNL1spYBVZl0jTvsCdMB9M-vXszSFz7ujpiwoUD3PM2cSSQ-wFGCTOze7rGES5svg==
 ```
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132767.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132767.jpeg)
 
 请求Cookie中：
 
@@ -192,7 +192,7 @@ _identity-backend做删除（deleted）操作。
 
 退出后，访问页面site/index时：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132768.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132768.jpeg)
 
 _csrf-backend详细：
 ```
@@ -203,9 +203,9 @@ e464895e073b220c0265aa9148836f833eedefd2cafb61cbfa24fbf940d71967a:2:{i:0;s:13:"_
 
 紧接着再次登录：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132769.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132769.jpeg)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132770.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132770.jpeg)
 
 注意对比上面的异同。
 

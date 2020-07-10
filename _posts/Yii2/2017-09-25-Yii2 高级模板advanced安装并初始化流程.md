@@ -17,7 +17,7 @@ meta: Yii2 高级模板advanced安装并初始化流程
 
 > composer global require "fxp/composer-asset-plugin:~1.1"
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132730.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132730.jpeg)
 
 这一步命令安装 Composer asset plugin， 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 
@@ -27,11 +27,11 @@ composer create-project --prefer-dist yiisoft/yii2-app-advanced yii2_test
 
 setting->Developer settings->Personal access tokens->Generate new token按钮，全勾生成，复制生成的字符串后，在箭头那里粘贴，回车。
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132731.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132731.jpeg)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132732.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132732.jpeg)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132733.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132733.jpeg)
 
 运行途中遇到bug类问题，可以去这看一下：
 
@@ -57,7 +57,7 @@ vhost配置：
 
 /etc/nginx/nginx.conf
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132734jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132734jpeg)
 
 ```php
 server {
@@ -99,7 +99,7 @@ server {
 }
 ```
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132735.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132735.jpeg)
 
 开始初始化：
 
@@ -107,19 +107,19 @@ server {
 
 > php init
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132736.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132736.jpeg)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132737.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132737.jpeg)
 
 配置数据库：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132738.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132738.jpeg)
 
 数据库迁移：
 
 > php yii migrate
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132739.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132739.jpeg)
 
 
 
