@@ -57,7 +57,7 @@ vhost配置：
 
 /etc/nginx/nginx.conf
 
-![]({{site.baseurl}}/images/20200417/20200417132734jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132734.jpeg)
 
 ```php
 server {
