@@ -9,6 +9,27 @@ meta: linux kafka安装
 
 ### 正文
 
+Kafka是一种高吞吐量的分布式发布订阅消息系统，它可以处理消费者在网站中的所有动作流数据。Kafka是由Apache软件基金会开发的一个开源流处理平台。
+Kafka同RabbitMQ一样，也是一个MQ队列服务器。
+
+Kafka有如下特性：
+* 通过O(1)的磁盘数据结构提供消息的持久化，这种结构对于即使数以TB的消息存储也能够保持长时间的稳定性能。
+* 高吞吐量：即使是非常普通的硬件Kafka也可以支持每秒数百万的消息。
+* 支持通过Kafka服务器和消费机集群来分区消息。
+* 支持Hadoop并行数据加载。
+
+Kafka相关术语介绍：
+* Broker    Kafka集群包含一个或多个服务器，这种服务器被称为broker
+* Topic    每条发布到Kafka集群的消息都有一个类别，这个类别被称为Topic。（物理上不同Topic的消息分开存储，逻辑上一个Topic的消息虽然保存于一个或多个broker上但用户只需指定消息的Topic即可生产或消费数据而不必关心数据存于何处）
+* Partition    Partition是物理上的概念，每个Topic包含一个或多个Partition.
+* Producer    负责发布消息到Kafka broker
+* Consumer    消息消费者，向Kafka broker读取消息的客户端。
+* Consumer Group    每个Consumer属于一个特定的Consumer Group（可为每个Consumer指定group name，若不指定group name则属于默认的group）。
+
+我们一般把Kafka用作log日志队列服务，日志流流程：
+
+![]({{site.baseurl}}/images/20200710/20200710111105.png)
+
 #### 源码包安装
 
 在/usr/local/src目录下下载：
@@ -43,7 +64,7 @@ meta: linux kafka安装
 
 > bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
-消费logstash中的队列数据：
+消费topic名为logstash中的队列数据：
 
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash --from-beginning
 
@@ -114,3 +135,7 @@ kafka Quickstart <http://kafka.apache.org/quickstart>
 Kafka史上最详细原理总结上 <https://www.jianshu.com/p/734cf729d77b>
 
 Ubuntu简单安装Kafka <https://www.cnblogs.com/yanghe123/p/11937914.html>
+
+Kafka史上最详细原理总结上 <https://www.jianshu.com/p/734cf729d77b>
+
+Kafka史上最详细原理总结下 <https://www.jianshu.com/p/acf010e67a19>
