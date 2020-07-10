@@ -47,19 +47,107 @@ windows下  C:\Windows\System32\drivers\etc\hosts
 
 linux下  /etc/hosts
 
-重定向配置：
-
+加入重定向配置：
+```
 127.0.0.1 yii2_advanced_backend.host
-
 127.0.0.1 yii2_advanced_frontend.host
+```
 
 vhost配置：
 
-/etc/nginx/nginx.conf
+/etc/nginx/nginx.conf 文件内容：
+```
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
-![]({{site.baseurl}}/images/20200417/20200417132734.jpeg)
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
 
-```php
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	tcp_nodelay on;
+	keepalive_timeout 65;
+	types_hash_max_size 2048;
+	# server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+	gzip_disable "msie6";
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+    include /var/www/vhost/*.conf;
+}
+
+
+#mail {
+#	# See sample authentication script at:
+#	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
+# 
+#	# auth_http localhost/auth.php;
+#	# pop3_capabilities "TOP" "USER";
+#	# imap_capabilities "IMAP4rev1" "UIDPLUS";
+# 
+#	server {
+#		listen     localhost:110;
+#		protocol   pop3;
+#		proxy      on;
+#	}
+# 
+#	server {
+#		listen     localhost:143;
+#		protocol   imap;
+#		proxy      on;
+#	}
+#}
+```
+
+/var/www/vhost/yii2_advanced_backend.host 文件内容：
+```
 server {
     charset utf-8;
     client_max_body_size 128M;
@@ -99,7 +187,46 @@ server {
 }
 ```
 
-![]({{site.baseurl}}/images/20200417/20200417132735.jpeg)
+/var/www/vhost/yii2_advanced_frontend.host 文件内容：
+```
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+    #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
+
+    server_name yii2_advanced_frontend.host;
+    root        /var/www/yii2_advanced/frontend/web;
+    index       index.php;
+
+    access_log  /var/www/yii2_advanced/frontend/web/log/access.log;
+    error_log   /var/www/yii2_advanced/frontend/web/log/error.log;
+
+    location / {
+        # Redirect everything that isn't a real file to index.php
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    # uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
+        #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
+    }
+
+    location ~* /\. {
+        deny all;
+    }
+}
+```
 
 开始初始化：
 
