@@ -17,7 +17,7 @@ meta: Yii2 高级模板advanced安装并初始化流程
 
 > composer global require "fxp/composer-asset-plugin:~1.1"
 
-![]({{site.baseurl}}/images/20200417/20200417132730.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132730.png)
 
 这一步命令安装 Composer asset plugin， 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 
