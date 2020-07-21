@@ -120,7 +120,7 @@ composer.json中示例：
 
 自动跳转到：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181219/20181219200637.jpg)
+![]({{site.baseurl}}/images/20181219/20181219200637.jpg)
 
 现在版本默认是dev-master。
 

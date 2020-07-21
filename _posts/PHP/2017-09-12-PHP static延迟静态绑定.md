@@ -187,7 +187,7 @@ echo num3();    // 输出 13
 
 文字常量区：存放常量等
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190228/20190228150107.jpg)
+![]({{site.baseurl}}/images/20190228/20190228150107.jpg)
 
 #### 延申
 

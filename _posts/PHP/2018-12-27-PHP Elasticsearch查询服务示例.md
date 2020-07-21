@@ -118,11 +118,11 @@ $type = 'client';
 
 看一下Elasticsearch储存的数据结构实例：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181227/20181227130243.jpg)
+![]({{site.baseurl}}/images/20181227/20181227130243.jpg)
 
 看一下视图渲染的效果：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181227/20181227130504.jpg)
+![]({{site.baseurl}}/images/20181227/20181227130504.jpg)
 
 #### 合并语句查询
 

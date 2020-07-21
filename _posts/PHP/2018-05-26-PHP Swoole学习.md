@@ -236,12 +236,12 @@ $cli->connect();
 
 #### 服务模式
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190816/20190816115205.png)
+![]({{site.baseurl}}/images/20190816/20190816115205.png)
 
 有多个应用，每个应用有多种角色，每种角色有多个用户，用户可以连接自己需要的服务端，
 跨服务端通信通过代理服务实现。
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190123/20190123150130.jpg)
+![]({{site.baseurl}}/images/20190123/20190123150130.jpg)
 
 其实这个就是负载均衡。
 

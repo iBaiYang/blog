@@ -404,11 +404,11 @@ if ( isset($argv[1]) ) {
 
 服务端运行：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190114/20190114150405.jpg)
+![]({{site.baseurl}}/images/20190114/20190114150405.jpg)
 
 客户端运行：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190114/20190114150432.jpg)
+![]({{site.baseurl}}/images/20190114/20190114150432.jpg)
 
 缩略图：
 
@@ -473,7 +473,7 @@ CLIENT-3|| client：time->[07:01:58] ; reponse-> client: 2:test 0  client: 2:tes
 
 客户端运行：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190114/20190114151758.jpg)
+![]({{site.baseurl}}/images/20190114/20190114151758.jpg)
 
 ```
 CLIENT-1|| msg：abc

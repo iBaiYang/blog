@@ -40,11 +40,11 @@ $_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本
 
 我们可以把$_SERVER 数组打印出来看一下：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001413.jpeg)
+![]({{site.baseurl}}/images/20190901/20190901001413.jpeg)
 
 再放一张最近的，有对比，更明了：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001448.jpeg)
+![]({{site.baseurl}}/images/20190901/20190901001448.jpeg)
 
 看一下linux下的：
 ```
@@ -154,7 +154,7 @@ $_SERVER['PHP_AUTH_PW'] #当 PHP 运行在 Apache 模块方式下，并且正在
 $_SERVER['AUTH_TYPE'] #当 PHP 运行在 Apache 模块方式下，并且正在使用 HTTP 认证功能，这个变量便是认证的类型 
 ```
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190901/20190901001514.jpeg)
+![]({{site.baseurl}}/images/20190901/20190901001514.jpeg)
 
 
 $_SERVER 除了查看 外部服务器变量，有是获取到的可能是错误的，我们还可以修正为正确的环境变量，如：

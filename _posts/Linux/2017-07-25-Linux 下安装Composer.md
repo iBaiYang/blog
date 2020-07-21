@@ -25,7 +25,7 @@ meta: 记录一下 Linux 下安装安装Composer流程
 
 （捎带一提：php -r 意思是  Run PHP code without using script tags，<?...?> 也就是不必使用前后闭合标签）
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191114/20191114105445.jpeg)
+![]({{site.baseurl}}/images/20191114/20191114105445.jpeg)
 
 （从这里可以看到，我把composer安装到了/home目录下。里面有多次错误示范，可以注意辨别学习。）
 
@@ -57,7 +57,7 @@ export PATH="$PATH:/home/composer"
 > composer --version
 
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191114/20191114105457.jpeg)
+![]({{site.baseurl}}/images/20191114/20191114105457.jpeg)
 
 #### 其他问题
 
