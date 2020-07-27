@@ -9,10 +9,10 @@ meta: 一般我们可以通过kibana查看Elasticsearch数据，但如果要在P
 
 ### 正文
 
-#### 引导
-
 在PHP代码中查找Elasticsearch数据，我们可以用已经写好的vendor类库——elasticsearch/elasticsearch。
 首先需要知道安装的Elasticsearch版本，然后选择对应elasticsearch/elasticsearch。
+
+#### 引导
 
 假设Elasticsearch Version >= 5.0, < 6.0   。我们选择Elasticsearch-PHP Branch 5.0
 
@@ -345,6 +345,8 @@ wildcard模糊查询：
 ### 参考资料
 
 elastic/elasticsearch-php <https://github.com/elastic/elasticsearch-php>
+
+Packagist elasticsearch/elasticsearch <https://packagist.org/packages/elasticsearch/elasticsearch>
 
 Elasticsearch-PHP <https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html>
 
