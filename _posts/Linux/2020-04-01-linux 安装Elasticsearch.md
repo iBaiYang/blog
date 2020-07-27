@@ -339,7 +339,7 @@ POST /abc_123/in/abc123abc123abc123
 }
 ```
 
-**查找内容**
+**获取内容**
 
 Dev Tools   Console：
 > GET /index/type/id
@@ -370,6 +370,168 @@ POST /index/type/id
 ```
 PUT /index/type/id 
 {json}
+```
+
+**搜索内容**
+
+所有内容有多种方式，可以是query string search、 query DSL、 过滤、 分页、 关键字高亮 等。
+
+query string search
+
+搜索全部：
+> GET http://ip:9200/test/test/_search
+
+以about字段中含有climbing字符查询并根据age字段降序排列 可以多个排序，用逗号分隔：
+> GET http://ip:9200/test/test/_search?q=about:climbing&sort=age:desc,price:desc
+
+DSL搜索
+
+搜索全部：
+```
+POST http://ip:9200/test/test/_search
+
+{
+    "query":{
+        "match_all":{}
+    }
+}
+```
+
+以about字段中含有climbing字符查询并根据age字段降序排列 可以多个排序，用逗号分隔：
+```
+POST http://ip:9200/test/test/_search
+
+{
+	"query":{
+		"match":{
+			"about":"climbing"
+		}
+	},
+	"sort":[
+		{
+			"age":"desc"
+		}
+	]
+}
+```
+
+分页数据：
+```
+POST http://ip:9200/test/test/_search
+
+{
+	"query":{
+		"match_all":{} 		# 查询所有
+	},
+	"from":0,   			# 从第几条数据开始  0：第一条
+	"size":1				# 展示几条数据
+}
+```
+
+只展示指定的filed：
+```
+POST http://ip:9200/test/test/_search
+
+{
+	"query":{
+		"match_all":{}
+	},
+	"_source":[
+		"first_name",
+		"age"
+    ]
+}
+```
+
+多个查询条件：about字段必须包含"climbing"；age大于20岁：
+```
+POST http://ip:9200/test/test/_search
+
+{
+    "query":{
+        "bool":{ 
+            "must":{ 
+                "match":{ 
+                    "about":"climbing" 
+                }	
+            },
+            "filter":{ 
+                "range":{ 
+                    "age":{ 
+                        "gt":20 
+                    } 
+                } 
+            } 
+        } 
+    }
+}
+```
+
+多个查询条件：must、 should、 must_not：
+```
+POST http://ip:9200/test/test/_search
+
+{ 
+    "query":{ 
+        "bool":{ 
+            "must":{ # 必须匹配 
+                "match":{ 
+                    "first_name":"小翠" 
+                }	
+            }, 
+            "should":{ # 可以匹配，也可以不匹配 
+                "match":{ "last_name": "xue" } 
+            }, 
+            "must_not":{	# 必须不匹配 
+                "match":{ "last_name": "cui" } 
+            } 
+        } 
+    } 
+}
+```
+
+全文检索：
+```
+POST http://ip:9200/test/test/_search
+
+{
+	"query":{
+			"match":{
+				"about":"go climbing"
+			}		
+	}
+}
+```
+
+分析：es将about这个filed拆解成每个词（term），建立倒排索引，每个term对应相应的document_id
+
+短语搜索:匹配短语：
+```
+POST http://ip:9200/test/test/_search
+
+{
+	"query":{
+			"match_phrase":{
+				"about":"rock climbing"
+			}		
+	}
+}
+```
+
+关键字高亮：
+```
+{
+	"query":{
+			"match":{
+				"about":"climbing"    # 关键字
+			}		
+	},
+	"highlight":{
+		"fields":{
+			"about":{}    			# 字段
+		}
+	}
+}
 ```
 
 **页面操作**
@@ -426,4 +588,6 @@ es安装和应用 <https://www.jianshu.com/p/c596caf31688?from=singlemessage>
 Elasticsearch学习（三）————元数据（_index、_type、_id、_score、_source） <https://blog.csdn.net/qq_42513284/article/details/90678516>
 
 Elasticsearch学习(一)————简单命令 <https://blog.csdn.net/qq_42513284/article/details/90613639>
+
+Elasticsearch学习（二）————搜索 <https://blog.csdn.net/qq_42513284/article/details/90613889>
 

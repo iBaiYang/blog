@@ -11,8 +11,6 @@ meta: Elasticsearch查询封装实现
 
 PHP查询Elasticsearch数据，可以直接用Packagist中的类库elasticsearch/elasticsearch。
 
-
-
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
