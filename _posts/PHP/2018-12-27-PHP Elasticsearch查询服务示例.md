@@ -71,7 +71,7 @@ $client = ClientBuilder::create()->build();
 
 在elasticsearch-php中，几乎所有东西都是由关联数组配置的。 REST端，文档和可选参数，一切都是一个关联数组。
 
-##### 写入数据
+##### 写入文档
 
 要为文档建立索引，我们需要指定三项信息：index, id 和 body文档主体：
 ```
@@ -214,6 +214,82 @@ Array
                         )
                 )
         )
+)
+```
+
+##### 删除文档
+
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->delete($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 2
+    [result] => deleted
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [failed] => 0
+        )
+
+    [_seq_no] => 1
+    [_primary_term] => 1
+)
+```
+
+##### 删除index索引
+
+```
+$deleteParams = [
+    'index' => 'my_index'
+];
+$response = $client->indices()->delete($deleteParams);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
+)
+```
+
+##### 创建index索引
+
+```
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'settings' => [
+            'number_of_shards' => 2,
+            'number_of_replicas' => 0
+        ]
+    ]
+];
+
+$response = $client->indices()->create($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
 )
 ```
 
