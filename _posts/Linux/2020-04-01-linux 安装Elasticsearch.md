@@ -260,12 +260,12 @@ Dev Tools   Console：
 结果：
 ```
 health status index                                                   uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-green  open   app-api-v6-qa-flink-bzlog-2020.06.11                    aEXDULs-QeOypayZ_1kb6Q  10   0      41959            0     63.7mb         63.7mb
-       close  pre_project-api-tms_api_service-logs-2020.05            LIdIuTrLQlSdyTC3uzu7uA                                                          
-       close  netease_log-2020.05                                     fSEj43FASyeqv-kKYI1ubw                                                          
-green  open   mapi_logs_new-2020.07.18                                qD_6azC0Ro-QBYUDc1RXUg   3   0       7556            0      8.8mb          8.8mb
-       close  online_net-2020.05.30                                   vbS4IikURDSELteMfv6S4w                                                          
-       close  online-api_qa-2020.05.10                                CueV9GJ1QiKStK7iz1AY2A       
+green  open   app-api-v5-test-flink-bzlog-2020.06.11                    aEXDULs-QeOypayZ_1kb6Q  10   0      41959            0     63.7mb         63.7mb
+       close  pre_project-api_service-logs-2020.05                      LIdIuTrLQlSdyTC3uzu7uA                                                          
+       close  netease_log-2020.05                                       fSEj43FASyeqv-kKYI1ubw                                                          
+green  open   mapi_logs_new-2020.07.18                                  qD_6azC0Ro-QBYUDc1RXUg   3   0       7556            0      8.8mb          8.8mb
+       close  online_net-2020.05.30                                    vbS4IikURDSELteMfv6S4w                                                          
+       close  online-api-2020.05.10                                    CueV9GJ1QiKStK7iz1AY2A       
 ```
 
 **创建索引**
