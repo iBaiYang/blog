@@ -402,16 +402,16 @@ POST http://ip:9200/test/test/_search
 POST http://ip:9200/test/test/_search
 
 {
-	"query":{
-		"match":{
-			"about":"climbing"
-		}
-	},
-	"sort":[
-		{
-			"age":"desc"
-		}
-	]
+    "query":{
+        "match":{
+            "about":"climbing"
+        }
+    },
+    "sort":[
+        {
+            "age":"desc"
+        }
+    ]
 }
 ```
 
@@ -420,11 +420,11 @@ POST http://ip:9200/test/test/_search
 POST http://ip:9200/test/test/_search
 
 {
-	"query":{
-		"match_all":{} 		# 查询所有
-	},
-	"from":0,   			# 从第几条数据开始  0：第一条
-	"size":1				# 展示几条数据
+    "query":{
+        "match_all":{}         # 查询所有
+    },
+    "from":0,               # 从第几条数据开始  0：第一条
+    "size":1                # 展示几条数据
 }
 ```
 
@@ -433,12 +433,12 @@ POST http://ip:9200/test/test/_search
 POST http://ip:9200/test/test/_search
 
 {
-	"query":{
-		"match_all":{}
-	},
-	"_source":[
-		"first_name",
-		"age"
+    "query":{
+        "match_all":{}
+    },
+    "_source":[
+        "first_name",
+        "age"
     ]
 }
 ```
@@ -453,7 +453,7 @@ POST http://ip:9200/test/test/_search
             "must":{ 
                 "match":{ 
                     "about":"climbing" 
-                }	
+                }    
             },
             "filter":{ 
                 "range":{ 
@@ -477,12 +477,12 @@ POST http://ip:9200/test/test/_search
             "must":{ # 必须匹配 
                 "match":{ 
                     "first_name":"小翠" 
-                }	
+                }    
             }, 
             "should":{ # 可以匹配，也可以不匹配 
                 "match":{ "last_name": "xue" } 
             }, 
-            "must_not":{	# 必须不匹配 
+            "must_not":{    # 必须不匹配 
                 "match":{ "last_name": "cui" } 
             } 
         } 
@@ -495,11 +495,11 @@ POST http://ip:9200/test/test/_search
 POST http://ip:9200/test/test/_search
 
 {
-	"query":{
-			"match":{
-				"about":"go climbing"
-			}		
-	}
+    "query":{
+            "match":{
+                "about":"go climbing"
+            }        
+    }
 }
 ```
 
@@ -510,27 +510,27 @@ POST http://ip:9200/test/test/_search
 POST http://ip:9200/test/test/_search
 
 {
-	"query":{
-			"match_phrase":{
-				"about":"rock climbing"
-			}		
-	}
+    "query":{
+            "match_phrase":{
+                "about":"rock climbing"
+            }        
+    }
 }
 ```
 
 关键字高亮：
 ```
 {
-	"query":{
-			"match":{
-				"about":"climbing"    # 关键字
-			}		
-	},
-	"highlight":{
-		"fields":{
-			"about":{}    			# 字段
-		}
-	}
+    "query":{
+            "match":{
+                "about":"climbing"    # 关键字
+            }        
+    },
+    "highlight":{
+        "fields":{
+            "about":{}                # 字段
+        }
+    }
 }
 ```
 
