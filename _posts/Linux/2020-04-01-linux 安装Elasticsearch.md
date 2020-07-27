@@ -176,6 +176,42 @@ http://127.0.0.1:5601/app/kibana#/home/tutorial_directory/sampleData
 
 #### 具体使用
 
+Elasticsearch中有个元数据的概念：元数据（Metadata），又称中介数据、中继数据，为描述数据的数据（data about data），
+主要是描述数据属性（property）的信息，用来支持如指示存储位置、历史数据、资源查找、文件记录等功能；元数据算是一种电子式目录，
+为了达到编制目录的目的，必须在描述并收藏数据的内容或特色，进而达成协助数据检索的目的。
+
+元数据是关于数据的组织、数据域及其关系的信息，简言之，元数据就是关于数据的数据。  
+
+Elasticsearch中的元数据有：
+
+**_index**
+
+1. 代表一个document存储在哪个index中。
+2. 类似的数据（document）放在同一个index，不同类型的数据放在不同的index。
+3. 索引名必须是小写，不能用下划线（_）开头，不能包含逗号。
+
+**_type**
+
+1. 代表document属于index下 的哪个类别（type）。
+2. 一个index通常包含多个type。
+3. type名称可以大写或小写，不能用下划线（_）开头，不能包含逗号。
+
+**_id**
+
+1. 代表document的唯一标识，与index和type一起确定一个唯一的document。
+2. 可以手动指定，也可es自动生成。 手动指定：PUT /index/type/id； 自动生成： PUT /index/type/ 生成base64编码的20长度的字符串ID，分布式集群下不可能重复。
+
+**_score**
+
+1. 相关度分数：匹配程度，分数越高越相关。
+
+**_source**
+
+1. 代表一个document，是一个json对象（{json}）,包含一个实例对象。
+
+
+##### 命令行下使用
+
 命令行下curl请求：
 ```
 curl -XPUT '127.0.0.1:9200/demo_logs_dev_2020.04.03/2/AXE_baZOxB5-91nMXmB1?pretty'  
@@ -202,6 +238,8 @@ curl -XPUT '127.0.0.1:9200/demo_logs_dev_2020.04.03/2/AXE_baZOxB5-91nMXmB1?prett
   "_primary_term" : 1
 }
 ```
+
+##### Kibana下使用
 
 Kibana页面创建Index patterns：
 
@@ -243,4 +281,8 @@ ubuntu 安装 ES (ElasticSearch) <https://blog.csdn.net/weixin_44596128/article/
 Elasticsearch教程（一），全程直播（小白级别） <https://www.sojson.com/blog/81.html>
 
 es安装和应用 <https://www.jianshu.com/p/c596caf31688?from=singlemessage>
+
+元数据(Metadata) <https://blog.csdn.net/lgstudyvc/article/details/48732799>
+
+Elasticsearch学习（三）————元数据（_index、_type、_id、_score、_source） <https://blog.csdn.net/qq_42513284/article/details/90678516>
 
