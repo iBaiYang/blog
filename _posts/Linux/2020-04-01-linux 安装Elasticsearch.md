@@ -241,6 +241,139 @@ curl -XPUT '127.0.0.1:9200/demo_logs_dev_2020.04.03/2/AXE_baZOxB5-91nMXmB1?prett
 
 ##### Kibana下使用
 
+**查看集群的健康状况**
+
+Dev Tools   Console：
+> GET _cat/health?v
+
+结果：
+```
+epoch      timestamp cluster         status node.total node.data shards  pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1595840177 16:56:17  offlline-es-v53 green           3         3   9347 9316    0    0        0             0                  -                100.0%
+```
+
+**查看集群中有哪些索引**
+
+Dev Tools   Console：
+> GET _cat/indices?v 
+
+结果：
+```
+health status index                                                   uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   app-api-v6-qa-flink-bzlog-2020.06.11                    aEXDULs-QeOypayZ_1kb6Q  10   0      41959            0     63.7mb         63.7mb
+       close  pre_project-api-tms_api_service-logs-2020.05            LIdIuTrLQlSdyTC3uzu7uA                                                          
+       close  netease_log-2020.05                                     fSEj43FASyeqv-kKYI1ubw                                                          
+green  open   mapi_logs_new-2020.07.18                                qD_6azC0Ro-QBYUDc1RXUg   3   0       7556            0      8.8mb          8.8mb
+       close  online_net-2020.05.30                                   vbS4IikURDSELteMfv6S4w                                                          
+       close  online-api_qa-2020.05.10                                CueV9GJ1QiKStK7iz1AY2A       
+```
+
+**创建索引**
+
+Dev Tools   Console：
+> PUT /index_name?pretty 
+
+index_name是要创建的索引名。
+
+如：
+> PUT /abc_123?pretty 
+
+返回：
+```
+{
+  "acknowledged": true,
+  "shards_acknowledged": true
+}
+```
+
+**删除索引**
+
+Dev Tools   Console：
+> DELETE /index_name?pretty
+
+输出：
+```
+{
+  "acknowledged": true
+}
+```
+
+**写入数据**
+
+Dev Tools   Console：
+```
+POST /index/type/id
+{json}
+```
+
+或者
+```
+PUT /index/type/id 
+{json}
+```
+
+也可以不指定id, es会生成base64的20长度的字符串ID，集群下不可能重复。
+
+示例
+```
+POST /abc_123/in/abc123abc123abc123
+{
+    "a":1
+}
+```
+
+返回：
+```
+{
+  "_index": "abc_123",
+  "_type": "in",
+  "_id": "abc123abc123abc123",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "failed": 0
+  },
+  "created": true
+}
+```
+
+**查找内容**
+
+Dev Tools   Console：
+> GET /index/type/id
+
+返回：
+```
+{
+  "_index": "abc_123",
+  "_type": "in",
+  "_id": "abc123abc123abc123",
+  "_version": 2,
+  "found": true,
+  "_source": {
+    "a": 1
+  }
+}
+```
+
+**修改内容**
+
+Dev Tools   Console：
+```
+POST /index/type/id
+{json}
+```
+
+或者
+```
+PUT /index/type/id 
+{json}
+```
+
+**页面操作**
+
 Kibana页面创建Index patterns：
 
 ![]({{site.baseurl}}/images/20200403/20200403183339.png)
@@ -252,6 +385,12 @@ Kibana页面创建Index patterns：
 然后就可以看到刚才添加那条数据了：
 
 ![]({{site.baseurl}}/images/20200403/20200403183656.png)
+
+##### Postman下使用
+
+**查看集群的健康状况**
+
+GET HTTP://IP:PORT/_cat/health?v
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -285,4 +424,6 @@ es安装和应用 <https://www.jianshu.com/p/c596caf31688?from=singlemessage>
 元数据(Metadata) <https://blog.csdn.net/lgstudyvc/article/details/48732799>
 
 Elasticsearch学习（三）————元数据（_index、_type、_id、_score、_source） <https://blog.csdn.net/qq_42513284/article/details/90678516>
+
+Elasticsearch学习(一)————简单命令 <https://blog.csdn.net/qq_42513284/article/details/90613639>
 
