@@ -9,10 +9,43 @@ meta: 一般我们可以通过kibana查看Elasticsearch数据，但如果要在P
 
 ### 正文
 
-在PHP代码中查找Elasticsearch数据，我们可以用已经写好的vendor类库——elasticsearch/elasticsearch。
-首先需要知道安装的Elasticsearch版本，然后选择对应elasticsearch/elasticsearch。
+Elasticsearch中有个元数据的概念：元数据（Metadata），又称中介数据、中继数据，为描述数据的数据（data about data），
+主要是描述数据属性（property）的信息，用来支持如指示存储位置、历史数据、资源查找、文件记录等功能；元数据算是一种电子式目录，
+为了达到编制目录的目的，必须在描述并收藏数据的内容或特色，进而达成协助数据检索的目的。
+
+元数据是关于数据的组织、数据域及其关系的信息，简言之，元数据就是关于数据的数据。  
+
+Elasticsearch中的元数据有：
+
+**_index**
+
+1. 代表一个document存储在哪个index中。
+2. 类似的数据（document）放在同一个index，不同类型的数据放在不同的index。
+3. 索引名必须是小写，不能用下划线（_）开头，不能包含逗号。
+
+**_type**
+
+1. 代表document属于index下 的哪个类别（type）。
+2. 一个index通常包含多个type。
+3. type名称可以大写或小写，不能用下划线（_）开头，不能包含逗号。
+
+**_id**
+
+1. 代表document的唯一标识，与index和type一起确定一个唯一的document。
+2. 可以手动指定，也可es自动生成。 手动指定：PUT /index/type/id； 自动生成： PUT /index/type/ 生成base64编码的20长度的字符串ID，分布式集群下不可能重复。
+
+**_score**
+
+1. 相关度分数：匹配程度，分数越高越相关。
+
+**_source**
+
+1. 代表一个document，是一个json对象（{json}）,包含一个实例对象。
 
 #### 引导
+
+在PHP代码中查找Elasticsearch数据，我们可以用已经写好的vendor类库——elasticsearch/elasticsearch。
+首先需要知道安装的Elasticsearch版本，然后选择对应elasticsearch/elasticsearch。
 
 假设Elasticsearch Version >= 5.0, < 6.0   。我们选择Elasticsearch-PHP Branch 5.0
 
@@ -22,6 +55,171 @@ composer.json中：
     "elasticsearch/elasticsearch": "~5.0"
 }
 ```
+
+安装项目拓展：
+> php composer.phar install
+
+载入引导：
+```
+<?php
+use Elasticsearch\ClientBuilder;
+
+require 'vendor/autoload.php';
+
+$client = ClientBuilder::create()->build();
+```
+
+在elasticsearch-php中，几乎所有东西都是由关联数组配置的。 REST端，文档和可选参数，一切都是一个关联数组。
+
+##### 写入数据
+
+要为文档建立索引，我们需要指定三项信息：index, id 和 body文档主体：
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id',
+    'body'  => ['testField' => 'abc']
+];
+
+$response = $client->index($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [result] => created
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [failed] => 0
+        )
+
+    [_seq_no] => 0
+    [_primary_term] => 1
+)
+```
+
+##### 获取文档
+
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->get($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [_seq_no] => 0
+    [_primary_term] => 1
+    [found] => 1
+    [_source] => Array
+        (
+            [testField] => abc
+        )
+
+)
+```
+
+如果要直接检索_source字段，则有getSource方法：
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$source = $client->getSource($params);
+print_r($source);
+```
+
+输出：
+```
+Array
+(
+    [testField] => abc
+)
+```
+
+##### 搜索文档
+
+搜索是Elasticsearch的标志，因此让我们执行搜索。 
+
+```
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'query' => [
+            'match' => [
+                'testField' => 'abc'
+            ]
+        ]
+    ]
+];
+
+$response = $client->search($params);
+print_r($response);
+```
+
+和上面的返回不同：
+```
+Array
+(
+    [took] => 33,
+    [timed_out] => false,
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [skipped] => 0
+            [failed] => 0
+        ),
+
+    [hits] => Array
+        (
+            [total] => Array
+                (
+                    [value] => 1
+                    [relation] => eq
+                ),
+
+            [max_score] => 0.2876821,
+            [hits] => Array
+                (
+                    [0] => Array
+                        (
+                            [_index] => my_index
+                            [_type] => _doc
+                            [_id] => my_id
+                            [_score] => 0.2876821
+                            [_source] => Array
+                                (
+                                    [testField] => abc
+                                )
+                        )
+                )
+        )
+)
+```
+
+
+
+#### 具体使用
 
 读取代码中：
 ```
