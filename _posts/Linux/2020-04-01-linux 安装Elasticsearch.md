@@ -388,7 +388,7 @@ DSL搜索
 
 搜索全部：
 ```
-POST http://ip:9200/test/test/_search
+POST http://ip:9200/index/type/_search
 
 {
     "query":{
@@ -399,7 +399,7 @@ POST http://ip:9200/test/test/_search
 
 以about字段中含有climbing字符查询并根据age字段降序排列 可以多个排序，用逗号分隔：
 ```
-POST http://ip:9200/test/test/_search
+POST http://ip:9200/index/_search
 
 {
     "query":{
@@ -531,6 +531,43 @@ POST http://ip:9200/test/test/_search
             "about":{}                # 字段
         }
     }
+}
+```
+
+**dsl返回结果**
+
+dsl搜索返回结果结构，我们看到一些元数据（took，timed_out等）和一个名为hits的数组，这代表我们的搜索结果。 
+hits内部是另一个名为hits的数组，其中包含单个搜索结果，如下：
+```
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 3,
+    "successful": 3,
+    "failed": 0
+  },
+  "hits": {
+    "total": 1,
+    "max_score": 7.0329185,
+    "hits": [
+      {
+        "_index": "adminlog-2020.07",
+        "_type": "in",
+        "_id": "AXMIPktTxB5-91lMn9cZ",
+        "_score": 7.0329185,
+        "_source": {
+          "log_id": "1593570969841844",
+          "@timestamp": "2020-07-01T02:36:09.604Z",
+          "indexname": "adminlog",
+          "timing": "103",
+          "time_output": 1593570969,
+          "@version": "1",
+          "type": "in"
+        }
+      }
+    ]
+  }
 }
 ```
 
