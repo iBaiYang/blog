@@ -153,10 +153,11 @@ class LElasticSearch extends Component
     
     /**
      * 数据结构，只支持简单查询，不支持group by
+     * @param $param 
      * e.g:
      * {
-     * "select": ["sd","sd"],
-     *  "where": {
+     *    "select": ["sd","sd"],
+     *    "where": {
      *      "and": [
      *          "in":["key":[1,3,4]],
      *          ">":["key":123],
@@ -170,12 +171,12 @@ class LElasticSearch extends Component
      *          ["like": ["key":"value"]],
      *          ["=", ["key":"value"]]
      *      ]
-     * },
-     * "order": [["dadf":"desc"],["asdf":"asc"]],
-     * "limit":5,
-     * "offset":6
+     *   },
+     *   "order": [["dadf":"desc"],["asdf":"asc"]],
+     *   "limit":5,
+     *   "offset":6
      * }
-     * @param $param
+     * 
      * @return mixed
      */
     public function buildParam($param)
