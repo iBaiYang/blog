@@ -705,8 +705,17 @@ class UserController extends Controller
             ];
         
             return UserInfo::find()
+                ->select("user_id, user_name, age")
                 ->where($condition)
                 ->addWhere(["like" => ["userName" => "zhang san"]])
+                ->addWhere([
+                        "add" => [
+                            "<>" => ["userId" => 0,
+                            "like" => ["userName" => "zhang"],
+                        ]
+                    ])
+                ->setOrder(["age" => "desc"])
+                ->setOffset(0)
                 ->setLimit(10)
                 ->search();
         }
