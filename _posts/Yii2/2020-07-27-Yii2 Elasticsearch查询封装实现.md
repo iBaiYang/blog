@@ -706,6 +706,7 @@ class UserController extends Controller
         
             return UserInfo::find()
                 ->where($condition)
+                ->addWhere(["like" => ["userName" => "zhang san"]])
                 ->setLimit(10)
                 ->search();
         }
