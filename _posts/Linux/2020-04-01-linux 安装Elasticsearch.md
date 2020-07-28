@@ -534,9 +534,9 @@ POST http://ip:9200/test/test/_search
 }
 ```
 
-**dsl返回结果**
+**DSL返回结果**
 
-dsl搜索返回结果结构，我们看到一些元数据（took，timed_out等）和一个名为hits的数组，这代表我们的搜索结果。 
+DSL搜索返回结果结构，我们看到一些元数据（took，timed_out等）和一个名为hits的数组，这代表我们的搜索结果。 
 hits内部是另一个名为hits的数组，其中包含单个搜索结果，如下：
 ```
 {
