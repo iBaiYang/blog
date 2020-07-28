@@ -479,8 +479,72 @@ abstract class ActiveRecord extends \ArrayObject implements ActiveRecordInterfac
 
 ```php
 <?php
-class a
+namespace common\components\ES;
+
+use common\components\LElasticSearch;
+use Yii;
+use yii\base\Object;
+
+class ActiveQuery extends Object
 {
+    private $where = [];
+    private $sort = [];
+    private $select = [];
+    private $limit = 10;
+    private $offset = 0;
+    private $modelClass;
+    private $isArray = true;
+
+    public function asArray()
+    {
+        $this->isArray = true;
+    }
+
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+    
+    public function addWhere($where)
+    {
+        $this->where[] = $where;
+        return $this;
+    }
+    public function where($where)
+    {
+        $this->where = $where;
+        return $this;
+    }
+
+    public function select($select) {
+        $this->select = $select;
+        return $this;
+    }
+
+    public function addOrderBy($order) {
+        $this->sort[] = $order;
+        return $this;
+    }
+
+    public function setOrder($order)
+    {
+        $this->sort = $order;
+        return $this;
+    }
+
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+    
     /**
      * @param LElasticSearch $es
      * @param bool $needBuild
@@ -516,6 +580,32 @@ class a
     }
     
     /**
+     * 返回es的body数组，按照LElasticSearch来
+     */
+    private function getBody()
+    {
+        $returnBody = [];
+        
+        if ($this->where) {
+            $returnBody["where"] = ["and" => $this->where];
+        }
+        if ($this->select) {
+            $returnBody["select"] = $this->select;
+        }
+        if ($this->sort) {
+            $returnBody["order"] = $this->sort;
+        }
+        if ($this->limit) {
+            $returnBody["limit"] = $this->limit;
+        }
+        if ($this->offset) {
+            $returnBody["offset"] = $this->offset;
+        }
+        
+        return $returnBody;
+    }
+    
+    /**
      * 返回ActiveRecord对象
      * @param $data
      * @return ActiveRecord
@@ -529,6 +619,14 @@ class a
         $modelClass::populateRecord($instance, $data);
         
         return $instance;
+    }
+    
+    public function one($es = null)
+    {
+        $this->limit=1;
+        $this->offset = 0;
+        
+        return $this->search($es);
     }
 }
 ```
