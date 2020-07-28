@@ -11,7 +11,61 @@ meta: Elasticsearch查询封装实现
 
 PHP查询Elasticsearch数据，可以直接用Packagist中的类库elasticsearch/elasticsearch。具体安装方法，看一下过去的记录。
 
-如果Elasticsearch查询不进行封装，代码看起来会很散，我们在Yii2中封装一下Elasticsearch查询。
+查询条件一般用法：
+```
+$condition = [
+    "index" => "weberror-*",
+    "type" => "error",
+    "body" => [
+        "_source" => [
+            "includes" => ["user_id", "name", age"]
+        ],
+        "from" => 0,
+        "size" => 100,
+        "query" => [
+            "bool"=>[
+                "filter"=> [
+                    ["match_phrase" => ["name" => "sam li"]],
+                    ["bool" => [
+                        "must_not" => ["term" => ["name" => "harry"]]
+                    ]],
+                    ["bool" => [
+                        "filter" => [
+                            ["match_phrase" => ["name" => "potter wang"]],
+                            ["bool" => [
+                                "must_not" => ["term" => ["name" => "moon"]]
+                            ]]
+                        ]
+                    ]],
+                ],
+                "should" => [
+                    ["term" => ["name" => "sam"]],
+                    ["range" => [
+                        "age" => ["gte" => 18]
+                    ]],
+                    ["range" => [
+                        "age" => ["lt" => 60]
+                    ]],
+                ]
+            ]
+        ],
+        "sort" => [
+            "age" => [
+                "order"=>"desc"
+            ],
+            "id" => [
+                "order"=>"asc"
+            ]
+        ]
+    ]
+];
+
+$client = ClientBuilder::create()->setHosts(["http://127.0.0.1:9200","http://127.0.0.2:9200"])->build();
+
+$response = $client->search($condition);
+```
+
+如果Elasticsearch查询不进行封装，代码看起来会很散，我们在Yii2中封装一下Elasticsearch查询，其实就是把最终输出的查询条件如上所示一样。
 
 Es连接读取层 与 AR活动记录 首先要进行分离， AR活动记录 通过 ActiveQuery活动搜索层 对 Es连接读取层 进行数据读取。
 
@@ -49,7 +103,7 @@ class LElasticSearch extends Component
         "in",
         "=",
         "not in",
-        '<>'
+        "<>"
     ];
     
     public function init()
@@ -117,7 +171,7 @@ class LElasticSearch extends Component
      *          ["=", ["key":"value"]]
      *      ]
      * },
-     * "order": [["dadf":"desc"],['asdf':"asc"]],
+     * "order": [["dadf":"desc"],["asdf":"asc"]],
      * "limit":5,
      * "offset":6
      * }
@@ -336,7 +390,7 @@ class LElasticSearch extends Component
                 case "_script":
                     $condition = [
                         "script" => [
-                            'script' => $value,
+                            "script" => $value,
                         ]
                     ];
                     break;
