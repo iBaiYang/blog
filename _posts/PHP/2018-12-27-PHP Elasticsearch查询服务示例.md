@@ -9,6 +9,39 @@ meta: 一般我们可以通过kibana查看Elasticsearch数据，但如果要在P
 
 ### 正文
 
+Elasticsearch中有个元数据的概念：元数据（Metadata），又称中介数据、中继数据，为描述数据的数据（data about data），
+主要是描述数据属性（property）的信息，用来支持如指示存储位置、历史数据、资源查找、文件记录等功能；元数据算是一种电子式目录，
+为了达到编制目录的目的，必须在描述并收藏数据的内容或特色，进而达成协助数据检索的目的。
+
+元数据是关于数据的组织、数据域及其关系的信息，简言之，元数据就是关于数据的数据。  
+
+Elasticsearch中的元数据有：
+
+**_index**
+
+1. 代表一个document存储在哪个index中。
+2. 类似的数据（document）放在同一个index，不同类型的数据放在不同的index。
+3. 索引名必须是小写，不能用下划线（_）开头，不能包含逗号。
+
+**_type**
+
+1. 代表document属于index下 的哪个类别（type）。
+2. 一个index通常包含多个type。
+3. type名称可以大写或小写，不能用下划线（_）开头，不能包含逗号。
+
+**_id**
+
+1. 代表document的唯一标识，与index和type一起确定一个唯一的document。
+2. 可以手动指定，也可es自动生成。 手动指定：PUT /index/type/id； 自动生成： PUT /index/type/ 生成base64编码的20长度的字符串ID，分布式集群下不可能重复。
+
+**_score**
+
+1. 相关度分数：匹配程度，分数越高越相关。
+
+**_source**
+
+1. 代表一个document，是一个json对象（{json}）,包含一个实例对象。
+
 #### 引导
 
 在PHP代码中查找Elasticsearch数据，我们可以用已经写好的vendor类库——elasticsearch/elasticsearch。
@@ -22,6 +55,248 @@ composer.json中：
     "elasticsearch/elasticsearch": "~5.0"
 }
 ```
+
+安装项目拓展：
+> php composer.phar install
+
+载入引导：
+```
+<?php
+use Elasticsearch\ClientBuilder;
+
+require 'vendor/autoload.php';
+
+$client = ClientBuilder::create()->build();
+```
+
+在elasticsearch-php中，几乎所有东西都是由关联数组配置的。 REST端，文档和可选参数，一切都是一个关联数组。
+
+##### 写入文档
+
+要为文档建立索引，我们需要指定三项信息：index, id 和 body文档主体：
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id',
+    'body'  => ['testField' => 'abc']
+];
+
+$response = $client->index($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [result] => created
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [failed] => 0
+        )
+
+    [_seq_no] => 0
+    [_primary_term] => 1
+)
+```
+
+##### 获取文档
+
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->get($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [_seq_no] => 0
+    [_primary_term] => 1
+    [found] => 1
+    [_source] => Array
+        (
+            [testField] => abc
+        )
+
+)
+```
+
+如果要直接检索_source字段，则有getSource方法：
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$source = $client->getSource($params);
+print_r($source);
+```
+
+输出：
+```
+Array
+(
+    [testField] => abc
+)
+```
+
+##### 搜索文档
+
+搜索是Elasticsearch的标志，因此让我们执行搜索。 
+
+```
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'query' => [
+            'match' => [
+                'testField' => 'abc'
+            ]
+        ]
+    ]
+];
+
+$response = $client->search($params);
+print_r($response);
+```
+
+和上面的返回不同：
+```
+Array
+(
+    [took] => 33,
+    [timed_out] => false,
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [skipped] => 0
+            [failed] => 0
+        ),
+
+    [hits] => Array
+        (
+            [total] => Array
+                (
+                    [value] => 1
+                    [relation] => eq
+                ),
+
+            [max_score] => 0.2876821,
+            [hits] => Array
+                (
+                    [0] => Array
+                        (
+                            [_index] => my_index
+                            [_type] => _doc
+                            [_id] => my_id
+                            [_score] => 0.2876821
+                            [_source] => Array
+                                (
+                                    [testField] => abc
+                                )
+                        )
+                )
+        )
+)
+```
+
+##### 删除文档
+
+```
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->delete($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 2
+    [result] => deleted
+    [_shards] => Array
+        (
+            [total] => 1
+            [successful] => 1
+            [failed] => 0
+        )
+
+    [_seq_no] => 1
+    [_primary_term] => 1
+)
+```
+
+##### 删除index索引
+
+```
+$deleteParams = [
+    'index' => 'my_index'
+];
+$response = $client->indices()->delete($deleteParams);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
+)
+```
+
+##### 创建index索引
+
+```
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'settings' => [
+            'number_of_shards' => 2,
+            'number_of_replicas' => 0
+        ]
+    ]
+];
+
+$response = $client->indices()->create($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
+)
+```
+
+通过上面这些操作可以看出，elasticsearch-php这个拓展中，可以实现对文档及索引的增删改查，我们实际情况下，新增文档都是通过kafka 、 logstash中转实现的，
+项目中不直接写入文档。一般在项目中都是搜索文档。
+
+#### 具体使用
 
 读取代码中：
 ```
@@ -118,11 +393,11 @@ $type = 'client';
 
 看一下Elasticsearch储存的数据结构实例：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181227/20181227130243.jpg)
+![]({{site.baseurl}}/images/20181227/20181227130243.jpg)
 
 看一下视图渲染的效果：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181227/20181227130504.jpg)
+![]({{site.baseurl}}/images/20181227/20181227130504.jpg)
 
 #### 合并语句查询
 
@@ -256,21 +531,6 @@ filter
 }
 ```
 
-如：      
-```
-{
-    "bool": {
-        "must":     { "match": { "title": "how to make millions" }},
-        "must_not": { "match": { "tag":   "spam" }},
-        "should": [
-            { "match": { "tag": "starred" }}
-        ],
-        "filter": {
-          "range": { "date": { "gte": "2014-01-01" }} 
-        }
-    }
-}
-```
 通过将 range 查询移到 filter 语句中，我们将它转成不评分的查询，将不再影响文档的相关性排名。
 由于它现在是一个不评分的查询，可以使用各种对 filter 查询有效的优化手段来提升性能。
 
@@ -361,11 +621,15 @@ wildcard模糊查询：
 
 elastic/elasticsearch-php <https://github.com/elastic/elasticsearch-php>
 
+Packagist elasticsearch/elasticsearch <https://packagist.org/packages/elasticsearch/elasticsearch>
+
 Elasticsearch-PHP <https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html>
 
 Elasticsearch 中文官方 <https://www.elastic.co/cn/>
 
 Elasticsearch: 权威指南 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html>
+
+该怎么学elasticsearch？ <https://www.zhihu.com/question/323811022/answer/981341195>
 
 查询表达式 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/query-dsl-intro.html#_%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E7%BB%93%E6%9E%84>
 

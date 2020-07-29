@@ -9,9 +9,9 @@ meta: 大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，
 
 ### 正文
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190816/20190816134124.png)
+![]({{site.baseurl}}/images/20190816/20190816134124.png)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191018/20191018105918.png)
+![]({{site.baseurl}}/images/20191018/20191018105918.png)
 
 引入参考：
 
@@ -66,7 +66,7 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 <p>不对。php-cgi只是解释PHP脚本的程序而已。</p>
 </blockquote>
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190902/20190902112145.jpeg)
+![]({{site.baseurl}}/images/20190902/20190902112145.jpeg)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料

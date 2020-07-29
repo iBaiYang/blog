@@ -13,11 +13,11 @@ meta: Yii2 详说password_reset_token的用途
 
 登录页面，忘记密码了，点击reset it：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132771.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132771.jpeg)
 
 跳转到：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132772.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132772.jpeg)
 
 输入你的邮箱，然后去邮箱点击链接地址，重设密码就可以了。
 
@@ -94,11 +94,11 @@ http://yii2_1108_frontend.host/index.php?r=site/reset-password&token=Asgm1LhqV4Q
 
 我们看一下邮件：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132773.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132773.jpeg)
 
 当我们点击这个链接时，跳转到设置密码页：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200417/20200417132774.jpeg)
+![]({{site.baseurl}}/images/20200417/20200417132774.jpeg)
 
 我们看一下这一页的代码：
 

@@ -11,11 +11,11 @@ meta: tinyhttpd是一个超轻量型Http Server，使用C语言开发，全部�
 
 先看一下浏览器和tinyhttpd交互的整个流程：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200310/20200310163157.png)
+![]({{site.baseurl}}/images/20200310/20200310163157.png)
 
 再看一下Tinyhttp的运作模型:
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20200310/20200310163154.png)
+![]({{site.baseurl}}/images/20200310/20200310163154.png)
 
 
 Tiny HTTPd 的函数有：

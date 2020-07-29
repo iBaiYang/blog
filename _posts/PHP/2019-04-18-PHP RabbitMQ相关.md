@@ -9,7 +9,7 @@ meta: RabbitMQ相关
 
 ### 正文
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20191115/20191115175726.png)
+![]({{site.baseurl}}/images/20191115/20191115175726.png)
 
 #### 简单介绍
 
@@ -871,7 +871,7 @@ public function ack($delivery_tag, $flags = AMQP_NOPARAM) { }
 
 #### AMQP messaging 中的基本概念
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418181901.jpg)
+![]({{site.baseurl}}/images/20190418/20190418181901.jpg)
 
 Message: 消息，消息是不具名的，它由消息头和消息体组成。消息体是不透明的，而消息头则由一系列的可选属性组成，
 这些属性包括routing-key（路由键）、priority（相对于其他消息的优先权）、delivery-mode（指出该消息可能需要持久性存储）等。
@@ -913,7 +913,7 @@ Consumer: 消息的消费者，表示一个从消息队列中取得消息的客�
 
 #### 典型的“生产／消费”消息模型
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418182644.jpg)
+![]({{site.baseurl}}/images/20190418/20190418182644.jpg)
 
 生产者发送消息到broker server（RabbitMQ）。
 在Broker内部，用户创建Exchange／Queue，通过Binding规则将两者联系在一起。
@@ -926,13 +926,13 @@ Exchange有多种类型，最常用的是Direct／Topic／Fanout三种类型。
 
 Direct (point-to-point)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418182946.jpg)
+![]({{site.baseurl}}/images/20190418/20190418182946.jpg)
 
 Message中的“routing key”如果和Binding中的“binding key”一致， Direct exchange则将message发到对应的queue中。
 
 Topic (publish-subscribe)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418183016.jpg)
+![]({{site.baseurl}}/images/20190418/20190418183016.jpg)
 
 根据routing key，及通配规则，Topic exchange将分发到目标queue中。Routing key中可以包含两种通配符，类似于正则表达式：
 ```
@@ -942,7 +942,7 @@ Topic (publish-subscribe)
 
 Fanout (multicast)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190418/20190418182958.jpg)
+![]({{site.baseurl}}/images/20190418/20190418182958.jpg)
 
 每个发到Fanout类型Exchange的message都会分到所有绑定的queue上去。
 

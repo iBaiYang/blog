@@ -20,6 +20,10 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 所有我们选中的就是Docker技术。Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，
 然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。
 
+放一张总结的图：
+
+![]({{site.baseurl}}/images/20200703/20200703111105.png)
+
 #### Docker信息查看
 
 我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
@@ -484,25 +488,136 @@ Docker要求您的命令在前台继续运行。否则，它会认为您的应�
 
 >  docker run -d centos tail -f /dev/null 
 
+#### Dockerfile
+
+Dockerfile是用来构建Docker镜像的文件，是由一系列命令和参数构成的脚本。
+
+Docker镜像的特点：
+1. 由Dockerfile生成
+2. 呈现层级结构
+3. 每层镜像包含：镜像文件以及镜像json元数据信息
+
+![]({{site.baseurl}}/images/20200703/20200703111106.png)
+
+Docker镜像可以通过分层来进行继承。
+
+例如，hello-world的Dockerfile镜像FROM scratch镜像，scratch在Docker中是一个基础镜像，Centos的Dockerfile镜像也是FROM scratch镜像。
+那么Centos镜像和hello-world共享同一个基础镜像层scratch，提高了存储效率。
+
+Docker每一层镜像的json文件，都扮演着一个非常重要的角色，其主要的作用如下：
+* 记录 Docker 镜像中与容器动态信息相关的内容
+* 记录父子 Docker 镜像之间真实的差异关系
+* 弥补 Docker 镜像内容的完整性与动态内容的缺失
+
+Docker镜像的json文件可以认为是镜像的元数据信息。
+
 #### 示例配置
+
+##### phpfpm镜像build脚本
+
+Dockerfile 文件:
+```
+# 基础镜像
+FROM centos:7
+
+# 维护者
+MAINTAINER www  ibaiyang@126.com
+
+# 设置变量
+ENV PHPIZE_DEPS \
+		autoconf \
+		file \
+		g++ \
+		gcc \
+
+# apk add命令从仓库中安装最新软件包，并自动安装必须的依赖包
+RUN apk add --no-cache --virtual .persistent-deps \
+		ca-certificates \
+		curl \
+		tar \
+		xz \
+# https://github.com/docker-library/php/issues/494
+		libressl
+
+# 设置变量
+ENV PHP_INI_DIR /usr/local/etc/php
+
+# 生成php配置目录
+RUN mkdir -p $PHP_INI_DIR/conf.d
+
+# 设置变量，php拓展
+ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --disable-cgi --enable-bcmath --enable-sockets --enable-exif --enable-zip --with-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --with-webp-dir --with-xpm-dir  --with-gettext --enable-intl --with-mcrypt --with-mysqli --enable-pcntl --with-pdo-mysql --enable-shmop -enable-soap --enable-sysvsem --with-xmlrpc --with-xs
+
+# 设置变量，PHP_VERSION php版本
+ENV PHP_VERSION 7.1.23
+
+# 设置变量，PHP_URL官方包地址
+ENV PHP_URL="https://secure.php.net/get/php-7.1.23.tar.xz/from/this/mirror" PHP_ASC_URL="https://secure.php.net/get/php-7.1.23.tar.xz.asc/from/this/mirror"
+
+# 生成php包下载目录，并下载php包
+RUN mkdir -p /usr/src; \
+	cd /usr/src; \
+	\
+	wget -O php.tar.xz "$PHP_URL";
+
+RUN	wget -O /usr/src/php.tar.xz  https://secure.php.net/get/php-7.1.21.tar.xz/from/this/mirror && rm -rf /usr/src/php && mkdir /usr/src/php && tar -Jxf /usr/src/php.tar.xz -C /usr/src/php --strip-components=1 \
+
+# 给php配置拓展
+RUN  ./configure   --prefix=/usr/local/php --with-pdo-mysql --disable-cgi  -with-mysqli  -enable-ftp  -enable-zip  -with-bz2  -with-jpeg-dir   -with-png-dir    -with-freetype-dir    -with-libxml-dir  -with-xmlrpc    -with-zlib-dir   -with-gd  -with-curl   -with-gettext    -with-pear  -enable-mbstring -enable-bcmath   -enable-sockets   -enable-exif  -enable-fpm  -enable-pcntl   -with-mhash  -with-gmp    -with-openssl   -enable-sysvsem   -enable-sysvshm -enable-mbregex --enable-intl --with-mcrypt --enable-shmop
+```
+
+运行命令生成镜像：
+> docker build -t php:7.1.23 .
+
+其他一些补充操作：
+```
+# yum安装工具包
+yum install libxml2-devel openssl-devel bzip2-devel curl-devel libjpeg-devel libpng-devel freetype-devel gmp-devel -y 
+
+freetype             
+
+krb5-devel keyutils-libs-devel libcom_err-devel libselinux-devel  libsepol-devel libverto-devel xz-devel pcre-devel zlib-devel      
+   
+libjpeg-turbo       
+libkadm5            
+libpng              
+          
+
+yum install gcc-c++ -y
+yum install libicu-devel -y
+
+yum install systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel -y
+
+yum install make -y
+
+yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
+```
 
 ##### 项目镜像build脚本
 
 ```
+# 生成docker-php-entrypoint文件
 cat > docker-php-entrypoint << EOF
 #!/bin/sh
 nginx -g 'daemon off;' &
 php-fpm
 EOF
+
+# 增加可执行权限
 chmod +x docker-php-entrypoint
+
+# 生成crm项目的Dockerfile文件
 cat > Dockerfile << EOF
 #FROM vipcloud/vipcloud-php-fpm-v2:7.1.24
 FROM vipcloud/vipcloud-php-fpm-apcu:7.1.24
 RUN mkdir /var/www/html/ -pv
 RUN mkdir /config/dev/ -pv
+# crm项目配置
 COPY --chown=nginx:nginx crm.json /config/dev/
+# crm项目文件包
 COPY --chown=nginx:nginx dist/crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz /var/www/html/
 WORKDIR /var/www/html/
+# 安装crm项目
 RUN /bin/sh -xe \
 && tar -xf ./crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz && rm -f ./crm.${BUILD_NUMBER}.${BUILD_ID}.tar.gz \
 && cd /var/www/html/ \
@@ -517,14 +632,20 @@ RUN /bin/sh -xe \
 && chmod -R 0777 web/tmp \
 
 COPY docker-php-entrypoint /usr/local/bin/
+# 暴露端口
 EXPOSE 80
+# the command of entrypoint
 ENTRYPOINT ["docker-php-entrypoint"]
 EOF
 ```
 
-粘贴到命令行执行生成文件：docker-php-entrypoint 和 Dockerfile 。
+cat > 文件名 << EOF  用来创建文件，在这之后输入任何东西，都是在文件里的，输入完成之后EOF结尾代表结束。
 
-生成镜像：
+BUILD_NUMBER 和 BUILD_ID 是全局变量。
+
+把上面的命令粘贴到命令行回车执行，生成文件：docker-php-entrypoint 和 Dockerfile 。
+
+接下来我们就可以根据Dockerfile生成镜像：
 > docker build -t crm:test .
 
 输出：
@@ -568,70 +689,6 @@ Successfully tagged crm:test
 
 配置文件./crm.json，压缩包文件./dist/crm.tar.gz，我们需要在当前目录下准备好。
 
-##### phpfpm镜像build脚本
-
-Dockerfile 文件:
-```
-FROM centos:7
-
-MAINTAINER www  ibaiyang@126.com
-
-ENV PHPIZE_DEPS \
-		autoconf \
-		file \
-		g++ \
-		gcc \
-
-
-RUN apk add --no-cache --virtual .persistent-deps \
-		ca-certificates \
-		curl \
-		tar \
-		xz \
-# https://github.com/docker-library/php/issues/494
-		libressl
-		
-ENV PHP_INI_DIR /usr/local/etc/php
-RUN mkdir -p $PHP_INI_DIR/conf.d
-
-ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --disable-cgi --enable-bcmath --enable-sockets --enable-exif --enable-zip --with-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --with-webp-dir --with-xpm-dir  --with-gettext --enable-intl --with-mcrypt --with-mysqli --enable-pcntl --with-pdo-mysql --enable-shmop -enable-soap --enable-sysvsem --with-xmlrpc --with-xs
-
-ENV PHP_VERSION 7.1.23
-ENV PHP_URL="https://secure.php.net/get/php-7.1.23.tar.xz/from/this/mirror" PHP_ASC_URL="https://secure.php.net/get/php-7.1.23.tar.xz.asc/from/this/mirror"
-
-RUN mkdir -p /usr/src; \
-	cd /usr/src; \
-	\
-	wget -O php.tar.xz "$PHP_URL";
-RUN	wget -O /usr/src/php.tar.xz  https://secure.php.net/get/php-7.1.21.tar.xz/from/this/mirror && rm -rf /usr/src/php && mkdir /usr/src/php && tar -Jxf /usr/src/php.tar.xz -C /usr/src/php --strip-components=1 \
-
-RUN  ./configure   --prefix=/usr/local/php --with-pdo-mysql --disable-cgi  -with-mysqli  -enable-ftp  -enable-zip  -with-bz2  -with-jpeg-dir   -with-png-dir    -with-freetype-dir    -with-libxml-dir  -with-xmlrpc    -with-zlib-dir   -with-gd  -with-curl   -with-gettext    -with-pear  -enable-mbstring -enable-bcmath   -enable-sockets   -enable-exif  -enable-fpm  -enable-pcntl   -with-mhash  -with-gmp    -with-openssl   -enable-sysvsem   -enable-sysvshm -enable-mbregex --enable-intl --with-mcrypt --enable-shmop
-
-
-
-##########
-yum install libxml2-devel openssl-devel bzip2-devel curl-devel libjpeg-devel libpng-devel freetype-devel gmp-devel -y 
-
-freetype             
-
-krb5-devel keyutils-libs-devel libcom_err-devel libselinux-devel  libsepol-devel libverto-devel xz-devel pcre-devel zlib-devel      
-   
-libjpeg-turbo       
-libkadm5            
-libpng              
-          
-
-yum install gcc-c++ -y
-yum install libicu-devel -y
-
-yum install systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel -y
-
-yum install make -y
-
-
-yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
-```
-
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -646,6 +703,10 @@ Deepin 中的 Docker <https://wiki.deepin.org/wiki/Docker>
 搭建TCP-IP实验环境 <https://ibaiyang.github.io/blog/it%E6%8A%80%E6%9C%AF/2019/12/03/%E6%90%AD%E5%BB%BATCP-IP%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83.html>
 
 Linux和Docker常用命令 <https://www.cnblogs.com/mq0036/p/8520605.html>
+
+Docker入门为什么可以这么简单  <https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484631&idx=1&sn=ffca3c18cce7392ef96dce268cd7d6df&chksm=ebd745d6dca0ccc0964a4c99afaa030c997ee75379e14b5d7fc0beacc4c59f33318af266a7ce###rd>
+
+聊聊Docker镜像 <https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484674&idx=1&sn=e3ea5efe00fde6ebd3c73d5bf2155813&chksm=ebd74403dca0cd15bb3f5e288f28ce2058f8031ee18c2912cec05d886552c24e6e8d8e5ff1ce&token=1676899695&lang=zh_CN###rd>
 
 Docker runoob教程 <https://www.runoob.com/docker/docker-tutorial.html>
 
@@ -666,3 +727,5 @@ Docker run 命令的使用方法 <http://dockone.io/article/152>
 docker之Dockerfile实践 <https://www.cnblogs.com/jsonhc/p/7767669.html>
 
 Docker容器将在“docker run -d”之后自动停止 <https://www.it1352.com/646432.html>
+
+ZhongFuCheng3y/3y 博客 <https://github.com/ZhongFuCheng3y/3y>

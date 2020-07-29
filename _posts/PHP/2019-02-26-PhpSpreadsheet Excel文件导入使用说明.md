@@ -11,7 +11,7 @@ meta: Excel文件导入，以前可以用PHPExcel，但这个库已经不维护�
 
 我们前端使用ajax-upload把Excel文件导入后端：
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20190226/20190226172911.jpg)
+![]({{site.baseurl}}/images/20190226/20190226172911.jpg)
 
 我们看一下后端的处理，用的框架是Yii2：
 

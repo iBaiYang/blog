@@ -45,9 +45,9 @@ win10下命令行到VirtualBox安装目录下，查看有哪些虚拟机：
 
 然后 “以管理者身份运行” VirtualBox。
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181218/20181218131035.jpg)
+![]({{site.baseurl}}/images/20181218/20181218131035.jpg)
 
-![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181218/20181218131522.jpg)
+![]({{site.baseurl}}/images/20181218/20181218131522.jpg)
 
 
 再去ln试一下：
