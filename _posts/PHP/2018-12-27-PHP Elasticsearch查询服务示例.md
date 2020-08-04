@@ -643,6 +643,6 @@ filters特性 <https://www.cnblogs.com/bmaker/p/5480006.html>
 
 通配符与正则表达式查询 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/_wildcard_and_regexp_queries.html#_wildcard_and_regexp_queries>
 
-
+使用 ElasticSearch Aggregations 进行统计分析 <https://blog.csdn.net/zxjiayou1314/article/details/53837719?utm_source=blogxgwz6>
 
 
