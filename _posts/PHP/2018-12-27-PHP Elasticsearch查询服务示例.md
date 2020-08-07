@@ -616,6 +616,71 @@ wildcard模糊查询：
 }
 ```
 
+#### 聚合分析
+
+通过kibana进行聚合分析查询时，POST提交格式，如：
+
+```
+{"index":"nginx-ingress-*","ignore_unavailable":true,"timeout":30000,"preference":1596525370968}
+{
+    "size":0,"_source":{"excludes":[]},
+    "aggs":{
+        "2":{
+            "terms":{"field":"url.keyword","size":100,"order":{"_count":"desc"}},
+            "aggs":{
+                "7":{
+                    "terms":{"field":"http_host.keyword","size":100,"order":{"_count":"desc"}},
+                    "aggs":{
+                        "3":{"avg":{"field":"responsetime"}},
+                        "4":{"max":{"field":"responsetime"}},
+                        "5":{"min":{"field":"responsetime"}},
+                        "6":{
+                            "percentiles":{"field":"responsetime","percents":[90,95,99],"keyed":false}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "stored_fields":["*"],"script_fields":{},"docvalue_fields":["@timestamp","time"],
+    "query":{
+        "bool":{
+            "must":[
+                {"query_string":{"query":"\"wx.test.com\" OR  \"wx.test.work\"","analyze_wildcard":true,"default_field":"*"}},
+                {"range":{"@timestamp":{"gte":1596384000000,"lte":1596470399999,"format":"epoch_millis"}}}
+            ],
+            "filter":[],
+            "should":[],
+            "must_not":[]
+        }
+    }
+}
+```
+
+然后kibana进行分析，再调用Es进行查询，不过调用Es的格式具体是怎样的，需要我们分析。
+
+Es支持的聚合分析的语法如：
+```
+[
+    "index" => "indexlog-*",
+    'from' => 0,
+    'size' => 3,
+    "body" => [
+        "aggs" => [
+            "options" => [
+                "terms" => [
+                    "field" => "action_url.keyword",
+                    "size" => 100,
+                    "order" => [
+                        "_count" => "desc"
+                    ]
+                ]
+            ]
+        ]
+    ]
+]
+```
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
