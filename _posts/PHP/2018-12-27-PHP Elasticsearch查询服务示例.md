@@ -710,4 +710,8 @@ filters特性 <https://www.cnblogs.com/bmaker/p/5480006.html>
 
 使用 ElasticSearch Aggregations 进行统计分析 <https://blog.csdn.net/zxjiayou1314/article/details/53837719?utm_source=blogxgwz6>
 
+Elasticsearch实用的聚合操作Aggs <https://zhuanlan.zhihu.com/p/37500880>
 
+ElasticSearch聚合aggs入门 <https://www.cnblogs.com/pilihaotian/p/5845754.html>
+
+Elasticsearch: 权威指南 » 聚合 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/aggregations.html>
