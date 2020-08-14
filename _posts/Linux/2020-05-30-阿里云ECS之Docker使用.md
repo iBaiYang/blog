@@ -205,6 +205,30 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   13 seconds ago      Up 12 seconds        0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
+接下来可以新建用户和新建库：
+
+进入mysql容器：
+
+> docker exec -it server-mysql /bin/bash
+
+首先用root登录mysql
+
+> mysql -u root -p
+
+输入密码，
+
+创建用户：
+
+> CREATE USER ‘username’@’host’ IDENTIFIED BY ‘password’;
+
+创建数据库：
+
+> CREATE DATABASE IF NOT EXISTS RUNOOB DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+用户数据库赋权：
+
+> GRANT privileges ON databasename.tablename TO ‘username’@’host’
+
 #### php安装
 
 下载镜像：
@@ -708,4 +732,10 @@ linux记录-docker配置mysql <https://www.cnblogs.com/xinfang520/p/11122638.htm
 Docker 部署lnmp <https://blog.csdn.net/weixin_42890981/article/details/86749240>
 
 docker的安装部署及使用docker安装mysql+php+nginx教程 <https://boke112.com/6402.html>
+
+MySQL创建用户与授权 <https://blog.csdn.net/u011120248/article/details/79983250>
+
+centos mysql允许远程root登录 <https://www.cnblogs.com/miaoshiqian/p/3760818.html>
+
+
 
