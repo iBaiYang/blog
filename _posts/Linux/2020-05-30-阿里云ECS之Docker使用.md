@@ -448,6 +448,25 @@ docker run \
 
 说明： /web/nginx/conf/nginx.conf 是nginx配置文件，现在暂时还没有，只是把容器与宿主服务器的连接关系先写好。
 
+有时返回结果可能会看到错误提示：
+```
+/usr/bin/docker-current: Error response from daemon: oci runtime error: container_linux.go:235: starting container process caused "container init exited prematurely".
+```
+
+这是因为`-v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf `这个实现不了，我们可以把这一个绑定取消掉
+（`/etc/nginx/nginx.conf`里的加载关系是写好的，可以不用挂载修改），再执行：
+```
+docker run \
+  --name server-nginx \
+  -p 80:80 \
+  -v /web/nginx/conf/vhost:/etc/nginx/conf.d \
+  -v /web/nginx/logs:/var/log/nginx \
+  -v /var/www/html:/usr/share/nginx/html \
+  -v /etc/localtime:/etc/localtime:ro \
+  --link server-phpfpm:php \
+  -d nginx
+```
+
 查看容器：
 
 > docker ps -a
