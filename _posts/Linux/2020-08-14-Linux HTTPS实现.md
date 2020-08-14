@@ -29,7 +29,7 @@ meta: Linux HTTPS实现
 
 邮箱最好是真的 因为证书过期人家好通知你
 
-#### 异常处理
+**异常处理**
 
 申请时可能报错：
 ```
@@ -42,7 +42,31 @@ certificate.
 certbot: error: unrecognized arguments: --agree-tosde
 ```
 
+#### 配置nginx
+
+第四点 ****配置nginx使用证书开通https站点
+
+
+#### 自动更新
+
+第五点自动更新
+
+可以使用crontab定时更新，例如：
+
+每月1号5时执行执行一次更新，并重启nginx服务器
+
+```
+00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
+```
+
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
+
+Certbot官网 <https://certbot.eff.org/>
+
+CentOS7 通过certbot脚本安装使用 Let’ s Encrypt <https://www.jianshu.com/p/43e74cddba45>
+
+实战申请Let's Encrypt永久免费SSL证书过程教程及常见问题 <https://www.laozuo.org/7676.html>
 
