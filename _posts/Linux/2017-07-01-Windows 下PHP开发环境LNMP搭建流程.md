@@ -349,7 +349,9 @@ MySQL安全配置向导：
 
 更新root权限：
 
-> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+```
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+```
 
 退出mysql管理：
 
