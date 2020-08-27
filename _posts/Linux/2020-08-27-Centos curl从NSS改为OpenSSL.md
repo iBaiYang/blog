@@ -34,6 +34,15 @@ yum源换位国内源后，安装OpenSSL，再重新编译安装Curl，然后就
 lsb_release -a
 ```
 
+输出：
+```
+LSB Version:    :core-4.1-amd64:core-4.1-noarch
+Distributor ID: CentOS
+Description:    CentOS Linux release 7.8.2003 (Core)
+Release:        7.8.2003
+Codename:       Core
+```
+
 看到Centos是7.8版。
 
 如果是阿里云的机子，那使用的是阿里云的源，不需要换了，不然要换一下源，可以考虑清华的源。
@@ -126,6 +135,7 @@ engines:  rdrand dynamic
 yum install openssl openssl-devel
 ```
 
+确认一下安装：
 ```
 OpenSSL 1.0.2k-fips  26 Jan 2017
 built on: reproducible build, date unspecified
