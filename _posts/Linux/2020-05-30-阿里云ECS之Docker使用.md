@@ -205,6 +205,8 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   13 seconds ago      Up 12 seconds        0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
+##### 新建用户和数据库
+
 接下来可以新建用户和新建库：
 
 进入mysql容器：
@@ -215,19 +217,51 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 > mysql -u root -p
 
-输入密码，
+输入密码，进入。
 
-创建用户：
+**创建用户**，语法：
+```
+CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+```
 
-> CREATE USER ‘username’@’host’ IDENTIFIED BY ‘password’;
+user_name：要创建用户的名字。
 
-创建数据库：
+host：表示要这个新创建的用户允许从哪台机登陆，如果只允许从本机登陆，则 填　‘localhost’ ，如果允许从远程登陆，则填 ‘%’
 
-> CREATE DATABASE IF NOT EXISTS RUNOOB DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+password：新创建用户的登陆数据库密码，如果没密码可以不写。
 
-用户数据库赋权：
+如：
+```
+CREATE USER 'dog'@'%' IDENTIFIED BY '123456';
+```
+
+**创建数据库**：
+
+> CREATE DATABASE IF NOT EXISTS dog DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+**用户数据库赋权**，语法：
 
 > GRANT privileges ON databasename.tablename TO ‘username’@’host’
+
+privileges：表示要授予什么权力，例如可以有 select ， insert ，delete，update等，如果要授予全部权力，则填 ALL
+
+databasename.tablename：表示用户的权限能用在哪个库的哪个表中，如果想要用户的权限很作用于所有的数据库所有的表，则填 *.*，*是一个通配符，表示全部。
+
+’username‘@‘host’：表示授权给哪个用户。
+
+如：
+```
+GRANT  ALL  ON  dog.*  TO  ‘dog’@‘%’；
+```
+
+注意：
+
+用以上命令授权的用户不能给其他用户授权，如果想这个用户能够给其他用户授权，就要在后面加上  WITH GRANT OPTION
+
+如： 
+```
+GRANT  ALL  ON   *.*   TO  ’aaa‘@'%'  WITH GRANT OPTION； 
+```
 
 #### php安装
 
@@ -737,5 +771,5 @@ MySQL创建用户与授权 <https://blog.csdn.net/u011120248/article/details/799
 
 centos mysql允许远程root登录 <https://www.cnblogs.com/miaoshiqian/p/3760818.html>
 
-
+MYSQL的创建用户，授权用户，删除用户，查看用户 <https://blog.csdn.net/u014453898/article/details/55064312>
 
