@@ -237,7 +237,7 @@ CREATE USER 'dog'@'%' IDENTIFIED BY '123456';
 
 **创建数据库**：
 
-> CREATE DATABASE IF NOT EXISTS dog DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+> CREATE DATABASE IF NOT EXISTS dog DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
 
 **用户数据库赋权**，语法：
 
