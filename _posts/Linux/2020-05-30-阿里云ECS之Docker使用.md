@@ -430,9 +430,54 @@ Installing header files:          /usr/local/include/php/
 /usr/local/bin/docker-php-ext-enable: 108: /usr/local/bin/docker-php-ext-enable: cannot create /usr/local/etc/php/conf.d/docker-php-ext-mysqli.ini: Directory nonexistent
 ```
 
+一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
+```
+Fatal error: Uncaught PDOException: could not find driver in ...
+```
+
+先看一下phpinfo()输出的配置地址：
+```
+Configure Command 	'./configure' '--build=x86_64-linux-gnu' '--with-config-file-path=/usr/local/etc/php' '--with-config-file-scan-dir=/usr/local/etc/php/conf.d' '--enable-option-checking=fatal' '--with-mhash' '--enable-ftp' '--enable-mbstring' '--enable-mysqlnd' '--with-curl' '--with-libedit' '--with-openssl' '--with-zlib' '--with-libdir=lib/x86_64-linux-gnu' '--enable-fpm' '--with-fpm-user=www-data' '--with-fpm-group=www-data' '--disable-cgi' 'build_alias=x86_64-linux-gnu'
+Server API 	FPM/FastCGI
+Virtual Directory Support 	disabled
+Configuration File (php.ini) Path 	/usr/local/etc/php
+Loaded Configuration File 	(none)
+Scan this dir for additional .ini files 	/usr/local/etc/php/conf.d
+Additional .ini files parsed 	(none)
+PHP API 	20160303
+PHP Extension 	20160303
+Zend Extension 	320160303
+Zend Extension Build 	API320160303,NTS
+PHP Extension Build 	API20160303,NTS
+Debug Build 	no
+Thread Safety 	disabled
+Zend Signal Handling 	enabled
+Zend Memory Manager 	enabled
+Zend Multibyte Support 	provided by mbstring
+IPv6 Support 	enabled
+DTrace Support 	disabled
+Registered PHP Streams	https, ftps, compress.zlib, php, file, glob, data, http, ftp, phar
+Registered Stream Socket Transports	tcp, udp, unix, udg, ssl, tls, tlsv1.0, tlsv1.1, tlsv1.2
+Registered Stream Filters	zlib.*, convert.iconv.*, string.rot13, string.toupper, string.tolower, string.strip_tags, convert.*, consumed, dechunk
+```
+
+看到配置拓展的地址在 `/usr/local/etc/php/conf.d` 下。
+
+安装pdo_mysql拓展：
+
+> docker-php-ext-install pdo_mysql
+
+可以看到 `/usr/local/etc/php/conf.d` 这个目录下多了一个文件：docker-php-ext-pdo_mysql.ini
+
 然后退出容器，回到宿主服务器：
 
 > exit
+
+重启server-phpfpm服务：
+
+> docker stop server-phpfpm
+
+> docker start server-phpfpm
 
 #### nginx安装
 
