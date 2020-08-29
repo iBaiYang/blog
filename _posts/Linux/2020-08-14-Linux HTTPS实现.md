@@ -180,6 +180,9 @@ server {
     # letsencrypt生成的文件
     ssl_certificate      /etc/letsencrypt/live/blog.com/fullchain.pem;
     ssl_certificate_key  /etc/letsencrypt/live/blog.com/privkey.pem;
+    ssl_dhparam /etc/ssl/private/dhparam.pem;
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+    ssl_prefer_server_ciphers  on;
 
     location / {
         root   /usr/share/nginx/html/test;
@@ -226,6 +229,16 @@ server {
 }
 ```
 
+说明：
+```
+listen 443 ssl：开启443端口监听
+ssl_certificate：包含服务器证书的全部证书链文件
+ssl_certificate_key：私钥的位置
+ssl_dhparam：上面生成的2048位 DH parameters位置
+ssl_ciphers：2048位 DH parameters里的值
+ssl_prefer_server_ciphers为on表示开启
+```
+
 下面那个server配置是 http 的自动访问跳转，将http的访问都自动重定向到https。
 
 重启nginx容器。
@@ -242,6 +255,9 @@ server {
 00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
 ```
 
+```
+00 05 01 * * sudo /usr/bin/certbot renew --quiet && sudo docker restart nginx
+```
 
 
 <br/><br/><br/><br/><br/>
