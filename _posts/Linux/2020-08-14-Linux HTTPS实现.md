@@ -249,7 +249,7 @@ ssl_session_timeout  过期时间，10m表示10分钟
 
 下面那个server配置是 http 的自动访问跳转，将http的访问都自动重定向到https。
 
-重启nginx容器。
+重启nginx容器，然后用https访问web服务就可以看到成功了。
 
 补充说一下。
 
@@ -265,9 +265,9 @@ ssl_session_timeout  过期时间，10m表示10分钟
 有两个标准会话重用机制：session IDs (RFC 5246) 和 session tickets (RFC 5077)，使用其中一个技术，
 一个客户端可以重用之前创建的会话，这个会话是之前和服务器进行握手成功的，这样可以减少一次来回过程。
 
-#### 设置定时任务自动更新证书 （待完成）
+#### 设置定时任务自动更新证书
 
-第五点自动更新
+因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。
 
 可以使用crontab定时更新，例如：
 
@@ -277,10 +277,10 @@ ssl_session_timeout  过期时间，10m表示10分钟
 00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
 ```
 
+如果nginx运行在docker容器中：
 ```
 00 05 01 * * sudo /usr/bin/certbot renew --quiet && sudo docker restart nginx
 ```
-
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -298,3 +298,7 @@ CentOS7 通过certbot脚本安装使用 Let’ s Encrypt <https://www.jianshu.co
 实战申请Let's Encrypt永久免费SSL证书过程教程及常见问题 <https://www.laozuo.org/7676.html>
 
 使用ssl_session_cache优化https下Nginx的性能 <http://www.361way.com/nginx-ssl-session-cache/6306.html>
+
+SSL 配置优化的若干建议 <https://blog.csdn.net/vencent7/article/details/79190249>
+
+
