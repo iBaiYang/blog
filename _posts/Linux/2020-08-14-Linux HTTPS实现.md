@@ -144,6 +144,7 @@ openssl dhparam 2048 -out dhparam.pem
 docker run \
   --name server-nginx \
   -p 80:80 \
+  -p 443:443 \
   -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
   -v /web/nginx/conf/vhost:/etc/nginx/conf.d \
   -v /web/nginx/logs:/var/log/nginx \
@@ -183,6 +184,10 @@ server {
     ssl_dhparam /etc/ssl/private/dhparam.pem;
     ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
     ssl_prefer_server_ciphers  on;
+    
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
 
     location / {
         root   /usr/share/nginx/html/test;
@@ -237,11 +242,28 @@ ssl_certificate_key：私钥的位置
 ssl_dhparam：上面生成的2048位 DH parameters位置
 ssl_ciphers：2048位 DH parameters里的值
 ssl_prefer_server_ciphers为on表示开启
+ssl_protocols 允许使用的协议
+ssl_session_cache 所有工作进程之间共享缓存。缓存大小以字节为单位指定；一兆字节可以存储大约4000个session。
+ssl_session_timeout  过期时间，10m表示10分钟
 ```
 
 下面那个server配置是 http 的自动访问跳转，将http的访问都自动重定向到https。
 
 重启nginx容器。
+
+补充说一下。
+
+关于ssl_protocols：SSL v2 及以下已经不安全了，请使用 TLS v1 以上版本（TLS 协议是在 SSL v3 协议基础上设计的）。
+之所以把 SSL v3 也关了是因为 TLS 1.0 会被降级攻击，降级到 SSL v3 之后，我们之前提到的 Forward Secrecy（前向加密）就失效了。
+另外， SSL v3 存在 POODLE 漏洞，这是关闭它的另一个主要理由。
+`ssl_protocols TLSv1 TLSv1.1 TLSv1.2;`，只允许使用 TLS 协议。
+
+关于ssl_session_cache：网站启用https后，会加剧服务器的负担。每次新的TLS连续都需要握手，以便创建共享的加密密钥，
+在TCP三次握手之上还需要两个来回。
+传统的http使用TCP三次握手建立连接，而SSL和TLS在这个基础上还需要9个握手包，所以这个负担显而易见。
+不过，通过重用Session提高https的性能，TLS有几个特点可以抵消额外的握手：重用一个Session。
+有两个标准会话重用机制：session IDs (RFC 5246) 和 session tickets (RFC 5077)，使用其中一个技术，
+一个客户端可以重用之前创建的会话，这个会话是之前和服务器进行握手成功的，这样可以减少一次来回过程。
 
 #### 设置定时任务自动更新证书 （待完成）
 
@@ -275,3 +297,4 @@ CentOS7 通过certbot脚本安装使用 Let’ s Encrypt <https://www.jianshu.co
 
 实战申请Let's Encrypt永久免费SSL证书过程教程及常见问题 <https://www.laozuo.org/7676.html>
 
+使用ssl_session_cache优化https下Nginx的性能 <http://www.361way.com/nginx-ssl-session-cache/6306.html>
