@@ -269,9 +269,47 @@ ssl_session_timeout  过期时间，10m表示10分钟
 
 因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。
 
-可以使用crontab定时更新，例如：
+可以使用crontab定时更新。
 
-每月1号5时执行执行一次更新，并重启nginx服务器
+**crond是什么**
+
+crond 和crontab是不可分割的。crontab是一个命令，常见于Unix和类Unix的操作系统之中，用于设置周期性被执行的指令。
+该命令从标准输入设备读取指令，并将其存放于“crontab”文件中，以供之后读取和执行。该词来源于希腊语chronos(χρόνος)，原意是时间。
+而crond正是它的守护进程。cron服务是一个定时执行的服务，可以通过crontab 命令添加或者编辑需要定时执行的任务。
+
+安装crontab：
+
+> yum install crontabs
+
+```
+service crond start //启动服务
+service crond stop //关闭服务
+service crond restart //重启服务
+service crond reload //重新载入配置
+service crond status  // 查看crontab服务状态
+```
+
+上面是添加在sevice服务中的快捷操作方式，执行时可以看到调用的是下面的命令：
+```
+/bin/systemctl start crond.service
+/bin/systemctl stop crond.service
+/bin/systemctl restart crond.service
+/bin/systemctl reload crond.service
+/bin/systemctl status crond.service
+```
+
+crontab操作:
+```
+crontab -u //设定某个用户的cron服务
+crontab -l //列出某个用户cron服务的详细内容
+crontab -r //删除某个用户的cron服务
+crontab -e //编辑某个用户的cron服务
+crontab -i //打印提示，输入yes等确认信息
+```
+
+添加定时任务，直接用`crontab -e`，不需要指定用户，如果是root权限，默认是root定时的。
+
+例如，每月1号5时执行执行一次更新，并重启nginx服务器
 
 ```
 00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
@@ -279,8 +317,17 @@ ssl_session_timeout  过期时间，10m表示10分钟
 
 如果nginx运行在docker容器中：
 ```
-00 05 01 * * sudo /usr/bin/certbot renew --quiet && sudo docker restart nginx
+00 05 01 * * /usr/bin/certbot renew --quiet && docker restart server-nginx
 ```
+
+重新载入配置并重启crontab服务。
+
+我们可以查看这个定时任务是否添加成功;
+```
+crontab -l -u root
+```
+
+如果看到我们上面添加的那一条，说明添加成功。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -301,4 +348,6 @@ CentOS7 通过certbot脚本安装使用 Let’ s Encrypt <https://www.jianshu.co
 
 SSL 配置优化的若干建议 <https://blog.csdn.net/vencent7/article/details/79190249>
 
+centos7 crontab常用方法 <https://blog.csdn.net/qq_33348135/article/details/104486747>
 
+Centos7 利用crontab定时执行任务及配置方法 <https://www.cnblogs.com/p0st/p/9482167.html>
