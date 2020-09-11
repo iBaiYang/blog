@@ -51,6 +51,34 @@ $('#pagination-box').jqPaginator({
 | wrapper  | 	(无)  | 	分页结构的Html包裹，例如：`<div class="your class"></div>`，一般不会用到 | 
 | onPageChange  | 	(无)  | 	回调函数，当换页时触发（包括初始化第一页的时候），会传入"目标页"的页码 | 
 
+**扩展方法**
+
+jqPaginator提供了两个扩展方法，方便初始化后对组件进行操作。 
+
+1、修改组件参数：
+```
+$('#pagination-box').jqPaginator('option', options)
+```
+
+如，修改当前所在页到首页位置：
+```
+$('#pagination-box').jqPaginator('option', {
+    currentPage: 1
+});
+```
+
+如，修改当前页面总条数为0：
+```
+$('#pagination-box').jqPaginator('option', {
+    totalCounts: 0
+});
+```
+
+2、动态销毁jqPaginator：
+```
+$('#pagination-box').jqPaginator('destroy');
+```
+
 #### jQuery中传统方式实现
 
 ```
