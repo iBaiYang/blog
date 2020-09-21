@@ -269,14 +269,16 @@ socket_bind( $listen_socket, $host, $port );
 socket_listen( $listen_socket );
 // END 创建服务器完毕 
 
-// 也将监听socket放入到read fd set中去，因为select也要监听listen_socket上发生事件
+// $client用来保存连接的客户端，也将监听socket放入到read fd set中去，因为select也要监听listen_socket上发生事件
 $client = [ $listen_socket ];
 // 先暂时只引入读事件，避免有同学晕头
 $write = [];
 $exp = [];
 
 // 开始进入循环
-while( true ){
+while( true )
+{
+  // $read读取的客户端为连接的客户端
   $read = $client;
   // 当select监听到了fd变化，注意第四个参数为null
   // 如果写成大于0的整数那么表示将在规定时间内超时
@@ -286,11 +288,12 @@ while( true ){
   第一个参数必须是数组,数组里面含有待检测的套接字,而且第四个参数写成null阻塞就是代表程序就一直停在socket_select这个函数上,
   什么都不干,等你有连接或者有数据发送,我才继续执行,所以你使用var_dump后,再进行telnet 才会有返回值,否则没有任何输出的
   */
-  if( socket_select( $read, $write, $exp, null ) > 0 ){
-    // 判断listen_socket有没有发生变化，如果有就是有客户端发生连接操作了
-    if( in_array( $listen_socket, $read ) ){
-	  // 将客户端socket加入到client数组中
-	  //socket_accept创建一个可用套接字传送数据,准备给其他客户端发送数据用的
+  if ( socket_select( $read, $write, $exp, null ) > 0 ) {
+    // 判断listen_socket有没有发生变化，如果有就是有客户端发生连接操作了。刚开始把$listen_socket放入了$client，$client有放入了$read
+    // 客户端第一次连接，$read中还有$listen_socket；其他客户端再连接时，$read中已经没有$listen_socket
+    if (in_array( $listen_socket, $read )) {
+	  // 将客户端socket加入到客户端连接client数组中
+	  // socket_accept创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
 	  $client_socket = socket_accept( $listen_socket );
 	  //下面这句很有用,避免了  unset( $read[ $key ] )后,在while时,客户端进来再次用  $client赋值给$read
 	  $client[] = $client_socket;
@@ -299,15 +302,18 @@ while( true ){
 	  unset( $read[ $key ] );
 	}
 	// 查看去除listen_socket中是否还有client_socket
-	// 已经进行telnet连接后,会直接走这一步,不会进去上面代码的in_array,
-	if( count( $read ) > 0 ){
+	// 已经进行telnet连接后,会直接走这一步,不会进去上面代码的in_array。第一个客户端连接第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接
+	// 或者其他后续的客户端连接发生了连接，会执行到这里
+	if ( count( $read ) > 0 ) {
 	  $msg = 'hello world';
+	  // 循环监听的所有客户端连接
 	  foreach( $read as $socket_item )
 	  {
-          // 从可读取的fd中读取出来数据内容，然后发送给其他客户端
+          // 从可读取的客户端连接fd中读取出来数据内容，然后发送给其他客户端
           $content = socket_read( $socket_item, 2048 );
           // 循环client数组，将内容发送给其余所有客户端
-          foreach( $client as $client_socket ){
+          foreach ( $client as $client_socket )
+          {
             // 因为client数组中包含了 listen_socket 以及当前发送者自己socket，$client_socket != $socket_item 再次排除自已,所以需要排除二者
             if( $client_socket != $listen_socket && $client_socket != $socket_item ){
               socket_write( $client_socket, $content, strlen( $content ) );
