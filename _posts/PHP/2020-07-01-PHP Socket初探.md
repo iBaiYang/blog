@@ -461,9 +461,11 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 
 #### 13 硬着头皮继续libevent（二）
 
-实际上php.net上是有event扩展的使用说明手册，但是呢，对于初学者来说却并没有什么卵用，因为没有太多的强有力使用案例代码，也没有给力的User Contributed Notes，所以可能造成的结果就是：根本就看不懂。
+实际上php.net上是有event扩展的使用说明手册，但是呢，对于初学者来说却并没有什么卵用，因为没有太多的强有力使用案例代码，
+也没有给力的User Contributed Notes，所以可能造成的结果就是：根本就看不懂。
 
-这就是event文档，[点击这里](http://php.net/manual/en/book.event.php "点击这里")，你们可以感受一下。从文档上看，event扩展一共实现了如下图几个基础类，其中最常用重要的就是Event和EventBase以及EventConfig三个类了，所以，先围绕这三位开展一下工作。
+这就是event文档，[点击这里](http://php.net/manual/en/book.event.php "点击这里")，你们可以感受一下。从文档上看，
+event扩展一共实现了如下图几个基础类，其中最常用重要的就是Event和EventBase以及EventConfig三个类了，所以，先围绕这三位开展一下工作。
 
 ![](https://static.ti-node.com/6396320853713223680)
 
@@ -476,13 +478,19 @@ Event类就是产生各种不同类型事件的产出器，比如定时器事件
 ![](http://static.ti-node.com/6397057860143939585)
 
 
-EventBase类就相对容易介入了，这玩意显然就是一个航空母舰了，为了提升民族荣誉感，我们就把EventBase类当作是辽宁舰。各种Event都必须依靠EventBase才能混口饭吃，这和战斗机有辽宁舰才有底气飞的更高更远是一个道理。一定是先有航母（EventBase），其次是战斗机（Event）挂在航母（EventBase）上。
+EventBase类就相对容易介入了，这玩意显然就是一个航空母舰了，为了提升民族荣誉感，我们就把EventBase类当作是辽宁舰。
+各种Event都必须依靠EventBase才能混口饭吃，这和战斗机有辽宁舰才有底气飞的更高更远是一个道理。一定是先有航母（EventBase），
+其次是战斗机（Event）挂在航母（EventBase）上。
 
 ![](http://static.ti-node.com/6397058595610951680)
 
-EventConfig则是一个配置类，实例化后的对象作为参数可以传递给EventBase类，这样在初始化EventBase类的时候会根据这个配置初始化出不同的EventBase实例。类比的话，这个类则有点儿类似于辽宁舰的舰岛，可以配置指挥整个辽宁舰。航空母舰的发展趋势是不需要舰岛的，同样，在实例化EventBase类时候同样也可以不传入EventConfig对象，直接进行实例化也是没有问题的。
+EventConfig则是一个配置类，实例化后的对象作为参数可以传递给EventBase类，这样在初始化EventBase类的时候会根据这个配置初始化出不同的EventBase实例。
+类比的话，这个类则有点儿类似于辽宁舰的舰岛，可以配置指挥整个辽宁舰。航空母舰的发展趋势是不需要舰岛的，
+同样，在实例化EventBase类时候同样也可以不传入EventConfig对象，直接进行实例化也是没有问题的。
 
-下面我们从开始写一个php定时器来步入到代码的节奏中。定时器是大家常用的一个工具，一般phper一说定时器，脑海中第一个想起的绝逼是Linux中的crontab。难道phper们离开了crontab真的就没法混了吗？是的，真的好羞耻，现实告诉我们就是这样的，他们离开了crontab真的就没法混了。那么，是时候通过纯php来搞一波儿定时器实现了！
+下面我们从开始写一个php定时器来步入到代码的节奏中。定时器是大家常用的一个工具，一般phper一说定时器，脑海中第一个想起的绝逼是Linux中的crontab。
+难道phper们离开了crontab真的就没法混了吗？是的，真的好羞耻，现实告诉我们就是这样的，他们离开了crontab真的就没法混了。
+那么，是时候通过纯php来搞一波儿定时器实现了！
 
 注意是真的纯php，连Event扩展都不用的那种。
 ```php
@@ -562,7 +570,7 @@ public Event::__construct ( EventBase $base , mixed $fd , int $what , callable $
 4. 将Event挂起，也就是执行了Event对象的add方法，不执行add方法那么这个event对象就无法挂起，也就不会执行
 5. 将EventBase执行进入循环中，也就是loop方法
 
-捋清楚了定时器代码，我们尝试来解决一个信号的问题。比如我们的进程是常驻内存的daemon，再接收到某个信号后就会作出相应的动作，
+捋清楚了定时器代码，我们尝试来解决一个信号的问题。比如我们的进程是常驻内存的daemon，在接收到某个信号后就会作出相应的动作，
 比如收到term信号后进程就会退出、收到usr1信号就会执行reload等等。
 
 ```php
