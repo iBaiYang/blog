@@ -215,7 +215,7 @@ socket_close( $listen_socket );
 
 #### 11 select系统调用
 
-socket初探 --- 先从一个简单的socket服务器开始 ＞中依次讲解了三个逐渐进步的服务器：
+socket初探 --- 先从一个简单的socket服务器开始，依次讲解了三个逐渐进步的服务器：
 - 只能服务于一个客户端的服务器
 - 利用fork可以服务于多个客户端的服务器
 - 利用预fork派生进程服务于多个客户端的服务器
@@ -226,7 +226,7 @@ socket初探 --- 先从一个简单的socket服务器开始 ＞中依次讲解�
 还有可能会出现惊群现象（简单理解就是100个进程在等带客户端连接，来了一个客户端但是所有进程都被唤醒了，但最终只有一个进程为这个客户端服务，
 其余99个白白折腾），那么，有没有一种解决方案可以使得少量进程服务于多个客户端呢？
 
-答案就是在 PHP socket初探 --- 关于IO的一些枯燥理论 ＞中提到的＂IO多路复用＂．多路是指多个客户端连接socket，复用就是指复用少数几个进程，
+答案就是在 PHP socket初探 --- 关于IO的一些枯燥理论中提到的＂IO多路复用＂．多路是指多个客户端连接socket，复用就是指复用少数几个进程，
 多路复用本身依然隶属于同步通信方式，只是表现出的结果看起来像异步，这点值得注意．目前多路复用有三种常用的方案，依次是：
 
 - select，最早的解决方案
@@ -291,23 +291,23 @@ while( true )
   if ( socket_select( $read, $write, $exp, null ) > 0 ) {
     // 判断listen_socket有没有发生变化，如果有就是有客户端发生连接操作了。刚开始把$listen_socket放入了$client，$client有放入了$read
     if (in_array( $listen_socket, $read )) {
-	  // 将客户端socket加入到客户端连接client数组中
-	  // socket_accept创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
-	  $client_socket = socket_accept( $listen_socket );
-	  //下面这句很有用,避免了  unset( $read[ $key ] )后,在while时,客户端进来再次用  $client赋值给$read
-	  $client[] = $client_socket;
-	  // 然后将listen_socket从read中去除掉
-	  $key = array_search( $listen_socket, $read );
-	  unset( $read[ $key ] );
-	}
-	// 查看去除listen_socket中是否还有client_socket
-	// 已经进行telnet连接后,会直接走这一步,不会进去上面代码的in_array。第一个客户端连接第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接
-	// 或者其他后续的客户端连接发生了连接，会执行到这里
-	if ( count( $read ) > 0 ) {
-	  $msg = 'hello world';
-	  // 循环监听的所有客户端连接
-	  foreach( $read as $socket_item )
-	  {
+      // 将客户端socket加入到客户端连接client数组中
+      // socket_accept创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
+      $client_socket = socket_accept( $listen_socket );
+      //下面这句很有用,避免了  unset( $read[ $key ] )后,在while时,客户端进来再次用  $client赋值给$read
+      $client[] = $client_socket;
+      // 然后将listen_socket从read中去除掉
+      $key = array_search( $listen_socket, $read );
+      unset( $read[ $key ] );
+    }
+    // 查看去除listen_socket中是否还有client_socket
+    // 已经进行telnet连接后,会直接走这一步,不会进去上面代码的in_array。第一个客户端连接第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接
+    // 或者其他后续的客户端连接发生了连接，会执行到这里
+    if ( count( $read ) > 0 ) {
+      $msg = 'hello world';
+      // 循环监听的所有客户端连接
+      foreach( $read as $socket_item )
+      {
           // 从可读取的客户端连接fd中读取出来数据内容，然后发送给其他客户端
           $content = socket_read( $socket_item, 2048 );
           // 循环client数组，将内容发送给其余所有客户端
@@ -318,8 +318,8 @@ while( true )
               socket_write( $client_socket, $content, strlen( $content ) );
             }
           }
-	  }
-	}
+      }
+    }
   } 
   // 当select没有监听到可操作fd的时候，直接continue进入下一次循环
   else {
@@ -610,19 +610,19 @@ $event = new Event( $eventBase, SIGTERM, Event::SIGNAL | Event::PERSIST, functio
 
 ```shell
 root@jingmian:/# kill -l
- 1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
- 6) SIGABRT	 7) SIGBUS	 8) SIGFPE	 9) SIGKILL	10) SIGUSR1
-11) SIGSEGV	12) SIGUSR2	13) SIGPIPE	14) SIGALRM	15) SIGTERM
-16) SIGSTKFLT	17) SIGCHLD	18) SIGCONT	19) SIGSTOP	20) SIGTSTP
-21) SIGTTIN	22) SIGTTOU	23) SIGURG	24) SIGXCPU	25) SIGXFSZ
-26) SIGVTALRM	27) SIGPROF	28) SIGWINCH	29) SIGIO	30) SIGPWR
-31) SIGSYS	34) SIGRTMIN	35) SIGRTMIN+1	36) SIGRTMIN+2	37) SIGRTMIN+3
-38) SIGRTMIN+4	39) SIGRTMIN+5	40) SIGRTMIN+6	41) SIGRTMIN+7	42) SIGRTMIN+8
-43) SIGRTMIN+9	44) SIGRTMIN+10	45) SIGRTMIN+11	46) SIGRTMIN+12	47) SIGRTMIN+13
-48) SIGRTMIN+14	49) SIGRTMIN+15	50) SIGRTMAX-14	51) SIGRTMAX-13	52) SIGRTMAX-12
-53) SIGRTMAX-11	54) SIGRTMAX-10	55) SIGRTMAX-9	56) SIGRTMAX-8	57) SIGRTMAX-7
-58) SIGRTMAX-6	59) SIGRTMAX-5	60) SIGRTMAX-4	61) SIGRTMAX-3	62) SIGRTMAX-2
-63) SIGRTMAX-1	64) SIGRTMAX	
+ 1) SIGHUP     2) SIGINT     3) SIGQUIT     4) SIGILL     5) SIGTRAP
+ 6) SIGABRT     7) SIGBUS     8) SIGFPE     9) SIGKILL    10) SIGUSR1
+11) SIGSEGV    12) SIGUSR2    13) SIGPIPE    14) SIGALRM    15) SIGTERM
+16) SIGSTKFLT    17) SIGCHLD    18) SIGCONT    19) SIGSTOP    20) SIGTSTP
+21) SIGTTIN    22) SIGTTOU    23) SIGURG    24) SIGXCPU    25) SIGXFSZ
+26) SIGVTALRM    27) SIGPROF    28) SIGWINCH    29) SIGIO    30) SIGPWR
+31) SIGSYS    34) SIGRTMIN    35) SIGRTMIN+1    36) SIGRTMIN+2    37) SIGRTMIN+3
+38) SIGRTMIN+4    39) SIGRTMIN+5    40) SIGRTMIN+6    41) SIGRTMIN+7    42) SIGRTMIN+8
+43) SIGRTMIN+9    44) SIGRTMIN+10    45) SIGRTMIN+11    46) SIGRTMIN+12    47) SIGRTMIN+13
+48) SIGRTMIN+14    49) SIGRTMIN+15    50) SIGRTMAX-14    51) SIGRTMAX-13    52) SIGRTMAX-12
+53) SIGRTMAX-11    54) SIGRTMAX-10    55) SIGRTMAX-9    56) SIGRTMAX-8    57) SIGRTMAX-7
+58) SIGRTMAX-6    59) SIGRTMAX-5    60) SIGRTMAX-4    61) SIGRTMAX-3    62) SIGRTMAX-2
+63) SIGRTMAX-1    64) SIGRTMAX    
 ```
 
 有些心眼多鸡贼的，IO多路复用的方法一共有三个select、poll和epoll（Mac下叫做kqueue），那么我们当前的event扩展用的是哪个方法呢？那么，再表演一波儿：
@@ -831,8 +831,8 @@ while( true )
      if( $connect ){
        echo "有新的客户端".PHP_EOL;
      } else {
-	   echo "客户端连接失败".PHP_EOL;
-	 }
+       echo "客户端连接失败".PHP_EOL;
+     }
 }
  ```
  
@@ -896,7 +896,7 @@ swoole的用法实际上对于大多数新手来说一直并不怎么友好，�
     编码简单，同步模式编写/调试程序更轻松
     可控性好，同步模式的程序具有良好的过载保护机制，如在下面的情况异步程序就会出问题
     Accept保护，同步模式下一个TCP服务器最大能接受 进程数+Backlog 个TCP连接。一旦超过此数量，Server将无法再接受连接，客户端会连接失败。避免服务器Accept太多连接，导致请求堆积
-	
+    
 最后的引用：
 
 >swoole_http_server继承自swoole_server，是一个完整的http服务器实现。swoole_http_server支持同步和异步2种模式。
