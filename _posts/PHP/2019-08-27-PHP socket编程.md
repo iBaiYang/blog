@@ -586,7 +586,7 @@ if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
 echo "Socket created \n";
  
 // 绑定连接
-if( !socket_bind($sock, $address , 5000) )
+if( !socket_bind($sock, $address , $port) )
 {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
