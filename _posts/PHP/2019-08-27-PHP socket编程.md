@@ -399,7 +399,7 @@ $socket = socket_create(AF_INET, SOCK_STREAM, 0);
 该函数返回socket描述符，三个参数分别是：
 * 地址协议：AF_INET (这里是ipv4)
 * 连接接类型：SOCK_STREAM（面向连接的TCP协议）
-* 协议：0|IPPROTO_IP  (IP协议)
+* 协议：`0|IPPROTO_IP`  (IP协议)
 
 【错误处理】
 如果任何socket函数失败，可以使用 socket_last_errr 和  socket_strerror 函数检索错误信息
