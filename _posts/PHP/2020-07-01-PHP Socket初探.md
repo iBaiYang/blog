@@ -22,9 +22,9 @@ socket的中文名字叫做套接字，这种东西就是对TCP/IP的“封装�
 socket赋予了我们操控传输层和网络层的能力，从而得到更强的性能和更高的效率，socket编程是解决高并发网络服务器的最常用解决和成熟的解决方案。
 任何一名服务器程序员都应当掌握socket编程相关技能。
 
-在php中，可以操控socket的函数一共有两套，一套是socket_*系列的函数，另一套是stream_*系列的函数。
-socket_*是php直接将C语言中的socket抄了过来得到的实现，而stream_*系则是php使用流的概念将其进行了一层封装。
-下面用socket_*系函数简单为这一系列文章开个篇。
+在php中，可以操控socket的函数一共有两套，一套是`socket_*`系列的函数，另一套是`stream_*`系列的函数。
+`socket_*`是php直接将C语言中的socket抄了过来得到的实现，而`stream_*`系则是php使用流的概念将其进行了一层封装。
+下面用`socket_*`系函数简单为这一系列文章开个篇。
 
 先来做个最简单socket服务器：
 ```php
@@ -94,7 +94,7 @@ while( true )
     // 当accept了新的客户端连接后，就fork出一个子进程专门处理
     $pid = pcntl_fork();
     // 在子进程中处理当前连接的请求业务
-    if( 0 == $pid ){
+    if ( 0 == $pid ) {
         // 向客户端发送一个helloworld
         $msg = "helloworld\r\n";
         socket_write( $connection_socket, $msg, strlen( $msg ) );
@@ -151,7 +151,7 @@ for( $i = 1; $i <= 10; $i++ ){
 // 主进程不可以退出，代码演示比较粗暴，为了不保证退出直接走while循环，休眠一秒钟
 // 实际上，主进程真正该做的应该是收集子进程pid，监控各个子进程的状态等等
 while( true ){
-  sleep( 1 );
+    sleep( 1 );
 }
 socket_close( $listen_socket );
 ```
