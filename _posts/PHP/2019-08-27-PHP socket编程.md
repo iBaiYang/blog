@@ -702,9 +702,12 @@ while (true)
 * 》4. 接受数据
 * 》5. 读取数据/发送数据
 
+关于 socket_select 部分内容可以看[这里](https://ibaiyang.github.io/blog/php/2020/07/01/PHP-Socket%E5%88%9D%E6%8E%A2.html)
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
+
+PHP Socket初探 <https://ibaiyang.github.io/blog/php/2020/07/01/PHP-Socket%E5%88%9D%E6%8E%A2.html>
 
 深入浅出讲解：php的socket通信  <https://www.cnblogs.com/aipiaoborensheng/p/6708963.html>
 
