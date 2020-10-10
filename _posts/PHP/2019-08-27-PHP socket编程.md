@@ -567,7 +567,8 @@ while(true){
 
 另一种方法是使用 select 函数。select 函数基本上`轮询`或观察一组套接字用于某些事件，比如它是否可读，可写或有问题等等。
 因此 select 函数可用于监视多个客户端并检查哪个客户端发送了一条消息。
-```
+```php
+<?php
 error_reporting(~E_NOTICE);
 set_time_limit (0);
  
