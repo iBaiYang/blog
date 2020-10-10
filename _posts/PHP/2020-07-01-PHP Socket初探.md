@@ -1075,7 +1075,7 @@ $server->start();
 
 先来感受一个问题，给你100Kb的内存（是的，你没有看错，就是100Kb），然后让你迭代输出一个从1开始一直到10000的数组，步进为1。
 
-愈先迭代数组，必先创造数组。
+预先迭代数组，必先创造数组。
 
 所以，脑门一拍，代码一坨如下：
 
@@ -1431,3 +1431,6 @@ while( true ) {
 ### 参考资料
 
 <https://github.com/elarity/advanced-php>
+
+PHP 手册 函数参考 其它服务 Sockets <https://www.php.net/manual/zh/ref.sockets.php>
+
