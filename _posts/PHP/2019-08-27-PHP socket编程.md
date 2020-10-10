@@ -361,6 +361,37 @@ socket_close($socket);
 
 ##### 客户端socket
 
+```php
+<?php
+    if(!($socket = socket_create(AF_INET,SOCK_STREAM,0))){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("Couldn't create socket");
+    }
+    
+    if(!socket_connect($socket,'104.193.88.77',80)){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("connect failed !");
+    }
+    
+    $message = "GET / HTTP/1.1\r\n\r\n";
+    if(!socket_send($socket,$message,strlen($message),0)){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("send failed !");
+    }
+    
+    if(socket_recv($socket,$buf,2045,MSG_WAITALL) === false){
+        $errorcode = socket_last_error();
+        $errormsg = socket_strerror($errorcode);
+        die("receive failed !");
+    }
+    echo $buf;
+    
+    socket_close($socket);
+```
+
 1.创建socket
 
 $socket = socket_create(AF_INET, SOCK_STREAM, 0);
@@ -433,12 +464,11 @@ $ip_address = gethostbyname('www.baidu.com');
 socket_close($socket);
 
 总结一下：客户端发起socket请求流程
-》创建socket
-》连接到远程服务器
-》发送数据
-》接收数据
-
-》关闭socket
+* 》创建socket
+* 》连接到远程服务器
+* 》发送数据
+* 》接收数据
+* 》关闭socket
 
 其实就是类似于打开浏览器访问www.baidu.com一样的整个流程
 
@@ -664,12 +694,11 @@ while (true)
 运行上述服务器并像以前一样打开3个终端。现在，服务器将为连接到它的每个客户端创建一个线程。
 
 总结一下:  服务端创建一个socket服务需要如下几步
-
-》1. 打开socket
-》2. 绑定到地址(和端口)
-》3. 监听传入的连接
-》4. 接受数据
-》5. 读取数据/发送数据
+* 》1. 打开socket
+* 》2. 绑定到地址(和端口)
+* 》3. 监听传入的连接
+* 》4. 接受数据
+* 》5. 读取数据/发送数据
 
 
 <br/><br/><br/><br/><br/>
