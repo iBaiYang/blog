@@ -709,7 +709,7 @@ $event->add();
 $event_base->loop();
 ```
 
-将代码保存为test.php，然后php http.php运行起来。再开一个终端，使用curl的GET方式去请求服务器，效果如下：
+将代码保存为 test.php，然后`php test.php`运行起来。再开一个终端，使用curl的GET方式去请求服务器，效果如下：
 
 ![](http://static.ti-node.com/6402443744179650560)
 
