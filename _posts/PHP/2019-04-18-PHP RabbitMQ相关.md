@@ -148,7 +148,7 @@ new \AMQPConnection($setting)，创建一个AMQPConnection实例。该实例表�
  *                       and end-byte. 0 means standard extension limit (depends on librabbimq default frame size limit)
  *      'heartbeat'   => The delay, in seconds, of the connection heartbeat that the server wants.
  *                       0 means the server does not want a heartbeat. Note, librabbitmq has limited heartbeat support,
- *                       which means heartbeats checked only during blocking calls.
+ *                       which means heartbeats checked only during blocking calls.这个参数可以设置延长心跳检查时间
  *
  *      TLS support (see https://www.rabbitmq.com/ssl.html for details):
  *      'cacert' => Path to the CA cert file in PEM format..
@@ -1358,4 +1358,6 @@ RabbitMQ 消息顺序、消息幂等、消息重复、消息事务、集群 <htt
 RabbitMQ的几种应用场景 <https://blog.csdn.net/zyz511919766/article/details/41946521>
 
 Supervisor-守护进程工具 <https://www.jianshu.com/p/39b476e808d8>
+
+RabbitMQ（七）心跳控制 -- heartbeat <https://blog.csdn.net/jiao_fuyou/article/details/23186407/>
 
