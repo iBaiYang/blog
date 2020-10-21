@@ -92,10 +92,9 @@ usage:
 Certbot can obtain and install HTTPS/TLS/SSL certificates.  By default,
 it will attempt to use a webserver both for obtaining and installing the
 certificate. 
-certbot: error: unrecognized arguments: --agree-tosde
 ```
 
-命令执行过程中，中间会出现选项，让选择，用`--agree-tosde` 参数可以跳过这些选项，一步到位。可以不输入，一步一步选择。
+命令执行过程中，中间会出现选项，让选择，用`--agree-tos` 参数可以跳过这些选项，一步到位。可以不输入，一步一步选择。
 
 **证书位置**
 证书的保存位置在：
