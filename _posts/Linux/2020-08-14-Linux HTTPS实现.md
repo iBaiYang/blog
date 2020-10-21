@@ -46,7 +46,9 @@ server {
 
 使用方法：`certbot certonly --webroot -w [Web站点目录] -d [站点域名] -m [联系人email地址] --agree-tosde`
 
-邮箱最好是真的 因为证书过期人家好通知你
+`-w [Web站点目录]` 要是站点可以被网络访问到的地址，因为会在这个目录下生成`/.well-known/acme-challenge/****`文件，用来验证域名归属。
+
+邮箱最好是真的 因为证书过期人家好通知你。
 
 如：
 ```
