@@ -268,7 +268,7 @@ ssl_session_timeout  过期时间，10m表示10分钟
 
 #### 设置定时任务自动更新证书
 
-因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。
+因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。更新时certbot会检查更新30内即将到期的所有证书，可以根据需要频繁运行。
 
 可以使用crontab定时更新。
 
@@ -310,15 +310,15 @@ crontab -i //打印提示，输入yes等确认信息
 
 添加定时任务，直接用`crontab -e`，不需要指定用户，如果是root权限，默认是root定时的。
 
-例如，每月1号5时执行执行一次更新，并重启nginx服务器
+例如，每天5时执行执行一次更新，并重启nginx服务器
 
 ```
-00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
+00 05 * * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
 ```
 
 如果nginx运行在docker容器中：
 ```
-00 05 01 * * /usr/bin/certbot renew --quiet && docker restart server-nginx
+00 05 * * * /usr/bin/certbot renew --quiet && docker restart server-nginx
 ```
 
 重新载入配置并重启crontab服务。
@@ -334,6 +334,10 @@ crontab -l -u root
 ### 参考资料
 
 Certbot官网 <https://certbot.eff.org/>
+
+Certbot官方文档 <https://certbot.eff.org/docs/intro.html>
+
+letsencrypt官网 <https://letsencrypt.org>
 
 HTTPS 簡介及使用官方工具 Certbot 配置 Let’s Encrypt SSL 安全證書詳細教程 <https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/zh-tw/>
 
