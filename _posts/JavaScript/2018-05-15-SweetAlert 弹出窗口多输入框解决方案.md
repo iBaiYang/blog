@@ -108,7 +108,13 @@ function class_del_error_show( msg ) {
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-<http://mishengqiang.com/sweetalert/>
+SweetAlert 中文文档 <http://mishengqiang.com/sweetalert/>
+
+SweetAlert 官网 <https://sweetalert.js.org/>
+
+SweetAlert 中文网 <https://www.sweetalert.cn/>
+
+SweetAlert 中文文档 <https://sweetalert.bootcss.com/>
 
 <https://www.cnblogs.com/lamp01/p/7215408.html>
 
