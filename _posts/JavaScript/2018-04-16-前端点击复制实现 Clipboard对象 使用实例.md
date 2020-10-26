@@ -10,9 +10,10 @@ meta: 有时会碰到这样的场景：用户看到页面上一段话很精彩�
 
 ### 正文
 
-有时会碰到这样的场景：用户看到页面上一段话很精彩，想复制下来：第一个方案是用户自己选择区域，然后右键复制；第二个方案，就是站点维护人员为方便用户，制作复制按钮，用户点击页面上复制按钮后，内容复制。
+有时会碰到这样的场景：用户看到页面上一段话很精彩，想复制下来：第一个方案是用户自己选择区域，然后右键复制；
+第二个方案，就是站点维护人员为方便用户，制作复制按钮，用户点击页面上复制按钮后，内容复制。
 
-下面就针对第二种解决方案给一个前端的js实例：
+下面就针对第二种解决方案给一个前端的js实例，需要提前把`clipboard.min.js`文件引入进来：
 ```
 <div id="copy_str" data-clipboard-text="被复制的内容"></div>
 
@@ -31,7 +32,7 @@ clipboard.on('error', function (e) {
 </script>
 ```
 
-这里用到了 ZENG.msgbox 提示插件。
+这里用到了 `ZENG.msgbox` 提示插件。
 
 
 再举一个js实例：
@@ -87,6 +88,8 @@ $(function(){
 <font style="font-size: 16px;"><br><br><br><br><br><br><br><br><br><br><br><br><br></font>
 
 ### 参考资料：
+
+clipboard.js <http://www.clipboardjs.cn/>
 
 <a href="https://blog.csdn.net/qq_37465264/article/details/79892397" target="_blank">https://blog.csdn.net/qq_37465264/article/details/79892397</a>
 
