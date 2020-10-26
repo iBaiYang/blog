@@ -91,6 +91,8 @@ $(function(){
 
 clipboard.js <http://www.clipboardjs.cn/>
 
+clipboard.js 踩坑 <https://blog.csdn.net/weixin_34273046/article/details/91460980>
+
 <a href="https://blog.csdn.net/qq_37465264/article/details/79892397" target="_blank">https://blog.csdn.net/qq_37465264/article/details/79892397</a>
 
 <a href="https://blog.csdn.net/qq_27682041/article/details/78530582" target="_blank">https://blog.csdn.net/qq_27682041/article/details/78530582</a>
