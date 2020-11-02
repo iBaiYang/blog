@@ -452,7 +452,7 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 ![](http://static.ti-node.com/6396312854005284864)
 
 
-- 配置php的cli环境配置文件，注意不是apache2，也不是fpm的，而是cli的php.ini，添加一句:extension = '/usr/lib/php/20151012/event.so'，
+- 配置php的cli环境配置文件，注意不是apache2，也不是fpm的，而是cli的php.ini，添加一句:`extension = '/usr/lib/php/20151012/event.so'`，
 然后在终端中执行php -m看下，是不是有event呢？
 
 好了，今天到这里正式收官，下一篇继续嗑php和他的event扩展二三事！
