@@ -579,7 +579,7 @@ $eventConfig = new EventConfig();
 $eventBase = new EventBase( $eventConfig );
 // 初始化event
 $event = new Event( $eventBase, SIGTERM, Event::SIGNAL, function(){
-  echo "signal term.".PHP_EOL;
+  echo "signal come.".PHP_EOL;
 } );
 // 挂起event对象
 $event->add();
@@ -599,7 +599,7 @@ $eventBase->loop();
 ```php
 <?php
 $event = new Event( $eventBase, SIGTERM, Event::SIGNAL | Event::PERSIST, function(){
-  echo "signal term.".PHP_EOL;
+  echo "signal come.".PHP_EOL;
 } );
 ```
 
@@ -993,6 +993,7 @@ try {
 废话不多说，还是通过代码来感受一下，这坨代码大概意思就是开了一个http服务器，开了一个worker进程，worker进程中业务逻辑代码就是往数据库里添加一条记录，你们感受一下：
 
 首先，注释掉同步阻塞传统代码，使用协程的写法；其次，注释掉协程写法，开启同步阻塞写法。然后分别使用ab进行简单测试
+（apache bench简称ab,它是apache自带的压力测试工具。ab非常实用，它不仅可以对apache服务器进行网站访问压力测试，也可以对或其它类型的服务器进行压力测试）。
 
 - ab -n 5000 -c 100 -k http://127.0.0.1:9501/
 - 只开了一个worker进程
@@ -1428,3 +1429,4 @@ while( true ) {
 
 PHP 手册 函数参考 其它服务 Sockets <https://www.php.net/manual/zh/ref.sockets.php>
 
+ab压力测试及结果分析 <https://blog.csdn.net/qq_34252622/article/details/92431267>
