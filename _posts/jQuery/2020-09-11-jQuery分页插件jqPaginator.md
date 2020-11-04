@@ -25,7 +25,7 @@ $('#pagination-box').jqPaginator({
     prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
     next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
     last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
-    page: '<li class="page"><a href="javascript:void(0);">{{page1}}</a></li>',
+    page: '<li class="page"><a href="javascript:void(0);">双大括号 page 双大括号</a></li>',
     onPageChange: function (num) {
         $('#text').html('当前第' + num + '页');
     }
@@ -47,7 +47,7 @@ $('#pagination-box').jqPaginator({
 | prev  | 	(无)  | 	设置"上一页"的Html结构 | 
 | next |  	(无)  | 	设置"下一页"的Html结构 | 
 | last  | 	(无)  | 	设置"末页"的Html结构 | 
-| page |  	(无)  | 	设置页码的Html结构,其中可以使用`{{page1}}`代表当前页，`{{totalPages}}`代表总页数，`{{totalCounts}}`代表总条目数（例如：上面的"极简风格"的Demo，就是使用了`{{占位符}}`，并将visiblePages设为1实现的。）`| 
+| page |  	(无)  | 	设置页码的Html结构,其中可以使用 双大括号加 `page`代表当前页，`totalPages`代表总页数，`totalCounts`代表总条目数（例如：上面的"极简风格"的Demo，就是使用了 双大括号`占位符`双大括号，并将visiblePages设为1实现的。）`| 
 | wrapper  | 	(无)  | 	分页结构的Html包裹，例如：`<div class="your class"></div>`，一般不会用到 | 
 | onPageChange  | 	(无)  | 	回调函数，当换页时触发（包括初始化第一页的时候），会传入"目标页"的页码 | 
 
