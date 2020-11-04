@@ -25,7 +25,7 @@ $('#pagination-box').jqPaginator({
     prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
     next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
     last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
-    page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+    page: '<li class="page"><a href="javascript:void(0);">{{ page }}</a></li>',
     onPageChange: function (num) {
         $('#text').html('当前第' + num + '页');
     }
