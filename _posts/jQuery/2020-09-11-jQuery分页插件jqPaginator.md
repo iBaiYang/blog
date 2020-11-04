@@ -269,7 +269,7 @@ var vueOrderList = new Vue({
             prev: '<li class="prev"><a href="javascript:void(0);" class="jqpage-new"><i class="arrow arrow2"><\/i>上一页<\/a><\/li>',
             next: '<li class="next"><a href="javascript:void(0);" class="jqpage-new">下一页<i class="arrow arrow3"><\/i><\/a><\/li>',
             last: '<li class="last"><a href="javascript:void(0);" class="jqpage-new">末页<\/a><\/li>',
-            page: '<li class="page"><a href="javascript:void(0);" class="jqpage-new">{{page}}<\/a><\/li>',
+            page: '<li class="page"><a href="javascript:void(0);" class="jqpage-new">双大括号page双大括号<\/a><\/li>',
             onPageChange: function (num, type)
             {
                 that.currentPage = num;
