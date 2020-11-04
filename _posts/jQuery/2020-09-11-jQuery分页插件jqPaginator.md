@@ -12,7 +12,7 @@ meta: 我们有时在前段需要用到翻页功能，有没有比较到的插�
 首先在项目下安装jQuery分页插件jqPaginator的源码。
 
 然后在项目中使用：
-```
+```html
 <div id="text"></div>
 <div id="pagination-box"></div>
 
@@ -40,14 +40,14 @@ $('#pagination-box').jqPaginator({
 | totalCounts | 	0  | 	设置分页的总条目数 | 
 | pageSize |  	0  | 	设置每一页的条目数。 注意：要么设置totalPages，要么设置totalCounts + pageSize，否则报错；设置了totalCounts和pageSize后，会自动计算出totalPages。 | 
 | currentPage  | 	1  | 	设置当前的页码 | 
-| visiblePages |  	7 |  	设置最多显示的页码数（例如有100也，当前第1页，则显示1 - 7页） | 
+| visiblePages |  	7 |  	设置最多显示的页码数（例如有100页，当前第1页，则显示1 - 7页） | 
 | disableClass |  	'disabled'  | 	设置首页，上一页，下一页，末页的"禁用状态"样式 | 
 | activeClass  | 	'active'  | 	设置当前页码样式 | 
 | first  | 	(无)  | 	设置"首页"的Html结构 | 
 | prev  | 	(无)  | 	设置"上一页"的Html结构 | 
 | next |  	(无)  | 	设置"下一页"的Html结构 | 
 | last  | 	(无)  | 	设置"末页"的Html结构 | 
-| page |  	(无)  | 	`设置页码的Html结构,其中可以使用{{page}}代表当前页，{{totalPages}}代表总页数，{{totalCounts}}代表总条目数（例如：上面的"极简风格"的Demo，就是使用了{{占位符}}，并将visiblePages设为1实现的。）` | 
+| page |  	(无)  | 	设置页码的Html结构,其中可以使用`{{page}}`代表当前页，`{{totalPages}}`代表总页数，`{{totalCounts}}`代表总条目数（例如：上面的"极简风格"的Demo，就是使用了`{{占位符}}`，并将visiblePages设为1实现的。）`| 
 | wrapper  | 	(无)  | 	分页结构的Html包裹，例如：`<div class="your class"></div>`，一般不会用到 | 
 | onPageChange  | 	(无)  | 	回调函数，当换页时触发（包括初始化第一页的时候），会传入"目标页"的页码 | 
 
