@@ -11,7 +11,12 @@ meta: Linux apt,rpm,yum等软件安装方式介绍
 
 Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum等。
 
-虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制（RPM）包两种软件安装包，这些方式只是执行并优化了这两种软件安装包的过程。
+虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制包两种软件安装包，这些方式只是执行并优化了这两种软件安装包的过程。
+
+这些安装方式与Linux的发展历史有关，。
+详细的Linux家族树：
+
+![]({{site.baseurl}}/images/20201115/20201115191117650.png)
 
 #### 源代码安装
 
@@ -320,6 +325,8 @@ apt-get --purge remove packagename  # 移除软件包（删除配置信息）
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
+
+Linux各种发行版本概述（Redhat系 | Debian系） <https://blog.csdn.net/wangjianno2/article/details/51607847>
 
 Linux中常见软件安装方法及常见管理方法 <https://blog.csdn.net/weixin_42373127/article/details/88605601> (重点讲了源代码安装和rpm安装)
 
