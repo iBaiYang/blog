@@ -343,7 +343,7 @@ apt-get --purge remove packagename  # 移除软件包（删除配置信息）
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-Linux各种发行版本概述（Redhat系 | Debian系） <https://blog.csdn.net/wangjianno2/article/details/51607847>
+Linux各种发行版本概述（Redhat系、Debian系） <https://blog.csdn.net/wangjianno2/article/details/51607847>
 
 Linux中常见软件安装方法及常见管理方法 <https://blog.csdn.net/weixin_42373127/article/details/88605601> (重点讲了源代码安装和rpm安装)
 
