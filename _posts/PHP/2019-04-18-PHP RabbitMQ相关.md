@@ -1278,7 +1278,7 @@ $this->bindSetting = [
 
 #### 其他说明
 
-命令行运行消费者，需要常驻进程，就需要守护进程程序，涉及到 pcntl_fork()、posix_setsid() 函数。
+命令行运行消费者，需要常驻进程，就需要守护进程程序，PHP开发守护进程涉及到 pcntl_fork()、posix_setsid() 等函数。
 队列消费者连接RabbitMQ使用的是TCP长连接，可能会连接断开，导致消费者无法消费。可以使用python开发的守护进程的小工具supervisor实现，
 消费者进程异常后，还会重新拉起。
 
