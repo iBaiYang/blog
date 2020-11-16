@@ -13,10 +13,27 @@ Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum
 
 虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制包两种软件安装包，这些方式只是执行并优化了这两种软件安装包的过程。
 
-这些安装方式与Linux的发展历史有关，。
+这些安装方式与Linux的发展历史有关。Linux，最早由Linus Benedict Torvalds在1991年开始编写。
+在这之前，Richard Stallman创建了Free Software Foundation（FSF）组织以及GNU项目，
+并不断的编写创建GNU程序（此类程序的许可方式均为GPL: General Public License）。
+在不断的有杰出的程序员和开发者加入到GNU组织中后，便造就了今天我们所看到的Linux，或称GNU/Linux。
+
+Linux的发行版本可以大体分为两类，一类是商业公司维护的发行版本，一类是社区组织维护的发行版本。
+前者以著名的Redhat（RHEL）为代表，后者以Debian为代表。
+
+Redhat基础上出现了 Fedora、 CentOS 等，这些发行版采用了.rpm格式的软件包，后来的SUSE也选用了.rpm格式的软件包。
+安装rpm包的命令是“rpm -参数”，解决包依赖关系使用yum命令。
+
+Debian基础上出现了 Ubuntu、 Deepin 等，这些发行版采用了.deb格式的软件包。
+安装deb包的命令是“dpkg -参数”，解决包依赖关系使用apt命令。
+
 详细的Linux家族树：
 
 ![]({{site.baseurl}}/images/20201115/20201115191117650.png)
+
+GNU/Linux OS关系图：
+
+![]({{site.baseurl}}/images/20201115/20201115112430625.png)
 
 #### 源代码安装
 
