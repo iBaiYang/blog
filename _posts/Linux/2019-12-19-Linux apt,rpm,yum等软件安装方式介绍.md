@@ -106,9 +106,56 @@ wget http://cn2.php.net/distributions/php-5.6.13.tar.gz -P Download/
 wget --ftp-user=FTP_usser_name  --ftp-password=User_password  FTP_ADDRESS
 ```
 
-##### tar
+##### gzip
 
-源代码压缩包有好多种格式，我们解压可以用：
+gzip命令是.gz文件的压缩程序。
+
+gzip是个使用广泛的压缩程序，文件经它压缩过后，其名称后面会多出`.gz`的扩展名。
+
+如： `gzip book.tar` 后， book.tar 文件就变成了 book.tar.gz 。
+
+解压缩可以用 gunzip 或 `gzip -d`， 如：
+`gunzip book.tar.gz` 
+或 
+`gzip -d book.tar.gz` 
+后， book.tar.gz 文件就变成了 book.tar 。
+
+##### bzip2
+
+bzip2命令是.bz2文件的压缩程序。
+
+bzip2采用新的压缩演算法，压缩效果比传统的LZ77/LZ78压缩演算法来得好。若没有加上任何参数，bzip2压缩完文件后会产生`.bz2`的压缩文件，并删除原始的文件。
+
+如： `bzip2 book.tar` 后， book.tar 文件就变成了 book.tar.bz2 。
+
+解压缩可以用 bunzip2 或 `bzip2 -d`， 如：
+`bunzip2 book.tar.bz2` 
+或 
+`bzip2 -d book.tar.bz2` 
+后， book.tar.bz2 文件就变成了 book.tar 。
+
+##### tar 文件打包
+
+Linux tar（英文全拼：tape archive ）命令用于备份文件。
+
+tar 是用来建立，还原备份文件的工具程序，它可以加入，解开备份文件内的文件。
+
+如将本地目录下books目录连同其下文件一同打包成books.tar：
+```
+tar -cvf books.tar ./books
+```
+
+打包及压缩：
+```
+tar –cvf jpg.tar *.jpg  将目录里所有jpg文件打包成 jpg.tar
+tar –czf jpg.tar.gz *.jpg   将目录里所有jpg文件打包成jpg.tar后，并且将其用gzip压缩，生成一个gzip压缩过的包，命名为jpg.tar.gz
+tar –cjf jpg.tar.bz2 *.jpg 将目录里所有jpg文件打包成jpg.tar后，并且将其用bzip2压缩，生成一个bzip2压缩过的包，命名为jpg.tar.bz2
+tar –cZf jpg.tar.Z *.jpg   将目录里所有jpg文件打包成jpg.tar后，并且将其用compress压缩，生成一个umcompress压缩过的包，命名为jpg.tar.Z
+rar a jpg.rar *.jpg rar格式的压缩，需要先下载rar for linux
+zip jpg.zip *.jpg   zip格式的压缩，需要先下载zip for linux 
+```
+
+源代压缩包有好多种格式，我们解压可以用：
 ```
 tar –xvf file.tar        解压 *.tar包
 tar -xzvf file.tar.gz    解压 *.tar.gz
@@ -133,15 +180,12 @@ unzip file.zip           解压 *.zip
 *.zip            用 unzip 解压
 ```
 
-压缩：
-```
-tar –cvf jpg.tar *.jpg  将目录里所有jpg文件打包成 jpg.tar
-tar –czf jpg.tar.gz *.jpg   将目录里所有jpg文件打包成jpg.tar后，并且将其用gzip压缩，生成一个gzip压缩过的包，命名为jpg.tar.gz
-tar –cjf jpg.tar.bz2 *.jpg 将目录里所有jpg文件打包成jpg.tar后，并且将其用bzip2压缩，生成一个bzip2压缩过的包，命名为jpg.tar.bz2
-tar –cZf jpg.tar.Z *.jpg   将目录里所有jpg文件打包成jpg.tar后，并且将其用compress压缩，生成一个umcompress压缩过的包，命名为jpg.tar.Z
-rar a jpg.rar *.jpg rar格式的压缩，需要先下载rar for linux
-zip jpg.zip *.jpg   zip格式的压缩，需要先下载zip for linux 
-```
+##### dd 转移文件
+
+dd命令曾经广泛用于复制文件系统，但因为有了更好的dump和restore命令，dd现在已经很少使用了。但在一些追求简便的场合，dd仍然发挥着作用。
+
+dd命令使用if选项指定输入端的文件系统，而of选项则指定其输出端。下面这条命令将一张CD完整地储存为iso镜像文件：
+`dd if=/dev/cdrom of=CD.iso`
 
 #### rpm
 
