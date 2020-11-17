@@ -317,11 +317,12 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 ```
 
 默认的 php 镜像中不带有 mysqli 模块，我们需要给容器内的 php 安装 mysqli 模块：
-
 > docker exec -it server-phpfpm /bin/bash
 
-进入后输入：
+进入后输入，我们看一下容器内php的拓展：
+> php -m
 
+如果没有 mysqli 模块，输入：
 > docker-php-ext-install mysqli
 
 输出的内容比较多：
