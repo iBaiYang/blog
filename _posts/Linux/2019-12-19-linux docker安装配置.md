@@ -349,7 +349,7 @@ docker.io/library/mysql:5.7
 
 创建容器并运行：
 ```
-docker run --name mysql_server -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=123456 -d mysql:5.7
+docker run --name mysql_server -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7
 ```
 
 ```
