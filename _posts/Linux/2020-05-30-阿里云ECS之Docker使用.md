@@ -11,6 +11,8 @@ meta: 阿里云ECS之Docker使用
 
 在阿里云上购买ECS后，命令行root连接登录实例。
 
+#### docker安装
+
 ECS实例是centos 7.6 64位系统。 centos 8.*版本安装会有问题。
 
 移除老版本：
