@@ -71,4 +71,6 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+php-fpm安装、配置与优化 <https://blog.csdn.net/ivan820819/article/details/54970330>
+
 <https://segmentfault.com/q/1010000000256516>
