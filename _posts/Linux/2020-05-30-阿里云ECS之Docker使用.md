@@ -747,6 +747,47 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   40 minutes ago      Up 40 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
+进入server-nginx容器，我们看一下`/etc/nginx/nginx.conf`文件内容：
+> docker exec -it server-nginx /bin/bash
+> cat /etc/nginx/nginx.conf
+
+输出：
+```
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+```
+
+看到最下面一行`include /etc/nginx/conf.d/*.conf;`，把挂载目录下的文件`/web/nginx/conf/vhost/*.conf`都include进来。
+
 我们还需要配置实例安全组，外网才能访问服务器80端口。
 
 在阿里云配置中心——云服务器 ECS——点击实例，在实例管理处点击左侧菜单的本实例安全组，可以看到右侧三个栏目：
