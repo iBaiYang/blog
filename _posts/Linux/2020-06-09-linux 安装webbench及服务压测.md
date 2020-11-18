@@ -9,31 +9,33 @@ meta: linux 安装webbench及服务压测
 
 ### 正文
 
+性能测试工具目前最常见的有以下几种：ab、http_load、webbench、siege。下面讲一下webbench。
+
 webbench最多可以模拟3万个并发连接去测试网站的负载能力，我们可以安装使用。
+
+webbench依赖于ctags，在shell中只需输入ctags即知有没有安装，如果没有要先安装ctags。
+
+#### ctags安装
+
+安装比较简单：
+> sudo apt-get install ctags  
 
 #### webbench安装
 
-> cd /usr/local/src
-
-切换为root用户：
-
-> sudo su
+进入到用户主目录下：
+> cd ~
 
 下载压缩包：
-
 > wget http://www.ha97.com/code/webbench-1.5.tar.gz
 
 解压缩：
-
 > tar zxvf webbench-1.5.tar.gz
 
 进入解压缩后的包：
-
 > cd webbench-1.5
 
 根据 Makefile文件 编译：
-
-> make
+> sudo make
 
 看一下Makefile文件内容：
 ```
@@ -80,8 +82,7 @@ webbench.o:	webbench.c socket.c Makefile
 ```
 
 安装：
-
-> make install
+> sudo make install
 
 ![]({{site.baseurl}}/images/20200609/20200609111105.png)
 
@@ -90,7 +91,6 @@ webbench.o:	webbench.c socket.c Makefile
 #### 压测
 
 查看一下帮助：
-
 > webbench -help
 
 输出：
@@ -114,7 +114,6 @@ webbench [option]... URL
 ```
 
 一般常用的是：
-
 > webbench -c 500 -t 30 http://127.0.0.1/test.php
 
 ```
