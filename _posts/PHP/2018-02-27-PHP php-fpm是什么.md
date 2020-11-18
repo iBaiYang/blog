@@ -68,9 +68,120 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 
 ![]({{site.baseurl}}/images/20190902/20190902112145.jpeg)
 
+#### web服务器
+
+php是后端语言，对外提供服务要借助于web服务器，或者说用户通过访问web服务器才能收到php提供的服务。
+
+常用的web服务器有：apache、nginx、IIS、lighttpd、tomcat等。
+
+例如用apache当作web服务器，一次完整的php访问： 
+
+![]({{site.baseurl}}/images/20201118/20201118104555.jpg)
+
+#### mod_php模式
+
+上面讲清楚了php必须借助于web服务器才能提供web的功能服务，现在看下他俩是怎么搭伙的。
+
+为了使apache能够识别php代码，我们要在apache的配置文件httpd.conf中加上或者修改这样几句：
+```
+//加入以下2句
+LoadModule php5_module D:/php/php5apache2_2.dll
+AddType application/x-httpd-php .php
+
+//将下面的
+<IfModule dir_module>
+    DirectoryIndex index.html
+</IfModule>
+//将其修改为：
+<IfModule dir_module>
+    DirectoryIndex index.html index.htm index.php index.phtml
+</IfModule>
+```
+
+上面的windows下安装php和apache环境后的手动配置，可以看出，apache是用LoadModule来加载php5_module，就是把php作为apache的一个子模块来运行。
+当通过web访问php文件时，apache就会调用php5_module来解析php代码。
+
+那么php5_module是怎么来将数据传给php解析器来解析php代码的呢？
+
+#### sapi
+
+答案是通过sapi。
+
+看一下apache 与 php 与 sapi的关系：
+
+![]({{site.baseurl}}/images/20201118/20201118104556.jpg)
+
+从上面图中，我们看出了sapi就是这样的一个中间过程，SAPI提供了一个和外部通信的接口，有点类似于socket，
+使得PHP可以和其他应用进行交互数据（apache,nginx,cli等）。php默认提供了很多种SAPI，
+常见的给apache和nginx的php5_module，CGI，给IIS的ISAPI，还有Shell的CLI。
+
+所以，以上的apache调用php执行的过程如下：
+> apache -> httpd -> php5_module -> sapi -> php
+
+我们把这种运行方式叫做`mod_php模式`。
+
+#### mod_fastcgi模式
+
+sapi是php提供的统一接口，有两种模式。
+一种模式是 mod_php模式，通过php5_module加载模式。
+一种模式是 cgi模式，由于cgi比较老所以就出现了fastcgi来取代它，也就是 mod_fastcgi模式。
+
+CGI(Common Gateway Interface)。CGI是应用程序（CGI程序）与Web服务器之间的接口标准。
+
+web服务器收到用户请求，就会把请求提交给cgi程序（php的fastcgi），cgi程序根据请求提交的参数作应处理（解析php），然
+后输出标准的html语句返回给web服服务器，再返回给客户端，这就是普通cgi的工作原理。
+
+cgi的好处就是完全独立于任何服务器，仅仅是做为中间分子。提供接口给apache和php。
+他们通过cgi搭线来完成搞基动作。这样做的好处了尽量减少2个的关联，使他们2变得更独立。
+
+但是cgi有个蛋疼的地方，就是每一次web请求都会有启动和退出过程，也就是最为人诟病的fork-and-execute模式，这样一在大规模并发下，就死翘翘了。
+所以，这个时候fastcgi运用而生了。它事先就早早的启动好了，而且可以启动多个cgi模块，在那里一直运行着等着，
+等着web发过来的请求，然后再给php解析运算完成生成html给web后，也不会退出，而且继续等着下一个web请求。
+而且这些cgi的模块启动是可控的，可监测的。这种技术还允许把web server和php运行在不同的主机上，以大规模扩展和改进安全性而不损失生产效率。
+
+现在一般操作系统都是fastcgi模式。这种运行方式叫做mod_fastcgi模式。
+
+mod_php 模式图：
+
+![]({{site.baseurl}}/images/20201118/20201118104557.jpg)
+
+mod_php 模式是将php模块安装到apache中，所以每一次apache结束的请求呢，都会产生一条进程，这个进程就完整的包括php的各种运算计算等操作。
+从图中我们很清晰的可以看到，apache每接收一个请求，都会产生一个进程来连接php通过sapi来完成请求，可想而知，如果一旦用户过多，并发数过多，服务器就会承受不住了。
+而且，把mod_php编进apache时，出问题时很难定位是php的问题还是apache的问题。
+
+mod_fastcgi模式图：
+
+![]({{site.baseurl}}/images/20201118/20201118104558.jpg)
+
+fastcgi是一个独立与apache和php的独立个体，它随着apache一起启动，生成多个cgi模块，等着apache的请求。
+图中fastcgi早早的启动好了，静静的在哪里等着，已有apache发来的httpd请求就立马接收过来，通过调用sapi给php，完成运算，而且不会退出。
+这样就能应对大规模的并发请求，因为web server的要做的事情少了，所以就更快的去处理下一个请求，这样并发就提高了。
+由于apache 与 php 独立了。出问题，很好定位到底是哪里出问题了。这点也是这种模式受欢迎的原因之一。
+
+#### php-fpm
+
+fastcgi 是一个与平台无关，与语言无关，任何语言只要按照它的接口来实现，就能实现自己语言的fastcgi能力和web server 通讯。
+
+PHP-CGI就是PHP实现的自带的FastCGI管理器。虽然是php官方出品，自带的，但是这丫的却一点也不给力，性能太差，而且也很麻烦不人性化，主要体现在：
+
+1、php-cgi变更php.ini配置后需重启php-cgi才能让新的php-ini生效，不可以平滑重启。
+2、直接杀死php-cgi进程，php就不能运行了。
+
+上面2个问题，一直让很多人诟病了很久，所以很多人一直还是在用mode_php方式。
+
+直到 2004年，一个叫 Andrei Nigmatulin的小伙发明了PHP-FPM，这神器的出现就彻底打破了这种局面，这是一个PHP专用的fastcgi管理器，
+它很爽的克服了上面2个问题，而且，还表现在其他方面更表现强劲。[官网](https://php-fpm.org/about/)
+
+PHP在 5.3.3 之后已经将php-fpm写入php源码核心了，不需要单独下载。
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
 php-fpm安装、配置与优化 <https://blog.csdn.net/ivan820819/article/details/54970330>
+
+php中fastcgi和php-fpm是什么东西 <https://www.zybuluo.com/phper/note/50231>
+
+php-fpm的配置和优化 <https://www.zybuluo.com/phper/note/89081>
 
 <https://segmentfault.com/q/1010000000256516>
