@@ -163,9 +163,8 @@ fastcgi是一个独立与apache和php的独立个体，它随着apache一起启�
 fastcgi 是一个与平台无关，与语言无关，任何语言只要按照它的接口来实现，就能实现自己语言的fastcgi能力和web server 通讯。
 
 PHP-CGI就是PHP实现的自带的FastCGI管理器。虽然是php官方出品，自带的，但是这丫的却一点也不给力，性能太差，而且也很麻烦不人性化，主要体现在：
-
-1、php-cgi变更php.ini配置后需重启php-cgi才能让新的php-ini生效，不可以平滑重启。
-2、直接杀死php-cgi进程，php就不能运行了。
+1. php-cgi变更php.ini配置后需重启php-cgi才能让新的php-ini生效，不可以平滑重启。
+2. 直接杀死php-cgi进程，php就不能运行了。
 
 上面2个问题，一直让很多人诟病了很久，所以很多人一直还是在用mode_php方式。
 
