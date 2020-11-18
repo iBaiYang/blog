@@ -57,7 +57,7 @@ find / -name 'php7*'|xargs rm -rf
 可以看到，一个系统安装很多版本导致的问题，会影响到系统的正常使用，如果安装时只安装一个版本就好了。
 或者现在有一种解决方案，就是用docker，一个container中运行一个服务、一个版本，这样以后想尝试多版本也有办法了。
 
-
+具体操作指南看一下下面的参考资料。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -65,3 +65,7 @@ find / -name 'php7*'|xargs rm -rf
 搭建TCP-IP实验环境 <https://ibaiyang.github.io/blog/it%E6%8A%80%E6%9C%AF/2019/12/03/%E6%90%AD%E5%BB%BATCP-IP%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83.html>
 
 Linux docker安装配置 <https://ibaiyang.github.io/blog/linux/2019/12/19/linux-docker%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE.html>
+
+阿里云ECS之Docker使用 <https://ibaiyang.github.io/blog/linux/2020/05/30/阿里云ECS之Docker使用.html>
+
+deepin系统安装 <https://ibaiyang.github.io/blog/linux/2019/05/24/deepin系统安装.html>
