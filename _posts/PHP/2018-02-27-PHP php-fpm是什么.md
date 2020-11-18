@@ -143,7 +143,7 @@ cgi的好处就是完全独立于任何服务器，仅仅是做为中间分子�
 
 mod_php 模式图：
 
-![]({{site.baseurl}}/images/20201118/20201118104557.jpg)
+![]({{site.baseurl}}/images/20201118/20201118104557.png)
 
 mod_php 模式是将php模块安装到apache中，所以每一次apache结束的请求呢，都会产生一条进程，这个进程就完整的包括php的各种运算计算等操作。
 从图中我们很清晰的可以看到，apache每接收一个请求，都会产生一个进程来连接php通过sapi来完成请求，可想而知，如果一旦用户过多，并发数过多，服务器就会承受不住了。
@@ -151,7 +151,7 @@ mod_php 模式是将php模块安装到apache中，所以每一次apache结束的
 
 mod_fastcgi模式图：
 
-![]({{site.baseurl}}/images/20201118/20201118104558.jpg)
+![]({{site.baseurl}}/images/20201118/20201118104558.png)
 
 fastcgi是一个独立与apache和php的独立个体，它随着apache一起启动，生成多个cgi模块，等着apache的请求。
 图中fastcgi早早的启动好了，静静的在哪里等着，已有apache发来的httpd请求就立马接收过来，通过调用sapi给php，完成运算，而且不会退出。
