@@ -146,3 +146,6 @@ php方法压力测试 <https://cloud.tencent.com/developer/information/php%E6%96
 WebBench压力测试工具（详细源码注释+分析） <https://www.bbsmax.com/A/QV5ZDRn2zy/>
 
 大家须知简单的php性能优化注意点 <https://www.jb51.net/article/77446.htm>
+
+ab命令压力测试 <https://www.cnblogs.com/yueminghai/p/6412254.html>
+
