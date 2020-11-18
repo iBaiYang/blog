@@ -117,7 +117,7 @@ webbench [option]... URL
 > webbench -c 500 -t 30 http://127.0.0.1/test.php
 
 ```
--c 500  并发数
+-c 500  并发客户端数
 -t 30  时间(秒)
 ```
 
