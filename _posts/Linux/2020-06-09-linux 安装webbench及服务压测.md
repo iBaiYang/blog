@@ -127,6 +127,20 @@ Speed 为每分钟多少个请求，是根据Requests计算出来的
 
 Requests 指定时间内成功多少个请求，失败多少个请求
 
+#### ab压测工具使用
+
+ab(Apache Bench)是apache下的一个工具，主要用于做web站点的压力测试。我们下面安装这个工具并压测一下。
+
+安装：
+> sudo apt install apache2-utils
+
+压测：
+> ab -n 1000 -c 50 http://127.0.0.1/test.php
+
+```
+-n 1000  请求次数
+-c 50  并发量 
+```
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
