@@ -430,6 +430,8 @@ Task进程根据数据包中的"url"运行相应处理逻辑器并把数据包�
 
 <https://wiki.swoole.com/>
 
+<https://wiki.swoole.com/wiki/page/1.html>
+
 <https://legacy.gitbook.com/book/linkeddestiny/easy-swoole/details>
 
 <https://github.com/LinkedDestiny/swoole-concise-guide>
