@@ -11,15 +11,19 @@ meta: 记录一下 Linux 下安装安装Composer流程
 
 按照下面的参考地址一步一步安装就好，顺便附一下自己安装的流程图：
 
-到/usr/local/src/composer下操作：
+到/usr/local/src下操作：
 
 ```
+下载composer安装包：
 > php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 
+校验下载的包，可以不执行：
 > php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 
+安装：
 > php composer-setup.php
 
+移除安装包：
 > php -r "unlink('composer-setup.php');" 
 ```
 
@@ -30,32 +34,24 @@ meta: 记录一下 Linux 下安装安装Composer流程
 （从这里可以看到，我把composer安装到了/home目录下。里面有多次错误示范，可以注意辨别学习。）
 
 现在安装好了，不过使用是必须如下命令：
-
-> php composer.phar install
+> php /usr/local/src/composer.phar install ***
 
 install、update 等等，不方便，我们要把composer命令加入环境变量：
-
 > vim /etc/profile
 
 vim 修改/etc/profile文件的内容，以设置环境变量（在文件最后加上下面这句，这样就可以用shell调用composer了）：
 ```
-export PATH="$PATH:/home/composer"
+export PATH="$PATH:/usr/local/src"
 ```
 
-移动到环境搜索目录下：
-
-> cp composer.phar /usr/bin/composer
-
+也可以直接移动到环境搜索目录下，重命名为composer：
 > mv composer.phar /usr/local/bin/composer
 
 设置包源：
-
 > composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 查看版本：
-
 > composer --version
-
 
 ![]({{site.baseurl}}/images/20191114/20191114105457.jpeg)
 
