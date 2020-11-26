@@ -11,7 +11,8 @@ meta: Linux apt,rpm,yum等软件安装方式介绍
 
 Linux环境下，软件安装方式有多种：源代码安装、rpm、apt、yum等。
 
-虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制包两种软件安装包，这些方式只是执行并优化了这两种软件安装包的过程。
+虽然软件安装方式有多种，但其实Linux中软件包只有源码包和二进制包两种软件安装包（二进制包是源码包编译后的文件），
+这些方式只是执行并优化了这两种软件安装包的过程。
 
 这些安装方式与Linux的发展历史有关。Linux，最早由Linus Benedict Torvalds在1991年开始编写。
 在这之前，Richard Stallman创建了Free Software Foundation（FSF）组织以及GNU项目，
@@ -35,9 +36,9 @@ GNU/Linux OS关系图：
 
 ![]({{site.baseurl}}/images/20201115/20201115112430625.png)
 
-#### 源代码安装
+#### 源码包安装
 
-源代码安装就是tar包安装,源代码就是别人开发好的软件程序,没有加密,直接公布出来了。
+源码包安装就是源代码包安装,源代码就是别人开发好的软件程序,没有编译,直接公布出来了。
 源代码不能直接运行，必须将源代码编译成可执行的二进制文件才可以运行，所以源代码安装比较麻烦，需要编译。
 
 使用源代码安装软件的优点：
@@ -48,13 +49,14 @@ GNU/Linux OS关系图：
 编译麻烦；
 缺乏自动依赖管理，软件升级麻烦；
 
-几乎所有的开源软件都支持在Linux下运行，而这些软件一般都以源码形式发放（源码都是c语言写的），只需要Linux安装了gcc、make、automake、autoconf都支持源码安装。
+几乎所有的开源软件都支持在Linux下运行，而这些软件一般都以源码形式发放（源码都是c语言写的），
+只需要Linux安装了gcc、make、automake、autoconf都支持源码安装。
 
 源代码安装4步骤：
 
 第1步：tar 解包，解压并释放源代码包到指定目录；
 
-第2步：./configure 配置生成Makefile文件，目的是设定安装目录、安装模块等选项；
+第2步：./configure 配置生成 Makefile 文件，目的是设定安装目录、安装模块等选项；
 
 第3步：make 编译，将源代码文件编译成可执行的二进制文件；
 
@@ -136,13 +138,23 @@ bzip2采用新的压缩演算法，压缩效果比传统的LZ77/LZ78压缩演算
 
 ##### tar 文件打包
 
-Linux tar（英文全拼：tape archive ）命令用于备份文件。
+Linux tar（英文全拼：tape archive ）命令用于打包备份文件。
 
 tar 是用来建立，还原备份文件的工具程序，它可以加入，解开备份文件内的文件。
 
 如将本地目录下books目录连同其下文件一同打包成books.tar：
 ```
 tar -cvf books.tar ./books
+```
+
+tar常用参数：
+```
+-c 或--create    建立新的备份文件。 
+-x 或--extract 或--get    从备份文件中还原文件。
+-v 或--verbose    显示指令执行过程
+-f<备份文件> 或--file=<备份文件>   指定备份文件。
+-z 或--gzip 或--gunzip    通过 gzip 指令处理 *.tar.gz 备份文件。
+-j 或--bzip2 或--bunzip2    通过 bzip2 指令处理 *.tar.bz2 备份文件。
 ```
 
 打包及压缩：
@@ -191,18 +203,18 @@ dd命令使用if选项指定输入端的文件系统，而of选项则指定其�
 
 RPM包管理工具（RPM Package Manager），由Red Hat公司提出，被众多Linux发行版所采用，以前的R代表红帽公司，现在不只是代表红帽了。
 
-Rpm包不是源代码,它是将源代码编译完成后（二进制包）,再去做成rpm包发布出来。
+Rpm包不是源代码包，它是将源代码编译完成为二进制包后,再做成.rpm包发布出来。
 
 优点：
-包管理系统简单，只通过几个命令就可以实现包的安装、升级、查询和卸载；
-安装速度比源码包安装快的多。
+* 包管理系统简单，只通过几个命令就可以实现包的安装、升级、查询和卸载；
+* 安装速度比源码包安装快的多。
 
 缺点：
-经过编译，不再可以看到源代码；
-功能选择不如源码包灵活；
-依赖性。
+* 经过编译，不再可以看到源代码；
+* 功能选择不如源码包灵活；
+* 依赖性需要自己解决。
 
-一般命名格式：
+rpm包一般命名格式：
 ```
 bash-3.2-24.el5.i386.rpm
 ```
@@ -223,24 +235,18 @@ rpm常用参数：
 -h：以“#”号显示安装的进度
 ```
 
-安装：
-```
-rpm -ivh bash-3.2-24.el5.i386.rpm
-```
+rpm包下载后，安装：
+> rpm -ivh bash-3.2-24.el5.i386.rpm
 
-升级：
-```
-rpm -Uvh bash-3.2-24.el5.i386.rpm
-```
+软件包升级：
+> rpm -Uvh bash-3.2-24.el5.i386.rpm
 
-卸载：
-```
-rpm -evh bash
-```
+软件卸载：
+> rpm -evh bash
 
-注：若已安装了二进制包，则源码包也是可以继续安装的，因为两者安装目录不一样。但是，并不建议这样做，因为端口会冲突。
+注：若已安装了二进制包，源码包也是可以继续安装的，因为两者安装目录不一样。但是，并不建议这样做，因为端口会冲突。
  
-#### SRPM
+##### SRPM
 
 SRPM 文件里面含有源代码( Source Code )。
 SRPM 的文件名是以 ***.src.rpm 这种格式来命名。
@@ -249,19 +255,13 @@ SRPM 的文件名是以 ***.src.rpm 这种格式来命名。
 使用 rpmbuild 命令安装SRPM包
 
 选项： 
+`–rebuild`  进行‘编译’与‘打包’的动作，最后会产生 RPM 的软件包，但是产生的 RPM 软件包并没有安装到系统上。
+`–recompile`  rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打包，还同时 进行‘安装’了！
 
-–rebuild 
-
-进行‘编译’与‘打包’的动作，最后会产生 RPM 的软件包，但是产生的 RPM 软件包并没有安装到系统上。
-
-–recompile
-
-rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打包，还同时 进行‘安装’了！
-
-命令范例：
-```
-rpmbuild --rebuild rp-pppoe-3.5-32.1.src.rpm
-```
+使用范例：
+> rpmbuild --rebuild rp-pppoe-3.5-32.1.src.rpm
+>
+> rpm -ivh rp-pppoe-3.5-32.1.rpm
 
 #### yum
 
@@ -270,6 +270,18 @@ rpmbuild --rebuild rp-pppoe-3.5-32.1.src.rpm
 yum在线安装可以方便的解决依赖文件，一条命令就可以帮用户从网上（本地也可以）找到安装包进行安装。
 
 注：RedHat的yum是收费服务，而CentOS的yum是免费服务。
+
+常用命令：
+```
+yum install <package_name>          // 仅安装指定的软件命令
+yum update <package_name>           // 仅更新指定的软件命令
+yum update                          // 更新所有软件命令
+yum remove <package_name>           // 删除软件包命令
+yum list                            // 列出所有可安裝的软件清单命令
+yum search <keyword>                // 查找软件包命令
+yum clean                           // 清除缓存目录下的软件包及旧的 headers
+yum makecache                       // 生成缓存 
+```
 
 #### dpkg
 
@@ -284,21 +296,28 @@ Linux继承了很多UNIX系统构建和程序设计的思想——一个应用�
 
 为了解决这些问题，Debian软件包管理系统引入了一套软件包“依赖性”定义，用来描述独立运行的程序A与现存系统中程序B之间存在的关联程度。
 
-dpkg本身是一个底层的安装工具，如果需要从远程服务器上获取软件包，或者由系统自己处理复杂的软件包依赖性都需要比dpkg更高层的前段工具，比如Debian系统使用APT。
+dpkg本身是一个底层的安装工具，如果需要从远程服务器上获取软件包，或者由系统自己处理复杂的软件包依赖性都需要比dpkg更高层的前段工具，
+比如Debian系统使用APT。
 
-安装软件包：
+dpkg常用参数：
 ```
-dpkg -i package-name.deb
+-i：安装一个新的deb软件包；
+-r：卸载一个安装的软件包；
+-P：清除软件包的所有文件，实现指定软件包的完全卸载
+-l：用于获取当前系统中所有已安装的deb软件包信息
 ```
+
+deb包下载后，安装：
+> dpkg -i package-name.deb
 
 卸载软件包：
-```
-dpkg -r package-name # --remove， 移除软件包，但保留其配置文件，不是完全意义上的卸载
+> dpkg -r package-name            
+`--remove， 移除软件包，但保留其配置文件，不是完全意义上的卸载`
 
-dpkg -P package-name # --purge， 清除软件包的所有文件（removes everything,including conffiles），实现指定软件包的完全卸载
-```
+> dpkg -P package-name            
+`--purge， 清除软件包的所有文件（removes everything,including conffiles），实现指定软件包的完全卸载`
 
-查询：
+使用查询示例：
 ```
 dpkg -l 用于获取当前系统中所有已安装的deb软件包信息
 eg: dpkg -l | grep -i vim
@@ -335,19 +354,21 @@ dpkg-reconfigure 软件包名 # 实现对指定的软件包进行配置
 ```
 
 dpkg 与 dpkg-deb 的关系：
-dpkg可以认为是dpkg-deb的前端，只用在遇到一些特定的参数时才会调用dpkg-deb命令。用户通常只使用dpkg命令，dpkg命令再自动调用dpkg-deb来实现功能。
+dpkg可以认为是dpkg-deb的前端，只用在遇到一些特定的参数时才会调用dpkg-deb命令。
+用户通常只使用dpkg命令，dpkg命令再自动调用dpkg-deb来实现功能。
 
 #### apt
 
 Advanced Packaging Tool（apt）是Linux下的一款安装包管理工具，是一个客户/服务器系统。
 
 最初只有.tar.gz的打包文件，用户必须编译每个他想在GNU/Linux上运行的软件。用户们普遍认为系统很有必要提供一种方法来管理这些安装在机器上的软件包，
-当Debian诞生时，这样一个管理工具也就应运而生，它被命名为dpkg。从而著名的“package”概念第一次出现在GNU/Linux系统中，稍后Red Hat才决定开发自己的“rpm”包管理系统。
+当Debian诞生时，这样一个管理工具也就应运而生，它被命名为dpkg。从而著名的“package”概念第一次出现在GNU/Linux系统中，
+稍后Red Hat才决定开发自己的“rpm”包管理系统。
 很快一个新的问题难倒了GNU/Linux制作者，他们需要一个快速、实用、高效的方法来安装软件包，当软件包更新时，
 这个工具应该能自动管理关联文件和维护已有配置文件。Debian再次率先解决了这个问题，APT(Advanced Packaging Tool）作为dpkg的前端诞生了。
 APT后来还被Conectiva改造用来管理rpm，并被其它Linux发行版本采用为它们的软件包管理工具。
 
-虽然我们在使用dpkg时，已经解决掉了 软件安装过程中的大量问题，但是当依赖关系不满足时，仍然需要手动解决，
+虽然我们在使用dpkg时，已经解决掉了软件安装过程中的大量问题，但是当依赖关系不满足时，仍然需要手动解决，
 而apt这个工具解决了这样的问题，linux distribution 先将软件放置到对应的服务器中，然后分析软件的依赖关系，并且记录下来，
 然后当客户端有安装软件需求时，通过清单列表与本地的dpkg以存在的软件数据相比较，就能从网络端获取所有需要的具有依赖属性的软件了。
 
@@ -361,30 +382,41 @@ APT是一个客户/服务器系统。在服务器上先复制所有DEB包（DEB�
 而客户端使用apt-get install或apt-get upgrade命令的时候，就会将这个文件夹内的数据和客户端计算机内的DEB数据库比对，
 知道哪些DEB已安装、未安装或是可以升级的。
 
-安装软件包：
-```
-apt-get install package_name 
+apt-get 常简写为 apt。
 
-apt-get install package_name=version # 安装指定版本的软件包
+常用命令：
 ```
+apt install <package_name>          // 仅安装指定的软件命令
+apt update <package_name>           // 仅更新指定的软件命令
+apt upgrade                         // 更新所有软件命令
+apt remove <package_name>           // 删除软件包命令（保留配置文件）
+apt purge <package_name>            // 移除软件包（删除配置信息）
+apt search <keyword>                // 查找软件包命令
+apt list --installed                // 列出所有已安装的包
+```
+
+安装软件包示例：
+> apt-get install package_name 
+
+安装指定版本的软件包示例:
+> apt-get install package_name=version  
 
 卸载软件包：
 ```
-apt-get remove package_name  # 卸载一个已安装的软件包（保留配置文件）
-
-apt-get purge package_name   # 移除软件包（删除配置信息）
-apt-get --purge remove packagename  # 移除软件包（删除配置信息）
+apt-get remove package_name            # 卸载一个已安装的软件包（保留配置文件）
+apt-get purge package_name             # 移除软件包（删除配置信息）
+apt-get --purge remove packagename     # 移除软件包（删除配置信息）
 ```
 
-#### 脚本安装
+#### 一键安装
 
-所谓的脚本安装包，如：lnmp/lamp LNMP一键安装包，就是把复杂的软件包安装过程写成了程序脚本，使用者可以执行脚本实现一键安装。但实际安装的还是源码包和二进制包。
+所谓的一键安装包，如：lnmp/lamp LNMP一键安装包，就是把复杂的软件包安装过程写成了程序脚本，使用者可以执行脚本实现一键安装。
+但实际安装的还是源码包和二进制包。
 
 优点：安装简单、快捷、方便；
 
 缺点：完全丧失了自定义性；
 
-<br/><br/><br/><br/><br/>
 ### 参考资料
 
 Linux各种发行版本概述（Redhat系、Debian系） <https://blog.csdn.net/wangjianno2/article/details/51607847>
