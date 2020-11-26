@@ -113,19 +113,15 @@ config.vm.box = "centos67"
 #### 安装PHP：
 
 到用户目录下： 
-
 > cd /usr/local/src/
 
-升级软件包： 
-
+切换yum源：
 > rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
 安装php： 
-
 > yum install php70w php70w-opcache php70w-cli php70w-devel php70w-fpm php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql php70w-pear php70w-bcmath
 
 一路确定：
-
 > y
 
 如图：
@@ -151,7 +147,6 @@ config.vm.box = "centos67"
 #### 安装zip
 
 给linux安装zip： 
-
 > yum install zip
 
 ![]({{site.baseurl}}/images/20200329/20200329191554.jpg)
