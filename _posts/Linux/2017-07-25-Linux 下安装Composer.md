@@ -50,6 +50,9 @@ export PATH="$PATH:/usr/local/src"
 设置包源：
 > composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
+这个包源虽然是中国区的，但服务可能不稳定，可以换成阿里云的：
+> composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
 查看版本：
 > composer --version
 
