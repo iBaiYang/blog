@@ -53,6 +53,9 @@ export PATH="$PATH:/usr/local/src"
 这个包源虽然是中国区的，但服务可能不稳定，可以换成阿里云的：
 > composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
+查看当前源地址：
+> composer config -g -l repo.packagist
+
 查看版本：
 > composer --version
 
@@ -108,3 +111,6 @@ Linux /etc/profile文件详解及修改后如何立即生效（使用source命�
 	
 Linux下配置环境变量最常用的两种方法—— .bashrc 和 /etc/profile <https://blog.csdn.net/sun8112133/article/details/79901527>
 
+阿里云 Composer 全量镜像 <https://developer.aliyun.com/composer>
+
+国内的Composer全量镜像汇总 <https://www.cnblogs.com/huliuwa/p/12028878.html>
