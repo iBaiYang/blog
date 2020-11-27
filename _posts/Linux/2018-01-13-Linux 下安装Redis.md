@@ -9,7 +9,7 @@ meta: 记录一下 Linux 下安装Redis流程
 
 ### 正文
 
-#### Linux 版
+#### Linux 源码安装
 
 > cd /usr/local/src/
 >
@@ -34,6 +34,31 @@ meta: 记录一下 Linux 下安装Redis流程
 
 ![](http://s2.sinaimg.cn/mw690/001XbchKzy7hlPoC7BLf1&690)
 
+#### apt方式安装
+
+安装：
+> sudo apt-get update
+>
+> sudo apt-get install redis-server
+
+启动：
+> redis-server
+
+```
+22708:C 03 Apr 11:30:21.826 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+22708:M 03 Apr 11:30:21.827 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+22708:M 03 Apr 11:30:21.827 # Creating Server TCP listening socket *:6379: bind: Address already in use
+```
+
+查看 redis 是否启动：
+> redis-cli
+
+查看版本：
+> redis-server -v
+
+```
+Redis server v=3.2.6 sha=00000000:0 malloc=jemalloc-3.6.0 bits=64 build=c9ca860b301a190d
+```
 
 #### Windows 版
 
@@ -45,11 +70,11 @@ Redis是一个基于内存亦可持久化的日志型、Key-Value的NoSQL数据�
 
 解压后如图：
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy79HqTOpH3b1&690)
+![]({{site.baseurl}}/images/20201127/20201127100846.jpg)
 
 然后设置redis的密码：找到# requirepass foobared 改为 requirepass 我的密码 ，如图：
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy79Hs6Nn1n49&690)
+![]({{site.baseurl}}/images/20201127/20201127100847.jpg)
 
 修改后，保存。
 
@@ -59,13 +84,13 @@ Redis是一个基于内存亦可持久化的日志型、Key-Value的NoSQL数据�
 
 如图，回车后可看到运行成功：
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy79HrNIHmBb5&690)
+![]({{site.baseurl}}/images/20201127/20201127100848.jpg)
 
 这个命令行窗口不能关闭，一关闭，redis就停止服务。
 
 你可以测试一下redis可用不，另外打开一个cmd命令行窗口，如图输入查看：
 
-![](http://s8.sinaimg.cn/mw690/001XbchKzy79HskWqwv77&690)
+![]({{site.baseurl}}/images/20201127/20201127100849.jpg)
 
 现在，你可以在代码中使用redis服务了。
 
@@ -110,3 +135,7 @@ redis拓展包在这里下载：
 <http://blog.csdn.net/jintiaozhuang/article/details/53150832>
 
 [redis配置文件redis.conf中文版](http://www.jb51.net/article/50605.htm)
+
+runoob Redis 安装 <https://www.runoob.com/redis/redis-install.html>
+
+Ubuntu下用apt-get安装最新版本的Redis <https://blog.csdn.net/txj236/article/details/81413407>
