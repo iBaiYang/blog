@@ -106,7 +106,7 @@ WORKDIR /usr/local/src/nginx-1.18.0
 # 安装必要的软件和添加nginx用户
 RUN yum install -y gcc gcc-c++ glibc make openssl-devel
 RUN yum install -y libxslt-devel -y gd-devel GeoIP GeoIP-devel pcre pcre-devel
-RUN  useradd -M -s /sbin/nologin nginx
+RUN useradd -M -s /sbin/nologin nginx
 
 # 挂载卷，测试用例（这里的挂载卷，不可以指定本机的目录，不够灵活，一般会在 启动容器时通过 -v 参数指定挂载卷，或在docker-compose.yaml文件中指定，都可以指定本地目录）
 # VOLUME ["/data"]
@@ -117,7 +117,7 @@ RUN ./configure --user=nginx --group=nginx --prefix=/usr/local/nginx --with-file
 # 切换到Nginx的配置目录
 WORKDIR /usr/local/nginx/conf
 
-# 建立子配置文件夹，个人爱好，可以不建，或者叫其它名称都可以，但最好不要带特殊符号,
+# 建立子配置文件夹，个人爱好，可以不建，或者叫其它名称都可以，但最好不要带特殊符号
 # RUN mkdir vhost
 
 # 设置变量，执行命令时，就可以省略前缀目录了	
@@ -133,11 +133,12 @@ ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]
 ```
 
-然后生成镜像，注意，最后有个点，centos7_nginx 是镜像名称，1.18.0 是打的标签，跟版本号一样的意思：
-
+然后生成镜像：
 ```
 docker build --network host -t centos7_nginx:1.18.0 .
 ```
+
+注意，最后有个点，centos7_nginx 是镜像名称，1.18.0 是打的标签，跟版本号一样的意思
 
 `-t` 或者 `--tag`： 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。
 
