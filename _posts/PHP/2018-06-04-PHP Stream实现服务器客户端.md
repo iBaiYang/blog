@@ -23,18 +23,22 @@ PHP中对流的描述如下：
 PHP提供了一些内置的包装器，我们也可以很轻松的创建和注册自定义的包装器。
 我们甚至可以使用上下文(contexts)和过滤器来改变和增强包装器。
 
-PHP中流的形式：<scheme>://<target>。其中<scheme>是包装器的名字，<target>中的内容是由包装器的语法指定，
+PHP中流的形式：`<scheme>://<target>`。其中`<scheme>`是包装器的名字，`<target>`中的内容是由包装器的语法指定，
 不同的包装器的语法会有所不同。
 
-默认的包装器是file://，也就是说每次我们访问文件系统的时候都使用了流。例如，我们可以使用如下两种方式来读取文件：
-readfile('/path/to/somefile.txt') 和 readfile('file:///path/to/somefile.txt')，
+默认的包装器是`file://`，也就是说每次我们访问文件系统的时候都使用了流。例如，我们可以使用如下两种方式来读取文件：
+`readfile('/path/to/somefile.txt')` 和 `readfile('file:///path/to/somefile.txt')`，
 使用这两种方式读取文件，可以得到相同的结果。
 
 ```
 $content = readfile('/home/www/bin/count.sh');
-var_dump($content); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+var_dump($content); 
+// #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+
 $content2 = readfile('file:///home/www/bin/count.sh');
-var_dump($content2); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+var_dump($content2); 
+// #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+
 // 逐行读取文件
 $file = fopen("file:///home/www/bin/count.sh", "r") or exit("无法打开文件!");
 // 读取文件每一行，直到文件结尾
@@ -47,10 +51,12 @@ fclose($file);
 // echo $COUNT
 // sleep 1
 // done
+
 // 逐字符读取文件
 $file2 = fopen("file:///home/www/bin/count.sh", "r") or exit("无法打开文件!");
 while (!feof($file2)) {
-    echo fgetc($file2); // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
+    echo fgetc($file2); 
+    // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
 }
 fclose($file2);
 ```
@@ -126,7 +132,7 @@ var_dump(stream_get_filters());
 
 虽然过程是一样的，但是读写文件系统中文件的方式与收发 HTTP 消息的方式有所不同，流封装协议的作用是使用通用的接口封装这种差异。
 
-每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：<scheme>://<target>，其中 <scheme> 是流的封装协议，<target> 是流的数据源。
+每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：`<scheme>://<target>`，其中 `<scheme>` 是流的封装协议，`<target>` 是流的数据源。
 
 ##### http://流封装协议
 
@@ -216,7 +222,7 @@ $response = file_get_contents('https://my-api.com/users', false, $context);
 目前为止我们讨论了如何打开流，读取流中的数据，以及把数据写入流。不过，PHP 流真正强大的地方在于过滤、转换、添加或删除流中传输的数据，
 例如，我们可以打开一个流处理 Markdown 文件，在把文件内容读入内存的过程中自动将其转化为 HTML。
 
-若想把过滤器附加到现有的流上，要使用 stream_filter_append() 函数，下面我们以 string.toupper 过滤器演示如何把文件中的内容转换成大写字母：
+若想把过滤器附加到现有的流上，要使用 stream_filter_append() 函数，下面我们以 `string.toupper` 过滤器演示如何把文件中的内容转换成大写字母：
 ```
 $handle = fopen('test.txt', 'rb');
 stream_filter_append($handle, 'string.toupper');
@@ -332,7 +338,6 @@ I hate ****y things!
 php中除了用Swoole拓展实现服务器客户端，其实用php原生的Stream拓展也可以实现服务器/客户端。
 
 server.php的代码：
-
 ```
 //设置不超时
 set_time_limit(0);
@@ -370,7 +375,6 @@ new SocketServer(1212);
 ```
 
 client.php的代码：
-
 ```
 if ( isset($argv[1]) ) {
     $msg = $argv[1];
