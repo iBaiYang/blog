@@ -86,6 +86,115 @@ array(34) {
 }
 ```
 
+或者：
+```
+array(51) {
+  ["PHP_EXTRA_CONFIGURE_ARGS"]=>
+  string(77) "--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi"
+  ["HOSTNAME"]=>
+  string(12) "4ca2d34d9eb2"
+  ["PHP_INI_DIR"]=>
+  string(18) "/usr/local/etc/php"
+  ["HOME"]=>
+  string(8) "/var/www"
+  ["PHP_LDFLAGS"]=>
+  string(34) "-Wl,-O1 -Wl,--hash-style=both -pie"
+  ["PHP_CFLAGS"]=>
+  string(40) "-fstack-protector-strong -fpic -fpie -O2"
+  ["PHP_MD5"]=>
+  string(0) ""
+  ["PHP_VERSION"]=>
+  string(6) "7.1.30"
+  ["GPG_KEYS"]=>
+  string(122) "A917B1ECDA84AEC2B568FED6F50ABC807BD5DCD0 528995BFEDFBA7191D46839EF9BA0ADA31CBD89E 1729F83938DA44E27BA0F4D3DBDB397470D12172"
+  ["PHP_CPPFLAGS"]=>
+  string(40) "-fstack-protector-strong -fpic -fpie -O2"
+  ["PHP_ASC_URL"]=>
+  string(62) "https://www.php.net/get/php-7.1.30.tar.xz.asc/from/this/mirror"
+  ["PHP_URL"]=>
+  string(58) "https://www.php.net/get/php-7.1.30.tar.xz/from/this/mirror"
+  ["PATH"]=>
+  string(60) "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  ["PHPIZE_DEPS"]=>
+  string(76) "autoconf 		dpkg-dev 		file 		g++ 		gcc 		libc-dev 		make 		pkg-config 		re2c"
+  ["PWD"]=>
+  string(13) "/var/www/html"
+  ["PHP_SHA256"]=>
+  string(64) "6310599811536dbe87e4bcf212bf93196bdfaff519d0c821e4c0068efd096a7c"
+  ["USER"]=>
+  string(8) "www-data"
+  ["HTTP_CACHE_CONTROL"]=>
+  string(9) "max-age=0"
+  ["HTTP_UPGRADE_INSECURE_REQUESTS"]=>
+  string(1) "1"
+  ["HTTP_COOKIE"]=>
+  string(1280) "sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22zhengjunyuan%22%2C%22%24device_id%22%3A%22175da0e8a50132-02155b944a92658-386b4644-1049088-175da0e8a522d2%22%2C%22props%22%3A%7B%22%24latest_referrer%22%3A%22%22%2C%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%7D%2C%22first_id%22%3A%22175da0e8a50132-02155b944a92658-386b4644-1049088-175da0e8a522d2%22%7D; MKDataAnalysis=%7B%22%24distinct_id%22%3A%22175da0e8a9033f-03555212d5097d8-386b4644-1049088-175da0e8a9194%22%2C%22%24user_id%22%3A%22zhengjunyuan%22%2C%22%24device_id%22%3A%22175da0e8a9033f-03555212d5097d8-386b4644-1049088-175da0e8a9194%22%2C%22%24latest_traffic_source_type%22%3A%22%E8%8E%B7%E5%8F%96url%E5%BC%82%E5%B8%B8%22%2C%22%24latest_referrer%22%3A%22%22%2C%22%24latest_referrer_host%22%3A%22%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%7D; _identity=e69fcf5552e88b1b599465f0dce0021a410e63e316b4544e09723fb113f6b724a%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A48%3A%22%5B973%2C%22IWY1_81yjeneXT5D3EWvHz6K-3qpDN9j%22%2C2592000%5D%22%3B%7D; PHPSESSID=533a84b9650c4b7d63656156b0a06c75"
+  ["HTTP_CONNECTION"]=>
+  string(10) "keep-alive"
+  ["HTTP_ACCEPT_ENCODING"]=>
+  string(13) "gzip, deflate"
+  ["HTTP_ACCEPT_LANGUAGE"]=>
+  string(59) "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2"
+  ["HTTP_ACCEPT"]=>
+  string(63) "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+  ["HTTP_USER_AGENT"]=>
+  string(68) "Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0"
+  ["HTTP_HOST"]=>
+  string(10) "admin.host"
+  ["REDIRECT_STATUS"]=>
+  string(3) "200"
+  ["SERVER_NAME"]=>
+  string(10) "admin.host"
+  ["SERVER_PORT"]=>
+  string(2) "80"
+  ["SERVER_ADDR"]=>
+  string(10) "172.17.0.3"
+  ["REMOTE_PORT"]=>
+  string(5) "40684"
+  ["REMOTE_ADDR"]=>
+  string(10) "172.17.0.1"
+  ["SERVER_SOFTWARE"]=>
+  string(12) "nginx/1.19.4"
+  ["GATEWAY_INTERFACE"]=>
+  string(7) "CGI/1.1"
+  ["REQUEST_SCHEME"]=>
+  string(4) "http"
+  ["SERVER_PROTOCOL"]=>
+  string(8) "HTTP/1.1"
+  ["DOCUMENT_ROOT"]=>
+  string(34) "/var/www/html/YiiAdmin/admin/web"
+  ["DOCUMENT_URI"]=>
+  string(10) "/index.php"
+  ["REQUEST_URI"]=>
+  string(1) "/"
+  ["SCRIPT_NAME"]=>
+  string(10) "/index.php"
+  ["CONTENT_LENGTH"]=>
+  string(0) ""
+  ["CONTENT_TYPE"]=>
+  string(0) ""
+  ["REQUEST_METHOD"]=>
+  string(3) "GET"
+  ["QUERY_STRING"]=>
+  string(0) ""
+  ["SCRIPT_FILENAME"]=>
+  string(44) "/var/www/html/YiiAdmin/admin/web/index.php"
+  ["FCGI_ROLE"]=>
+  string(9) "RESPONDER"
+  ["PHP_SELF"]=>
+  string(10) "/index.php"
+  ["REQUEST_TIME_FLOAT"]=>
+  float(1607000980.2391)
+  ["REQUEST_TIME"]=>
+  int(1607000980)
+  ["argv"]=>
+  array(0) {
+  }
+  ["argc"]=>
+  int(0)
+}
+```
+
 下表列出了一部分 $_SERVER 变量中的重要元素:
 
 ```php
