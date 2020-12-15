@@ -1427,3 +1427,5 @@ while( true ) {
 PHP 手册 函数参考 其它服务 Sockets <https://www.php.net/manual/zh/ref.sockets.php>
 
 ab压力测试及结果分析 <https://blog.csdn.net/qq_34252622/article/details/92431267>
+
+socket_select (PHP 手册 函数参考 其它服务 Sockets Socket 函数) <https://www.php.net/socket_select>
