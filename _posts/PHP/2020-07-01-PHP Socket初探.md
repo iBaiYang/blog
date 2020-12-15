@@ -61,7 +61,7 @@ socket_close( $listen_socket );
 将文件保存为server.php，然后执行php server.php运行起来。客户端我们使用telnet就可以了，
 打开另外一个终端执行telnet 127.0.0.1 9999按下回车即可。运行结果如下：
 
-![](http://static.ti-node.com/6382803364538744833)
+![](/blog/images/20200921/20200921002102.png)
 
 简单解析一下上述代码来说明一下tcp socket服务器的流程：
 - 1.首先，根据协议族（或地址族）、套接字类型以及具体的的某个协议来创建一个socket。
@@ -111,8 +111,7 @@ socket_close( $listen_socket );
 将代码保存为server.php，然后执行php server.php，客户端依然使用telnet 127.0.0.1 9999，只不过这次我们开启两个终端来执行telnet。
 重点观察当第一个客户端连接上去后，第二个客户端时候也可以连接上去。运行结果如下：
 
-![](http://static.ti-node.com/6382835382009987072)
-
+![](/blog/images/20200921/20200921002103.png)
 
 通过接受到客户端请求的时间戳可以看到现在服务器可以同时为N个客户端服务的。但是，接着想，如果先后有1万个客户端来请求呢？
 这个时候服务器会fork出1万个子进程来处理每个客户端连接，这是会死人的。fork本身就是一个很浪费系统资源的系统调用，
@@ -158,12 +157,12 @@ socket_close( $listen_socket );
 
 将文件保存为server.php后php server.php执行，然后再用 `ps -ef | grep phpserver | grep -v grep` 来看下服务器进程状态：
 
-![](http://static.ti-node.com/6382839936025886721)
+![](/blog/images/20200921/20200921002104.png)
 
 可以看到master进程存在，除此之外还有10个子进程处于等待服务状态，在同一个时刻可以同时为10个客户端提供服务。
 我们通过telnet 127.0.0.1 9999来尝试一下，运行结果如下图：
 
-![](http://static.ti-node.com/6382840432635674625)
+![](/blog/images/20200921/20200921002105.png)
 
 好啦，php新的征程系列就先通过一个简单的入门开始啦！下篇将会讲述一些比较深刻的理论基础知识。
 
@@ -331,12 +330,12 @@ while( true )
 
 不完全截图图下：
 
-![](http://static.ti-node.com/6389738812670476289)
+![](/blog/images/20200921/20200921002106.png)
 
 还没意识到问题吗？如果我们看到有三个telnet客户端连接服务器并且可以彼此之间发送消息，但是我们只用了一个进程就可以服务三个客户端，
 如果你愿意，可以开更多的telnet，但是服务器只需要一个进程就可以搞定，这就是IO多路复用diao的地方！
 
-最后，我们重点解析一下 socket_select 函数，我们看下这个函数的原型：
+最后，我们重点解析一下 socket_select 函数，我们看下这个函数的[原型](https://www.php.net/socket_select)：
 
 ```php
 int socket_select ( array &$read , array &$write , array &$except , int $tv_sec [, int $tv_usec = 0 ] )
@@ -353,9 +352,7 @@ int socket_select ( array &$read , array &$write , array &$except , int $tv_sec 
 正如标题所言，颤颤抖抖开篇epoll。颤颤抖抖的原因大概也就是以前几乎没有亲自“手刃”epoll的经验，仅仅靠epoll的理论知识骗吃骗喝骗人事哄小孩儿装高手，
 现如今，没有了大师兄的铁头功照顾，没有了六师弟的轻功水上漂背，没有了阿梅的太极功护身，不得不自己个儿当一次排头兵了。
 
-说到底，还是因为自己虚
-
-![](https://static.ti-node.com/6396286943289671681)
+说到底，还是因为自己虚。
 
 先立个flag，那就是epoll比select牛逼，尽管select是POSIX标准。即便是select的高配版本poll，也比epoll差太多太多。
 网络如此发达的今天，epoll是解决c10k问题的功臣，这是没有办法的事情。epoll虽然是后出生的，但是却有着与生俱来的高傲，
@@ -377,8 +374,6 @@ int socket_select ( array &$read , array &$write , array &$except , int $tv_sec 
 但这个时候的阿梅显然已经得到了自我，是升华了的阿梅，于是每收到X个（ X >= 1 ）快递，阿梅都会在冲你喊一句：“顺丰镖局大师兄的铁头套，
 圆通镖局六师弟的鸡蛋到了！”，而你，不用再去依次对单子，阿梅会直接告诉你是哪个镖局护送的哪个快递，然后她还会按照你提前告诉她的“如果收到鸡蛋就给六师弟，
 收到铁头套就给大师兄”。哪怕你买了10000个快递，阿梅照样四两拨千斤，太极功夫收快递，而你，只需要安静的练习大力金刚腿。
-
-![](https://static.ti-node.com/6396284198600048640)
 
 剃光头前的阿梅，就是select，不敢正眼看老板娘一眼。
 剃光头后的阿梅，就是epoll，可徒手接魔鬼队的死亡之球。
@@ -407,12 +402,10 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 
 那么，你以为是时候写代码演示epoll了，然而并不是，原因有两个：
 - 通过C语言可以直接操作epoll，但是，为了避免装逼失败，我决定不用C来演示（放到后面再深入的时候）
-- 如果说通过PHP来操作，我不得不提一件悲催的事情，***据我自己得到的经验告诉我*** 那就是PHP无法直接操控epoll，而是要通过操作libevent来搞定epoll。
+- 如果说通过PHP来操作，我不得不提一件悲催的事情，据我自己得到的经验告诉我，那就是PHP无法直接操控epoll，而是要通过操作libevent来搞定epoll。
 
 那么，什么是Libevent呢？怎么听着好耳熟，不光耳熟，你看下下图，是不是还有点儿眼熟？没错，
 这的博客的前端页面就是抄的[Libevent官网](http://libevent.org/ "Libevent官网")的。
-
-![](http://static.ti-node.com/6396306572812746753)
 
 我先从Libevent官网抄袭一段话：
 “Currently, libevent supports /dev/poll, kqueue(2), event ports, POSIX select(2), Windows select(), poll(2), and epoll(4). ”，
@@ -430,26 +423,25 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 
 - 下载event 2.3.0的稳定版本，wget https://pecl.php.net/get/event-2.3.0.tgz
 
-![](http://static.ti-node.com/6396312840944222209)
+![](/blog/images/20200921/20200921002107.png)
 
 - 解压tgz源码包，tar -zxvf event-2.3.0.tgz
 
-![](http://static.ti-node.com/6396312844396134400)
-
+![](/blog/images/20200921/20200921002108.png)
 
 - cd event-2.3.0进入到主目录中，然后执行phpize，再执行./configure
 
-![](http://static.ti-node.com/6396312847160180737)
+![](/blog/images/20200921/20200921002109.png)
 
 
 - 执行make
 
-![](http://static.ti-node.com/6396312851614531584)
+![](/blog/images/20200921/20200921002110.png)
 
 
 - 执行make install安装
 
-![](http://static.ti-node.com/6396312854005284864)
+![](/blog/images/20200921/20200921002111.png)
 
 
 - 配置php的cli环境配置文件，注意不是apache2，也不是fpm的，而是cli的php.ini，添加一句:`extension = '/usr/lib/php/20151012/event.so'`，
@@ -465,22 +457,15 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 这就是event文档，[点击这里](http://php.net/manual/en/book.event.php "点击这里")，你们可以感受一下。从文档上看，
 event扩展一共实现了如下图几个基础类，其中最常用重要的就是Event和EventBase以及EventConfig三个类了，所以，先围绕这三位开展一下工作。
 
-![](https://static.ti-node.com/6396320853713223680)
-
 考虑到你们、我、还有正在看这个文章的其他未知物种，大多数可能并不是搞C语言的老兵油子，所以我得用一些可能并不恰当的案例和比喻来尝试引入这些概念。
 
 libevent中有五个字母是event，实际上就是说“event才是王道”。
 
 Event类就是产生各种不同类型事件的产出器，比如定时器事件、读写事件等等，为了提升民族荣誉感，我们将这些各种事件比作各种战斗机：比如歼10、歼15和歼20。
 
-![](http://static.ti-node.com/6397057860143939585)
-
-
 EventBase类就相对容易介入了，这玩意显然就是一个航空母舰了，为了提升民族荣誉感，我们就把EventBase类当作是辽宁舰。
 各种Event都必须依靠EventBase才能混口饭吃，这和战斗机有辽宁舰才有底气飞的更高更远是一个道理。一定是先有航母（EventBase），
 其次是战斗机（Event）挂在航母（EventBase）上。
-
-![](http://static.ti-node.com/6397058595610951680)
 
 EventConfig则是一个配置类，实例化后的对象作为参数可以传递给EventBase类，这样在初始化EventBase类的时候会根据这个配置初始化出不同的EventBase实例。
 类比的话，这个类则有点儿类似于辽宁舰的舰岛，可以配置指挥整个辽宁舰。航空母舰的发展趋势是不需要舰岛的，
