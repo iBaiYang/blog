@@ -36,16 +36,67 @@ meta: 记录一下 Linux 下安装安装Composer流程
 现在安装好了，不过使用时必须如下命令：
 > php /usr/local/src/composer.phar install ***
 
-install、update 等等，不方便，我们要把composer命令加入环境变量：
-> vim /etc/profile
+install、update 等等，不方便，我们要把composer命令加入环境变量。
 
-vim 修改/etc/profile文件的内容，以设置环境变量（在文件最后加上下面这句，这样就可以用shell调用composer了）：
+查看PATH路径：
+> cat /etc/profile
+
+输出：
 ```
-export PATH="$PATH:/usr/local/src"
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+if [ "`id -u`" -eq 0 ]; then
+  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+else
+  PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin"
+fi
+export PATH
+
+if [ "$PS1" ]; then
+  if [ "$BASH" ] && [ "$BASH" != "/bin/sh" ]; then
+    # The file bash.bashrc already sets the default PS1.
+    # PS1='\h:\w\$ '
+    if [ -f /etc/bash.bashrc ]; then
+      . /etc/bash.bashrc
+    fi
+  else
+    if [ "`id -u`" -eq 0 ]; then
+      PS1='# '
+    else
+      PS1='$ '
+    fi
+  fi
+fi
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+tty | egrep -q tty[1-6] && export LC_ALL=C
 ```
 
-也可以直接移动到环境搜索目录下，重命名为composer：
-> mv composer.phar /usr/local/bin/composer
+也可以直接移动到环境搜索目录下，重命名为composer (这样就可以用shell调用composer了)：
+> sudo mv composer.phar /usr/bin/composer
+
+查看版本：
+> composer -v
+
+输出：
+```
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version 2.0.8 2020-12-03 17:20:38
+...
+```
 
 设置包源：
 > composer config -g repo.packagist composer https://packagist.phpcomposer.com
@@ -56,10 +107,6 @@ export PATH="$PATH:/usr/local/src"
 查看当前源地址：
 > composer config -g -l repo.packagist
 
-查看版本：
-> composer --version
-
-![]({{site.baseurl}}/images/20191114/20191114105457.jpeg)
 
 #### 其他问题
 
