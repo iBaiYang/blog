@@ -44,15 +44,22 @@ this is incompatible with sql_mode=only_full_group_by
 ```
 
 修改全局模式：
-> set global sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+```
+set global sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+```
 
 再次查看MySQL模式，可能发现没有变化，那我们只修改要改的表，选择表：
 > use test;
 
 重新执行：
-> set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+```
+set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+```
 
 查看MySQL模式，发现 `ONLY_FULL_GROUP_BY` 已经不在里面了。 
+
+或者直接设置为 非严格模式：
+> set sql_mode = '';
 
 <br/><br/><br/><br/><br/>
 ### 参考资料：
