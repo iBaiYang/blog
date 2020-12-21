@@ -17,6 +17,9 @@ which is not functionally dependent on columns in GROUP BY clause;
 this is incompatible with sql_mode=only_full_group_by
 ```
 
+翻译过来是： ORDER BY子句不在GROUP BY子句中，包含非聚合列 `information_schema.PROFILING.SEQ`，
+它在功能上不依赖于GROUPBY子句中的列，这与sql模式 `only_full_group_by` 不兼容。
+
 大意是说 GROUP BY 的 字段未在 select 中出现一类的，这是MySQL严格模式，我们修改下模式就好了。
 
 如果MySQL安装在docker中，先进入相应docker容器：
