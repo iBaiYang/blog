@@ -59,7 +59,9 @@ set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISI
 查看MySQL模式，发现 `ONLY_FULL_GROUP_BY` 已经不在里面了。 
 
 或者直接设置为 非严格模式：
-> set sql_mode = '';
+```
+set sql_mode = '';
+```
 
 <br/><br/><br/><br/><br/>
 ### 参考资料：
