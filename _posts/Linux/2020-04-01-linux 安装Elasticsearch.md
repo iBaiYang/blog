@@ -9,9 +9,13 @@ meta: linux 安装Elasticsearch
 
 ### 正文
 
+你可以选择手动编译安装，或者apt方式安装。
+
 #### 手动安装
 
-> sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
+在安装目录下下载包：
+
+> wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
 
 > wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb.sha512
 
