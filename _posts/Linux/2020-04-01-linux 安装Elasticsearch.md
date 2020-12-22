@@ -21,7 +21,7 @@ meta: linux 安装Elasticsearch
 
 安装完成。
 
-SysV init系统操作如下 -->
+**SysV init系统操作如下** 
 
 设置开机自启动：
 
@@ -39,7 +39,7 @@ SysV init系统操作如下 -->
 
 > service elasticsearch status
 
-systemd系统操作如下 -->
+**systemd系统操作如下** 
 
 设置开机自启动：
 
@@ -628,3 +628,7 @@ Elasticsearch学习(一)————简单命令 <https://blog.csdn.net/qq_42513
 
 Elasticsearch学习（二）————搜索 <https://blog.csdn.net/qq_42513284/article/details/90613889>
 
+Linux 系统之Sysvinit <https://www.cnblogs.com/plxx/p/5492984.html>
+
+Linux 启动过程分析 （SysV init启动模式） <https://blog.csdn.net/yellowblue2/article/details/78745172>
+ 
