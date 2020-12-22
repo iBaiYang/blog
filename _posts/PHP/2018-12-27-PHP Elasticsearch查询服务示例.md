@@ -62,9 +62,9 @@ composer.json中：
 载入引导：
 ```
 <?php
-use Elasticsearch\ClientBuilder;
-
 require 'vendor/autoload.php';
+
+use Elasticsearch\ClientBuilder;
 
 $client = ClientBuilder::create()->build();
 ```
