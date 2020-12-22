@@ -630,5 +630,8 @@ Elasticsearch学习（二）————搜索 <https://blog.csdn.net/qq_4251328
 
 Linux 系统之Sysvinit <https://www.cnblogs.com/plxx/p/5492984.html>
 
+Linux系统之UpStart <https://www.cnblogs.com/plxx/p/5493073.html>
+
+Linux 系统之Systemd <https://www.cnblogs.com/plxx/p/5493105.html>
+
 Linux 启动过程分析 （SysV init启动模式） <https://blog.csdn.net/yellowblue2/article/details/78745172>
- 
