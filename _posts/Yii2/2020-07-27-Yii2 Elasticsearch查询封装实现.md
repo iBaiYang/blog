@@ -67,6 +67,24 @@ $response = $client->search($condition);
 
 如果Elasticsearch查询不进行封装，代码看起来会很散，我们在Yii2中封装一下Elasticsearch查询，其实就是把最终输出的查询条件如上所示一样。
 
+能不能改成下面Yii2 model使用的这种查询方式呢？
+````
+UserInfo::find()
+    ->select("user_id, user_name, age")
+    ->where(["=" => ["userId" => 101]])
+    ->addWhere(["like" => ["userName" => "zhang san"]])
+    ->addWhere([
+            "add" => [
+                "<>" => ["userId" => 0,
+                "like" => ["userName" => "zhang"],
+            ]
+        ])
+    ->setOrder(["age" => "desc"])
+    ->setOffset(0)
+    ->setLimit(10)
+    ->search();
+````
+
 Es连接读取层 与 AR活动记录 首先要进行分离， AR活动记录 通过 ActiveQuery活动搜索层 对 Es连接读取层 进行数据读取。
 
 #### Es连接读取层
@@ -780,6 +798,88 @@ class UserController extends Controller
 }
 ```
 
+### 释疑点
+
+#### new stdClass()
+
+`new stdClass()`是PHP应用程序的一个变量。PHP可以用 `$object = new StdClass();` 创建一个没有成员方法和属性的空对象。
+
+很多时候，程序员们会将一些参数配置项之类的信息放在数组中使用，但是数组操作起来并不是很方便，很多时候使用`对象操作符->xxx`比数组操作符`['xxx']`要方便不少。
+于是就需要创建一个空的对象，来将需要的属性名和属性值存储到对象中。
+
+然而PHP中没有Javascript里面 `var object = {};` 这样的语法。这是StdClass()出现的一个原因。
+
+stdClass在PHP5才开始被流行。而stdClass也是zend的一个保留类。stdClass类是PHP的一个内部保留类，初始时没有成员变量也没成员方法，所有的魔术方法都被设置为NULL。
+凡是用new stdClass()的变量，都不可能会出现$a->test()这种方式的使用。PHP5的对象的独特性，对象在任何地方被调用，都是引用地址型的，所以相对消耗的资源会少一点。
+在其它页面为它赋值时是直接修改，而不是引用一个拷贝。
+它可以用于手动实例化泛型对象，然后可以为这些对象设置成员变量，这对于将对象传递给其他希望以对象作为参数的函数或方法非常有用。
+更可能的用法是将数组强制转换为一个对象，该对象接受数组中的每个值，并将其作为成员变量添加，其名称基于数组中的键。
+
+PHP创建空对象可以使用下面这几种方法实现：
+
+**方法一：写一个空类**
+
+```php
+<?php
+    class cfg {}        
+    
+    $cfg = new cfg;
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
+勉强能完成任务，但是特别没有格局。
+
+**方法二：实例化 StdClass 类**
+
+```php
+<?php
+    $cfg = new StdClass();
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
+StdClass类是PHP中的一个基类。StdClass类没有任何成员方法，也没有任何成员属性，实例化以后就是一个空对象。
+
+数组转为对象可以这么用：
+```php
+<?php
+    function arrayToObject($array) {
+        if(!is_array($array)) {
+            return $array; 
+        }
+        $object = new stdClass();
+        if (is_array($array) && count($array) > 0) {
+            foreach ($array as $name => $value) {
+                $name = strtolower(trim($name));
+                if (!empty($name)) {
+                    $object->$name = $value;
+                }
+            }
+            return $object;
+        }
+        return FALSE; 
+    }
+?>
+```
+
+数组转为对象，也可以使用下面的方法。
+
+**方法三：使用json_encode()和json_decode()**
+
+这种方法就是把一个空的JSON对象通过json_decode()转变为PHP的StdClass空对象。
+同样的道理，你可以将一个数组通过json_encode()转成JSON，再通过json_decode()将JSON转为StdClass对象。
+
+```php
+<?php
+    $cfg = json_decode('{}');
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -791,4 +891,4 @@ PHP Elasticsearch查询服务示例 <https://ibaiyang.github.io/blog/php/2018/12
 
 linux 安装Elasticsearch <https://ibaiyang.github.io/blog/linux/2020/04/01/linux-%E5%AE%89%E8%A3%85Elasticsearch.html>
 
-
+PHP new StdClass() 创建空对象 <https://www.51-n.com/t-4421-1-1.html>
