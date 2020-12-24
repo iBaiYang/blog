@@ -893,27 +893,27 @@ StdClass类是PHP中的一个基类。StdClass类没有任何成员方法，也�
 ```php
 class A
 {
-	public function say() 
-	{
-		echo "A is " .__CLASS__ ."<br/>";
-		echo "A is " .get_class() ."<br/>";
-		echo "A is " .get_called_class() ."<br/>";
-	}
+    public function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
 }
-	
+    
 class B extends A
 {
-	public function say()
-	{
-		parent::say();
-		echo "B is " .__CLASS__ ."<br/>";
-		echo "B is " .get_class() ."<br/>";
-		echo "B is " .get_called_class() ."<br/>";
-	}
+    public function say()
+    {
+        parent::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
 }
 
 $c = new B();
-$c->say();	
+$c->say();    
 ```
 
 输出：
@@ -930,23 +930,23 @@ B is B
 ```php
 class A
 {
-	public static function say() 
-	{
-		echo "A is " .__CLASS__ ."<br/>";
-		echo "A is " .get_class() ."<br/>";
-		echo "A is " .get_called_class() ."<br/>";
-	}
+    public static function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
 }
-	
+    
 class B extends A
 {
-	public static function say()
-	{
-		parent::say();
-		echo "B is " .__CLASS__ ."<br/>";
-		echo "B is " .get_class() ."<br/>";
-		echo "B is " .get_called_class() ."<br/>";
-	}
+    public static function say()
+    {
+        parent::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
 }
 
 B::say();
@@ -968,27 +968,27 @@ B is B
 ```php
 class A
 {
-	public function say() 
-	{
-		echo "A is " .__CLASS__ ."<br/>";
-		echo "A is " .get_class() ."<br/>";
-		echo "A is " .get_called_class() ."<br/>";
-	}
+    public function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
 }
-	
+    
 class B extends A
 {
-	public function say()
-	{
-		A::say();
-		echo "B is " .__CLASS__ ."<br/>";
-		echo "B is " .get_class() ."<br/>";
-		echo "B is " .get_called_class() ."<br/>";
-	}
+    public function say()
+    {
+        A::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
 }
 
 $c = new B();
-$c->say();	
+$c->say();    
 ```
 
 输出：
@@ -1005,23 +1005,23 @@ B is B
 ```php
 class A
 {
-	public static function say() 
-	{
-		echo "A is " .__CLASS__ ."<br/>";
-		echo "A is " .get_class() ."<br/>";
-		echo "A is " .get_called_class() ."<br/>";
-	}
+    public static function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
 }
-	
+    
 class B extends A
 {
-	public static function say()
-	{
-		A::say();
-		echo "B is " .__CLASS__ ."<br/>";
-		echo "B is " .get_class() ."<br/>";
-		echo "B is " .get_called_class() ."<br/>";
-	}
+    public static function say()
+    {
+        A::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
 }
 
 B::say();
