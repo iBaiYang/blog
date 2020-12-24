@@ -880,6 +880,179 @@ StdClass类是PHP中的一个基类。StdClass类没有任何成员方法，也�
 ?>
 ```
 
+#### `__CLASS__`、`get_class()`与`get_called_class()`的区别
+
+`__CLASS__`: 获取当前的类名；
+
+`get_class()`: 获取当前调用方法的类名，或者可以理解成第一个调用的类；
+
+`get_called_class()`:获取当前主调类的类名，或者可以理解成最后一个调用的类；
+
+看一下示例：
+```php
+class A
+{
+	public function say() 
+	{
+		echo "A is " .__CLASS__ ."<br/>";
+		echo "A is " .get_class() ."<br/>";
+		echo "A is " .get_called_class() ."<br/>";
+	}
+}
+	
+class B extends A
+{
+	public function say()
+	{
+		parent::say();
+		echo "B is " .__CLASS__ ."<br/>";
+		echo "B is " .get_class() ."<br/>";
+		echo "B is " .get_called_class() ."<br/>";
+	}
+}
+
+$c = new B();
+$c->say();	
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+静态方法也一样：
+```php
+class A
+{
+	public static function say() 
+	{
+		echo "A is " .__CLASS__ ."<br/>";
+		echo "A is " .get_class() ."<br/>";
+		echo "A is " .get_called_class() ."<br/>";
+	}
+}
+	
+class B extends A
+{
+	public static function say()
+	{
+		parent::say();
+		echo "B is " .__CLASS__ ."<br/>";
+		echo "B is " .get_class() ."<br/>";
+		echo "B is " .get_called_class() ."<br/>";
+	}
+}
+
+B::say();
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+下面这两种情况也可以看下，注意区别输出。
+
+情况一：
+```php
+class A
+{
+	public function say() 
+	{
+		echo "A is " .__CLASS__ ."<br/>";
+		echo "A is " .get_class() ."<br/>";
+		echo "A is " .get_called_class() ."<br/>";
+	}
+}
+	
+class B extends A
+{
+	public function say()
+	{
+		A::say();
+		echo "B is " .__CLASS__ ."<br/>";
+		echo "B is " .get_class() ."<br/>";
+		echo "B is " .get_called_class() ."<br/>";
+	}
+}
+
+$c = new B();
+$c->say();	
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+情况二：
+```php
+class A
+{
+	public static function say() 
+	{
+		echo "A is " .__CLASS__ ."<br/>";
+		echo "A is " .get_class() ."<br/>";
+		echo "A is " .get_called_class() ."<br/>";
+	}
+}
+	
+class B extends A
+{
+	public static function say()
+	{
+		A::say();
+		echo "B is " .__CLASS__ ."<br/>";
+		echo "B is " .get_class() ."<br/>";
+		echo "B is " .get_called_class() ."<br/>";
+	}
+}
+
+B::say();
+```
+
+输出：
+```
+A is A
+A is A
+A is A
+B is B
+B is B
+B is B
+```
+
+MVC框架中，涉及到**单例**时很好用，一般在基类中：
+```php
+public static function getInstance() 
+{
+    $class_name = get_called_class();
+    if (isset(self::$instance[$class_name])) {
+        return self::$instance[$class_name];
+    }
+    
+    self::$instance[$class_name] = new $class_name;
+    return self::$instance[$class_name];
+}
+```
+
+其他类只要继承这个类，然后通过getInstance()就实现了单例模式。
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -892,3 +1065,7 @@ PHP Elasticsearch查询服务示例 <https://ibaiyang.github.io/blog/php/2018/12
 linux 安装Elasticsearch <https://ibaiyang.github.io/blog/linux/2020/04/01/linux-%E5%AE%89%E8%A3%85Elasticsearch.html>
 
 PHP new StdClass() 创建空对象 <https://www.51-n.com/t-4421-1-1.html>
+
+get_called_class() 和 get_class() 的区别 <get_called_class() 和 get_class() 的区别>
+
+
