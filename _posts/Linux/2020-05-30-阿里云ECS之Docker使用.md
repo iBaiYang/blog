@@ -316,6 +316,8 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   28 minutes ago      Up 28 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
+##### mysqli拓展安装
+
 默认的 php 镜像中不带有 mysqli 模块，我们需要给容器内的 php 安装 mysqli 模块：
 > docker exec -it server-phpfpm /bin/bash
 
@@ -628,6 +630,8 @@ find . -name .libs -a -type d|xargs rm -rf
 rm -f libphp.la       modules/* libs/*
 ```
 
+##### pdo_mysql拓展安装
+
 一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
 ```
 Fatal error: Uncaught PDOException: could not find driver in ...
@@ -676,6 +680,16 @@ Registered Stream Filters	zlib.*, convert.iconv.*, string.rot13, string.toupper,
 > docker stop server-phpfpm
 
 > docker start server-phpfpm
+
+##### bcmath拓展安装
+
+bcmath拓展可进行一些精度数学运行，需要安装好。
+
+安装bcmath拓展：
+
+> docker-php-ext-install bcmath
+
+别忘了重启server-phpfpm服务。
 
 #### nginx安装
 
