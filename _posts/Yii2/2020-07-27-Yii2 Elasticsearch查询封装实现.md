@@ -9,7 +9,8 @@ meta: Elasticsearch查询封装实现
 
 ### 正文
 
-PHP查询Elasticsearch数据，可以直接用Packagist中的类库elasticsearch/elasticsearch。具体安装方法，看一下过去的记录。
+PHP查询Elasticsearch数据，可以直接用Packagist中的类库elasticsearch/elasticsearch。具体安装方法，看一下过去的记录：
+[PHP Elasticsearch查询服务示例](https://ibaiyang.github.io/blog/php/2018/12/27/PHP-Elasticsearch%E6%9F%A5%E8%AF%A2%E6%9C%8D%E5%8A%A1%E7%A4%BA%E4%BE%8B.html)。
 
 查询条件一般用法：
 ```
@@ -66,6 +67,24 @@ $response = $client->search($condition);
 ```
 
 如果Elasticsearch查询不进行封装，代码看起来会很散，我们在Yii2中封装一下Elasticsearch查询，其实就是把最终输出的查询条件如上所示一样。
+
+能不能改成下面Yii2 model使用的这种查询方式呢？
+````
+UserInfo::find()
+    ->select("user_id, user_name, age")
+    ->where(["=" => ["userId" => 101]])
+    ->addWhere(["like" => ["userName" => "zhang san"]])
+    ->addWhere([
+            "add" => [
+                "<>" => ["userId" => 0,
+                "like" => ["userName" => "zhang"],
+            ]
+        ])
+    ->setOrder(["age" => "desc"])
+    ->setOffset(0)
+    ->setLimit(10)
+    ->search();
+````
 
 Es连接读取层 与 AR活动记录 首先要进行分离， AR活动记录 通过 ActiveQuery活动搜索层 对 Es连接读取层 进行数据读取。
 
@@ -780,6 +799,261 @@ class UserController extends Controller
 }
 ```
 
+### 释疑点
+
+#### new stdClass()
+
+`new stdClass()`是PHP应用程序的一个变量。PHP可以用 `$object = new StdClass();` 创建一个没有成员方法和属性的空对象。
+
+很多时候，程序员们会将一些参数配置项之类的信息放在数组中使用，但是数组操作起来并不是很方便，很多时候使用`对象操作符->xxx`比数组操作符`['xxx']`要方便不少。
+于是就需要创建一个空的对象，来将需要的属性名和属性值存储到对象中。
+
+然而PHP中没有Javascript里面 `var object = {};` 这样的语法。这是StdClass()出现的一个原因。
+
+stdClass在PHP5才开始被流行。而stdClass也是zend的一个保留类。stdClass类是PHP的一个内部保留类，初始时没有成员变量也没成员方法，所有的魔术方法都被设置为NULL。
+凡是用new stdClass()的变量，都不可能会出现$a->test()这种方式的使用。PHP5的对象的独特性，对象在任何地方被调用，都是引用地址型的，所以相对消耗的资源会少一点。
+在其它页面为它赋值时是直接修改，而不是引用一个拷贝。
+它可以用于手动实例化泛型对象，然后可以为这些对象设置成员变量，这对于将对象传递给其他希望以对象作为参数的函数或方法非常有用。
+更可能的用法是将数组强制转换为一个对象，该对象接受数组中的每个值，并将其作为成员变量添加，其名称基于数组中的键。
+
+PHP创建空对象可以使用下面这几种方法实现：
+
+**方法一：写一个空类**
+
+```php
+<?php
+    class cfg {}        
+    
+    $cfg = new cfg;
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
+勉强能完成任务，但是特别没有格局。
+
+**方法二：实例化 StdClass 类**
+
+```php
+<?php
+    $cfg = new StdClass();
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
+StdClass类是PHP中的一个基类。StdClass类没有任何成员方法，也没有任何成员属性，实例化以后就是一个空对象。
+
+数组转为对象可以这么用：
+```php
+<?php
+    function arrayToObject($array) {
+        if(!is_array($array)) {
+            return $array; 
+        }
+        $object = new stdClass();
+        if (is_array($array) && count($array) > 0) {
+            foreach ($array as $name => $value) {
+                $name = strtolower(trim($name));
+                if (!empty($name)) {
+                    $object->$name = $value;
+                }
+            }
+            return $object;
+        }
+        return FALSE; 
+    }
+?>
+```
+
+数组转为对象，也可以使用下面的方法。
+
+**方法三：使用json_encode()和json_decode()**
+
+这种方法就是把一个空的JSON对象通过json_decode()转变为PHP的StdClass空对象。
+同样的道理，你可以将一个数组通过json_encode()转成JSON，再通过json_decode()将JSON转为StdClass对象。
+
+```php
+<?php
+    $cfg = json_decode('{}');
+    $cfg->dbhost = 'www.123.com';
+    echo $cfg->dbhost;
+?>
+```
+
+#### `__CLASS__`、`get_class()`与`get_called_class()`的区别
+
+`__CLASS__`: 获取当前的类名；
+
+`get_class()`: 获取当前调用方法的类名，或者可以理解成第一个调用的类；
+
+`get_called_class()`:获取当前主调类的类名，或者可以理解成最后一个调用的类；
+
+看一下示例：
+```php
+class A
+{
+    public function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
+}
+    
+class B extends A
+{
+    public function say()
+    {
+        parent::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
+}
+
+$c = new B();
+$c->say();    
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+静态方法也一样：
+```php
+class A
+{
+    public static function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
+}
+    
+class B extends A
+{
+    public static function say()
+    {
+        parent::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
+}
+
+B::say();
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+下面这两种情况也可以看下，注意区别输出。
+
+情况一：
+```php
+class A
+{
+    public function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
+}
+    
+class B extends A
+{
+    public function say()
+    {
+        A::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
+}
+
+$c = new B();
+$c->say();    
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
+
+情况二：
+```php
+class A
+{
+    public static function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
+}
+    
+class B extends A
+{
+    public static function say()
+    {
+        A::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
+}
+
+B::say();
+```
+
+输出：
+```
+A is A
+A is A
+A is A
+B is B
+B is B
+B is B
+```
+
+MVC框架中，涉及到**单例**时很好用，一般在基类中：
+```php
+public static function getInstance() 
+{
+    $class_name = get_called_class();
+    if (isset(self::$instance[$class_name])) {
+        return self::$instance[$class_name];
+    }
+    
+    self::$instance[$class_name] = new $class_name;
+    return self::$instance[$class_name];
+}
+```
+
+其他类只要继承这个类，然后通过getInstance()就实现了单例模式。
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -790,5 +1064,9 @@ Packagist elasticsearch/elasticsearch <https://packagist.org/packages/elasticsea
 PHP Elasticsearch查询服务示例 <https://ibaiyang.github.io/blog/php/2018/12/27/PHP-Elasticsearch%E6%9F%A5%E8%AF%A2%E6%9C%8D%E5%8A%A1%E7%A4%BA%E4%BE%8B.html>
 
 linux 安装Elasticsearch <https://ibaiyang.github.io/blog/linux/2020/04/01/linux-%E5%AE%89%E8%A3%85Elasticsearch.html>
+
+PHP new StdClass() 创建空对象 <https://www.51-n.com/t-4421-1-1.html>
+
+get_called_class() 和 get_class() 的区别 <get_called_class() 和 get_class() 的区别>
 
 

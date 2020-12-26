@@ -62,16 +62,68 @@ composer.json中：
 载入引导：
 ```
 <?php
-use Elasticsearch\ClientBuilder;
-
 require 'vendor/autoload.php';
+
+use Elasticsearch\ClientBuilder;
 
 $client = ClientBuilder::create()->build();
 ```
 
 在elasticsearch-php中，几乎所有东西都是由关联数组配置的。 REST端，文档和可选参数，一切都是一个关联数组。
 
+##### 创建index索引
+
+```
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'settings' => [
+            'number_of_shards' => 2,
+            'number_of_replicas' => 0
+        ]
+    ]
+];
+
+$response = $client->indices()->create($params);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
+)
+```
+
+通过上面这些操作可以看出，elasticsearch-php这个拓展中，可以实现对文档及索引的增删改查，我们实际情况下，新增文档都是通过kafka 、 logstash中转实现的，
+项目中不直接写入文档。一般在项目中都是搜索文档。
+
+###### mapping
+
+
+
+##### 删除index索引
+
+```
+$deleteParams = [
+    'index' => 'my_index'
+];
+$response = $client->indices()->delete($deleteParams);
+print_r($response);
+```
+
+输出：
+```
+Array
+(
+    [acknowledged] => 1
+)
+```
+
 ##### 写入文档
+
+###### 导入单条数据
 
 要为文档建立索引，我们需要指定三项信息：index, id 和 body文档主体：
 ```
@@ -105,6 +157,10 @@ Array
     [_primary_term] => 1
 )
 ```
+
+###### 批量导入数据
+
+bulk
 
 ##### 获取文档
 
@@ -217,6 +273,8 @@ Array
 )
 ```
 
+took是耗时，单位是ms。 hits.total 表示有多少个 Document。
+
 ##### 删除文档
 
 ```
@@ -249,52 +307,6 @@ Array
     [_primary_term] => 1
 )
 ```
-
-##### 删除index索引
-
-```
-$deleteParams = [
-    'index' => 'my_index'
-];
-$response = $client->indices()->delete($deleteParams);
-print_r($response);
-```
-
-输出：
-```
-Array
-(
-    [acknowledged] => 1
-)
-```
-
-##### 创建index索引
-
-```
-$params = [
-    'index' => 'my_index',
-    'body'  => [
-        'settings' => [
-            'number_of_shards' => 2,
-            'number_of_replicas' => 0
-        ]
-    ]
-];
-
-$response = $client->indices()->create($params);
-print_r($response);
-```
-
-输出：
-```
-Array
-(
-    [acknowledged] => 1
-)
-```
-
-通过上面这些操作可以看出，elasticsearch-php这个拓展中，可以实现对文档及索引的增删改查，我们实际情况下，新增文档都是通过kafka 、 logstash中转实现的，
-项目中不直接写入文档。一般在项目中都是搜索文档。
 
 #### 具体使用
 
@@ -617,6 +629,8 @@ wildcard模糊查询：
 ```
 
 #### 聚合分析
+
+aggs
 
 通过kibana进行聚合分析查询时，POST提交格式，如：
 

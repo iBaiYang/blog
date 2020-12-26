@@ -23,7 +23,8 @@ meta: Linux HTTPS实现
 
 #### 申请证书
 
-在nginx配置目录下加入一个文件`/web/nginx/conf/vhost/blog.com.conf`, 
+在nginx配置目录下加入一个文件`/web/nginx/conf/vhost/blog.com.conf`, 这里nginx安装在docker中，设置的关联目录。
+如果是直接安装在linux主机上，配置目录在`/etc/nginx/conf.d`下：
 ```
 server {
     listen   80;
@@ -40,7 +41,34 @@ server {
 }
 ```
 
-这两个location配置是为了通过 Let’s Encrypt 的验证，验证域名归属。你也可以不加这个文件。
+这两个location配置是为了通过 Let’s Encrypt 的验证，验证域名归属。
+你也可以不加这个文件，不过要设置让通过域名可以访问到你的服务器中的项目。如(Yii2项目配置)：
+```
+server {
+    listen   80;
+    server_name   test.com;
+
+    location / {
+        root /usr/share/nginx/html/test/backend/web;
+        index index.html index.htm index.php;
+        try_files $uri $uri/ /index.php?$args;
+    }
+    
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root           /var/www/html/test/backend/web;
+        fastcgi_pass   php:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
 
 第三点:使用certbot申请证书
 
@@ -127,14 +155,13 @@ notAfter=Nov 27 14:34:18 2020 GMT
 PFS（perfect forward secrecy），中文可叫做完全前向保密。要求一个密钥只能访问由它所保护的数据；
 用来产生密钥的元素一次一换，不能再产生其他的密钥；一个密钥被破解，并不影响其他密钥的安全性。
 
-```
-#创建目录
-mkdir /etc/ssl/private/ -p
+创建目录
+> mkdir /etc/ssl/private/ -p
 
-#执行命令
-cd /etc/ssl/private/
-openssl dhparam 2048 -out dhparam.pem
-```
+执行命令
+> cd /etc/ssl/private/
+> 
+> openssl dhparam 2048 -out dhparam.pem
 
 需要等待一段时间。
 
@@ -159,14 +186,12 @@ docker run \
 
 如果报oci runtime error，可以把`-v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \`去掉后再执行。
 
-如果你的nginx容器在运行中，可以先停止删除后重新创建：
-```
-docker ps -a
-
-docker stop server-nginx
-
-docker rm server-nginx
-```
+如果你的nginx容器在运行中，可以先停止，删除后重新创建：
+> docker ps -a
+> 
+> docker stop server-nginx
+> 
+> docker rm server-nginx
 
 #### 配置nginx
 
