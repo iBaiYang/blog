@@ -1053,6 +1053,56 @@ public static function getInstance()
 
 其他类只要继承这个类，然后通过getInstance()就实现了单例模式。
 
+如：
+```php
+class A
+{
+	private static $instance;
+	
+    public static function getInstance() 
+	{
+		$class_name = get_called_class();
+		if (isset(self::$instance[$class_name])) {
+			return self::$instance[$class_name];
+		}
+    
+		self::$instance[$class_name] = new $class_name;
+	
+		return self::$instance[$class_name];
+	}
+	
+	public function say() 
+    {
+        echo "A is " .__CLASS__ ."<br/>";
+        echo "A is " .get_class() ."<br/>";
+        echo "A is " .get_called_class() ."<br/>";
+    }
+}
+    
+class B extends A
+{
+    public function say()
+    {
+		parent::say();
+        echo "B is " .__CLASS__ ."<br/>";
+        echo "B is " .get_class() ."<br/>";
+        echo "B is " .get_called_class() ."<br/>";
+    }
+}
+	
+$c = B::getInstance();
+$c->say();
+```
+
+输出：
+```
+A is A
+A is A
+A is B
+B is B
+B is B
+B is B
+```
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
