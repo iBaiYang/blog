@@ -1057,21 +1057,21 @@ public static function getInstance()
 ```php
 class A
 {
-	private static $instance;
-	
-    public static function getInstance() 
-	{
-		$class_name = get_called_class();
-		if (isset(self::$instance[$class_name])) {
-			return self::$instance[$class_name];
-		}
+    private static $instance;
     
-		self::$instance[$class_name] = new $class_name;
-	
-		return self::$instance[$class_name];
-	}
-	
-	public function say() 
+    public static function getInstance() 
+    {
+        $class_name = get_called_class();
+        if (isset(self::$instance[$class_name])) {
+            return self::$instance[$class_name];
+        }
+    
+        self::$instance[$class_name] = new $class_name;
+    
+        return self::$instance[$class_name];
+    }
+    
+    public function say() 
     {
         echo "A is " .__CLASS__ ."<br/>";
         echo "A is " .get_class() ."<br/>";
@@ -1083,13 +1083,13 @@ class B extends A
 {
     public function say()
     {
-		parent::say();
+        parent::say();
         echo "B is " .__CLASS__ ."<br/>";
         echo "B is " .get_class() ."<br/>";
         echo "B is " .get_called_class() ."<br/>";
     }
 }
-	
+    
 $c = B::getInstance();
 $c->say();
 ```
