@@ -1104,6 +1104,12 @@ B is B
 B is B
 ```
 
+上面就是一个完整的例子：`UserInfo` Model类通过`find()`静态方法，
+创建并返回一个ActiveQuery对象`Yii::createObject(ActiveQuery::className(), [get_called_class()])`，给参数modelClass赋值，
+再通过`select()`、 `addWhere()`、 `setOrder()` 等 ActiveQuery对象方法给自己的其他参数赋值，
+再通过ActiveQuery对象的`search()`方法调用Es连接读取层`LElasticSearch`实现Es查询。
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
