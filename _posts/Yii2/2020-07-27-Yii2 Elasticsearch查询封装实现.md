@@ -635,7 +635,7 @@ class ActiveQuery extends Object
             "body"  => $this->getBody(),
         ];
         if ($es == null) {
-            $es = Yii::$app->es;
+            $es = $modelClass::getEs();
         }
         $searchData = $es->search($param, $needBuild);
         if (count($searchData["list"]) == 0) {
@@ -1109,6 +1109,205 @@ B is B
 再通过`select()`、 `addWhere()`、 `setOrder()` 等 ActiveQuery对象方法给自己的其他参数赋值，
 再通过ActiveQuery对象的`search()`方法调用Es连接读取层`LElasticSearch`实现Es查询。
 
+#### ReflectionClass 类
+
+我们看到上面用到了 `ReflectionClass` 类，这个类是做什么的？
+
+官方解释：PHP 5 具有完整的反射 API，添加了对类、接口、函数、方法和扩展进行反向工程的能力。 此外，反射 API 提供了方法来取出函数、类和方法中的文档注释。
+
+ReflectionClass 类报告了一个类的有关信息。
+
+使用实例，如B类继承自A类，要取出B类中的方法。
+
+classA.php:
+```php
+class ClassA
+{
+    public function funcAa(){}
+     
+    public function funcAb(){}
+     
+    public function funcAc(){}
+}
+```
+
+classB.php:
+```php
+include './classA.php';
+ 
+class ClassB extends ClassA
+{
+    public function funcBa(){}
+ 
+    public function funcBb(){}
+ 
+    public function funcBc(){}
+     
+    public function funcAa(){
+        parent::funcAa();
+    }
+}
+```
+
+当我需要找出ClassB里面的所有方法的时候，使用get_class_methods():
+```php
+$classB = new ClassB;
+ 
+$classFuncB = get_class_methods($classB);
+ 
+echo '<pre>';
+ 
+print_r($classFuncB);
+```
+
+输出：
+```
+Array
+(
+    [0] => funcBa
+    [1] => funcBb
+    [2] => funcBc
+    [3] => funcAa
+    [4] => funcAb
+    [5] => funcAc
+)
+```
+
+一共6个方法，实际上我不想要继承了ClassA里面的方法，我只想要ClassB的方法，怎么办呢？我稍微更改了如下：
+```php
+$classA = new ClassA;
+ 
+$classB = new ClassB;
+ 
+$classFuncA = get_class_methods($classA);
+ 
+$classFuncB = get_class_methods($classB);
+ 
+echo '<pre>';
+ 
+print_r(array_diff($classFuncB,$classFuncA));
+```
+
+输出：
+```
+Array
+(
+    [0] => funcBa
+    [1] => funcBb
+    [2] => funcBc
+)
+```
+
+少了一个方法 funcAa ，虽然funcAa是 ClassB 从 ClassA那里继承过来的，但是同样ClassB也有这个方法，所以不是我想要的结果。
+
+解决方法，使用ReflectionClass：
+```php
+$reflection = new ReflectionClass('ClassB');
+ 
+print_r($reflection->getMethods());
+```
+
+输出：
+```
+Array
+(
+    [0] => ReflectionMethod Object
+        (
+            [name] => funcBa
+            [class] => ClassB
+        )
+ 
+    [1] => ReflectionMethod Object
+        (
+            [name] => funcBb
+            [class] => ClassB
+        )
+ 
+    [2] => ReflectionMethod Object
+        (
+            [name] => funcBc
+            [class] => ClassB
+        )
+ 
+    [3] => ReflectionMethod Object
+        (
+            [name] => funcAa
+            [class] => ClassB
+        )
+ 
+    [4] => ReflectionMethod Object
+        (
+            [name] => funcAb
+            [class] => ClassA
+        )
+ 
+    [5] => ReflectionMethod Object
+        (
+            [name] => funcAc
+            [class] => ClassA
+        )
+ 
+)
+```
+
+可以看到 [4]、[5] 里面的class 对应的值是ClassA，而其他对应的值都是ClassB。通过这个可以用foreach来实现最后想要的结果：
+```php
+$reflection = new ReflectionClass('ClassB');
+ 
+$array = '';
+ 
+foreach ($reflection->getMethods() as $obj) {
+    if ($obj->class == $reflection->getName()) {    //$reflection->getName()  获取类名
+        $array[] = $obj->name;
+    }
+}
+ 
+echo '<pre>';
+ 
+print_r($array);
+```
+
+输出：
+```
+Array
+(
+    [0] => funcBa
+    [1] => funcBb
+    [2] => funcBc
+    [3] => funcAa
+)
+```
+
+#### ReflectionClass::newInstance
+
+`ReflectionClass::newInstance` ， 从指定的参数创建一个新的类实例。
+
+示例：
+```php
+// 定义一个类
+class fuc
+{ 
+    static function ec()
+    {
+        echo '我是一个类';
+    }
+}
+
+//建立 fuc这个类的反射类
+$class = new ReflectionClass('fuc'); 
+
+// 用法1
+$fuc = $class->newInstance();  //相当于实例化 fuc 类
+$fuc->ec(); //执行 fuc 里的方法ec  /*最后输出:我是一个类*/
+
+// 用法2
+$ec = $class->getmethod('ec'); //获取fuc 类中的ec方法
+$fuc = $class->newInstance(); //实例化
+$ec->invoke($fuc);   //执行ec 方法
+```
+
+上面的过程很熟悉吧。其实和调用对象的方法类似，只不过这里是反着来的，方法在前，对象在后。
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -1125,4 +1324,8 @@ PHP new StdClass() 创建空对象 <https://www.51-n.com/t-4421-1-1.html>
 
 get_called_class() 和 get_class() 的区别 <get_called_class() 和 get_class() 的区别>
 
+PHP 手册 函数参考 变量与类型相关扩展 反射 ReflectionClass 类 <https://www.php.net/manual/zh/class.reflectionclass.php>
 
+PHP 反射 ReflectionClass <https://www.cnblogs.com/uduemc/p/4055092.html>
+
+PHP 手册 函数参考 变量与类型相关扩展 反射 ReflectionClass  ReflectionClass::newInstance <https://www.php.net/manual/zh/reflectionclass.newinstance.php>
