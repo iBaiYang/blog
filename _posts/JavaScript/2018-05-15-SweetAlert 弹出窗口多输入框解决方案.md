@@ -39,7 +39,7 @@ function(inputValue){
 
 但是实际开发中会遇到多个输入框的情况：
 
-![]({{site.baseurl}}/images/20210104/20210104225141.png)
+![]({{site.baseurl}}/images/20210104/20210104231123.png)
 
 怎么解决呢？可以用到下面的代码：
 ```javascript
