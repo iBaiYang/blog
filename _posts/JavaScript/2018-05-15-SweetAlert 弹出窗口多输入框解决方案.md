@@ -12,11 +12,10 @@ meta: SweetAlert的示例中有单个输入框的例子，但是实际开发中�
 
 SweetAlert的示例中有单个输入框的例子：
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7kuey36B8de&690)
+![]({{site.baseurl}}/images/20210104/20210104223552.png)
 
 代码如下：
-
-```
+```javascript
 swal({ 
     title: "输入！", 
     text: "输入一些有趣的话：",
@@ -40,11 +39,10 @@ function(inputValue){
 
 但是实际开发中会遇到多个输入框的情况：
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7kufnLw9M76&690)
+![]({{site.baseurl}}/images/20210104/20210104225141.png)
 
 怎么解决呢？可以用到下面的代码：
-
-```
+```javascript
 $(document).on('click', 'a[rel=play-time-add]', function () {
     var user_id = this.data('id');
     
@@ -98,6 +96,8 @@ function class_del_error_show( msg ) {
     $('.sweet-alert .class_del_error p').text( msg );
 };
 ```
+
+样式用的是SweetAlert自带的样式。
 
 细节方面可能不一样，但是解决问题的方法已给出，理解思想就可以发挥。
 
