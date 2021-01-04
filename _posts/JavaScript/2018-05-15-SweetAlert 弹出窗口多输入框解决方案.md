@@ -101,9 +101,7 @@ function class_del_error_show( msg ) {
 
 细节方面可能不一样，但是解决问题的方法已给出，理解思想就可以发挥。
 
-如果输入区域要操作的内容比较多，可以考虑 Bootstrap 的模态框（Modal）插件：
-
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7kuhYzDGle5&690)
+如果输入区域要操作的内容比较多，可以考虑 Bootstrap 的[模态框](https://www.runoob.com/bootstrap/bootstrap-modal-plugin.html)（Modal）插件。
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -116,6 +114,6 @@ SweetAlert 中文网 <https://www.sweetalert.cn/>
 
 SweetAlert 中文文档 <https://sweetalert.bootcss.com/>
 
-<https://www.cnblogs.com/lamp01/p/7215408.html>
+漂亮的弹窗口插件——sweetAlert的使用 <https://www.cnblogs.com/lamp01/p/7215408.html>
 
-<http://www.runoob.com/bootstrap/bootstrap-tutorial.html>
+Bootstrap 教程 <http://www.runoob.com/bootstrap/bootstrap-tutorial.html>
