@@ -10,35 +10,6 @@ meta: SweetAlert 常用示例
 
 ### 正文
 
-##### 单输入框
-
-SweetAlert的示例中有单个输入框的例子：
-
-![]({{site.baseurl}}/images/20210104/20210104223552.png)
-
-代码如下：
-```javascript
-swal({ 
-    title: "输入！", 
-    text: "输入一些有趣的话：",
-    type: "input", 
-    showCancelButton: true, 
-    closeOnConfirm: false, 
-    animation: "slide-from-top", 
-    inputPlaceholder: "输入一些话" 
-},
-function(inputValue){ 
-    if (inputValue === false) return false; 
-    
-    if (inputValue === "") { 
-        swal.showInputError("你需要输入一些话！");
-        return false 
-    } 
-    
-    swal("非常好！", "你输入了：" + inputValue,"success"); 
-});		
-```
-
 #### 常用示例
 
 无论你是在电脑、手机还是平板上，SweetAlert都会在页面上自动居中显示，这看起来非常棒。SweetAlert还可高度定制，正如下面你所看到的。
@@ -48,6 +19,8 @@ function(inputValue){
 ```javascript
 alert("哎呦……出错了！");
 ```
+
+样式取决于各个浏览器自己，可以肯定，样式很简单，不美观，拓展性也不强。
 
 ##### 基本信息弹窗
 
