@@ -141,7 +141,7 @@ swal({
         inputPlaceholder: "输入一些话"
     },
     function (inputValue) {
-        if (inputValue === false) returnfalse;
+        if (inputValue === false) return false;
 
         if (inputValue === "") {
             swal.showInputError("你需要输入一些话！");
