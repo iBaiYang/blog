@@ -10,6 +10,8 @@ meta: SweetAlert的示例中有单个输入框的例子，但是实际开发中�
 
 ### 正文
 
+#### 单输入框
+
 SweetAlert的示例中有单个输入框的例子：
 
 ![]({{site.baseurl}}/images/20210104/20210104223552.png)
@@ -36,6 +38,8 @@ function(inputValue){
     swal("非常好！", "你输入了：" + inputValue,"success"); 
 });		
 ```
+
+#### 多输入框
 
 但是实际开发中会遇到多个输入框的情况：
 
