@@ -311,10 +311,10 @@ SweetAlert还带有一些简单的方法，你可以调用它们：
 
 | 方法 	| 示例    | 描述| 
 | :--------   | :-----  | :----  |
-| setDefaults 	| swal.setDefaults({ confirmButtonColor: '#0000' }); 	| 当调用SweetAlert时，如果你使用很多相同的设置，您可以在程序的开始使用setDefaults设置它们！| 
-| close 	| swal.close(); 	| 通过编程的方式将当前打开的SweetAlert弹窗关闭。| 
-| showInputError 	| swal.showInputError("Invalid email!"); 	| 如果用户输入的数据是错误的，在验证输入字段后会显示一个错误的信息。| 
-| enableButtons, disableButtons 	| swal.disableButtons(); 	| 禁用或启用用户点击取消按钮和确认按钮。| 
+| setDefaults 	| `swal.setDefaults({ confirmButtonColor: '#0000' });` 	| 当调用SweetAlert时，如果你使用很多相同的设置，您可以在程序的开始使用setDefaults设置它们！| 
+| close 	| `swal.close();` 	| 通过编程的方式将当前打开的SweetAlert弹窗关闭。| 
+| showInputError 	| `swal.showInputError("Invalid email!");` 	| 如果用户输入的数据是错误的，在验证输入字段后会显示一个错误的信息。| 
+| enableButtons, disableButtons 	| `swal.disableButtons();` 	| 禁用或启用用户点击取消按钮和确认按钮。| 
 
 
 <br/><br/><br/><br/><br/>

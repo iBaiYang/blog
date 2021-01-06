@@ -20,11 +20,13 @@ Font Awesome 字体为您提供可缩放矢量图标,它可以被定制大小、
 要使用Font Awesome图标，请在HTML页面的 部分中添加以下行：
 
 1. 国内推荐 CDN：
+
 ```html
 <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 ```
 
 2. 海外推荐 CDN
+
 ```html
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" >
 ```
