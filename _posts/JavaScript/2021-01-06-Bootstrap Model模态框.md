@@ -75,6 +75,30 @@ $(document).on('click', 'a[rel=remind_plan_edit]', function () {
 
 ![]({{site.baseurl}}/images/20210106/20210106204758.png)
 
+如果觉得上面模态框不够宽，可以在 modal-dialog 上加上宽度样式。如下：
+```javascript
+<div class="modal fade" id="optModal">
+    <div class="modal-dialog" style="width: 66%;">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">模态框头部</h4>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body" style="min-height: 300px;">
+                模态框内容..
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关 闭</button>
+                <button type="button" class="btn btn-info pull-right">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
 <br/><br/><br/><br/><br/>
 ### 参考资料 
 
