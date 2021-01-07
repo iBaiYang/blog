@@ -21,7 +21,7 @@ meta: Bootstrap Model模态框
                 <h4 class="modal-title">模态框头部</h4>
             </div>
             <!-- 模态框主体 -->
-            <div class="modal-body" style="min-height: 300px;">
+            <div class="modal-body">
                 模态框内容..
             </div>
         </div>
@@ -38,7 +38,7 @@ meta: Bootstrap Model模态框
                 <h4 class="modal-title">模态框头部</h4>
             </div>
             <!-- 模态框主体 -->
-            <div class="modal-body" style="min-height: 300px;">
+            <div class="modal-body">
                 模态框内容..
             </div>
             <!-- 模态框底部 -->
@@ -75,7 +75,7 @@ $(document).on('click', 'a[rel=remind_plan_edit]', function () {
 
 ![]({{site.baseurl}}/images/20210106/20210106204758.png)
 
-如果觉得上面模态框不够宽，可以在 modal-dialog 上加上宽度样式。如下：
+如果觉得上面模态框不够宽，可以在 modal-dialog 上加上宽度样式，modal-body 最小高度也可以设置下。如下：
 ```javascript
 <div class="modal fade" id="optModal">
     <div class="modal-dialog" style="width: 66%;">
