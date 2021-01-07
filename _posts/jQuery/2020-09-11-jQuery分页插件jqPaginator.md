@@ -9,7 +9,10 @@ meta: 我们有时在前段需要用到翻页功能，有没有比较到的插�
 
 ### 正文
 
-首先在项目下安装jQuery分页插件jqPaginator的源码。
+首先在项目下安装jQuery分页插件jqPaginator的 [源码](https://github.com/keenwon/jqPaginator) ,引入：
+```javascript
+<script src="./dist/jq-paginator.min.js"></script>
+```
 
 然后在项目中使用：
 ```html
@@ -25,12 +28,15 @@ $('#pagination-box').jqPaginator({
     prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
     next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
     last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
-    page: '<li class="page"><a href="javascript:void(0);">双大括号 page 双大括号</a></li>',
+    page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
     onPageChange: function (num) {
         $('#text').html('当前第' + num + '页');
     }
 });
 ```
+
+上例就是第一Demo，Bootstrap风格的分页。这里要了解的是，如果使用的不是id，而是class，就会初始化该class的所有元素，实现上面"两个分页联动"的效果。
+
 
 参数解释：
 
