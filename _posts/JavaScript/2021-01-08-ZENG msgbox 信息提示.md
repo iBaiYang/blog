@@ -313,6 +313,8 @@ msgbox.css 文件内容：
 .zeng_msgbox_layer .gtl_end{display:inline-block;height:55px;line-height:55px;font-weight:bold;font-size:14px;color:#fff;background: #333;background-image:url("gb_tip_layer.png");_background-image:url("gb_tip_layer_ie6.png");background-repeat:no-repeat;}
 ```
 
+记得把`gb_tip_layer_ie6.png` 、 `gb_tip_layer.png` 这两张矢量图从黑色背景文件夹移动到这里。
+
 ##### 默认显示时长定制
 
 现在默认显示的时间是5s，我们也可以扩大为50s，修改js文件内容:
