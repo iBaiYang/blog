@@ -126,14 +126,14 @@ echo 'end';
 这3个延迟队列的死信都发送到上面的实时队列中。我们首先把要处理的数据推到 实时队列，实时队列消费者根据消息体中发送时间选择推送到哪一个延迟队列，
 延迟队列数据过了时长再发送到实时队列，实时队列再根据距离时间选择推送到哪一个延迟队列，直到时间到了这条信息的处理时间，再把这条信息推送到目标队列。
 如A项目中有一条信息需要在2小时15分23秒后处理，A项目先把信息推送到 实时队列loop_transfer_wait_data，
-实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1小时，
-则把这条信息转发到 1小时延迟队列delay_loop_transfer_hour_x 中，等1小时后这条信息成为死信又进入 实时队列loop_transfer_wait_data，
-实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1小时，再来一次循环，
-实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1分钟，则把这条信息转发到 1分钟延迟队列delay_loop_transfer_minute_x 中，
-等1分钟后这条信息成为死信又进入 实时队列loop_transfer_wait_data，实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1分钟，再次循环，
-经历15次循环后，实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1秒，则把这条信息转发到 1秒延迟队列delay_loop_transfer_second_x 中，
-等1秒后这条信息成为死信又进入 实时队列loop_transfer_wait_data，实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间大于1秒，再次循环，
-经历23次循环后，实时队列loop_transfer_wait_data 的消费者发现这条信息的处理截止时间就是现在，再把这条信息推送到我们的目标队列。
+实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1小时，
+则把这条信息转发到 1小时延迟队列`delay_loop_transfer_hour_x` 中，等1小时后这条信息成为死信又进入 实时队列`loop_transfer_wait_data`，
+实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1小时，再来一次循环，
+实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1分钟，则把这条信息转发到 1分钟延迟队列`delay_loop_transfer_minute_x` 中，
+等1分钟后这条信息成为死信又进入 实时队列`loop_transfer_wait_data`，实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1分钟，再次循环，
+经历15次循环后，实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1秒，则把这条信息转发到 1秒延迟队列`delay_loop_transfer_second_x` 中，
+等1秒后这条信息成为死信又进入 实时队列`loop_transfer_wait_data`，实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间大于1秒，再次循环，
+经历23次循环后，实时队列`loop_transfer_wait_data` 的消费者发现这条信息的处理截止时间就是现在，再把这条信息推送到我们的目标队列。
 
 下面是代码实例，购物信息1.5小时优惠截止：
 
@@ -148,7 +148,7 @@ $data = [
 Queue::produce($data, 'async', 'loop_transfer_wait_data');
 ```
 
-loop_transfer_wait_data消费者：
+`loop_transfer_wait_data`消费者：
 ```
 $now = time();
 if ($data['transfer_time'] <= $now) {

@@ -94,7 +94,6 @@ $('#pagination-box').jqPaginator({
             last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
             page: '<li class="page"><a href="javascript:void(0);">双大括号 page 双大括号</a></li>',
             onPageChange: function (num) {
-                $('#text').html('当前第' + num + '页');
                 $(".list-box").load('/record/record-list?status=' + status
                     + '&time_start=' + time_start + '&time_end=' + time_end
                     + '&content=' + content + "&page_num=" + num);

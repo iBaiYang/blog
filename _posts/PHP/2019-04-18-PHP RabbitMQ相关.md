@@ -193,7 +193,7 @@ public function connect() { }
 public function isConnected() { }
 ```
 
-new \AMQPChannel($conn)，创建一个AMQPChannel对象的实例，AMQPConnection $amqp_connection 参数是与代理的活动连接的AMQPConnection的实例：
+`new \AMQPChannel($conn)`，创建一个AMQPChannel对象的实例，`AMQPConnection $amqp_connection` 参数是与代理的活动连接的AMQPConnection的实例：
 ```
 /**
  * Create an instance of an AMQPChannel object.
@@ -206,7 +206,7 @@ new \AMQPChannel($conn)，创建一个AMQPChannel对象的实例，AMQPConnectio
 public function __construct(AMQPConnection $amqp_connection) { }
 ```
 
- new \AMQPExchange($channel)，创建一个AMQPExchange实例，返回与给定的AMQPChannel对象关联的AMQPExchange对象的新实例：
+`new \AMQPExchange($channel)`，创建一个AMQPExchange实例，返回与给定的AMQPChannel对象关联的AMQPExchange对象的新实例：
  ```
 /**
  * Create an instance of AMQPExchange.
@@ -223,7 +223,7 @@ public function __construct(AMQPConnection $amqp_connection) { }
 public function __construct(AMQPChannel $amqp_channel) { }
 ```
 
-$ex->setName($exchange)，设置交换机名字：
+`$ex->setName($exchange)`，设置交换机名字：
 ```
 /**
  * Set the name of the exchange.
@@ -235,7 +235,7 @@ $ex->setName($exchange)，设置交换机名字：
 public function setName($exchange_name) { }
 ```
 
-$ex->setType() 设置交换机类型，有direct、fanout、topic三种类型，php中这里定义的常量为 AMQP_EX_TYPE_DIRECT 、 AMQP_EX_TYPE_FANOUT 、 AMQP_EX_TYPE_TOPIC，待会下面会详细解说：
+`$ex->setType()` 设置交换机类型，有direct、fanout、topic三种类型，php中这里定义的常量为 AMQP_EX_TYPE_DIRECT 、 AMQP_EX_TYPE_FANOUT 、 AMQP_EX_TYPE_TOPIC，待会下面会详细解说：
 ```
 /**
  * Set the type of the exchange.
@@ -250,7 +250,7 @@ $ex->setType() 设置交换机类型，有direct、fanout、topic三种类型，
 public function setType($exchange_type) { }
 ```
 
-$ex->setFlags() 设置交换机模式：
+`$ex->setFlags()` 设置交换机模式：
 ```
 /**
  * Set the flags on an exchange.
@@ -273,7 +273,7 @@ AMQP_DURABLE，Durable exchanges and queues will survive a broker restart, compl
 AMQP_PASSIVE，Passive exchanges and queues will not be redeclared, but the broker will throw an error if the exchange or queue does not exist.
 不会重新声明被动交换和队列，但是如果交换或队列不存在，则代理将引发错误。
 
-$ex->declareExchange()，在broker代理上申明一个新的交换机：
+`$ex->declareExchange()`，在broker代理上申明一个新的交换机：
 ```
 /**
  * Declare a new exchange on the broker.
@@ -287,7 +287,7 @@ $ex->declareExchange()，在broker代理上申明一个新的交换机：
 public function declareExchange() { }
 ```
 
-$ex->publish() 将信息发布到交换机，将消息发布到由AMQPExchange对象表示的交换机：
+`$ex->publish()` 将信息发布到交换机，将消息发布到由AMQPExchange对象表示的交换机：
 ```
 /**
  * Publish a message to an exchange.
@@ -319,10 +319,11 @@ public function publish(
 }
 ```
 
-$message 要发布的信息体。
-$routing_key 要发布到的可选路由关键字。
+`$message` 要发布的信息体。
 
-$flags ：
+`$routing_key` 要发布到的可选路由关键字。
+
+`$flags` ：
 ```
 /**
  * Passing in this constant as a flag will forcefully disable all other flags.
@@ -418,7 +419,7 @@ define('AMQP_NOWAIT', 8192);
 define('AMQP_REQUEUE', 16384);
 ```
 
-array $attributes = array()， 可以设置一些参数：
+`array $attributes = array()`， 可以设置一些参数：
 
 | 配置项   | 类型	| 说明 | 
 | --------   | :-----  | :----  |
@@ -445,9 +446,9 @@ $attributes = [
 ];
 ```
 
-delivery_mode，表示是否持久化,1为否,2为是
+`delivery_mode`，表示是否持久化,1为否,2为是
 
-expiration是延迟时长，单位是毫秒，1s=1000毫秒。
+`expiration`是延迟时长，单位是毫秒，1s=1000毫秒。
 
 以上示例是说 在RabbitMQ中定义名为async的Exchange交换机，在这个交换机上推送信息到routing关键字为ticket的路由空间上。
 
@@ -502,7 +503,7 @@ $conn->disconnect();  // 断开连接
 public function __construct(AMQPChannel $amqp_channel) { }
 ```
 
-$q->setName() 设置队列名字：
+`$q->setName()` 设置队列名字：
 ```
 /**
  * Set the queue name.
@@ -514,7 +515,7 @@ $q->setName() 设置队列名字：
 public function setName($queue_name) { }
 ```
 
-$q->setFlags() 设置队列模式：
+`$q->setFlags()` 设置队列模式：
 ```
 /**
  * Set the flags on the queue.
@@ -528,10 +529,10 @@ $q->setFlags() 设置队列模式：
 public function setFlags($flags) { }
 ```
 
-AMQP_EXCLUSIVE ， Valid for queues only, this flag indicates that only one client can be listening to and consuming from this queue.
+`AMQP_EXCLUSIVE` ， Valid for queues only, this flag indicates that only one client can be listening to and consuming from this queue.
 独占队列，仅对队列有效，该标志指示只有一个客户端可以侦听并使用该队列。
 
-AMQP_AUTODELETE ， For exchanges, the auto delete flag indicates that the exchange will be deleted as soon as no more queues are bound
+`AMQP_AUTODELETE` ， For exchanges, the auto delete flag indicates that the exchange will be deleted as soon as no more queues are bound
  to it. If no queues were ever bound the exchange, the exchange will never be deleted. For queues, the auto delete
  flag indicates that the queue will be deleted as soon as there are no more listeners subscribed to it. If no
  subscription has ever been active, the queue will never be deleted. Note: Exclusive queues will always be
@@ -540,7 +541,7 @@ AMQP_AUTODELETE ， For exchanges, the auto delete flag indicates that the excha
  对于队列，自动删除标志指示一旦没有更多的侦听器订阅该队列，该队列就会被删除。 如果没有订阅处于活动状态，该队列将永远不会被删除。 
  注意：独占队列将始终在客户端断开连接时自动删除。
  
-$q->declareQueue() 在borker代理上声明一个新队列。：
+`$q->declareQueue()` 在borker代理上声明一个新队列。：
 ```
 /**
  * Declare a new queue on the broker.
@@ -553,7 +554,7 @@ $q->declareQueue() 在borker代理上声明一个新队列。：
 public function declareQueue() { }
 ```
 
-$q->bind() 将当前给定队列通过routing_key绑定到指定交换机上：
+`$q->bind()` 将当前给定队列通过routing_key绑定到指定交换机上：
 ```
 /**
  * Bind the given queue to a routing key on an exchange.
@@ -570,7 +571,7 @@ $q->bind() 将当前给定队列通过routing_key绑定到指定交换机上：
 public function bind($exchange_name, $routing_key = null, array $arguments = array()) { }
 ```
 
-$q->get() 从队列中检索下一条消息：
+`$q->get()` 从队列中检索下一条消息：
 ```
 /**
  * Retrieve the next message from the queue.
@@ -601,7 +602,7 @@ public function get($flags = AMQP_NOPARAM) { }
 这是AMQPQueue::consume（）方法的一种非阻塞替代方法。 当前，flags参数唯一受支持的标志是AMQP_AUTOACK。 
 如果传递了此标志，则将帧发送到客户端后，返回的消息将自动由代理标记为已确认。
 
-disconnect() 关闭与AMQP代理的瞬时连接： 
+`disconnect()` 关闭与AMQP代理的瞬时连接： 
 ```
 /**
  * Closes the transient connection with the AMQP broker.
@@ -673,7 +674,7 @@ $q->consume($callback);
 $conn->disconnect();
 ```
 
-$channel->qos(0, $offset) 给给定channel通道设置服务质量：
+`$channel->qos(0, $offset)` 给给定channel通道设置服务数量：
 ```
 /**
  * Set the Quality Of Service settings for the given channel.
@@ -700,13 +701,13 @@ $channel->qos(0, $offset) 给给定channel通道设置服务质量：
 public function qos($size, $count) { }
 ```
 
-在AMQPQueue::consume（）或AMQPQueue::get（）方法调用期间从队列发送的消息数中，指定要预取的数据量条数 或 窗口大小（8位字节）。
+在`AMQPQueue::consume()`或`AMQPQueue::get()`方法调用期间从队列发送的消息数中，指定要预取的数据量条数 或 窗口大小（8位字节）。
 客户端将从服务器中预取最大为设定的八位字节的数据或条数消息，以先达到限制为准。 将任一值设置为0将指示客户端忽略该特定设置。 
-调用AMQPChannel::qos（）将覆盖通过调用AMQPChannel::setPrefetchSize（）和AMQPChannel::setPrefetchCount（）设置的任何值。 
-如果对AMQPQueue::consume（）或AMQPQueue::get（）的调用是在设置了AMQP_AUTOACK标志的情况下完成的，
+调用`AMQPChannel::qos()`将覆盖通过调用`AMQPChannel::setPrefetchSize()`和`AMQPChannel::setPrefetchCount()`设置的任何值。 
+如果对`AMQPQueue::consume()`或`AMQPQueue::get()`的调用是在设置了AMQP_AUTOACK标志的情况下完成的，
 则无论QOS设置如何，客户端都不会进行任何数据预取。
 
-$q->consume($callback) 调用回调函数从队列中消费信息，是个阻塞函数，它将在队列中可用时检索下一条消息，并将其传递给回调函数：
+`$q->consume($callback)` 调用回调函数从队列中消费信息，是个阻塞函数，它将在队列中可用时检索下一条消息，并将其传递给回调函数：
 ```
 /**
  * Consume messages from a queue.
@@ -754,8 +755,8 @@ public function consume(
 }
 ```
 
-$callback 回调函数。消费消息将传递到的这个回调函数。 该回调函数有2个参数，第一个AMQPEnvelope对象和第二个可选的参数：
-即从中调用回调的AMQPQueue对象。 在回调函数返回FALSE之前，AMQPQueue::consume()不会将处理线程返回到PHP脚本。 
+`$callback` 回调函数。消费消息将传递到的这个回调函数。 该回调函数有2个参数，第一个AMQPEnvelope对象和第二个可选的参数：
+即从中调用回调的AMQPQueue对象。 在回调函数返回`FALSE`之前，`AMQPQueue::consume()`不会将处理线程返回到PHP脚本。 
 如果省略了该回调函数参数或传递了null，则传递给此客户端的消息将可用于已注册的第一个实际回调函数。 
 这样一来，一个回调函数就可以处理多个队列。
 
@@ -764,7 +765,7 @@ $flags 标志位掩码：AMQP_AUTOACK，AMQP_JUST_CONSUME。
 AMQP_JUST_CONSUME 标志阻止发送 `basic.consume` 请求，如果提供则只运行$callback。 
 如果调用的$callback方法为空，则AMQP_JUST_CONSUME没有意义。
 
-$consumerTag 描述此使用者的字符串。 用于通过cancel()取消订阅。
+`$consumerTag` 描述此使用者的字符串。 用于通过cancel()取消订阅。
 
 AMQPEnvelope 结构体：
 ```
@@ -843,9 +844,9 @@ class AMQPEnvelope extends AMQPBasicProperties
 }
 ```
 
-$envelope->getDeliveryTag() 获取信息的传递标签。
+`$envelope->getDeliveryTag()` 获取信息的传递标签。
 
-$queue->ack($tag) 向队列确认收到$tag的消息：
+`$queue->ack($tag)` 向队列确认收到$tag的消息：
 ```
 /**
  * Acknowledge the receipt of a message.
@@ -867,7 +868,7 @@ $queue->ack($tag) 向队列确认收到$tag的消息：
 public function ack($delivery_tag, $flags = AMQP_NOPARAM) { }
 ```
 
-在没有 AMQP_AUTOACK 标志时，这个方法可以通过调用 AMQPQueue::get() 或 AMQPQueue::consume() 确认检索到的信息。
+在没有 AMQP_AUTOACK 标志时，这个方法可以通过调用 `AMQPQueue::get()` 或 `AMQPQueue::consume()` 确认检索到的信息。
 
 #### AMQP messaging 中的基本概念
 

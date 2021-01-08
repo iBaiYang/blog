@@ -81,7 +81,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 #### 安装插件
 
-现在还不用通过web页面管理rabbitmq，我们需要安装插件：
+现在还不能通过web页面管理rabbitmq，我们需要安装插件：
 
 > sudo rabbitmq-plugins enable rabbitmq_management
 
@@ -99,7 +99,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 #### 初步使用
 
-可以看到首页概览中只有Exchanges 有8个，看一下详情：
+可以看到首页概览中 Exchanges 有8个，看一下详情：
 
 ![]({{site.baseurl}}/images/20200330/20200330193355.png)
 
