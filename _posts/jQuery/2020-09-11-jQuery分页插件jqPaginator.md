@@ -17,7 +17,7 @@ meta: 我们有时在前段需要用到翻页功能，有没有比较到的插�
 然后在项目中使用：
 ```html
 <div id="text"></div>
-<div id="pagination-box"></div>
+<div id="pagination-box" class="pagination"></div>
 
 $('#pagination-box').jqPaginator({
     totalPages: 100,
@@ -35,10 +35,78 @@ $('#pagination-box').jqPaginator({
 });
 ```
 
-上例就是第一Demo，Bootstrap风格的分页。这里要了解的是，如果使用的不是id，而是class，就会初始化该class的所有元素，实现上面"两个分页联动"的效果。
+![]({{site.baseurl}}/images/20210108/20210108110336.png)
 
+上例就是第一Demo，Bootstrap风格的分页(class属性)。这里要了解的是，如果使用的不是id，而是class，就会初始化该class的所有元素，实现上面"两个分页联动"的效果。
 
-参数解释：
+看一个最简单的使用实例：
+
+```javascript
+<div id="text"></div>
+<div id="pagination-box" class="pagination"></div>
+
+<script>
+    $('#pagination-box').jqPaginator({
+        totalPages: 100,
+        currentPage: 1,
+
+        onPageChange: function (num) {
+            $('#text').html('当前第' + num + '页');
+        }
+    });
+</script>
+```
+
+![]({{site.baseurl}}/images/20210108/20210108110805.png)
+
+还有这种：
+
+```javascript
+<div class="list-box"></div>
+<div class="page-box">
+    <ul class="pagination pull-left">
+        <li>
+            <a href="javascript:;">
+                <span class="text-info">共 <b><?= $count; ?></b> 条</span>
+            </a>
+        </li>
+    </ul>
+    <ul id="pagination-box" class="pagination pull-right"></ul>
+</div>
+
+<script>
+    $(function () {
+        var getParams = <?= json_encode(Yii::$app->request->get(), JSON_UNESCAPED_SLASHES) ?>;
+        var status = !getParams.status ? '' : getParams.status;
+        var time_start = !getParams.time_start ? '' : getParams.time_start;
+        var time_end = !getParams.time_end ? '' : getParams.time_end;
+        var content = !getParams.content ? '' : getParams.content;
+
+        $('#pagination-box').jqPaginator({
+            totalCounts: <?= $count; ?>,
+            pageSize: 1,
+            visiblePages: 6,
+            currentPage: 1,
+
+            first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+            prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+            next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+            last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
+            page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+            onPageChange: function (num) {
+                $('#text').html('当前第' + num + '页');
+                $(".list-box").load('/record/record-list?status=' + status
+                    + '&time_start=' + time_start + '&time_end=' + time_end
+                    + '&content=' + content + "&page_num=" + num);
+            }
+        });
+    });
+</script>
+```
+
+![]({{site.baseurl}}/images/20210108/20210108111157.png)
+
+#### 参数解释
 
 | 参数 | 	默认值 	| 说明 | 
 | :--------   | :-----  | :----  |
