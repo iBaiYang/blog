@@ -480,7 +480,7 @@ A plugin to show highly customizable notifications to the user.
 ###### Demo
 For some quick demos and a detailed documentation accompanied by the demos for each of the available options can be accessed through http://kamranahmed.info/toast
 
-####### Quick usage examples
+###### Quick usage examples
 **Simple textual toast**
 ```javascript
 // Non sticky version
