@@ -58,6 +58,403 @@ jQuery-toast 信息提示插件,可以看到动态效果，样式比较养眼。
 
 #### 1.3.1版
 
+##### 源码
+
+jquery.toast.css文件源码：
+```css
+/**
+ * jQuery toast plugin created by Kamran Ahmed copyright MIT license 2014
+ */
+.jq-toast-wrap { display: block; position: fixed; width: 250px;  pointer-events: none !important; margin: 0; padding: 0; letter-spacing: normal; z-index: 9000 !important; }
+.jq-toast-wrap * { margin: 0; padding: 0; }
+
+.jq-toast-wrap.bottom-left { bottom: 20px; left: 20px; }
+.jq-toast-wrap.bottom-right { bottom: 20px; right: 40px; }
+.jq-toast-wrap.top-left { top: 20px; left: 20px; }
+.jq-toast-wrap.top-right { top: 20px; right: 40px; }
+
+.jq-toast-single { display: block; width: 100%; padding: 10px; margin: 0px 0px 5px; border-radius: 4px; font-size: 12px; font-family: arial, sans-serif; line-height: 17px; position: relative;  pointer-events: all !important; background-color: #444444; color: white; }
+
+.jq-toast-single h2 { font-family: arial, sans-serif; font-size: 14px; margin: 0px 0px 7px; background: none; color: inherit; line-height: inherit; letter-spacing: normal; }
+.jq-toast-single a { color: #eee; text-decoration: none; font-weight: bold; border-bottom: 1px solid white; padding-bottom: 3px; font-size: 12px; }
+
+.jq-toast-single ul { margin: 0px 0px 0px 15px; background: none; padding:0px; }
+.jq-toast-single ul li { list-style-type: disc !important; line-height: 17px; background: none; margin: 0; padding: 0; letter-spacing: normal; }
+
+.close-jq-toast-single { position: absolute; top: 3px; right: 7px; font-size: 14px; cursor: pointer; }
+
+.jq-toast-loader { display: block; position: absolute; top: -2px; height: 5px; width: 0%; left: 0; border-radius: 5px; background: red; }
+.jq-toast-loaded { width: 100%; }
+.jq-has-icon { padding: 10px 10px 10px 50px; background-repeat: no-repeat; background-position: 10px; }
+.jq-icon-info { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII='); background-color: #31708f; color: #d9edf7; border-color: #bce8f1; }
+.jq-icon-warning { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII='); background-color: #8a6d3b; color: #fcf8e3; border-color: #faebcc; }
+.jq-icon-error { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII='); background-color: #a94442; color: #f2dede; border-color: #ebccd1; }
+.jq-icon-success { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg=='); color: #dff0d8; background-color: #3c763d; border-color: #d6e9c6; }
+```
+
+jquery.toast.js文件源码：
+```javascript
+// jQuery toast plugin created by Kamran Ahmed copyright MIT license 2015
+if ( typeof Object.create !== 'function' ) {
+    Object.create = function( obj ) {
+        function F() {}
+        F.prototype = obj;
+        return new F();
+    };
+}
+
+(function( $, window, document, undefined ) {
+
+    "use strict";
+    
+    var Toast = {
+
+        _positionClasses : ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'],
+        _defaultIcons : ['success', 'error', 'info', 'warning'],
+
+        init: function (options, elem) {
+            this.prepareOptions(options, $.toast.options);
+            this.process();
+        },
+
+        prepareOptions: function(options, options_to_extend) {
+            var _options = {};
+            if ( ( typeof options === 'string' ) || ( options instanceof Array ) ) {
+                _options.text = options;
+            } else {
+                _options = options;
+            }
+            this.options = $.extend( {}, options_to_extend, _options );
+        },
+
+        process: function () {
+            this.setup();
+            this.addToDom();
+            this.position();
+            this.bindToast();
+            this.animate();
+        },
+
+        setup: function () {
+            
+            var _toastContent = '';
+            
+            this._toastEl = this._toastEl || $('<div></div>', {
+                class : 'jq-toast-single'
+            });
+
+            // For the loader on top
+            _toastContent += '<span class="jq-toast-loader"></span>';            
+
+            if ( this.options.allowToastClose ) {
+                _toastContent += '<span class="close-jq-toast-single">&times;</span>';
+            };
+
+            if ( this.options.text instanceof Array ) {
+
+                if ( this.options.heading ) {
+                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
+                };
+
+                _toastContent += '<ul class="jq-toast-ul">';
+                for (var i = 0; i < this.options.text.length; i++) {
+                    _toastContent += '<li class="jq-toast-li" id="jq-toast-item-' + i + '">' + this.options.text[i] + '</li>';
+                }
+                _toastContent += '</ul>';
+
+            } else {
+                if ( this.options.heading ) {
+                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
+                };
+                _toastContent += this.options.text;
+            }
+
+            this._toastEl.html( _toastContent );
+
+            if ( this.options.bgColor !== false ) {
+                this._toastEl.css("background-color", this.options.bgColor);
+            };
+
+            if ( this.options.textColor !== false ) {
+                this._toastEl.css("color", this.options.textColor);
+            };
+
+            if ( this.options.textAlign ) {
+                this._toastEl.css('text-align', this.options.textAlign);
+            }
+
+            if ( this.options.icon !== false ) {
+                this._toastEl.addClass('jq-has-icon');
+
+                if ( $.inArray(this.options.icon, this._defaultIcons) !== -1 ) {
+                    this._toastEl.addClass('jq-icon-' + this.options.icon);
+                };
+            };
+
+            if ( this.options.class !== false ){
+                this._toastEl.addClass(this.options.class)
+            }
+        },
+
+        position: function () {
+            if ( ( typeof this.options.position === 'string' ) && ( $.inArray( this.options.position, this._positionClasses) !== -1 ) ) {
+
+                if ( this.options.position === 'bottom-center' ) {
+                    this._container.css({
+                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
+                        bottom: 20
+                    });
+                } else if ( this.options.position === 'top-center' ) {
+                    this._container.css({
+                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
+                        top: 20
+                    });
+                } else if ( this.options.position === 'mid-center' ) {
+                    this._container.css({
+                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
+                        top: ( $(window).outerHeight() / 2 ) - this._container.outerHeight()/2
+                    });
+                } else {
+                    this._container.addClass( this.options.position );
+                }
+
+            } else if ( typeof this.options.position === 'object' ) {
+                this._container.css({
+                    top : this.options.position.top ? this.options.position.top : 'auto',
+                    bottom : this.options.position.bottom ? this.options.position.bottom : 'auto',
+                    left : this.options.position.left ? this.options.position.left : 'auto',
+                    right : this.options.position.right ? this.options.position.right : 'auto'
+                });
+            } else {
+                this._container.addClass( 'bottom-left' );
+            }
+        },
+
+        bindToast: function () {
+
+            var that = this;
+
+            this._toastEl.on('afterShown', function () {
+                that.processLoader();
+            });
+
+            this._toastEl.find('.close-jq-toast-single').on('click', function ( e ) {
+
+                e.preventDefault();
+
+                if( that.options.showHideTransition === 'fade') {
+                    that._toastEl.trigger('beforeHide');
+                    that._toastEl.fadeOut(function () {
+                        that._toastEl.trigger('afterHidden');
+                    });
+                } else if ( that.options.showHideTransition === 'slide' ) {
+                    that._toastEl.trigger('beforeHide');
+                    that._toastEl.slideUp(function () {
+                        that._toastEl.trigger('afterHidden');
+                    });
+                } else {
+                    that._toastEl.trigger('beforeHide');
+                    that._toastEl.hide(function () {
+                        that._toastEl.trigger('afterHidden');
+                    });
+                }
+            });
+
+            if ( typeof this.options.beforeShow == 'function' ) {
+                this._toastEl.on('beforeShow', function () {
+                    that.options.beforeShow();
+                });
+            };
+
+            if ( typeof this.options.afterShown == 'function' ) {
+                this._toastEl.on('afterShown', function () {
+                    that.options.afterShown();
+                });
+            };
+
+            if ( typeof this.options.beforeHide == 'function' ) {
+                this._toastEl.on('beforeHide', function () {
+                    that.options.beforeHide();
+                });
+            };
+
+            if ( typeof this.options.afterHidden == 'function' ) {
+                this._toastEl.on('afterHidden', function () {
+                    that.options.afterHidden();
+                });
+            };          
+        },
+
+        addToDom: function () {
+
+             var _container = $('.jq-toast-wrap');
+             
+             if ( _container.length === 0 ) {
+                
+                _container = $('<div></div>',{
+                    class: "jq-toast-wrap",
+                    role: "alert",
+                    "aria-live": "polite"
+                });
+
+                $('body').append( _container );
+
+             } else if ( !this.options.stack || isNaN( parseInt(this.options.stack, 10) ) ) {
+                _container.empty();
+             }
+
+             _container.find('.jq-toast-single:hidden').remove();
+
+             _container.append( this._toastEl );
+
+            if ( this.options.stack && !isNaN( parseInt( this.options.stack ), 10 ) ) {
+                
+                var _prevToastCount = _container.find('.jq-toast-single').length,
+                    _extToastCount = _prevToastCount - this.options.stack;
+
+                if ( _extToastCount > 0 ) {
+                    $('.jq-toast-wrap').find('.jq-toast-single').slice(0, _extToastCount).remove();
+                };
+
+            }
+
+            this._container = _container;
+        },
+
+        canAutoHide: function () {
+            return ( this.options.hideAfter !== false ) && !isNaN( parseInt( this.options.hideAfter, 10 ) );
+        },
+
+        processLoader: function () {
+            // Show the loader only, if auto-hide is on and loader is demanded
+            if (!this.canAutoHide() || this.options.loader === false) {
+                return false;
+            }
+
+            var loader = this._toastEl.find('.jq-toast-loader');
+
+            // 400 is the default time that jquery uses for fade/slide
+            // Divide by 1000 for milliseconds to seconds conversion
+            var transitionTime = (this.options.hideAfter - 400) / 1000 + 's';
+            var loaderBg = this.options.loaderBg;
+
+            var style = loader.attr('style') || '';
+            style = style.substring(0, style.indexOf('-webkit-transition')); // Remove the last transition definition
+
+            style += '-webkit-transition: width ' + transitionTime + ' ease-in; \
+                      -o-transition: width ' + transitionTime + ' ease-in; \
+                      transition: width ' + transitionTime + ' ease-in; \
+                      background-color: ' + loaderBg + ';';
+
+
+            loader.attr('style', style).addClass('jq-toast-loaded');
+        },
+
+        animate: function () {
+
+            var that = this;
+
+            this._toastEl.hide();
+
+            this._toastEl.trigger('beforeShow');
+
+            if ( this.options.showHideTransition.toLowerCase() === 'fade' ) {
+                this._toastEl.fadeIn(function ( ){
+                    that._toastEl.trigger('afterShown');
+                });
+            } else if ( this.options.showHideTransition.toLowerCase() === 'slide' ) {
+                this._toastEl.slideDown(function ( ){
+                    that._toastEl.trigger('afterShown');
+                });
+            } else {
+                this._toastEl.show(function ( ){
+                    that._toastEl.trigger('afterShown');
+                });
+            }
+
+            if (this.canAutoHide()) {
+
+                var that = this;
+
+                window.setTimeout(function(){
+                    
+                    if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
+                        that._toastEl.trigger('beforeHide');
+                        that._toastEl.fadeOut(function () {
+                            that._toastEl.trigger('afterHidden');
+                        });
+                    } else if ( that.options.showHideTransition.toLowerCase() === 'slide' ) {
+                        that._toastEl.trigger('beforeHide');
+                        that._toastEl.slideUp(function () {
+                            that._toastEl.trigger('afterHidden');
+                        });
+                    } else {
+                        that._toastEl.trigger('beforeHide');
+                        that._toastEl.hide(function () {
+                            that._toastEl.trigger('afterHidden');
+                        });
+                    }
+
+                }, this.options.hideAfter);
+            };
+        },
+
+        reset: function ( resetWhat ) {
+
+            if ( resetWhat === 'all' ) {
+                $('.jq-toast-wrap').remove();
+            } else {
+                this._toastEl.remove();
+            }
+
+        },
+
+        update: function(options) {
+            this.prepareOptions(options, this.options);
+            this.setup();
+            this.bindToast();
+        }
+    };
+    
+    $.toast = function(options) {
+        var toast = Object.create(Toast);
+        toast.init(options, this);
+
+        return {
+            
+            reset: function ( what ) {
+                toast.reset( what );
+            },
+
+            update: function( options ) {
+                toast.update( options );
+            }
+        }
+    };
+
+    $.toast.options = {
+        text: '',
+        heading: '',
+        showHideTransition: 'fade',
+        allowToastClose: true,
+        hideAfter: 3000,
+        loader: true,
+        loaderBg: '#9EC600',
+        stack: 5,
+        position: 'bottom-left',
+        bgColor: false,
+        textColor: false,
+        textAlign: 'left',
+        icon: false,
+        beforeShow: function () {},
+        afterShown: function () {},
+        beforeHide: function () {},
+        afterHidden: function () {}
+    };
+
+})( jQuery, window, document );
+```
+
 ##### 官方文档
 
 A plugin to show highly customizable notifications to the user.
