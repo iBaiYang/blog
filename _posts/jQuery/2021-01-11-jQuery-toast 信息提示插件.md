@@ -459,8 +459,6 @@ if ( typeof Object.create !== 'function' ) {
 
 A plugin to show highly customizable notifications to the user.
 
-<img src="http://i.imgur.com/RRrb0KE.png" />
-
 ###### How to use
 
 - You can install the plugin via Bower:
@@ -735,7 +733,7 @@ Example:
 * **align** - Alignment of toasts in the page. Possibly values are 'left', 'center', and 'right'. (default: 'center')
 * **closeForStickyOnly** - Determines if the close button is displayed for all toasts or just those that are sticky. (default: true)
 
-##### 实例
+##### 示例
 
 这是1.0.1版本的例子：
 
