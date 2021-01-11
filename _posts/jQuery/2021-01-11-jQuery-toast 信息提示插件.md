@@ -73,45 +73,45 @@ jquery.toast.css文件源码：
 jquery.toast.js文件源码：
 ```javascript
 (function($){
-	var th = null, cf = null, toast = function(m,o){
-		// fix option type
-		o = $.extend({ duration: 5000, sticky: false, 'type': ''}, o);
-		typeof o.duration === 'number' || (o.duration = 5000);
-		typeof o.sticky === 'boolean' || (o.sticky = false);
-		typeof o.type === 'string' || (o.type = '');
-		// create host on first call
-		if(!th){ 
-			// get/fix config
-			cf = toast.config;
-			th = $('<ul></ul>').addClass('toast').appendTo(document.body).hide();
-			typeof cf.width === 'number' || (cf.width = 500);
-			typeof cf.align === 'string' || (cf.align = 'center');
-			typeof cf.closeForStickyOnly === 'boolean' || (cf.closeForStickyOnly = false);
-			th.width(cf.width);
-			(cf.align === 'left' || cf.align === 'right') && th.css('margin','5px').css(cf.align, '0') || th.css({left: '50%', margin: '5px 0 0 -' + (cf.width / 2) + 'px'});
-		}
-		// create toast
-		var ti = $('<li></li>').hide().html(m).appendTo(th), cb = $('<button>&times;</button>').addClass('close').prependTo(ti), to = null;
-		// setup close button
-		cb.click(function(){
-			clearTimeout(to);
-			ti.animate({ height: 0, opacity: 0}, 'fast', function(){
-				ti.remove();
-				th.children().length || th.removeClass('active').hide();
-			});
-		});
-		cf.closeForStickyOnly && !o.sticky && cb.hide();
-		// add type class
-		o.type !== '' && ti.addClass(o.type);
-		// show host if necessary
-		!th.hasClass('active') && th.addClass('active').show();
-		// setup timeout unless sticky
-		!o.sticky && o.duration > 0 && (to = setTimeout(function(){ cb.click(); }, o.duration));
-		// show toast
-		ti.fadeIn('normal');
-	};
-	toast.config = { width: 500, align: 'center', closeForStickyOnly: true };
-	$.extend({ toast: toast });
+    var th = null, cf = null, toast = function(m,o){
+        // fix option type
+        o = $.extend({ duration: 5000, sticky: false, 'type': ''}, o);
+        typeof o.duration === 'number' || (o.duration = 5000);
+        typeof o.sticky === 'boolean' || (o.sticky = false);
+        typeof o.type === 'string' || (o.type = '');
+        // create host on first call
+        if(!th){ 
+            // get/fix config
+            cf = toast.config;
+            th = $('<ul></ul>').addClass('toast').appendTo(document.body).hide();
+            typeof cf.width === 'number' || (cf.width = 500);
+            typeof cf.align === 'string' || (cf.align = 'center');
+            typeof cf.closeForStickyOnly === 'boolean' || (cf.closeForStickyOnly = false);
+            th.width(cf.width);
+            (cf.align === 'left' || cf.align === 'right') && th.css('margin','5px').css(cf.align, '0') || th.css({left: '50%', margin: '5px 0 0 -' + (cf.width / 2) + 'px'});
+        }
+        // create toast
+        var ti = $('<li></li>').hide().html(m).appendTo(th), cb = $('<button>&times;</button>').addClass('close').prependTo(ti), to = null;
+        // setup close button
+        cb.click(function(){
+            clearTimeout(to);
+            ti.animate({ height: 0, opacity: 0}, 'fast', function(){
+                ti.remove();
+                th.children().length || th.removeClass('active').hide();
+            });
+        });
+        cf.closeForStickyOnly && !o.sticky && cb.hide();
+        // add type class
+        o.type !== '' && ti.addClass(o.type);
+        // show host if necessary
+        !th.hasClass('active') && th.addClass('active').show();
+        // setup timeout unless sticky
+        !o.sticky && o.duration > 0 && (to = setTimeout(function(){ cb.click(); }, o.duration));
+        // show toast
+        ti.fadeIn('normal');
+    };
+    toast.config = { width: 500, align: 'center', closeForStickyOnly: true };
+    $.extend({ toast: toast });
 })(jQuery);
 ```
 
@@ -167,52 +167,52 @@ Example:
 
 ```
 <html>
-	<head>
-		<style type="text/css">
-			body{ margin: 0; padding: 0; font-family: sans-serif; } body>div { width:960px; margin: 0 auto; } a { padding: 4px 8px; }
-		</style>
-		<link rel="stylesheet" type="text/css" href="../jquery.toast/jquery.toast.css" />
-		<script type="text/javascript" src="http://cdn.staticfile.org/jquery/3.0.0/jquery.min.js"></script>
-		<script type="text/javascript" src="../jquery.toast/jquery.toast.js"></script>
-		<script type="text/javascript">
-			function createToast(t){
-				var message = 'Hi, I\m just your every day, average kind of toast.';
-				var options = {
-					duration: Math.floor(Math.random() * 4001) + 1000,
-					sticky: !!Math.round(Math.random() * 1),
-					type: t
-				};
-				
-				switch(t){
-					case 'danger': message = '<h4>Danger!</h4> Oh no. You\'ve activated a dangerous toast. Beware as it was may (or may not) be sticky.'; break;
-					case 'info': message = '<h4>FYI</h4> I\'m a toast and I just wanted you to know that.'; break;
-					case 'success': message = '<h4>Great!</h4> You\'ve made a toast. Now let\'s\ toast to you.'; break;
-				}
-				
-				$.toast(message, options);
-			}
-			
-			$(document).ready(function(){
-				$.toast.config.align = 'right';
-				$.toast.config.width = 400;
-				
-				$('a').click(function(){
-					createToast($(this).attr('class'));
-					return false;
-				});
-			});
-		</script>
-	</head>
-	<body>
-		<div>
-			<p>
-				<a href="#" class="">Default Toast</a>
-				<a href="#" class="danger">Danger Toast</a>
-				<a href="#" class="info">Info Toast</a>
-				<a href="#" class="success">Success Toast</a>
-			</p>
-		</div>
-	</body>
+    <head>
+        <style type="text/css">
+            body{ margin: 0; padding: 0; font-family: sans-serif; } body>div { width:960px; margin: 0 auto; } a { padding: 4px 8px; }
+        </style>
+        <link rel="stylesheet" type="text/css" href="../jquery.toast/jquery.toast.css" />
+        <script type="text/javascript" src="http://cdn.staticfile.org/jquery/3.0.0/jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.toast/jquery.toast.js"></script>
+        <script type="text/javascript">
+            function createToast(t){
+                var message = 'Hi, I\m just your every day, average kind of toast.';
+                var options = {
+                    duration: Math.floor(Math.random() * 4001) + 1000,
+                    sticky: !!Math.round(Math.random() * 1),
+                    type: t
+                };
+                
+                switch(t){
+                    case 'danger': message = '<h4>Danger!</h4> Oh no. You\'ve activated a dangerous toast. Beware as it was may (or may not) be sticky.'; break;
+                    case 'info': message = '<h4>FYI</h4> I\'m a toast and I just wanted you to know that.'; break;
+                    case 'success': message = '<h4>Great!</h4> You\'ve made a toast. Now let\'s\ toast to you.'; break;
+                }
+                
+                $.toast(message, options);
+            }
+            
+            $(document).ready(function(){
+                $.toast.config.align = 'right';
+                $.toast.config.width = 400;
+                
+                $('a').click(function(){
+                    createToast($(this).attr('class'));
+                    return false;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <p>
+                <a href="#" class="">Default Toast</a>
+                <a href="#" class="danger">Danger Toast</a>
+                <a href="#" class="info">Info Toast</a>
+                <a href="#" class="success">Success Toast</a>
+            </p>
+        </div>
+    </body>
 </html>
 ```
 
