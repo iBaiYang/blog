@@ -117,8 +117,7 @@ jquery.toast.js文件源码：
 
 #### 官方文档
 
-jquery.toast
-============
+**jquery.toast**
 
 A simple jQuery "toast" message plugin. You can view the example page [here](http://htmlpreview.github.com/?https://github.com/Soldier-B/jquery.toast/blob/master/example/jquery.toast.html).
 
