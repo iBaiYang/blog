@@ -359,6 +359,8 @@ var vueOrderList = new Vue({
 <br/><br/><br/><br/><br/>
 ### 参考资料 
 
-jqPaginator 源码包位置 <https://github.com/keenwon/jqPaginator>
+jqPaginator 源码包位置 <https://github.com/scepterscythe/jqPaginator>
+
+<https://github.com/keenwon/jqPaginator>
 
 jQuery 分页插件 : jqPaginator <https://www.runoob.com/w3cnote/jquery-jqpaginator.html>
