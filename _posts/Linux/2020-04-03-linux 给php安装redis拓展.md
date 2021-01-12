@@ -76,6 +76,8 @@ W: APT had planned for dpkg to do more than it reported back (0 vs 4).
 
 看来需要编译安装了。
 
+上面只是一部分，具体可以参考下 [Linux php7.1 apt安装](https://ibaiyang.github.io/blog/linux/2019/12/19/Linux-php7.1-apt%E5%AE%89%E8%A3%85.html#%E5%AE%89%E8%A3%85redis%E6%8B%93%E5%B1%95) 。
+
 #### 编译安装
 
 在/usr/local/src目录下，下载php-redis拓展包：
@@ -137,4 +139,6 @@ github phpredis <https://github.com/phpredis/phpredis/releases>
 runoob PHP 使用 Redis <https://www.runoob.com/redis/redis-php.html>
 
 php7.1(linux) redis 扩展安装 <https://blog.csdn.net/b1303110335/article/details/77054054>
+
+Linux php7.1 apt安装 <https://ibaiyang.github.io/blog/linux/2019/12/19/Linux-php7.1-apt安装.html>
 
