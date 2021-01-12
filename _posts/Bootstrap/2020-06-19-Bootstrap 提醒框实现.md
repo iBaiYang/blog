@@ -10,8 +10,11 @@ meta: tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹�
 ### 正文
 
 tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹出，popover鼠标点击弹出。
+这两个点击后提醒框都会持久留在页面，除非再次点击才会消失。
 
 #### Tooltip
+
+![]({{site.baseurl}}/images/20210112/20210112144100.png)
 
 提示工具（Tooltip）插件，使用 CSS 实现动画效果，用 data 属性存储标题信息等。
 引用 bootstrap.js 或压缩版的 bootstrap.min.js，就可以使用Tooltip插件。如果您想要单独引用该插件的功能，那么您需要引用 tooltip.js。
@@ -40,7 +43,11 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 
 <https://www.runoob.com/try/try2.php?filename=bootstrap3-plugin-tooltip>
 
+更多完整功能看一下 [Bootstrap 提示工具（Tooltip）插件](https://www.runoob.com/bootstrap/bootstrap-tooltip-plugin.html) 。
+
 #### Popover
+
+![]({{site.baseurl}}/images/20210112/20210112144123.png)
 
 弹出框（Popover）与工具提示（Tooltip）类似，提供了一个扩展的视图。它依赖于 工具提示（Tooltip）插件。
 引用 bootstrap.js 或压缩版的 bootstrap.min.js，就可以使用Popover插件。如果您想要单独引用该插件的功能，那么您需要引用 popover.js。
@@ -72,6 +79,8 @@ $(function () { $("[data-toggle='popover']").popover(); });
 <https://www.runoob.com/try/try.php?filename=bootstrap3-plugin-popover>
 
 弹出内容中换行等实现可以使用Popover的html属性。
+
+更多完整功能看一下 [Bootstrap 弹出框（Popover）插件](https://www.runoob.com/bootstrap/bootstrap-popover-plugin.html) 。
 
 ### 参考资料 
 

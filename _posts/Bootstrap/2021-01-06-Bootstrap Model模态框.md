@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: JavaScript
+categories: Bootstrap
 title: Bootstrap Model模态框
 meta: Bootstrap Model模态框
 ---
