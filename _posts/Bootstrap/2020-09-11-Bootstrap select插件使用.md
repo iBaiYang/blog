@@ -19,7 +19,7 @@ Bootstrap-select 需要 jQuery v1.9.1 +， Bootstrap的dropdown.js组件 和 Boo
 Bootstrap-select包下载后引入：
 ```javascript
 <link href="http://cdn.staticfile.org/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css" rel="stylesheet">
 
 <script src="http://cdn.staticfile.org/jquery/3.0.0/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
