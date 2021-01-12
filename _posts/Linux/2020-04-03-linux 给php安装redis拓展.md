@@ -9,7 +9,7 @@ meta: linux 给php安装redis拓展
 
 ### 正文
 
-#### 引言
+#### apt安装
 
 用apt方式安装：
 
