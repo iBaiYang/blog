@@ -22,7 +22,7 @@ tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹出，po
 提示工具（Tooltip）插件根据需求生成内容和标记，默认情况下是把提示工具（tooltip）放在它们的触发元素后面。
 您可以有以下两种方式添加提示工具（tooltip）：
 
-方式1，通过 data 属性：如需添加一个提示工具（tooltip），只需向一个锚标签添加 data-toggle="tooltip" 即可。
+方式1，通过 data 属性：如需添加一个提示工具（tooltip），只需向一个锚标签添加 `data-toggle="tooltip"` 即可。
 锚的 title 即为提示工具（tooltip）的文本。默认情况下，插件把提示工具（tooltip）设置在顶部。 
 ```
 <a href="#" data-toggle="tooltip" title="Example tooltip">请悬停在我的上面</a>
@@ -55,7 +55,7 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 弹出框（Popover）插件根据需求生成内容和标记，默认情况下是把弹出框（popover）放在它们的触发元素后面。
 您可以有以下两种方式添加弹出框（popover）：
 
-方式1，通过 data 属性：如需添加一个弹出框（popover），只需向一个锚/按钮标签添加 data-toggle="popover" 即可。
+方式1，通过 data 属性：如需添加一个弹出框（popover），只需向一个锚/按钮标签添加 `data-toggle="popover"` 即可。
 锚的 title 即为弹出框（popover）的文本。默认情况下，插件把弹出框（popover）设置在顶部。 
 ```
 <a href="#" data-toggle="popover" title="Example popover">
