@@ -23,16 +23,16 @@ meta: 记录一下 Linux 下安装Redis流程
 
 安装成功
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7hlPcZYGL83&690)
+![]({{site.baseurl}}/images/20210112/20210112125424.jpg)
 
-![](http://s12.sinaimg.cn/mw690/001XbchKzy7hlPjTc7xdb&690)
+![]({{site.baseurl}}/images/20210112/20210112125425.jpg)
 
-![](http://s14.sinaimg.cn/mw690/001XbchKzy7hlPm8Ow50d&690)
+![]({{site.baseurl}}/images/20210112/20210112125426.jpg)
 
 接下来开启服务：
 > src/redis-server
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7hlPoC7BLf1&690)
+![]({{site.baseurl}}/images/20210112/20210112125427.jpg)
 
 #### apt方式安装
 
@@ -124,9 +124,9 @@ redis拓展包在这里下载：
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-<https://redis.io/download>
+redis 官网下载 <https://redis.io/download>
 
-<https://www.cnblogs.com/zhxilin/p/5892678.html>
+Redis安装和自启动配置 <https://www.cnblogs.com/zhxilin/p/5892678.html>
 
 [Redis官网](https://redis.io/)
 
