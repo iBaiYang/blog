@@ -14,15 +14,18 @@ meta: 有时需要在页面上弹出多个模态框，但Bootstrap只允许弹�
 
 您可以有以下两种方式切换模态框（Modal）：
 
-方式1，通过 data 属性：在控制器元素（比如按钮或者链接）上设置属性 data-toggle="modal"，
-同时设置 data-target="#identifier" 或 href="#identifier" 来指定要切换的特定的模态框（带有 id="identifier"）。
+方式1，通过 data 属性：在控制器元素（比如按钮或者链接）上设置属性 `data-toggle="modal"`，
+同时设置 `data-target="#identifier"` 或 `href="#identifier"` 来指定要切换的特定的模态框（带有 `id="identifier"`）。
 
-方式2，通过 JavaScript：使用这种技术，您可以通过简单的一行 JavaScript 来调用带有 id="identifier" 的模态框： 
+方式2，通过 JavaScript：使用这种技术，您可以通过简单的一行 JavaScript 来调用带有 `id="identifier"` 的模态框： 
 ```
-$('#identifier').modal(options)
+$('#identifier').modal(options);
 ```
 
-实例：
+#### 实例
+
+![]({{site.baseurl}}/images/20210112/20210112141856.png)
+
 ```
 <!doctype html>
 <html lang="en">
@@ -97,6 +100,7 @@ $('#identifier').modal(options)
         </div>
         <p><a data-toggle="modal" href="#example1" class="btn btn-primary btn-large">发动演示模态框</a></p>
     </div>
+    
     <script src="http://cdn.staticfile.org/jquery/3.0.0/jquery.min.js"></script>
     <script src="http://cdn.staticfile.org/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script>
