@@ -33,7 +33,7 @@ tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹出，po
 $('#identifier').tooltip(options)
 ```
 
-注意：提示工具（Tooltip）插件不像之前所讨论的下拉菜单及其他插件那样，它不是纯 CSS 插件。如需使用该插件，
+**注意**：提示工具（Tooltip）插件不像之前所讨论的下拉菜单及其他插件那样，它不是纯 CSS 插件。如需使用该插件，
 您必须使用 jquery 激活它（读取 javascript）。使用下面的脚本来启用页面中的所有的提示工具（tooltip）： 
 ```
 $(function () { $("[data-toggle='tooltip']").tooltip(); });
@@ -68,7 +68,7 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 $('#identifier').popover(options)
 ```
 
-注意：弹出框（Popover）插件不像之前所讨论的下拉菜单及其他插件那样，它不是纯 CSS 插件。如需使用该插件，
+**注意**：弹出框（Popover）插件不像之前所讨论的下拉菜单及其他插件那样，它不是纯 CSS 插件。如需使用该插件，
 您必须使用 jquery 激活它（读取 javascript）。使用下面的脚本来启用页面中的所有的弹出框（popover）： 
 ```
 $(function () { $("[data-toggle='popover']").popover(); });
