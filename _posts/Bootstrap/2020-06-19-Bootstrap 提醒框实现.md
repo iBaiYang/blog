@@ -58,9 +58,11 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 方式1，通过 data 属性：如需添加一个弹出框（popover），只需向一个锚/按钮标签添加 `data-toggle="popover"` 即可。
 锚的 title 即为弹出框（popover）的文本。默认情况下，插件把弹出框（popover）设置在顶部。 
 ```
-<a href="#" data-toggle="popover" title="Example popover">
-    请悬停在我的上面
-</a>
+<button type="button" class="btn btn-primary" title="Popover title"  
+        data-container="body" data-toggle="popover" data-placement="top" 
+        data-content="顶部的 Popover 中的一些内容">
+    顶部的 Popover
+</button>
 ```
 
 方式2，通过 JavaScript：通过 JavaScript 启用指定元素的弹出框（popover）： 
