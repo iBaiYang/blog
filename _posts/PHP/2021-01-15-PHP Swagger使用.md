@@ -21,79 +21,9 @@ Swagger的使用目的是方便优美的呈现出接口API的各种定义, 生�
 
 1. 在`composer.json`文件中，添加 `"zircote/swagger-php":"=3.0.2"`
 2. 执行`composer require zircote/swagger-php:"=3.0.2"`
-3. 写好访问控制器
-4. 写好接口文档组织
+3. 写好接口文档组织
+4. 写好访问控制器
 5. 访问UI
-
-**写好访问控制器**
-```php
-<?php 
-namespace backend\controllers;
-
-use yii\web\Controller;
-use Yii;
-use yii\web\Response;
-use function OpenApi\scan;
-
-class SwaggerController extends Controller
-{
-    public function beforeAction($action)
-    {
-        // 只有线下环境支持
-        if (!defined('ENV_CONFIG') or ('test' !== ENV_CONFIG and 'dev' !== ENV_CONFIG)) {
-            exit('doc-not-allowed');
-        }
-        
-        return parent::beforeAction($action);
-    }
-
-    /**
-     * 生成json文件
-     */
-    public function actionJson()
-    {
-        $path = dirname(dirname(dirname(__FILE__)));
-        $response = Yii::$app->response;
-        $response->format = Response::FORMAT_JSON;
-        // 异常处理
-        set_error_handler(function ($error_no, $error_msg, $error_file, $error_line) use ($response) {
-            $response->data = [
-                'openapi' => '3.0.0',
-                'info' => [
-                    'title' => '解析出错',
-                    'description' => $error_msg
-                ]
-            ];
-            $response->send();
-        });
-  
-        try {
-            $response->data = json_decode(scan($path . '/doc')->toJson(), true);
-        } catch (\Exception $e) {
-            $response->data = [
-                'openapi' => '3.0.0',
-                'info' => [
-                    'title' => '解析出错',
-                    'description' => $e->getMessage()
-                ]
-            ];
-        }
-    }
-    
-    /**
-     * 访问页面
-     */
-    public function actionIndex()
-    {
-        $content = '<!doctypehtml><html lang=en><meta charset=UTF-8><title>{Swagger}-项目对外接口 - Swagger文档</title><link href="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui.min.css" rel=stylesheet><link href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.32.4/favicon-32x32.png" rel=icon sizes=32x32 type=image/png><style>html{box-sizing:border-box;overflow:-moz-scrollbars-vertical;overflow-y:scroll}*,:after,:before{box-sizing:inherit}body{margin:0;background:#fafafa}.topbar{position:fixed;width:100%;top:0;z-index:999;}.swagger-ui table tbody tr td{vertical-align: baseline!important;}</style><div id=swagger-ui></div><script charset=UTF-8 src="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui-bundle.min.js"></script><script charset=UTF-8 src="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui-standalone-preset.min.js"></script><script>window.onload = function() {
-          const ui=SwaggerUIBundle({url:"/swagger/json",dom_id:"#swagger-ui",deepLinking:!0,presets:[SwaggerUIBundle.presets.apis,SwaggerUIStandalonePreset],plugins:[SwaggerUIBundle.plugins.DownloadUrl],layout:"StandaloneLayout"});window.ui=ui;
-        }</script>';
-        $response = Yii::$app->response;
-        $response->format = "html";
-        $response->data = $content;
-    }
-}
-```
 
 **写好接口文档组织**
 
@@ -222,6 +152,76 @@ interface ApiController
      */
     public function actionUserWxInfo();
 
+}
+```
+
+**写好访问控制器**
+```php
+<?php 
+namespace backend\controllers;
+
+use yii\web\Controller;
+use Yii;
+use yii\web\Response;
+use function OpenApi\scan;
+
+class SwaggerController extends Controller
+{
+    public function beforeAction($action)
+    {
+        // 只有线下环境支持
+        if (!defined('ENV_CONFIG') or ('test' !== ENV_CONFIG and 'dev' !== ENV_CONFIG)) {
+            exit('doc-not-allowed');
+        }
+        
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * 生成json文件
+     */
+    public function actionJson()
+    {
+        $path = dirname(dirname(dirname(__FILE__)));
+        $response = Yii::$app->response;
+        $response->format = Response::FORMAT_JSON;
+        // 异常处理
+        set_error_handler(function ($error_no, $error_msg, $error_file, $error_line) use ($response) {
+            $response->data = [
+                'openapi' => '3.0.0',
+                'info' => [
+                    'title' => '解析出错',
+                    'description' => $error_msg
+                ]
+            ];
+            $response->send();
+        });
+  
+        try {
+            $response->data = json_decode(scan($path . '/doc')->toJson(), true);
+        } catch (\Exception $e) {
+            $response->data = [
+                'openapi' => '3.0.0',
+                'info' => [
+                    'title' => '解析出错',
+                    'description' => $e->getMessage()
+                ]
+            ];
+        }
+    }
+    
+    /**
+     * 访问页面
+     */
+    public function actionIndex()
+    {
+        $content = '<!doctypehtml><html lang=en><meta charset=UTF-8><title>{Swagger}-项目对外接口 - Swagger文档</title><link href="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui.min.css" rel=stylesheet><link href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.32.4/favicon-32x32.png" rel=icon sizes=32x32 type=image/png><style>html{box-sizing:border-box;overflow:-moz-scrollbars-vertical;overflow-y:scroll}*,:after,:before{box-sizing:inherit}body{margin:0;background:#fafafa}.topbar{position:fixed;width:100%;top:0;z-index:999;}.swagger-ui table tbody tr td{vertical-align: baseline!important;}</style><div id=swagger-ui></div><script charset=UTF-8 src="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui-bundle.min.js"></script><script charset=UTF-8 src="https://cdn.staticfile.org/swagger-ui/3.32.5/swagger-ui-standalone-preset.min.js"></script><script>window.onload = function() {
+          const ui=SwaggerUIBundle({url:"/swagger/json",dom_id:"#swagger-ui",deepLinking:!0,presets:[SwaggerUIBundle.presets.apis,SwaggerUIStandalonePreset],plugins:[SwaggerUIBundle.plugins.DownloadUrl],layout:"StandaloneLayout"});window.ui=ui;
+        }</script>';
+        $response = Yii::$app->response;
+        $response->format = "html";
+        $response->data = $content;
+    }
 }
 ```
 
