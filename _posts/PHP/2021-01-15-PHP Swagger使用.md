@@ -243,6 +243,12 @@ interface ApiController
 
 ![]({{site.baseurl}}/images/20210115/20210115145344.png)
 
+#### 补充
+
+* 在项目根目录下，执行 vendor/zircote/swagger-php/bin/openapi doc/ -o swagger.json
+* 执行docker run -p 你希望暴露的地址:8080 -e SWAGGER_JSON=/foo/swagger.json -v `pwd`:/foo swaggerapi/swagger-ui
+* 在浏览器中打开http://本机ip:暴露的地址/，就能看到你的文档啦
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
