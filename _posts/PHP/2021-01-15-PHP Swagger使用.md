@@ -245,6 +245,74 @@ interface ApiController
 
 #### 补充
 
+```
+/**
+ * 注解在action上
+ * @OA\Get(
+ *     path="/sms/batch-send",
+ *     description="批量发送",
+ *     summary="批量发送",
+ *     parameters={
+ *      @OA\Parameter(name="userId",in="query",required=true,example="1",@OA\Schema(type="integer")),
+ *     },
+ *     @OA\Response(
+ *      response="200",
+ *      description="成功",
+ *      content={
+ *          @OA\MediaType(mediaType="application/json",
+ *              @OA\Schema(
+ *                  @OA\Property(property="code",type="integer",example="200"),
+ *                  @OA\Property(property="message",type="string",example="成功"),
+ *                  @OA\Property(property="data",properties={
+ *                          @OA\Property(property="test",type="string",example="name"),
+ *                  })
+ *              )
+ *          )
+ *     }
+ *     )
+ * )
+ */
+
+/**
+ * 注解在action上
+ * @OA\Post(
+ *     path="/sms/single-send",
+ *     tags={"sms"},
+ *     description="单条发送",
+ *     summary="单条发送",
+ *     parameters={
+ *      @OA\Parameter(name="userId",in="query",required=true,example="1",@OA\Schema(type="integer")),
+ *     },
+ *     @OA\RequestBody(
+ *       content={
+ *         @OA\MediaType(mediaType="application/json",
+ *           @OA\Schema(
+ *              required={"username","password"},
+ *              @OA\Property(property="username",type="string",example="lalal"),
+ *              @OA\Property(property="password",type="string",example="test",enum={"test","none"}),
+ *           )
+ *         )
+ *       }
+ *     ),
+ *     @OA\Response(
+ *        response="200",
+ *        description="An example resource",
+ *        content={
+ *          @OA\MediaType(mediaType="application/json",
+ *              @OA\Schema(
+ *                  @OA\Property(property="code",type="integer",example="200"),
+ *                  @OA\Property(property="message",type="string",example="成功"),
+ *                  @OA\Property(property="data",properties={
+ *                          @OA\Property(property="test",type="string",example="name"),
+ *                  })
+ *              )
+ *          )
+ *        }
+ *     )
+ *)
+ */
+```
+
 * 在项目根目录下，执行 vendor/zircote/swagger-php/bin/openapi doc/ -o swagger.json
 * 执行docker run -p 你希望暴露的地址:8080 -e SWAGGER_JSON=/foo/swagger.json -v `pwd`:/foo swaggerapi/swagger-ui
 * 在浏览器中打开http://本机ip:暴露的地址/，就能看到你的文档啦
