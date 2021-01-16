@@ -121,7 +121,7 @@ interface ApiController
      *     path="/Acts/api/user-info",
      *     tags={"活动对外接口"},
      *     summary="获取用户信息,需要带上token来请求哦",
-     *     security={{ "bearerAuth": {} }},
+     *     // security={{ "bearerAuth": {} }},
      *     @Response(
      *         response="200",
      *         description="ok",
