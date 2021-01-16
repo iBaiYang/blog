@@ -160,10 +160,10 @@ interface ApiController
 <?php 
 namespace backend\controllers;
 
-use yii\web\Controller;
-use Yii;
-use yii\web\Response;
 use function OpenApi\scan;
+use Yii;
+use yii\web\Controller;
+use yii\web\Response;
 
 class SwaggerController extends Controller
 {
@@ -313,9 +313,9 @@ class SwaggerController extends Controller
  */
 ```
 
-* 在项目根目录下，执行 vendor/zircote/swagger-php/bin/openapi doc/ -o swagger.json
-* 执行docker run -p 你希望暴露的地址:8080 -e SWAGGER_JSON=/foo/swagger.json -v `pwd`:/foo swaggerapi/swagger-ui
-* 在浏览器中打开http://本机ip:暴露的地址/，就能看到你的文档啦
+* 在项目根目录下，执行 `vendor/zircote/swagger-php/bin/openapi doc/ -o swagger.json`
+* 执行`docker run -p 8080 -e SWAGGER_JSON=/foo/swagger.json -v 'pwd':/foo swaggerapi/swagger-ui` 8080是你希望暴露的地址。
+* 在浏览器中打开`http://本机ip:暴露的地址/`，就能看到你的文档啦
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
