@@ -121,6 +121,7 @@ interface ApiController
      *     path="/Acts/api/user-info",
      *     tags={"活动对外接口"},
      *     summary="获取用户信息,需要带上token来请求哦",
+     *     security=双大括号 "bearerAuth": {} 双大括号,
      *     @Response(
      *         response="200",
      *         description="ok",
@@ -153,8 +154,6 @@ interface ApiController
 
 }
 ```
-
-增加安全验证可以在 `summary` 参数下添加一行：`security=双大括号 "bearerAuth": {} 双大括号`,
 
 **写好访问控制器**
 ```php
