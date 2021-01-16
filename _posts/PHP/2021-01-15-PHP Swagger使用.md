@@ -121,7 +121,6 @@ interface ApiController
      *     path="/Acts/api/user-info",
      *     tags={"活动对外接口"},
      *     summary="获取用户信息,需要带上token来请求哦",
-     *     // security={{ "bearerAuth": {} }},
      *     @Response(
      *         response="200",
      *         description="ok",
@@ -150,10 +149,12 @@ interface ApiController
      *     @Response(response="500", description="Internal Error，服务器内部异常", links={}),
      * )
      */
-    public function actionUserWxInfo();
+    public function actionUserInfo();
 
 }
 ```
+
+增加安全验证可以在 `summary` 参数下添加一行：`security={{ "bearerAuth": {} }},` 。
 
 **写好访问控制器**
 ```php
