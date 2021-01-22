@@ -13,7 +13,8 @@ meta: parent、self、static 这些关键字混合使用，里面的区别能详
 
 看看下面这个例子输出什么：
 
-```
+```php
+<?php
 class A {
     public static function foo() {
         static::who();
@@ -55,9 +56,9 @@ ACCAABB，你答对了吗？
 
 #### 解说
 
-静态属性与静态方法可以在不实例化类的情况下调用，直接使用类名::方法名的方式进行调用。
-静态属性只能用::方式访问，即使类实例化为对象后也不允许对象使用 -> 操作符访问；
-不过静态方法在类实例化为对象后可以使用 -> 操作符调用。
+静态属性与静态方法可以在不实例化类的情况下调用，直接使用`类名::方法名`的方式进行调用。
+静态属性只能用`::`方式访问，即使类实例化为对象后也不允许对象使用 `->` 操作符访问；
+不过静态方法在类实例化为对象后可以使用 `->` 操作符调用。
 
 ```
 class Car {
@@ -72,14 +73,13 @@ echo Car::getSpeed();  // 调用静态方法
 ```
 
 静态方法也可以通过变量来进行动态调用
-
 ```
 $func = 'getSpeed';
 $className = 'Car';
 echo $className::$func();  // 动态调用静态方法
 ```
 
-静态方法中，$this伪变量不允许使用。可以使用self，parent，static在内部调用静态方法与属性。
+静态方法中，`$this`伪变量不允许使用。可以使用self，parent，static在内部调用静态方法与属性。
 
 ```
 class Car {
@@ -239,7 +239,7 @@ class first
     static $num = 1;
 	
     public static function self_use(){
-		static::$num += 1;
+        static::$num += 1;
     }
 }
 class second extends first{}
