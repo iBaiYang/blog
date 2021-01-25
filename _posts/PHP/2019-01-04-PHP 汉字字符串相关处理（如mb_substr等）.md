@@ -15,6 +15,8 @@ meta: 汉字与数字和英文字母在PHP中的区别还是挺大的，下面�
 如截取字符串长度，数字和英文字母用substr(),汉字要用mb_substr()；
 如计算字符串长度，数字和英文字母用strlen(),汉字要用mb_strlen()；
 
+使用时，我们要安装 mbstring拓展 。mbstring 不是一个默认扩展，这意味着它默认没有被激活。
+
 如果对一个包含汉字的字符串截取用了substr()，可能导致意想不到的错误，如：
 
 ```
@@ -195,6 +197,8 @@ Windows用的是 \r\n
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
+
+PHP 手册 函数参考 国际化与字符编码支持 多字节字符串 <https://www.php.net/manual/zh/book.mbstring.php>
 
 <http://www.php.net/manual/zh/function.mb-substr.php>
 
