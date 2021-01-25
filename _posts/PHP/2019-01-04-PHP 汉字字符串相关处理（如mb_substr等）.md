@@ -82,6 +82,104 @@ echo $res2 .'\n';  // "a\u4e00\u4e8c"
 
 json-encode()，对不认识的符号不能处理，会返回false。
 
+对变量进行 JSON 编码：
+```
+json_encode ( mixed $value , int $options = 0 , int $depth = 512 ) : string|false
+```
+
+返回字符串，包含了 value 值 JSON 形式的表示，编码受传入的 options 参数影响，此外浮点值的编码依赖于 serialize_precision。 
+成功则返回 JSON 编码的 string 或者在失败时返回 false 。
+
+参数：
+```
+value
+    待编码的 value ，除了 资源(resource) 类型之外，可以为任何数据类型。
+    所有字符串数据的编码必须是 UTF-8。 
+    
+options
+    由以下常量组成的二进制掩码： JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP, JSON_HEX_APOS, 
+    JSON_INVALID_UTF8_IGNORE, JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK, JSON_PARTIAL_OUTPUT_ON_ERROR, 
+    JSON_PRESERVE_ZERO_FRACTION, JSON_PRETTY_PRINT, JSON_UNESCAPED_LINE_TERMINATORS, JSON_UNESCAPED_SLASHES, 
+    JSON_UNESCAPED_UNICODE, JSON_THROW_ON_ERROR 等。
+
+depth
+    设置最大深度。 必须大于0。
+```
+
+第二个参数`$options`，编码时的一些指定作用，举几个常用的：
+```
+JSON_UNESCAPED_SLASHES (int)    不要编码 /。 自 PHP 5.4.0 起生效。 
+JSON_UNESCAPED_UNICODE (int)    以字面编码多字节 Unicode 字符（默认是编码成 \uXXXX）。 自 PHP 5.4.0 起生效。
+JSON_HEX_TAG (int)    所有的 < 和 > 转换成 \u003C 和 \u003E。 自 PHP 5.3.0 起生效。 
+JSON_HEX_AMP (int)    所有的 & 转换成 \u0026。 自 PHP 5.3.0 起生效。 
+JSON_HEX_APOS (int)    所有的 ' 转换成 \u0027。 自 PHP 5.3.0 起生效。 
+JSON_HEX_QUOT (int)    所有的 " 转换成 \u0022。 自 PHP 5.3.0 起生效。 
+JSON_FORCE_OBJECT (int)    使一个非关联数组输出一个类（Object）而非数组。 在数组为空而接受者需要一个类（Object）的时候尤其有用。 自 PHP 5.3.0 起生效。
+```
+
+更过见 [JSON预定义常量](https://www.php.net/manual/zh/json.constants.php) .
+
+第三个参数`$depth`深度，默认是512：
+```
+// 数组深度为2
+$array = [
+      'a' => '"\/hello',
+      'b' => '\world',
+      'c' => '/php_json_decode',
+      'd' => [
+              1 => '"\/php',
+              2 => '//\js',
+              3 => 'python',
+              4 => 'golang'
+      ]
+  ];
+ 
+var_dump(json_encode($array,0,1));  // bool(false)
+ 
+ 
+var_dump(json_encode($array,0,2));
+// string(120) "{"a":"\"\\\/hello","b":"\\world","c":"\/php_json_decode","d":{"1":"\"\\\/php","2":"\/\/\\js","3":"python","4":"golang"}}"
+ 
+var_dump(json_encode($array,0,3));
+// string(120) "{"a":"\"\\\/hello","b":"\\world","c":"\/php_json_decode","d":{"1":"\"\\\/php","2":"\/\/\\js","3":"python","4":"golang"}}"
+ 
+var_dump(json_encode($array,0,4));
+// string(120) "{"a":"\"\\\/hello","b":"\\world","c":"\/php_json_decode","d":{"1":"\"\\\/php","2":"\/\/\\js","3":"python","4":"golang"}}"
+ 
+ 
+// 数组深度为3
+$array = [
+      'a' => '"\/hello',
+        'b' => '\world',
+        'c' => '/php_json_decode',
+      'd' => [
+              1 => '"\/php',
+              2 => '//\js',
+              3 => 'python',
+              4 => 'golang'
+      ],
+      'e' => [
+              'xxx' => [
+                    'hello' => 'world'
+              ]
+      ]
+  ];
+
+var_dump(json_encode($array,0,1));
+// bool(false)
+
+var_dump(json_encode($array,0,2));
+// bool(false)
+
+var_dump(json_encode($array,0,3));
+// string(150) "{"a":"\"\\\/hello","b":"\\world","c":"\/php_json_decode","d":{"1":"\"\\\/php","2":"\/\/\\js","3":"python","4":"golang"},"e":{"xxx":{"hello":"world"}}}"
+
+var_dump(json_encode($array,0,4));
+// string(150) "{"a":"\"\\\/hello","b":"\\world","c":"\/php_json_decode","d":{"1":"\"\\\/php","2":"\/\/\\js","3":"python","4":"golang"},"e":{"xxx":{"hello":"world"}}}"
+```
+
+depth的值小于数组的维度的话会输出bool(false)，反之正常解析成json串。
+
 <br/><br/>
 插一句题外话，对于换行：
 
@@ -110,3 +208,6 @@ Windows用的是 \r\n
 
 <http://www.runoob.com/php/php-ref-string.html>
 
+PHP json_encode函数的参数说明 <https://blog.csdn.net/it_r00t/article/details/83993809>
+
+PHP 手册 函数参考 其它基本扩展 JSON 预定义常量 <https://www.php.net/manual/zh/json.constants.php>
