@@ -11,6 +11,8 @@ meta: mysql mysqli pdo拓展比较
 
 mysql拓展在php7中被抛弃了，转而支持mysqli升级拓展，所以先写mysqli使用的例子。
 
+要考虑到SQL注入攻击的[预防处理](https://ibaiyang.github.io/blog/php/2019/03/18/PHP-%E9%98%B2SQL%E6%B3%A8%E5%85%A5%E6%8A%80%E6%9C%AF.html) 。
+
 #### mysqli
 
 ```php
