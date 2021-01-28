@@ -93,7 +93,7 @@ output {
 
 > ./bin/logstash -f logstash.conf
 
-数据就会从kafka到elasticsearch中了，%{indexname}就是数据源中的 "indexname":"demo_logs_dev" ，生成的Es数据如下：
+数据就会从kafka到elasticsearch中了，`%{indexname}`就是数据源中的 `"indexname":"demo_logs_dev"` ，生成的Es数据如下：
 ```
 {
   "_index": "demo_logs_dev-2020.04.03",
@@ -121,7 +121,7 @@ output {
 }
 ```
 
-说一个碰到的问题，期间调试了半天，发现logstash配置文件中每个属性最后居然不能加','分隔相邻变量。这个语法看起来虽然像json，但不是json。
+说一个碰到的问题，期间调试了半天，发现logstash配置文件中每个属性最后居然不能加`,`分隔相邻变量。这个语法看起来虽然像json，但不是json。
 
 看个kafka源复杂点的：
 ```
