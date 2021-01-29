@@ -24,6 +24,23 @@ rightJoin与leftJoin同理。
 
 关键是使用的时候，要考虑清楚哪个表可能没数据，然后选择合适的Join。
 
+![]({{site.baseurl}}/images/20210128/20210128184390.png)
+
+left join(左联接) 返回包括左表中的所有记录和右表中联结字段相等的记录
+
+right join(右联接) 返回包括右表中的所有记录和左表中联结字段相等的记录
+
+inner join(等值连接) 只返回两个表中联结字段相等的行
+
+![]({{site.baseurl}}/images/20210128/20210128184392.png)
+
 <br/><br/><br/><br/><br/>
 ### 参考资料：
-   
+
+图解SQL的inner join、left join、right join、full outer join、union、union all的区别 <https://www.cnblogs.com/logon/p/3748020.html>
+
+Visual Representation of SQL Joins <https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins>
+
+一张图告诉你SQL使用inner join，left join 等 <https://blog.csdn.net/weixin_41796956/article/details/85044152>
+
+sql之left join、right join、inner join的区别 <https://www.cnblogs.com/pcjim/articles/799302.html>
