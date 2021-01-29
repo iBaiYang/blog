@@ -35,7 +35,7 @@ inner join(等值连接) 只返回两个表中联结字段相等的行
 ![]({{site.baseurl}}/images/20210128/20210128184392.png)
 
 <br/><br/><br/><br/><br/>
-### 参考资料：
+### 参考资料
 
 图解SQL的inner join、left join、right join、full outer join、union、union all的区别 <https://www.cnblogs.com/logon/p/3748020.html>
 
