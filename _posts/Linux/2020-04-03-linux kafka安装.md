@@ -56,17 +56,23 @@ Kafka相关术语介绍：
 
 创建一个名为logstash的topic：
 
-> bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic logstash
+```
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic logstash
+```
 
 现在就可以往kafka中写数据了。
 
 查看topic有哪些：
 
-> bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+```
+bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+```
 
 消费topic名为logstash中的队列数据：
 
-> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash --from-beginning
+```
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash --from-beginning
+```
 
 可以实时看到数据内容。
 
