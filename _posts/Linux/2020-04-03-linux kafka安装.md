@@ -19,12 +19,12 @@ Kafka有如下特性：
 * 支持Hadoop并行数据加载。
 
 Kafka相关术语介绍：
-* Broker    Kafka集群包含一个或多个服务器，这种服务器被称为broker
-* Topic    每条发布到Kafka集群的消息都有一个类别，这个类别被称为Topic。（物理上不同Topic的消息分开存储，逻辑上一个Topic的消息虽然保存于一个或多个broker上但用户只需指定消息的Topic即可生产或消费数据而不必关心数据存于何处）
-* Partition    Partition是物理上的概念，每个Topic包含一个或多个Partition.
-* Producer    负责发布消息到Kafka broker
-* Consumer    消息消费者，向Kafka broker读取消息的客户端。
-* Consumer Group    每个Consumer属于一个特定的Consumer Group（可为每个Consumer指定group name，若不指定group name则属于默认的group）。
+* Broker    -Kafka集群包含一个或多个服务器，这种服务器被称为broker
+* Topic    -每条发布到Kafka集群的消息都有一个类别，这个类别被称为Topic。（物理上不同Topic的消息分开存储，逻辑上一个Topic的消息虽然保存于一个或多个broker上但用户只需指定消息的Topic即可生产或消费数据而不必关心数据存于何处）
+* Partition    -Partition是物理上的概念，每个Topic包含一个或多个Partition.
+* Producer    -负责发布消息到Kafka broker
+* Consumer    -消息消费者，向Kafka broker读取消息的客户端。
+* Consumer Group    -每个Consumer属于一个特定的Consumer Group（可为每个Consumer指定group name，若不指定group name则属于默认的group）。
 
 我们一般把Kafka用作log日志队列服务，日志流流程：
 
@@ -139,3 +139,6 @@ Ubuntu简单安装Kafka <https://www.cnblogs.com/yanghe123/p/11937914.html>
 Kafka史上最详细原理总结上 <https://www.jianshu.com/p/734cf729d77b>
 
 Kafka史上最详细原理总结下 <https://www.jianshu.com/p/acf010e67a19>
+
+DMA：为什么Kafka这么快？ <https://weibo.com/ttarticle/p/show?id=2309404597571816391045>
+
