@@ -9,6 +9,8 @@ meta: PHP ArrayIterator,ArrayObject和Array的区别与联系
 
 ### 正文
 
+#### Array
+
 Array是PHP的类型：
 ```php
 namespace {
@@ -30,6 +32,22 @@ namespace {
     function PS_UNRESERVE_PREFIX_array(...$_){};
 }
 ```
+
+array() 是一个语言结构，用于字面上表示数组，不是常规的函数。
+
+使用示例：
+```php
+<?php
+$fruits = array (
+    "fruits"  => array("a" => "orange", "b" => "banana", "c" => "apple"),
+    "numbers" => array(1, 2, 3, 4, 5, 6),
+    "holes"   => array("first", 5 => "second", "third")
+);
+
+echo $fruits["fruits"]["b"];
+```
+
+#### ArrayObject
 
 Spl 中 ArrayObject类：
 ```php
@@ -306,6 +324,33 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
     public function getIteratorClass() { }
 }
 ```
+
+ArrayObject允许对象以数组方式工作。
+
+使用示例：
+```php
+<?php                                                    
+$a = new ArrayObject(array(), ArrayObject::STD_PROP_LIST);
+    $a['arr'] = 'array data';                            
+    $a->prop = 'prop data';                              
+$b = new ArrayObject();                                  
+    $b['arr'] = 'array data';                            
+    $b->prop = 'prop data';                              
+                                                         
+// ArrayObject Object                                    
+// (                                                     
+//      [prop] => prop data                              
+// )                                                     
+print_r($a);                                             
+                                                         
+// ArrayObject Object                                    
+// (                                                     
+//      [arr] => array data                              
+// )                                                     
+print_r($b); 
+```
+
+#### ArrayIterator
 
 Spl 中 ArrayIterator类：
 ```php
@@ -577,280 +622,68 @@ class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator 
 }
 ```
 
-Spl 中 ArrayObject类：
+这个迭代器允许在遍历数组和对象时删除和更新值与键。
+
+使用示例：
 ```php
-/**
- * This class allows objects to work as arrays.
- * @link https://php.net/manual/en/class.arrayobject.php
- */
-class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Countable {
-    /**
-     * Properties of the object have their normal functionality when accessed as list (var_dump, foreach, etc.).
-     */
-    const STD_PROP_LIST = 1;
+<?php
+// 在迭代到值时，需要一个回调函数做处理后返回，可以使用如下示例
+class ArrayCallbackIterator extends ArrayIterator {
+  private $callback;
+  public function __construct($value, $callback) {
+    parent::__construct($value);
+    $this->callback = $callback;
+  }
 
-    /**
-     * Entries can be accessed as properties (read and write).
-     */
-    const ARRAY_AS_PROPS = 2;
+  public function current() {
+    $value = parent::current();
+    return call_user_func($this->callback, $value);
+  }
+} 
 
+$iterator1 = new ArrayCallbackIterator($valueList, "callback_function");
+$iterator2 = new ArrayCallbackIterator($valueList, array($object, "callback_class_method")); 
+```
 
-    /**
-     * Construct a new array object
-     * @link https://php.net/manual/en/arrayobject.construct.php
-     * @param array|object $array The input parameter accepts an array or an Object.
-     * @param int $flags Flags to control the behaviour of the ArrayObject object.
-     * @param string $iteratorClass Specify the class that will be used for iteration of the ArrayObject object. ArrayIterator is the default class used.
-     *
-     */
-    public function __construct($array = array(), $flags = 0, $iteratorClass = "ArrayIterator") { }
+再看一个示例：
+```php
+<?php
+$fruits = array(
+    "apple" => "yummy",
+    "orange" => "ah ya, nice",
+    "grape" => "wow, I love it!",
+    "plum" => "nah, not me"
+);
+$obj = new ArrayObject( $fruits );
+$it = $obj->getIterator();
 
-    /**
-     * Returns whether the requested index exists
-     * @link https://php.net/manual/en/arrayobject.offsetexists.php
-     * @param mixed $key <p>
-     * The index being checked.
-     * </p>
-     * @return bool true if the requested index exists, otherwise false
-     */
-    public function offsetExists($key) { }
+// How many items are we iterating over?
 
-    /**
-     * Returns the value at the specified index
-     * @link https://php.net/manual/en/arrayobject.offsetget.php
-     * @param mixed $key <p>
-     * The index with the value.
-     * </p>
-     * @return mixed|false The value at the specified index or false.
-     */
-    public function offsetGet($key) { }
+echo "Iterating over: " . $obj->count() . " values\n";
 
-    /**
-     * Sets the value at the specified index to newval
-     * @link https://php.net/manual/en/arrayobject.offsetset.php
-     * @param mixed $key <p>
-     * The index being set.
-     * </p>
-     * @param mixed $value <p>
-     * The new value for the <i>index</i>.
-     * </p>
-     * @return void
-     */
-    public function offsetSet($key, $value) { }
-
-    /**
-     * Unsets the value at the specified index
-     * @link https://php.net/manual/en/arrayobject.offsetunset.php
-     * @param mixed $key <p>
-     * The index being unset.
-     * </p>
-     * @return void
-     */
-    public function offsetUnset($key) { }
-
-    /**
-     * Appends the value
-     * @link https://php.net/manual/en/arrayobject.append.php
-     * @param mixed $value <p>
-     * The value being appended.
-     * </p>
-     * @return void
-     */
-    public function append($value) { }
-
-    /**
-     * Creates a copy of the ArrayObject.
-     * @link https://php.net/manual/en/arrayobject.getarraycopy.php
-     * @return array a copy of the array. When the <b>ArrayObject</b> refers to an object
-     * an array of the public properties of that object will be returned.
-     */
-    public function getArrayCopy() { }
-
-    /**
-     * Get the number of public properties in the ArrayObject
-     * When the <b>ArrayObject</b> is constructed from an array all properties are public.
-     * @link https://php.net/manual/en/arrayobject.count.php
-     * @return int The number of public properties in the ArrayObject.
-     */
-    public function count() { }
-
-    /**
-     * Gets the behavior flags.
-     * @link https://php.net/manual/en/arrayobject.getflags.php
-     * @return int the behavior flags of the ArrayObject.
-     */
-    public function getFlags() { }
-
-    /**
-     * Sets the behavior flags.
-     * @link https://php.net/manual/en/arrayobject.setflags.php
-     * @param int $flags <p>
-     * The new ArrayObject behavior.
-     * It takes on either a bitmask, or named constants. Using named
-     * constants is strongly encouraged to ensure compatibility for future
-     * versions.
-     * </p>
-     * <p>
-     * The available behavior flags are listed below. The actual
-     * meanings of these flags are described in the
-     * predefined constants.
-     * <table>
-     * ArrayObject behavior flags
-     * <tr valign="top">
-     * <td>value</td>
-     * <td>constant</td>
-     * </tr>
-     * <tr valign="top">
-     * <td>1</td>
-     * <td>
-     * ArrayObject::STD_PROP_LIST
-     * </td>
-     * </tr>
-     * <tr valign="top">
-     * <td>2</td>
-     * <td>
-     * ArrayObject::ARRAY_AS_PROPS
-     * </td>
-     * </tr>
-     * </table>
-     * </p>
-     * @return void
-     */
-    public function setFlags($flags) { }
-
-    /**
-     * Sort the entries by value
-     * @link https://php.net/manual/en/arrayobject.asort.php
-     * @param int $flags [optional]
-     * @return void
-     */
-    public function asort($flags = SORT_REGULAR) { }
-
-    /**
-     * Sort the entries by key
-     * @link https://php.net/manual/en/arrayobject.ksort.php
-     * @param int $flags [optional]
-     * @return void
-     */
-    public function ksort($flags = SORT_REGULAR) { }
-
-    /**
-     * Sort the entries with a user-defined comparison function and maintain key association
-     * @link https://php.net/manual/en/arrayobject.uasort.php
-     * @param callback $callback <p>
-     * Function <i>cmp_function</i> should accept two
-     * parameters which will be filled by pairs of entries.
-     * The comparison function must return an integer less than, equal
-     * to, or greater than zero if the first argument is considered to
-     * be respectively less than, equal to, or greater than the
-     * second.
-     * </p>
-     * @return void
-     */
-    public function uasort($callback) { }
-
-    /**
-     * Sort the entries by keys using a user-defined comparison function
-     * @link https://php.net/manual/en/arrayobject.uksort.php
-     * @param callback $callback <p>
-     * The callback comparison function.
-     * </p>
-     * <p>
-     * Function <i>cmp_function</i> should accept two
-     * parameters which will be filled by pairs of entry keys.
-     * The comparison function must return an integer less than, equal
-     * to, or greater than zero if the first argument is considered to
-     * be respectively less than, equal to, or greater than the
-     * second.
-     * </p>
-     * @return void
-     */
-    public function uksort($callback) { }
-
-    /**
-     * Sort entries using a "natural order" algorithm
-     * @link https://php.net/manual/en/arrayobject.natsort.php
-     * @return void
-     */
-    public function natsort() { }
-
-    /**
-     * Sort an array using a case insensitive "natural order" algorithm
-     * @link https://php.net/manual/en/arrayobject.natcasesort.php
-     * @return void
-     */
-    public function natcasesort() { }
-
-    /**
-     * Unserialize an ArrayObject
-     * @link https://php.net/manual/en/arrayobject.unserialize.php
-     * @param string $data <p>
-     * The serialized <b>ArrayObject</b>.
-     * </p>
-     * @return void The unserialized <b>ArrayObject</b>.
-     */
-    public function unserialize($data) { }
-
-    /**
-     * Serialize an ArrayObject
-     * @link https://php.net/manual/en/arrayobject.serialize.php
-     * @return string The serialized representation of the <b>ArrayObject</b>.
-     */
-    public function serialize() { }
-
-    /**
-     * @return array
-     * @since 7.4
-     */
-    public function __debugInfo(){}
-
-
-    /**
-     * @return array
-     * @since 7.4
-     */
-    public function __serialize(): array {}
-
-    /**
-     * @param array $data
-     * @since 7.4
-     */
-    public function __unserialize(array $data): void {}
-
-    /**
-     * Create a new iterator from an ArrayObject instance
-     * @link https://php.net/manual/en/arrayobject.getiterator.php
-     * @return ArrayIterator An iterator from an <b>ArrayObject</b>.
-     */
-    public function getIterator() { }
-
-    /**
-     * Exchange the array for another one.
-     * @link https://php.net/manual/en/arrayobject.exchangearray.php
-     * @param mixed $array <p>
-     * The new array or object to exchange with the current array.
-     * </p>
-     * @return array the old array.
-     */
-    public function exchangeArray($array) { }
-
-    /**
-     * Sets the iterator classname for the ArrayObject.
-     * @link https://php.net/manual/en/arrayobject.setiteratorclass.php
-     * @param string $iteratorClass <p>
-     * The classname of the array iterator to use when iterating over this object.
-     * </p>
-     * @return void
-     */
-    public function setIteratorClass($iteratorClass) { }
-
-    /**
-     * Gets the iterator classname for the ArrayObject.
-     * @link https://php.net/manual/en/arrayobject.getiteratorclass.php
-     * @return string the iterator class name that is used to iterate over this object.
-     */
-    public function getIteratorClass() { }
+// Iterate over the values in the ArrayObject:
+while( $it->valid() )
+{
+    echo $it->key() . "=" . $it->current() . "\n";
+    $it->next();
 }
+
+// The good thing here is that it can be iterated with foreach loop
+
+foreach ($it as $key=>$val) {
+    echo $key.":".$val."\n";
+}
+```
+
+`ArrayObject::getIterator`从ArrayObject实例创建新迭代器。
+
+输出：
+```
+Iterating over: 4 values
+apple=yummy
+orange=ah ya, nice
+grape=wow, I love it!
+plum=nah, not me
 ```
 
 
@@ -858,8 +691,12 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
 
 PHP 手册 函数参考 变量与类型相关扩展 数组 数组 函数 array <https://www.php.net/manual/zh/function.array.php>
 
+PHP 手册 函数参考 其它基本扩展 SPL 各种类及接口 The ArrayObject class <https://www.php.net/manual/zh/class.arrayobject.php>
+
+PHP 手册 函数参考 其它基本扩展 SPL 迭代器 ArrayIterator 类 <https://www.php.net/manual/zh/class.arrayiterator.php>
+
 PHP中ArrayIterator,ArrayObject和Array之间的区别 <http://www.voidcn.com/article/p-ytcfleff-btd.html>
 
-The ArrayObject class <https://www.php.net/manual/zh/class.arrayobject.php>
+
 
 
