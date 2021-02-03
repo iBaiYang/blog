@@ -336,18 +336,28 @@ $a = new ArrayObject(array(), ArrayObject::STD_PROP_LIST);
 $b = new ArrayObject();                                  
     $b['arr'] = 'array data';                            
     $b->prop = 'prop data';                              
-                                                         
-// ArrayObject Object                                    
-// (                                                     
-//      [prop] => prop data                              
-// )                                                     
+                                                                                                          
 print_r($a);                                             
-                                                         
-// ArrayObject Object                                    
-// (                                                     
-//      [arr] => array data                              
-// )                                                     
+//ArrayObject Object
+//(
+//    [prop] => prop data
+//    [storage:ArrayObject:private] => Array
+//        (
+//            [arr] => array data
+//        )
+//
+//)                                                     
+                                               
 print_r($b); 
+//ArrayObject Object
+//(
+//    [prop] => prop data
+//    [storage:ArrayObject:private] => Array
+//        (
+//            [arr] => array data
+//        )
+//
+//)
 ```
 
 #### ArrayIterator
