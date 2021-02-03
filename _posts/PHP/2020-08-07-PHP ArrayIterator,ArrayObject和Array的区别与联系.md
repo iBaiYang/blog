@@ -9,7 +9,27 @@ meta: PHP ArrayIterator,ArrayObject和Array的区别与联系
 
 ### 正文
 
+Array是PHP的类型：
+```php
+namespace {
 
+    /**
+     * Creates an array.
+     * @link https://php.net/manual/en/function.array.php
+     * @param mixed ...$_ [optional] <p>
+     * Syntax "index => values", separated by commas, define index and values.
+     * index may be of type string or integer. When index is omitted, an integer index is automatically generated,
+     * starting at 0. If index is an integer, next generated index will be the biggest integer index + 1.
+     * Note that when two identical index are defined, the last overwrite the first.
+     * </p>
+     * <p>
+     * Having a trailing comma after the last defined array entry, while unusual, is a valid syntax.
+     * </p>
+     * @return array an array of the parameters. The parameters can be given an index with the => operator.
+     */
+    function PS_UNRESERVE_PREFIX_array(...$_){};
+}
+```
 
 Spl 中 ArrayObject类：
 ```php
@@ -836,6 +856,10 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
 
 ### 参考资料
 
+PHP 手册 函数参考 变量与类型相关扩展 数组 数组 函数 array <https://www.php.net/manual/zh/function.array.php>
+
 PHP中ArrayIterator,ArrayObject和Array之间的区别 <http://www.voidcn.com/article/p-ytcfleff-btd.html>
 
 The ArrayObject class <https://www.php.net/manual/zh/class.arrayobject.php>
+
+
