@@ -9,6 +9,10 @@ meta: linux kafka安装
 
 ### 正文
 
+kafka是用于构建实时数据管道和流应用程序。
+
+![]({{site.baseurl}}/images/20210204/20210204142116.jpeg)
+
 Kafka是一种高吞吐量的分布式发布订阅消息系统，它可以处理消费者在网站中的所有动作流数据。Kafka是由Apache软件基金会开发的一个开源流处理平台。
 Kafka同RabbitMQ一样，也是一个MQ队列服务器。
 
@@ -182,4 +186,7 @@ Kafka史上最详细原理总结上 <https://www.jianshu.com/p/734cf729d77b>
 Kafka史上最详细原理总结下 <https://www.jianshu.com/p/acf010e67a19>
 
 DMA：为什么Kafka这么快？ <https://weibo.com/ttarticle/p/show?id=2309404597571816391045>
+
+kafka极简教程 <https://mp.weixin.qq.com/s?__biz=MzU0OTE4MzYzMw==&mid=2247483788&idx=1&sn=9a30a9d1ef1f904b8d3ccda57aa2556b&chksm=fbb28872ccc501642b65acbf77bc10d48c70ae43641282a5eaf7e9483860a9b1acfa3061badc&scene=21#wechat_redirect>
+
 
