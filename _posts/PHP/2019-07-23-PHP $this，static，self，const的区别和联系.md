@@ -550,13 +550,13 @@ class Demo
     public function test() {
         echo Demo::$static."\n";                //使用类型调用静态属性     static
         echo Demo::get()."\n";                  //使用类名调用静态方法    Demo
-        echo Demo::show()."\n";     // 使用类名以静态方式调用非静态方法 会报错： this is function show with Nostatic
+        echo Demo::show()."\n";     // 使用类名以静态方式调用非静态方法 ： this is function show with Nostatic
         echo self::$static."\n";                 //self调用静态属性       static
         echo self::get()."\n";                  //self调用静态方法      Demo
-        echo self::show()."\n";     // self以静态方式调用非静态方法 会报错： this is function show with Nostatic
+        echo self::show()."\n";     // self以静态方式调用非静态方法 ： this is function show with Nostatic
         echo static::$static."\n";               //static调用静态属性     static
         echo static::get()."\n";                //static调用静态方法    Demo
-        echo static::show()."\n";   //static以静态方式调用非静态方法 会报错： this is function show with Nostatic
+        echo static::show()."\n";   //static以静态方式调用非静态方法 ： this is function show with Nostatic
     }
 }
 
