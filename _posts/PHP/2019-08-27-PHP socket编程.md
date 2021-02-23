@@ -108,7 +108,7 @@ Socket模型：
 #### socket编程案例
 
 服务器端：
-```
+```php
 <?php
 /*
  +-------------------------------
@@ -124,7 +124,6 @@ Socket模型：
  +--------------------------------
  */
 
-
 //确保在连接客户端时不会超时
 set_time_limit(0);
 
@@ -132,16 +131,16 @@ $ip = '127.0.0.1';
 $port = 1935;
 
 /*----------------    以下操作都是手册上的    -------------------*/
-if(($sock = socket_create(AF_INET,SOCK_STREAM,SOL_TCP)) < 0) {
-    echo "socket_create() 失败的原因是:".socket_strerror($sock)."\n";
+if (($sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) < 0) {
+    echo "socket_create() 失败的原因是:" . socket_strerror($sock) . "\n";
 }
 
-if(($ret = socket_bind($sock,$ip,$port)) < 0) {
-    echo "socket_bind() 失败的原因是:".socket_strerror($ret)."\n";
+if (($ret = socket_bind($sock, $ip, $port)) < 0) {
+    echo "socket_bind() 失败的原因是:" . socket_strerror($ret) . "\n";
 }
 
-if(($ret = socket_listen($sock,4)) < 0) {
-    echo "socket_listen() 失败的原因是:".socket_strerror($ret)."\n";
+if (($ret = socket_listen($sock, 4)) < 0) {
+    echo "socket_listen() 失败的原因是:" . socket_strerror($ret) . "\n";
 }
 
 $count = 0;
@@ -151,23 +150,23 @@ do {
         echo "socket_accept() failed: reason: " . socket_strerror($msgsock) . "\n";
         break;
     } else {
-        
+
         //发到客户端
-        $msg ="测试成功！\n";
+        $msg = "测试成功！\n";
         socket_write($msgsock, $msg, strlen($msg));
-        
+
         echo "测试成功了啊\n";
-        $buf = socket_read($msgsock,8192);
-        
-        
+        $buf = socket_read($msgsock, 8192);
+
+
         $talkback = "收到的信息:$buf\n";
         echo $talkback;
-        
-        if(++$count >= 5){
+
+        if (++$count >= 5) {
             break;
         };
-        
-    
+
+
     }
     //echo $buf;
     socket_close($msgsock);
@@ -177,14 +176,14 @@ do {
 socket_close($sock);
 ```
 
-使用 php 脚本名.php 执行脚本后，服务端的程序已经开始运行，端口已经开始监听了。运行 netstat -ano 可以查看端口情况，这里是1935端口
+使用 php server.php 执行脚本后，服务端的程序已经开始运行，端口已经开始监听了。运行 netstat -ano 可以查看端口情况，这里是1935端口
 
 ![]({{site.baseurl}}/images/20190827/20190827151937.png)
 
 此时端口已经处于LISTENING状态了。接下来我们只要运行客户端程序即可连接上。
 
 客户端：
-```
+```php
 <?php
 /*
  +-------------------------------
@@ -197,7 +196,6 @@ socket_close($sock);
  *    @socket_close
  +--------------------------------
  */
- 
 error_reporting(E_ALL);
 set_time_limit(0);
 echo "<h2>TCP/IP Connection</h2>\n";
@@ -208,7 +206,7 @@ $ip = "127.0.0.1";
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 if ($socket < 0) {
     echo "socket_create() failed: reason: " . socket_strerror($socket) . "\n";
-}else {
+} else {
     echo "OK.\n";
 }
 
@@ -216,7 +214,7 @@ echo "试图连接 '$ip' 端口 '$port'...\n";
 $result = socket_connect($socket, $ip, $port);
 if ($result < 0) {
     echo "socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n";
-}else {
+} else {
     echo "连接OK\n";
 }
 
@@ -224,16 +222,16 @@ $in = "Ho\r\n";
 $in .= "first blood\r\n";
 $out = '';
 
-if(!socket_write($socket, $in, strlen($in))) {
+if (!socket_write($socket, $in, strlen($in))) {
     echo "socket_write() failed: reason: " . socket_strerror($socket) . "\n";
-}else {
+} else {
     echo "发送到服务器信息成功！\n";
     echo "发送的内容为:<font color='red'>$in</font> <br>";
 }
 
-while($out = socket_read($socket, 8192)) {
+while ($out = socket_read($socket, 8192)) {
     echo "接收服务器回传信息成功！\n";
-    echo "接受的内容为:",$out;
+    echo "接受的内容为:", $out;
 }
 
 
@@ -249,7 +247,8 @@ echo "关闭OK\n";
 #### 过程代码详解
 
 服务端：
-```
+```php
+<?php
 // 设置一些基本的变量
 $host = "192.168.1.99";
 $port = 1234;
@@ -270,7 +269,7 @@ $input = socket_read($spawn, 1024) or die("Could not read input\n");
 $input = trim($input);
 //处理客户端输入并返回结果
 $output = strrev($input) . "\n";
-socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
+socket_write($spawn, $output, strlen($output)) or die("Could not write output\n");
 // 关闭sockets
 socket_close($spawn);
 socket_close($socket);
@@ -359,26 +358,26 @@ socket_close($socket);
 
 ```php
 <?php
-if(!($socket = socket_create(AF_INET,SOCK_STREAM,0))){
+if (!($socket = socket_create(AF_INET, SOCK_STREAM, 0))) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
     die("Couldn't create socket");
 }
 
-if(!socket_connect($socket,'104.193.88.77',80)){
+if (!socket_connect($socket, '104.193.88.77', 80)) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
     die("connect failed !");
 }
 
 $message = "GET / HTTP/1.1\r\n\r\n";
-if(!socket_send($socket,$message,strlen($message),0)){
+if (!socket_send($socket, $message, strlen($message), 0)) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
     die("send failed !");
 }
 
-if(socket_recv($socket,$buf,2045,MSG_WAITALL) === false){
+if (socket_recv($socket, $buf, 2045, MSG_WAITALL) === false) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
     die("receive failed !");
@@ -389,8 +388,9 @@ socket_close($socket);
 ```
 
 1.创建socket
-
+```
 $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+```
 
 该函数返回socket描述符，三个参数分别是：
 * 地址协议：AF_INET (这里是ipv4)
@@ -567,124 +567,110 @@ while(true){
 ```php
 <?php
 error_reporting(~E_NOTICE);
-set_time_limit (0);
- 
+set_time_limit(0);
+
 $address = "0.0.0.0";
 $port = 5000;
 $max_clients = 10;
-//1. 创建连接 
-if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
-{
+//1. 创建连接
+if (!($sock = socket_create(AF_INET, SOCK_STREAM, 0))) {
     $errorcode = socket_last_error();
-    $errormsg = socket_strerror($errorcode);     
+    $errormsg = socket_strerror($errorcode);
     die("Couldn't create socket: [$errorcode] $errormsg \n");
 }
- 
+
 echo "Socket created \n";
- 
+
 // 绑定连接
-if( !socket_bind($sock, $address , $port) )
-{
+if (!socket_bind($sock, $address, $port)) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
-     
+
     die("Could not bind socket : [$errorcode] $errormsg \n");
 }
- 
+
 echo "Socket bind OK \n";
- 
-//监听 
-if(!socket_listen ($sock , 10))
-{
+
+//监听
+if (!socket_listen($sock, 10)) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
-     
+
     die("Could not listen on socket : [$errorcode] $errormsg \n");
 }
- 
+
 echo "Socket listen OK \n";
- 
+
 echo "Waiting for incoming connections... \n";
- 
+
 //array of client sockets
 $client_socks = array();
- 
+
 //array of sockets to read
 $read = array();
- 
+
 //开始循环接收进来的连接和已经存在的连接
-while (true) 
-{
+while (true) {
     //准备一个存储socket的数组
     $read = array();
-     
+
     //第一个是主服务的 socket
     $read[0] = $sock;
-     
+
     //然后添加存在的 client sockets
-    for ($i = 0; $i < $max_clients; $i++)
-    {
-        if($client_socks[$i] != null)
-        {
-            $read[$i+1] = $client_socks[$i];
+    for ($i = 0; $i < $max_clients; $i++) {
+        if ($client_socks[$i] != null) {
+            $read[$i + 1] = $client_socks[$i];
         }
     }
-     
+
     //调用 select - 遇到错误 终止调用
-    if(socket_select($read , $write , $except , null) === false)
-    {
+    if (socket_select($read, $write, $except, null) === false) {
         $errorcode = socket_last_error();
         $errormsg = socket_strerror($errorcode);
-     
+
         die("Could not listen on socket : [$errorcode] $errormsg \n");
     }
-     
+
     //如果包含了主服务的 socket, 那么就可以就收新的客户端socket连接
-    if (in_array($sock, $read)) 
-    {
-        for ($i = 0; $i < $max_clients; $i++)
-        {
-            if ($client_socks[$i] == null) 
-            {
+    if (in_array($sock, $read)) {
+        for ($i = 0; $i < $max_clients; $i++) {
+            if ($client_socks[$i] == null) {
                 $client_socks[$i] = socket_accept($sock);//接受连接
-                 
+
                 //显示连接信息
-                if(socket_getpeername($client_socks[$i], $address, $port))
-                {
+                if (socket_getpeername($client_socks[$i], $address, $port)) {
                     echo "Client $address : $port is now connected to us. \n";
                 }
-                 
+
                 //发送语句给客户端
                 $message = "Welcome to php socket server version 1.0 \n";
                 $message .= "Enter a message and press enter, and i shall reply back \n";
-                socket_write($client_socks[$i] , $message);
+                socket_write($client_socks[$i], $message);
                 break;
             }
         }
     }
- 
+
     //检查每个客户端是否有数据发送
-    for ($i = 0; $i < $max_clients; $i++)
-    {
-        if (in_array($client_socks[$i] , $read))
-        {
-            $input = socket_read($client_socks[$i] , 1024);//读取数据
-             
-            if ($input == null) 
-            {
+    for ($i = 0; $i < $max_clients; $i++) {
+        if (in_array($client_socks[$i], $read)) {
+            $input = socket_read($client_socks[$i], 1024);//读取数据
+
+            if ($input == null) {
                 //如果输入为空 那么意味着客户端失去连接 关闭客户端并移除
                 unset($client_socks[$i]);
                 socket_close($client_socks[$i]);
             }
- 
+
             $n = trim($input);
- 
+
             $output = "OK ... $input";
-             
+
             echo "Sending output to client \n";
-             
+
             //发送回复信息给客户端
-            socket_write($client_socks[$i] , $output);
+            socket_write($client_socks[$i], $output);
         }
     }
 }
@@ -706,52 +692,51 @@ epoll实现的IO多路复用。php的event扩展支持epoll。安装好后看一
 <?php
 $host = '0.0.0.0';
 $port = 9999;
-$fd = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $fd, $host, $port );
-socket_listen( $fd );
+$fd = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($fd, $host, $port);
+socket_listen($fd);
 // 注意，将“监听socket”设置为非阻塞模式
-socket_set_nonblock( $fd );
+socket_set_nonblock($fd);
 
 // 这里值得注意，我们声明两个数组用来保存 事件 和 连接socket
-$event_arr = []; 
-$conn_arr = []; 
+$event_arr = [];
+$conn_arr = [];
 
-echo PHP_EOL.PHP_EOL."欢迎来到ti-chat聊天室!发言注意遵守当地法律法规!".PHP_EOL;
-echo "        tcp://{$host}:{$port}".PHP_EOL;
+echo PHP_EOL . PHP_EOL . "欢迎来到ti-chat聊天室!发言注意遵守当地法律法规!" . PHP_EOL;
+echo "        tcp://{$host}:{$port}" . PHP_EOL;
 
 $event_base = new EventBase();
-$event = new Event( $event_base, $fd, Event::READ | Event::PERSIST, function( $fd ){
+$event = new Event($event_base, $fd, Event::READ | Event::PERSIST, function ($fd) {
     // 使用全局的event_arr 和 conn_arr
-    global $event_arr,$conn_arr,$event_base;
-    
+    global $event_arr, $conn_arr, $event_base;
+
     // 非阻塞模式下，注意accpet的写法会稍微特殊一些。如果不想这么写，请往前面添加@符号，不过不建议这种写法
-    if ( ( $conn = socket_accept( $fd ) ) != false ) {
-        echo date('Y-m-d H:i:s').'：欢迎'.intval( $conn ).'来到聊天室'.PHP_EOL;
-        
+    if (($conn = socket_accept($fd)) != false) {
+        echo date('Y-m-d H:i:s') . '：欢迎' . intval($conn) . '来到聊天室' . PHP_EOL;
+
         // 将连接socket也设置为非阻塞模式
-        socket_set_nonblock( $conn );
-        
+        socket_set_nonblock($conn);
+
         // 此处值得注意，我们需要将连接socket保存到数组中去
-        $conn_arr[ intval( $conn ) ] = $conn;
-        
-        $event = new Event( $event_base, $conn, Event::READ | Event::PERSIST, function( $conn )  { 
+        $conn_arr[intval($conn)] = $conn;
+
+        $event = new Event($event_base, $conn, Event::READ | Event::PERSIST, function ($conn) {
             global $conn_arr;
-            $buffer = socket_read( $conn, 65535 );
-            foreach( $conn_arr as $conn_key => $conn_item )
-            {
-                if ( $conn != $conn_item ) {
-                    $msg = intval( $conn ).'说 : '.$buffer;
-                    socket_write( $conn_item, $msg, strlen( $msg ) );
-                }   
-            }   
-        }, $conn );
-        
+            $buffer = socket_read($conn, 65535);
+            foreach ($conn_arr as $conn_key => $conn_item) {
+                if ($conn != $conn_item) {
+                    $msg = intval($conn) . '说 : ' . $buffer;
+                    socket_write($conn_item, $msg, strlen($msg));
+                }
+            }
+        }, $conn);
+
         $event->add();
-        
+
         // 此处值得注意，我们需要将事件本身存储到全局数组中，如果不保存，连接会话会丢失，也就是说服务端和客户端将无法保持持久会话
-        $event_arr[ intval( $conn ) ] = $event;
+        $event_arr[intval($conn)] = $event;
     }
-}, $fd );
+}, $fd);
 $event->add();
 $event_base->loop();
 ```
