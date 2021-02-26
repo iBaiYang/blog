@@ -429,7 +429,6 @@ SERVER-3|| data： client: abc 0  client: abc 1  client: abc 2
 SERVER-4|| data： client: abc 0  client: abc 1  client: abc 2 
 SERVER-5|| data： client: abc 0  client: abc 1  client: abc 2 
 CLIENT-3|| client：time->[17:18:13] ; reponse-> client: abc 0  client: abc 1  client: abc 2 ; msg->abc
-
 ```
 
 看一下下面这种情况：
