@@ -46,42 +46,6 @@ stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E
 
 curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL%E8%AF%A6%E8%A7%A3.html>
 
-#### file_get_contents
-
-那么file_get_contents呢？
-
-file_get_contents()除了获取本地文件内容，还可以获取远程文件内容。
-
-有些时候用 file_get_contents() 调用外部文件容易超时报错。curl 效率比 file_get_contents() 和 fsockopen() 高一些，原因是cURL会自动对DNS信息进行缓存。
-
-file_get_contents / curl / fsockopen 在当前所请求环境下选择性操作，没有一概而论。
-
-file_get_contents 需要php.ini里开启allow_url_fopen，请求http时，使用的是http_fopen_wrapper，不会keeplive的话curl是可以的。 
-file_get_contents()单个执行效率高，返回没有头的信息。 
-
-这个是读取一般文件的时候并没有什么问题，但是在读取远程文件的时候有可能就会出现问题。如果是要一个持续连接，多次请求多个页面。
-那么file_get_contents和fopen就会出问题。取得的内容也可能会不对。所以做一些类似采集工作的时候，肯定就有问题了。 
-
-fsockopen 较底层，可以设置基于UDP或是TCP协议去交互，配置麻烦，不易操作。返回完整信息。 
-
-总之，file_get_contents 和 curl 能干的，socket都能干。socket能干的，curl 就不一定能干了。
-file_get_contents 更多的时候只是去拉取数据。效率比较高也比较简单。 
-
-只讨论 curl 与file_get_contents 的话，有这么一些结论：
-
-1. fopen /file_get_contents 每次请求都会重新做DNS查询，并不对DNS信息进行缓存。但是cURL会自动对DNS信息进行缓存。
-对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以cURL的性能比fopen /file_get_contents 好很多。
-
-2. fopen /file_get_contents在请求HTTP时，使用的是http_fopen_wrapper，不会keeplive。而curl却可以。这样在多次请求多个链接时，curl效率会好一些。
-
-3. fopen / file_get_contents函数会受到php.ini文件中allow_url_open选项配置的影响。如果该配置关闭了，则该函数也就失效了。而curl不受该配置的影响。
-
-4. curl可以模拟多种请求，例如：POST数据，表单提交等，用户可以按照自己的需求来定制请求。而fopen / file_get_contents只能使用get方式获取数据。
-
-PS：file_get_contents()函数获取https链接内容的时候，需要php 中mod_ssl的支持(或安装opensll)。
-
-结论就是，curl 效率及稳定都比 file_get_contents() 要好，fsockopen 也很强大，但是比较偏底层。
-
 #### Sockets
 
 在PHP中，通过官方自带的Sockets扩展库，Stream 函数扩展库可以创建多种协议的服务器和客户端。Stream 函数扩展库是封装好了的Sockets扩展库，更容易使用。
@@ -331,6 +295,36 @@ function udp_client($port, $ip, $sendMsg)
 }
 ```
 
+#### fsockopen
+
+```php
+$fp = fsockopen("www.example.com", 80, $errno, $errstr, 30);
+if (!$fp) {
+    echo "$errstr ($errno)<br />\n";
+} else {
+      $out = "GET / HTTP/1.1\r\n";
+      $out .= "Host: www.example.com\r\n";
+      $out .= "Connection: Close\r\n\r\n";
+  fwrite($fp, $out);
+while (!feof($fp)) {
+    echo fgets($fp, 128);
+}
+fclose($fp);
+}
+```
+
+使用UDP连接:
+```php
+$fp = fsockopen("udp://127.0.0.1", 13, $errno, $errstr);
+if (!$fp) {
+    echo "ERROR: $errno - $errstr<br />\n";
+} else {
+    fwrite($fp, "\n");
+    echo fread($fp, 26);
+    fclose($fp);
+}
+```
+
 #### cUrl
 
 ```php
@@ -360,6 +354,42 @@ function Post($url, $postData = array())
     return $result;
 }
 ```
+
+#### file_get_contents
+
+那么file_get_contents呢？
+
+file_get_contents()除了获取本地文件内容，还可以获取远程文件内容。
+
+有些时候用 file_get_contents() 调用外部文件容易超时报错。curl 效率比 file_get_contents() 和 fsockopen() 高一些，原因是cURL会自动对DNS信息进行缓存。
+
+file_get_contents / curl / fsockopen 在当前所请求环境下选择性操作，没有一概而论。
+
+file_get_contents 需要php.ini里开启allow_url_fopen，请求http时，使用的是http_fopen_wrapper，不会keeplive的话curl是可以的。
+file_get_contents()单个执行效率高，返回没有头的信息。
+
+这个是读取一般文件的时候并没有什么问题，但是在读取远程文件的时候有可能就会出现问题。如果是要一个持续连接，多次请求多个页面。
+那么file_get_contents和fopen就会出问题。取得的内容也可能会不对。所以做一些类似采集工作的时候，肯定就有问题了。
+
+fsockopen 较底层，可以设置基于UDP或是TCP协议去交互，配置麻烦，不易操作。返回完整信息。
+
+总之，file_get_contents 和 curl 能干的，socket都能干。socket能干的，curl 就不一定能干了。
+file_get_contents 更多的时候只是去拉取数据。效率比较高也比较简单。
+
+只讨论 curl 与file_get_contents 的话，有这么一些结论：
+
+1. fopen /file_get_contents 每次请求都会重新做DNS查询，并不对DNS信息进行缓存。但是cURL会自动对DNS信息进行缓存。
+   对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以cURL的性能比fopen /file_get_contents 好很多。
+
+2. fopen /file_get_contents在请求HTTP时，使用的是http_fopen_wrapper，不会keeplive。而curl却可以。这样在多次请求多个链接时，curl效率会好一些。
+
+3. fopen / file_get_contents函数会受到php.ini文件中allow_url_open选项配置的影响。如果该配置关闭了，则该函数也就失效了。而curl不受该配置的影响。
+
+4. curl可以模拟多种请求，例如：POST数据，表单提交等，用户可以按照自己的需求来定制请求。而fopen / file_get_contents只能使用get方式获取数据。
+
+PS：file_get_contents()函数获取https链接内容的时候，需要php 中mod_ssl的支持(或安装opensll)。
+
+结论就是，curl 效率及稳定都比 file_get_contents() 要好，fsockopen 也很强大，但是比较偏底层。
 
 #### HTTP功能工厂方法类
 
@@ -1738,6 +1768,8 @@ function stream_socket_shutdown ($stream, $how) {}
 深入浅出讲解：php的socket通信 <https://www.cnblogs.com/aipiaoborensheng/p/6708963.html>
 
 php中socket、fsockopen、curl、stream 区别 <https://blog.csdn.net/chadxia88_go/article/details/78465072>
+
+PHP 手册 函数参考 其它服务 网络 网络 函数 fsockopen <https://www.php.net/manual/zh/function.fsockopen.php>
 
 PHP 兼容 Curl/Socket/Stream 的 HTTP 操作类 <https://www.cnblogs.com/softwaredevelop/archive/2010/04/08/1707018.html>
 
