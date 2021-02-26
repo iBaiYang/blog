@@ -333,6 +333,25 @@ socket_create ( int $domain , int $type , int $protocol ) : resource
 | udp | User Datagram Protocol 是一个无连接的、不可靠的、具有固定最大长度的报文协议。由于这些特性，UDP 协议拥有最小的协议开销。 |
 | tcp | Transmission Control Protocol 是一个可靠的、基于连接的、面向数据流的全双工协议。TCP 能够保障所有的数据包是按照其发送顺序而接收的。如果任意数据包在通讯时丢失，TCP 将自动重发数据包直到目标主机应答已接收。因为可靠性和性能的原因，TCP 在数据传输层使用 8bit 字节边界。因此，TCP 应用程序必须允许传送部分报文的可能。 |
 
+php预定义的一些协议常量：
+```
+define ('SOCKET_EMEDIUMTYPE', 124);
+define ('IPPROTO_IP', 0);
+define ('IPPROTO_IPV6', 41);
+define ('SOL_TCP', 6);
+define ('SOL_UDP', 17);
+define ('IPV6_UNICAST_HOPS', 16);
+define ('IPV6_RECVPKTINFO', 49);
+define ('IPV6_PKTINFO', 50);
+define ('IPV6_RECVHOPLIMIT', 51);
+define ('IPV6_HOPLIMIT', 52);
+define ('IPV6_RECVTCLASS', 66);
+define ('IPV6_TCLASS', 67);
+define ('SCM_RIGHTS', 1);
+define ('SCM_CREDENTIALS', 2);
+define ('SO_PASSCRED', 16);
+```
+
 因此,如果你想创建一个UDP Socket的话,你可以使用如下的代码:
 ```
 // 创建 socket
