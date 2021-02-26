@@ -338,7 +338,7 @@ I hate ****y things!
 php中除了用Swoole拓展实现服务器客户端，其实用php原生的Stream拓展也可以实现服务器/客户端。
 
 server.php的代码：
-```
+```php
 //设置不超时
 set_time_limit(0);
 
@@ -348,23 +348,24 @@ class SocketServer
     {
         global $errno, $errstr;
 
-        $socket = stream_socket_server('tcp://127.0.0.1:'.$port, $errno, $errstr);
-        while($conn = stream_socket_accept($socket, -1))
-        {
+        $socket = stream_socket_server('tcp://127.0.0.1:' . $port, $errno, $errstr);
+        while ($conn = stream_socket_accept($socket, -1)) {
             $buff = '';
             $data = '';
-            file_put_contents('log.txt', 'SERVER-1|| server：conn->' .$conn .';  buff->'  .$buff  .'; data->' .$data  ."\r\n", FILE_APPEND);
+            file_put_contents('log.txt', 'SERVER-1|| server：conn->' . $conn . ';  buff->' . $buff . '; data->' . $data . "\r\n", FILE_APPEND);
+            
             //读取请求数据直到遇到\r\n结束符
-            while(!preg_match('#\r\n#', $buff))
-            {
+            while (!preg_match('#\r\n#', $buff)) {
                 $buff = fread($conn, 1024);
-                file_put_contents('log.txt', 'SERVER-2|| buff：' .$buff ."\r\n" , FILE_APPEND);
+                file_put_contents('log.txt', 'SERVER-2|| buff：' . $buff . "\r\n", FILE_APPEND);
                 $data .= preg_replace('#\r\n#', '', $buff);
-                file_put_contents('log.txt', 'SERVER-3|| data：' .$data ."\r\n" , FILE_APPEND);
+                file_put_contents('log.txt', 'SERVER-3|| data：' . $data . "\r\n", FILE_APPEND);
             }
-            file_put_contents('log.txt', 'SERVER-4|| data：' .$data ."\r\n" , FILE_APPEND);
+            file_put_contents('log.txt', 'SERVER-4|| data：' . $data . "\r\n", FILE_APPEND);
+            
             fwrite($conn, $data);
-            file_put_contents('log.txt', 'SERVER-5|| data：' .$data ."\r\n" , FILE_APPEND);
+            file_put_contents('log.txt', 'SERVER-5|| data：' . $data . "\r\n", FILE_APPEND);
+            
             fclose($conn);
         }
         fclose($socket);
@@ -375,31 +376,29 @@ new SocketServer(1212);
 ```
 
 client.php的代码：
-```
-if ( isset($argv[1]) ) {
+```php
+if (isset($argv[1])) {
     $msg = $argv[1];
-    file_put_contents('log.txt', 'CLIENT-1|| msg：' .$msg ."\r\n" , FILE_APPEND);
+    file_put_contents('log.txt', 'CLIENT-1|| msg：' . $msg . "\r\n", FILE_APPEND);
     $socket = stream_socket_client('tcp://127.0.0.1:1212', $errno, $errstr);
     if (!$socket) {
-        die($errno.$errstr);
+        die($errno . $errstr);
     } else {
         // stream_set_blocking($socket, 0);
-        for($index = 0; $index < 3; $index++)
-        {
+        for ($index = 0; $index < 3; $index++) {
             fwrite($socket, " client: $msg $index ");
-            file_put_contents('log.txt', 'CLIENT-2|| for： msg' .$msg  .'; index：' . $index ."\r\n" , FILE_APPEND);
+            file_put_contents('log.txt', 'CLIENT-2|| for： msg' . $msg . '; index：' . $index . "\r\n", FILE_APPEND);
             usleep(100000);
         }
         fwrite($socket, "\r\n");
         $response = fread($socket, 1024);
-        file_put_contents('log.txt', 'CLIENT-3|| client：time->'. date("[H:i:s] ", time()) .'; reponse->' .$response  .'; msg->' .$msg ."\r\n", FILE_APPEND);
+        file_put_contents('log.txt', 'CLIENT-3|| client：time->' . date("[H:i:s] ", time()) . '; reponse->' . $response . '; msg->' . $msg . "\r\n", FILE_APPEND);
         fclose($socket);
     }
 } else {
-    for($index = 0; $index < 3; $index++)
-    {
-        file_put_contents('log.txt', 'CLIENT-4|| start：' .$index ."\r\n" , FILE_APPEND);
-        system('php '.__FILE__." $index:test");
+    for ($index = 0; $index < 3; $index++) {
+        file_put_contents('log.txt', 'CLIENT-4|| start：' . $index . "\r\n", FILE_APPEND);
+        system('php ' . __FILE__ . " $index:test");
     }
 }
 ```
