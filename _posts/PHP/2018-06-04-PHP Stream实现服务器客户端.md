@@ -409,6 +409,8 @@ if (isset($argv[1])) {
 > 
 > php client.php abc
 
+![]({{site.baseurl}}/images/20190114/20190114151758.jpg)
+
 ```
 CLIENT-1|| msg：abc
 SERVER-1|| server：conn->Resource id #42;  buff->; data->
@@ -499,30 +501,6 @@ SERVER-3|| data： client: 2:test 0  client: 2:test 1  client: 2:test 2
 SERVER-4|| data： client: 2:test 0  client: 2:test 1  client: 2:test 2 
 SERVER-5|| data： client: 2:test 0  client: 2:test 1  client: 2:test 2 
 CLIENT-3|| client：time->[07:01:58] ; reponse-> client: 2:test 0  client: 2:test 1  client: 2:test 2 ; msg->2:test
-```
-
-客户端运行：
-
-![]({{site.baseurl}}/images/20190114/20190114151758.jpg)
-
-```
-CLIENT-1|| msg：abc
-CLIENT-2|| for： msgabc; index：0
-SERVER-1|| server：conn->Resource id #6;  buff->; data->
-SERVER-2|| buff： client: abc 0 
-SERVER-3|| data： client: abc 0 
-SERVER-2|| buff： client: abc 1 
-CLIENT-2|| for： msgabc; index：1
-SERVER-3|| data： client: abc 0  client: abc 1 
-SERVER-2|| buff： client: abc 2 
-CLIENT-2|| for： msgabc; index：2
-SERVER-3|| data： client: abc 0  client: abc 1  client: abc 2 
-SERVER-2|| buff：
-
-SERVER-3|| data： client: abc 0  client: abc 1  client: abc 2 
-SERVER-4|| data： client: abc 0  client: abc 1  client: abc 2 
-SERVER-5|| data： client: abc 0  client: abc 1  client: abc 2 
-CLIENT-3|| client：time->[07:17:43] ; reponse-> client: abc 0  client: abc 1  client: abc 2 ; msg->abc
 ```
 
 #### stream系列函数
