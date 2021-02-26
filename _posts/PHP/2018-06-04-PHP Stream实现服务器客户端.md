@@ -405,6 +405,33 @@ if (isset($argv[1])) {
 
 看一下实现结果：
 
+> php server.php
+> 
+> php client.php abc
+
+```
+CLIENT-1|| msg：abc
+SERVER-1|| server：conn->Resource id #42;  buff->; data->
+SERVER-2|| buff： client: abc 0 
+CLIENT-2|| for： msgabc; index：0
+SERVER-3|| data： client: abc 0 
+SERVER-2|| buff： client: abc 1 
+CLIENT-2|| for： msgabc; index：1
+SERVER-3|| data： client: abc 0  client: abc 1 
+SERVER-2|| buff： client: abc 2 
+CLIENT-2|| for： msgabc; index：2
+SERVER-3|| data： client: abc 0  client: abc 1  client: abc 2 
+SERVER-2|| buff：
+
+SERVER-3|| data： client: abc 0  client: abc 1  client: abc 2 
+SERVER-4|| data： client: abc 0  client: abc 1  client: abc 2 
+SERVER-5|| data： client: abc 0  client: abc 1  client: abc 2 
+CLIENT-3|| client：time->[17:18:13] ; reponse-> client: abc 0  client: abc 1  client: abc 2 ; msg->abc
+
+```
+
+看一下下面这种情况：
+
 服务端运行：
 
 ![]({{site.baseurl}}/images/20190114/20190114150405.jpg)
