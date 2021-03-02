@@ -88,6 +88,8 @@ UserInfo::find()
 
 Es连接读取层 与 AR活动记录 首先要进行分离， AR活动记录 通过 ActiveQuery活动搜索层 对 Es连接读取层 进行数据读取。
 
+整个模式有点类似中介者模式。ActiveQuery活动搜索层是中介，AR活动记录、Es连接读取层 是同事类。
+
 #### Es连接读取层
 
 ```php
