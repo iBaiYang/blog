@@ -68,7 +68,7 @@ $response = $client->search($condition);
 
 如果Elasticsearch查询不进行封装，代码看起来会很散，我们在Yii2中封装一下Elasticsearch查询，其实就是把最终输出的查询条件如上所示一样。
 
-能不能改成下面Yii2 model使用的这种查询方式呢？
+能不能改成下面Yii2 model使用的这种查询方式（流接口模式）呢？
 ````
 UserInfo::find()
     ->select("user_id, user_name, age")
