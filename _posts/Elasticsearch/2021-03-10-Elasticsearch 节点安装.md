@@ -116,6 +116,32 @@ jvm.options
 # curl '192.168.40.44:9200/_cat/nodes?v'
 ```
 
+#### 注意事项
+
+注意事项：节点安装完，验证服务是否可正常启动的时候。切记修改elasticsearch.yml配置文件中cluster.name及discovery.zen.ping.unicast.hosts，使之不在任何的线上集群中。可以在业务低峰的时候再改为正确的集群配置文件，然后加入到集群。
+新增节点及现有节点修改elasticsearch.yml文件需要重点注意以下两个选项：
+`discovery.zen.ping.unicast.hosts: ["vpc-app-log-es001", "vpc-app-log-es002", "vpc-app-log-es003","新增节点hostname1","新增节点hostname2"]`
+`discovery.zen.minimum_master_nodes`: 一个节点需要看到的具有master节点资格的最小数量，然后才能在集群中做操作。官方的推荐值是(N/2)+1,比如一个集群5个节点都具有master资格，则5/2+1
+
+#### 节点ES启动
+
+启动第一个节点，启动方法可以参考“节点安装“”一节，通过API确认是否加入到集群中。
+
+```
+# su - elasticsearch
+$ cd /usr/local/elasticsearch/bin/
+$ ./elasticsearch -d
+# curl http://192.168.xx.xx:9200/_cat/nodes?v
+```
+
+依次启动其它新增几点。
+
+修改已有节点配置重启服务
+* 修改elasticsearch.yml保持所有节点一致。
+* 修改/etc/hosts保持所有节点一致。
+
+重启步骤参考：节点重启
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
