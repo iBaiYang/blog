@@ -1443,3 +1443,5 @@ socket_select (PHP 手册 函数参考 其它服务 Sockets Socket 函数) <http
 在PHP中使用协程实现多任务调度 <https://www.laruence.com/2015/05/28/3038.html>
 
 什么是协程？ <https://zhuanlan.zhihu.com/p/172471249>
+
+php yield关键字以及协程的实现 <https://www.cnblogs.com/liliuguang/p/10909944.html>
