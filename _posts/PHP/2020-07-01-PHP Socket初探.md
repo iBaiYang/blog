@@ -1328,7 +1328,8 @@ gen2();
 
 > 我似乎已然精通了yield
 
-写到这里后我也开始蹩了，和以往的憋了三天蹦不出来个屁有所不同，我这次蹩出了一个比较典型的应用场景：curl。下面我们基于上面那坨辣鸡代码将gen1修改为一个耗时curl网络请求，gen2将向一个文本文件中写内容，我们的目的就是在耗时的curl开始后主动让出CPU，让gen2去写文件，以实现CPU的最大化利用。
+写到这里后我们想到一个比较典型的应用场景：curl。下面我们基于上面那坨辣鸡代码将gen1修改为一个耗时curl网络请求，
+gen2将向一个文本文件中写内容，我们的目的就是在耗时的curl开始后主动让出CPU，让gen2去写文件，以实现CPU的最大化利用。
 
 ```php
 <?php
@@ -1368,9 +1369,10 @@ while( true ) {
 }
 ```
 
-上面的代码，运行以后，我们再等待curl发起请求的5秒钟内，同时可以完成文件写入功能，如果换做平时的PHP程序，就只能是先阻塞等待curl拿到结果后才能完成文件写入。
+上面的代码，运行以后，我们再等待curl发起请求的5秒钟内，同时可以完成文件写入功能，如果换做平时的PHP程序，
+就只能是先阻塞等待curl拿到结果后才能完成文件写入。
 
-文章太长，就像“老太太的裹脚布一样，又臭又长”，所以，最后再对代码做个极小幅度的改动就收尾不写了！
+最后再对代码做个极小幅度的改动！
 
 ```php
 <?php
@@ -1414,15 +1416,16 @@ while( true ) {
 
 我们修改了内容：
 
-将$gen1->next()修改成了$gen1->send("gen1")
+将`$gen1->next()`修改成了`$gen1->send("gen1")`
 
 在function gen1中yield有了返回值，并且将返回值打印出来
 
-这件事情告诉我们：yield和send，是可以双向通信的，同时告诉我们send可以用来恢复原来中断的代码，而且在恢复中断的同时可以携带信息回去。写到这里，你是不是觉得这玩意的可利用价值是不是比原来高点儿了？
+这件事情告诉我们：yield和send，是可以双向通信的，同时告诉我们send可以用来恢复原来中断的代码，而且在恢复中断的同时可以携带信息回去。
+写到这里，你是不是觉得这玩意的可利用价值是不是比原来高点儿了？
 
-我知道，有人肯定叨叨了：“老李，你代码特么写的真是辣鸡啊！你之前保证过了的 --- 只在公司生产环境写辣鸡代码的。可你看看你这辣鸡光环到笼罩都到demo里了，你连demo都不放过了！你怎么说？！”。兄dei，“又不是不能用”。而且我告诉你，上面这点儿curl demo来讲明白yield还是不够的，后面还有两三篇yield呢，照样是烂代码恶心死你，爱看不看。我劝你心放宽，你想想你这么烂的代码都经历了，还有什么不能经历的？
-
-文章最后补个小故事：其实yield是PHP 5.5就已经添加进来了，这个模块的作者叫做Nikita Popov，网络上的名称是Nikic。我们知道PHP7这一代主力是惠新宸，下一代PHP主力就是Nikic了。早在2012年，Nikic就发表了一篇关于PHP yield多任务的文章，链接我贴出来大家共赏一下 --- http://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html
+文章最后补个小故事：其实yield是PHP 5.5就已经添加进来了，这个模块的作者叫做Nikita Popov，网络上的名称是Nikic。
+我们知道PHP7这一代主力是惠新宸，下一代PHP主力就是Nikic了。早在2012年，Nikic就发表了一篇关于PHP yield多任务的文章，
+链接我贴出来大家共赏一下 --- <http://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html>
 
 
 
@@ -1436,3 +1439,7 @@ PHP 手册 函数参考 其它服务 Sockets <https://www.php.net/manual/zh/ref.
 ab压力测试及结果分析 <https://blog.csdn.net/qq_34252622/article/details/92431267>
 
 socket_select (PHP 手册 函数参考 其它服务 Sockets Socket 函数) <https://www.php.net/socket_select>
+
+在PHP中使用协程实现多任务调度 <https://www.laruence.com/2015/05/28/3038.html>
+
+什么是协程？ <https://zhuanlan.zhihu.com/p/172471249>
