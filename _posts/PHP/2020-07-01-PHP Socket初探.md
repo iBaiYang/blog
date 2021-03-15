@@ -1241,8 +1241,7 @@ yield receive : 100
 
 PS：那篇文章中在最后我犯了一个错误，误下了一个结论：foreach中不能使用send并猜测这是PHP的bug，实际上并不是，
 真实的原因粗暴简单的理解就是send会让生成器继续执行一次导致。这件事情告诉我们：
-
-> 除了装逼之外，甩锅也是有打脸风险的
+除了装逼之外，甩锅也是有打脸风险的
 
 那篇坑里，内容和你能在百毒上搜索到的大多数文章都是差不多的，不过我那篇坑标题起得好：《yield是个什么玩意（上）》，
 也就是暗示大家还有下篇，所以起标题也是需要一定技术含量的。
@@ -1251,11 +1250,13 @@ PS：那篇文章中在最后我犯了一个错误，误下了一个结论：for
 
 回到今天主旨上来，强调几点：
 
-- 虽然文章标题中有“yield和协程”这样的关键字，但实际上yield并不是协程，看起来有不少人直接将yield和协程划了等号。yield的本质是生成器，英文名字叫做Generator。
+- 虽然文章标题中有“yield和协程”这样的关键字，但实际上yield并不是协程，看起来有不少人直接将yield和协程划了等号。
+  yield的本质是生成器，英文名字叫做Generator。协程
 
 - yield只能用在function中，但用了yield就已经不是传统意义上的function了，同时如果你企图在function之外的其他地方用yield，你会被打脸。
 
-- yield的最重要作用就是：自己中断一坨代码的执行，然后主动让出CPU控制权给路人甲；然后又能通过一些方式从刚才中断的地方恢复运行。这个就比较屌了，假如你请求了一个费时10s的服务器API，此时是可以让出CPU给路人甲。粗暴地说上面的过程就算是协程的基本概念。
+- yield的最重要作用就是：自己中断一坨代码的执行，然后主动让出CPU控制权给路人甲；然后又能通过一些方式从刚才中断的地方恢复运行。
+  这个就比较屌了，假如你请求了一个费时10s的服务器API，此时是可以让出CPU给路人甲。粗暴地说上面的过程就算是协程的基本概念。
 
 
 
@@ -1337,6 +1338,7 @@ curl_setopt( $ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1"
 curl_setopt( $ch1, CURLOPT_HEADER, 0 );
 $mh = curl_multi_init();
 curl_multi_add_handle( $mh, $ch1 );
+
 function gen1( $mh, $ch1 ) {
   do {
     $mrc = curl_multi_exec( $mh, $running );
@@ -1347,6 +1349,7 @@ function gen1( $mh, $ch1 ) {
   echo $ret.PHP_EOL;
   return false;
 }
+
 function gen2() {
   for ( $i = 1; $i <= 10; $i++ ) {
     echo "gen2 : {$i}".PHP_EOL;
@@ -1354,6 +1357,7 @@ function gen2() {
     yield;
   }
 }
+
 $gen1 = gen1( $mh, $ch1 );
 $gen2 = gen2();
 while( true ) {
@@ -1376,6 +1380,7 @@ curl_setopt( $ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1"
 curl_setopt( $ch1, CURLOPT_HEADER, 0 );
 $mh = curl_multi_init();
 curl_multi_add_handle( $mh, $ch1 );
+
 function gen1( $mh, $ch1 ) {
   do {
     $mrc = curl_multi_exec( $mh, $running );
@@ -1387,6 +1392,7 @@ function gen1( $mh, $ch1 ) {
   echo $ret.PHP_EOL;
   return false;
 }
+
 function gen2() {
   for ( $i = 1; $i <= 10; $i++ ) {
     echo "gen2 : {$i}".PHP_EOL;
@@ -1395,6 +1401,7 @@ function gen2() {
     echo "外部发送数据{$rs}".PHP_EOL;
   }
 }
+
 $gen1 = gen1( $mh, $ch1 );
 $gen2 = gen2();
 while( true ) {
