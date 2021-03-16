@@ -9,9 +9,18 @@ meta: 想用php实现一个聊天功能，怎么做呢？js定时每秒获取一
 
 ### 正文
 
-#### swoole进程模型
+Swoole 是一个使用 C++ 语言编写的基于异步事件驱动和协程的并行网络通信引擎，为 PHP 提供协程、高性能网络编程支持。
+提供了多种通信协议的网络服务器和客户端模块，
+可以方便快速的实现 **TCP/UDP服务**、**高性能Web**、**WebSocket服务**、**物联网**、**实时通讯**、**游戏**、**微服务**等，
+使 PHP 不再局限于传统的 **Web 领域**。
+
+#### Swoole 进程模型
 
 ![]({{site.baseurl}}/images/20200330/20200330191533.jpeg)
+
+#### Swoole 类图
+
+![]({{site.baseurl}}/images/20210316/20210316110034.png)
 
 #### 基于swoole的echo服务器
 
@@ -423,6 +432,10 @@ Task进程根据数据包中的"url"运行相应处理逻辑器并把数据包�
 
 大致流程就是这样，理解下。
 
+#### Hyperf
+
+[Hyperf](https://hyperf.wiki/2.1/#/) 是一个Swoole框架，学习它可以更好的理解Swoole及使用。
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -481,3 +494,5 @@ PHP Stream实现服务器客户端 <https://ibaiyang.github.io/blog/php/2018/06/
 WebSocket 技术探究 <https://ibaiyang.github.io/blog/html/2018/05/25/WebSocket-%E6%8A%80%E6%9C%AF%E6%8E%A2%E7%A9%B6.html>
 
 socket，tcp，http三者之间的区别和原理 <https://www.jianshu.com/p/a24ba459e306>
+
+Hyperf框架学习 <https://hyperf.wiki/2.1/#/>
