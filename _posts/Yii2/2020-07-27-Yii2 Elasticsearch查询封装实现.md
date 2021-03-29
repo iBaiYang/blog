@@ -1310,6 +1310,42 @@ $ec->invoke($fuc);   //执行ec 方法
 
 上面的过程很熟悉吧。其实和调用对象的方法类似，只不过这里是反着来的，方法在前，对象在后。
 
+`ReflectionFunction::invoke` 调用反射函数：
+```
+ReflectionFunction::invoke( [ mixed $... ]  )
+```
+
+看个例子：
+```
+function title($title, $name)
+{
+    return sprintf("%s. %s\r\n", $title, $name);
+}
+
+$function = new ReflectionFunction('title');
+
+echo $function->invoke('Dr', 'Phil');
+```
+
+
+还有一个容易引起误解的魔术方法`__invoke()`，
+php中的`__invoke()`魔术方法作用是直接调用对象名当方法使用时，就调用的是`__invoke()`方法。
+
+```php
+class Test
+{
+    function __invoke()
+    {
+        var_dump("当显示这段话时，是把对象当做方法来用");
+    }
+}
+
+$test = new Test();//实例化一个对象
+$test();//将对象当做方法来使
+```
+
+如果去掉`__invoke()`方法，还是将对象当做方法来使用时，就会报错。
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
@@ -1331,3 +1367,7 @@ PHP 手册 函数参考 变量与类型相关扩展 反射 ReflectionClass 类 <
 PHP 反射 ReflectionClass <https://www.cnblogs.com/uduemc/p/4055092.html>
 
 PHP 手册 函数参考 变量与类型相关扩展 反射 ReflectionClass  ReflectionClass::newInstance <https://www.php.net/manual/zh/reflectionclass.newinstance.php>
+
+PHP ReflectionFunction::invoke 反射函数 <https://www.jc2182.com/php/php-reflectionfunctioninvoke-ref.html>
+
+
