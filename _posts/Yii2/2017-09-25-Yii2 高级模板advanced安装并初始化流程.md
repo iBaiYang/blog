@@ -21,7 +21,7 @@ meta: Yii2 高级模板advanced安装并初始化流程
 
 这一步命令安装 Composer asset plugin， 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 
-composer create-project --prefer-dist yiisoft/yii2-app-advanced yii2_test
+> composer create-project --prefer-dist yiisoft/yii2-app-advanced yii2_test
 
 第一个箭头所指token那里，需要在github生成：
 
