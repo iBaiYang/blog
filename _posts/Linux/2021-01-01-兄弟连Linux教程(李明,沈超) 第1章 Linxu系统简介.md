@@ -3018,6 +3018,6 @@ image
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-[linux学习笔记]兄弟连linux视屏教程(老师：沈超 李明) <https://www.itdaan.com/blog/2018/09/14/341a51f99c1f6d5695c22614cbfb2e38.html>
+[linux学习笔记]兄弟连linux视屏教程(老师：沈超 李明) <https://www.it610.com/article/1188372688972914688.htm>
 
 
