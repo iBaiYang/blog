@@ -128,6 +128,8 @@ www.netcraft.com 扫描和踩点网站
 
 课件地址：
 
+https://www.docin.com/mydoc-107542902-11.html&folderId=0
+
 https://www.docin.com/app/user/searchuserproduct?userid=107542902&myKeyword=Linux%E6%95%99%E7%A8%8B&bh=&currentPage=1
 
 `Linux教程`
