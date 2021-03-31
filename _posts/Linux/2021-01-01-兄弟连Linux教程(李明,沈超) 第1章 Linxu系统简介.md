@@ -11,17 +11,25 @@ meta: 兄弟连Linux教程(李明,沈超) 第1章 Linxu系统简介
 
 #### 1.1.1 UNIX发展历史和发行版本 
 
-unix发展历史：1969年，美国贝尔实验室的肯.汤普森开发出unix系统，1971年丹尼斯·里奇发明C语言，1973年，unix用c重写
+unix发展历史：
 
-硬件平台的概念  也就是cpu架构
+(1) 1965年，美国麻省理工学院(MIT)、通用电气公司(GE)、及AT&T的贝尔实验室联合开发Multics工程计划，
+其目标是开始一种交互式的具有多道程序处理能力的分时操作系统，但因Multics追求的目标过于庞大复杂，
+项目进度远远落后于计划，最后贝尔实验室宣布退出。
 
-PowerPC      IBM          AIX
+(2) 1969年，美国贝尔实验室的肯.汤普森在DEC PDP-7机器上开发出了UNIX系统。
 
-PA-RISC       HP        HP-UX
+(3) 1971年，肯·汤普森的同事丹尼斯·里奇发明C语言；1973年，UNIX系统的绝大部分源代码用C语言重写，
+这为提高UNIX系统的可移植性打下基础。
 
-SPARC         Sun          Solaris
+硬件平台的概念  也就是cpu架构。
 
-IA(Intel、AMD、Cyrix、RISE...)      Red Hat Linux、Ubuntu...   linux
+| 操作系统 | 公司 | 硬件平台 |
+| :--------   | :-----  | :----  |
+| AIX  | IBM    |   PowerPC    |
+| HP-UX    | HP    | PA-RISC       |
+| Solaris    | Sun    | SPARC      |
+| Linux    | Red hat、 Ubuntu...    | IA(Intel、AMD、Cyrix、RISE...)       |
 
 AIX和HP-UX是不能安装在pc中，必须在特定的服务器上，Solaris可以
 
@@ -31,17 +39,17 @@ mac也是由unix演变来的
 
 #### 1.1.2 Linux发展历史和发行版本
 
-linux发展历史：1991年，Linus Torvalds和其他众多爱好者开发完成
+linux系统诞生于1991年，由芬兰大学生李纳斯（Linus Torvalds）和后来陆续加入的众多爱好者共同开发完成
 
-Linux是开源软件，源码开放的UNIX
+Linux是开源软件，源码开放的UNIX。
 
-内核官网：www.kernel.org
+Linux内核官网：www.kernel.org
 
 版本号如  2.6.18
 
-目前最新  4.18.4
+目前最新的内核版本  4.18.4
 
-次版本是偶数是稳定版奇数是开发版，这种说法在主版本更新到3就没了
+次版本是偶数是稳定版奇数是开发版，这种说法在主版本更新到3就没了。
 
 发行版：redhat系列(yum)和debian系列（apt-get）
 
@@ -59,11 +67,24 @@ ubuntu界面漂亮,桌面用户多点，server端并不多
 
 #### 1.2 开源软件简介
 
+使用的自由：绝大多数开源软件免费
+
+研究的自由：可以获得软件源代码
+
+散布及改良的自由：可以自由传播、改良甚至销售
+
+支撑互联网的开源技术
+
+LNMP
+    
+    Linux    操作系统
+    Nginx    Web服务器
+    MySQL    数据库
+    PHP      编程语言
+
 商业软件是收费的
 
 开源软件免费但是可以收服务费
-
-使用、研究、散布及改良的自有
 
 #### 1.3 Linux应用领域
 
@@ -88,11 +109,20 @@ www.netcraft.com 扫描和踩点网站
 
 #### 1.4 Linux学习方法
 
+为什么选择命令行
+
+解决问题的智慧：帮助、文档、示例、查找
+
 善用工具
 
-英文
+英文提示的困惑
+    
+    Commond not found
+    No Such file or directory
 
 忘掉windows思维方式
+
+计划、坚持、专注、练习
 
 ### 概述
 
