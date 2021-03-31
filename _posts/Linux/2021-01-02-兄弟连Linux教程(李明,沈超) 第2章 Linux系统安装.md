@@ -182,6 +182,29 @@ software development workstation（软件开发工作站）
 
 #### 2.4 远程登录管理工具
 
+1、虚拟机网络配置
+
+![]({{site.baseurl}}/images/20210331/20210331211749.png)
+
+![]({{site.baseurl}}/images/20210331/20210331211857.png)
+
+桥接
+
+NAT
+
+Host only
+
+2、SecureCRT
+
+![]({{site.baseurl}}/images/20210331/20210331212006.png)
+
+![]({{site.baseurl}}/images/20210331/20210331212036.png)
+
+3、Winscp
+
+![]({{site.baseurl}}/images/20210331/20210331212111.png)
+
+
 linux 严格区分大小写
 
 命令全是小写
