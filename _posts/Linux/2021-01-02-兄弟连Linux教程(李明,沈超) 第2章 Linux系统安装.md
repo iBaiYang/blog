@@ -188,102 +188,35 @@ software development workstation（软件开发工作站）
 
 ![]({{site.baseurl}}/images/20210331/20210331211857.png)
 
-桥接
+桥接     与主机共用同一个网卡，占用网段IP，可访问外网
 
-NAT
+NAT     使用虚拟网卡，不占用网段IP，与主机通信基础上，可以访问外网
 
-Host only
+Host only     使用虚拟网卡，不占用网段IP，只与主机通信，不可访问外网
 
-2、SecureCRT
+查看网卡配置，配置网卡IP
+> ifconfig
+> ifconfig eth0 192.168.118.2
+
+> ping 192.168.118.2
+
+2、SecureCRT 远程连接管理工具
 
 ![]({{site.baseurl}}/images/20210331/20210331212006.png)
 
 ![]({{site.baseurl}}/images/20210331/20210331212036.png)
 
-3、Winscp
+3、Winscp 文件拷贝工具
+
+在 windows 与 linux 之间copy文件
 
 ![]({{site.baseurl}}/images/20210331/20210331212111.png)
 
 
-linux 严格区分大小写
-
-命令全是小写
-
-文件名区分大小写
-
-tab键自动补全
-
-linux中一切皆文件  设备文件是特殊的文件
-
-永久生效都要写入文件  写入内存的都是临时生效
-
-linux不通过扩展名区分文件类型
-
-linux存储设备都必须挂载后才能使用
-
-目录作用
-
-/bin  存放系统命令，普通用户和root都可以执行
-
-/sbin 保存和系统环境设置相关的命令，只有root能执行
-
-/usr/bin
-
-/usr/sbin
-
-/boot 系统启动目录
-
-/dev 设备文件
-
-/etc  配置文件
-
-/home 宿主目录
-
-/lib 系统函数库
-
-/lost+found/ 当系统崩溃或意外关机而产生的文件碎片。当系统启动过程fsck工具会检查这里，并修复系统   每个分区都有自己的这个目录
-
-/media 挂载目录   多媒体设备  光盘
-
-/mnt 挂载目录 u盘移动硬盘或其他操作系统分区
-
-/misc 挂载目录 系统建议用来挂载nfs服务的共享目录
-
-/opt 第三方软件保存位置  用处不多，现在外部软件一般放/usr/local目录
-
-/proc 虚拟文件系统  放内存中 当前系统的进程和硬件信息
-
-/sys  虚拟文件系统  放内存中 存放内核相关信息
-
-/root  root家目录
-
-/srv  服务数据目录
-
-/tmp 临时
-
-/usr 系统软件资源目录
-
-/var 动态数据保存位置。保存缓存、日志及软件运行产生的文件
-
-usr  unix system resource
-
-服务器不允许关机，只能重启
-
-重启时应该关闭服务
-
-不要在服务器访问高峰运行高负载命令
-
-远程配置防火墙时不要把自己踢出服务器
-
-合理分配权限
-
-定期备份重要数据和日志
 
 
 
-mint 默认不启用root用户,sudo passwd root来启用
 
-mint也默认不启用ssh,sudo apt-get install openssh-server然后修改配置文件vi /etc/ssh/sshd_config 修改PermitRootLogin yes行，来允许root用户ssh远程登陆
 
 
 
