@@ -648,18 +648,490 @@ windows的搜索工具：Everything
 
 #### 4.4 帮助命令
 
+**帮助命令：man**
+
+命令名称：man
+
+命令英文原意：manual
+
+命令所在路径：/usr/bin/man
+
+执行权限：所有用户
+
+语法：man  [命令或配置文件]
+
+功能描述：获得帮助信息
+
+范例： 
+
+查看ls命令的帮助信息
+> $ man ls
+
+查看配置文件services的帮助信息
+> $ man services
+
+**帮助命令：help**
+
+命令名称：help
+
+命令所在路径：Shell内置命令
+
+执行权限：所有用户
+
+语法：help 命令
+
+功能描述：获得Shell内置命令的帮助信息
+
+范例：
+
+查看umask命令的帮助信息
+> $ help umask
 
 #### 4.5 用户管理命令
 
+**用户管理命令：useradd**
+
+命令名称：useradd
+
+命令所在路径：/usr/sbin/useradd
+
+执行权限：root
+
+语法：useradd 用户名
+
+功能描述：添加新用户
+
+范例： 
+> $ useradd yangmi
+
+**用户管理命令：passwd**
+
+命令名称：passwd
+
+命令所在路径：/usr/bin/passwd
+
+执行权限：所有用户
+
+语法：passwd 用户名
+
+功能描述：设置用户密码
+
+范例： 
+> $ passwd yangmi
+
+**用户管理命令：who**
+
+命令名称：who
+
+命令所在路径：/usr/bin/who
+
+执行权限：所有用户
+
+语法：who
+
+功能描述：查看登录用户信息
+
+范例： 
+> $ who
+
+**用户管理命令：w**
+
+命令名称：w
+
+命令所在路径：/usr/bin/w
+
+执行权限：所有用户
+
+语法：w
+
+功能描述：查看登录用户详细信息
+
+范例：
+> $ w
 
 #### 4.6 压缩解压命令
 
+**压缩命令：gzip**
+
+命令名称：gzip
+
+命令英文原意：GNU zip
+
+命令所在路径：/bin/gzip
+
+执行权限：所有用户
+
+语法：gzip [文件]
+
+功能描述：压缩文件
+
+压缩后文件格式：.gz
+
+**解压命令：gunzip**
+
+命令名称：gunzip
+
+命令英文原意：GNU unzip
+
+命令所在路径：/bin/gunzip
+
+执行权限：所有用户
+
+语法：gunzip [压缩文件]
+
+功能描述：解压缩.gz的压缩文件
+
+范例： 
+> $ gunzip boduo.gz
+
+**压缩解压命令：tar**
+
+命令名称：tar
+
+命令所在路径：/bin/tar
+
+执行权限：所有用户
+
+语法：tar  选项[-zcf] [压缩后文件名] [目录]          
+
+    -c    打包
+    -v    显示详细信息
+    -f     指定文件名
+    -z     打包同时压缩
+
+功能描述：打包目录
+
+压缩后文件格式：.tar.gz
+
+范例：
+
+将目录Japan打包并压缩为.tar.gz文件
+> $ tar  -zcf   Japan.tar.gz  Japan
+
+tar命令解压缩语法：
+
+    -x     解包
+    -v    显示详细信息
+    -f     指定解压文件
+    -z     解压缩
+
+范例：
+> $ tar  -zxvf  Japan.tar.gz
+
+**压缩命令：zip**
+
+命令名称：zip
+
+命令所在路径：/usr/bin/zip
+
+执行权限：所有用户
+
+语法： zip  选项[-r]  [压缩后文件名]  [文件或目录]
+
+    -r    压缩目录
+
+功能描述：压缩文件或目录
+
+压缩后文件格式：.zip
+
+范例：
+
+压缩文件
+> $ zip  buduo.zip  boduo
+
+压缩目录
+> $ zip  -r  Japan.zip  Japan
+
+**解压命令：unzip**
+
+命令名称：unzip
+
+命令所在路径：/usr/bin/unzip
+
+执行权限：所有用户
+
+语法：unzip  [压缩文件]
+
+功能描述：解压.zip的压缩文件
+
+范例：
+> $ unzip test.zip
+
+**压缩命令：bzip2**
+
+命令名称：bzip2
+
+命令所在路径：/usr/bin/bzip2
+
+执行权限：所有用户
+
+语法： bzip2  选项 [-k] [文件]
+
+    -k   产生压缩文件后保留原文件
+
+功能描述：压缩文件
+
+压缩后文件格式：.bz2
+
+范例：
+> $ bzip2 -k boduo   
+> 
+> $ tar -cjf  Japan.tar.bz2 Japan
+
+**压缩解压命令：bunzip2**
+
+命令名称：bunzip2
+
+命令所在路径：/usr/bin/bunzip2
+
+执行权限：所有用户
+
+语法： bunzip2  选项 [-k] [压缩文件]
+
+    -k   解压缩后保留原文件
+
+功能描述：解压缩
+
+范例：
+> $ bunzip2  -k boduo.bz2
+>
+> $ tar -xjf  Japan.tar.bz2
 
 #### 4.7 网络命令
 
+**网络命令：write**
+
+指令名称：write
+
+指令所在路径：/usr/bin/write
+
+执行权限：所有用户
+
+语法：write  <用户名>   
+
+功能描述：给用户发信息，以Ctrl+D保存结束
+
+范例：  
+> write linzhiling
+
+**网络命令：wall**
+
+指令名称：wall
+
+命令英文原意：write all
+
+指令所在路径：/usr/bin/wall
+
+执行权限：所有用户
+
+语法：wall  [message]  
+
+功能描述：发广播信息
+
+范例：   
+> wall  ShenChao is a honest man!
+
+**网络命令：ping**
+
+命令名称：ping
+
+命令所在路径：/bin/ping
+
+执行权限：所有用户
+
+语法：ping  选项  IP地址
+
+    -c  指定发送次数
+
+功能描述：测试网络连通性
+
+范例：  
+> ping 192.168.1.156
+
+**网络命令：ifconfig**
+
+命令名称：ifconfig
+
+命令英文原意：interface configure
+
+命令所在路径：/sbin/ifconfig
+
+执行权限：root
+
+语法：ifconfig  网卡名称  IP地址
+
+功能描述：查看和设置网卡信息
+
+范例：
+> ifconfig  eth0 192.168.8.250
+
+**网络命令：mail**
+
+命令名称：mail
+
+命令所在路径：/bin/mail
+
+执行权限：所有用户
+
+语法：mail [用户名]
+
+功能描述：查看发送电子邮件
+
+范例：
+> mail root
+
+**网络命令：last**
+
+命令名称：last
+
+命令所在路径：/usr/bin/last
+
+执行权限：所有用户
+
+语法：last
+
+功能描述：列出目前与过去登入系统的用户信息
+
+范例：
+> last
+
+**网络命令：lastlog**
+
+命令名称：lastlog
+
+命令所在路径：/usr/bin/lastlog
+
+执行权限：所有用户
+
+语法：lastlog
+
+功能描述：检查某特定用户上次登录的时间
+
+范例：
+> lastlog
+> 
+> lastlog -u 502
+
+**网络命令：traceroute**
+
+命令名称：traceroute
+
+命令所在路径：/bin/traceroute
+
+执行权限：所有用户
+
+语法：traceroute
+
+功能描述：显示数据包到主机间的路径
+
+范例：
+> traceroute www.lampbrother.net
+
+**网络命令：netstat**
+
+命令名称：netstat
+
+命令所在路径：/bin/netstat
+
+执行权限：所有用户
+
+语法：netstat  [选项]
+
+功能描述：显示网络相关信息
+
+选项：
+
+    -t 	：	TCP协议
+    -u	：	UDP协议
+    -l	：	监听
+    -r	：	路由
+    -n	：	显示IP地址和端口号
+
+范例：
+
+查看本机监听的端口
+>  netstat -tlun		
+
+查看本机所有的网络连接
+>  netstat -an		
+
+查看本机路由表
+>  netstat -rn		
+
+**网络命令：setup**
+
+命令名称：setup
+
+命令所在路径：/usr/bin/setup
+
+执行权限：root
+
+语法：setup
+
+功能描述：配置网络
+
+范例：
+> setup
+
+**挂载命令**
+
+命令名称：mount
+
+命令位置：/bin/mount
+
+执行权限：所有用户
+
+命令语法：mount [-t 文件系统] 设备文件名 挂载点
+
+范例：
+> mount -t iso9660 /dev/sr0 /mnt/cdrom
 
 #### 4.8 关机重启命令
 
+**1、shutdown命令**
+
+> [root@localhost ~]# shutdown [选项] 时间
+
+选项：
+    -c： 取消前一个关机命令
+    -h： 关机
+    -r： 重启
+
+**2、其他关机命令**
+
+> [root@localhost ~]# halt
+> 
+> [root@localhost ~]# poweroff
+> 
+> [root@localhost ~]# init 0
+
+**3、其他重启命令**
+
+> [root@localhost ~]# reboot
+>
+> [root@localhost ~]# init 6
+
+**4、系统运行级别**
+
+    0 		关机
+    1		单用户
+    2		不完全多用户，不含NFS服务
+    3		完全多用户
+    4		未分配
+    5		图形界面
+    6		重启
+
+修改系统默认运行级别
+> [root@localhost ~]# cat /etc/inittab
+
+    id:3:initdefault:
+
+查询系统运行级别
+> [root@localhost ~]# runlevel
+
+**5、退出登录命令**
+
+> [root@localhost ~]# logout
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
