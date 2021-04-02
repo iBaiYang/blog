@@ -14,8 +14,8 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 ##### 4.1.1 命令格式与目录处理命令ls
 
 命令格式 ：命令  [-选项]  [参数]
-        
-        例 ： `ls  -la  /etc`
+
+    例 ： `ls  -la  /etc`
 
 说明：
 1. 个别命令使用不遵循此格式
@@ -156,13 +156,12 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 功能描述：复制文件或目录
 
 范例：
-> $ cp  -r /tmp/Japan/cangjing  /root
 
 将目录/tmp/Japan/cangjing复制到目录/root下
-
-> $ cp  -rp /tmp/Japan/boduo /tmp/Japan/longze /root
+> $ cp  -r /tmp/Japan/cangjing  /root
 
 将/tmp/Japan目录下的boduo和longze目录复制到 /root下，保持目录属性
+> $ cp  -rp /tmp/Japan/boduo /tmp/Japan/longze /root
 
 **目录处理命令：mv**
 
@@ -196,14 +195,12 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 功能描述：删除文件
 
 范例：
+
+删除文件 /tmp/yum.log
 > $ rm  /tmp/yum.log
 
-删除文件/tmp/yum.log
-
+删除目录 /tmp/Japan/longze
 > $ rm -rf  /tmp/Japan/longze
-
-删除目录/tmp/Japan/longze             
-
 
 ##### 4.1.3 文件处理命令
 
@@ -344,13 +341,12 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 功能描述：生成链接文件
 
 范例：
-> $ ln -s  /etc/issue  /tmp/issue.soft
 
 创建文件/etc/issue的软链接/tmp/issue.soft
-
-> $ ln  /etc/issue  /tmp/issue.hard
+> $ ln -s  /etc/issue  /tmp/issue.soft
 
 创建文件/etc/issue的硬链接/tmp/issue.hard
+> $ ln  /etc/issue  /tmp/issue.hard
 
 软链接特征：类似Windows快捷方式
 
@@ -375,7 +371,6 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 3、不能跨分区
 
 4、不能针对目录使用
-
 
 #### 4.2 权限管理命令
 
