@@ -666,9 +666,21 @@ windows的搜索工具：Everything
 
 查看ls命令的帮助信息
 > $ man ls
+>
+> /-l
+>
+> n
 
 查看配置文件services的帮助信息
 > $ man services
+
+> whatis ls
+
+> ls --help
+
+> info ls
+
+> apropos 配置文件
 
 **帮助命令：help**
 
@@ -734,6 +746,15 @@ windows的搜索工具：Everything
 范例： 
 > $ who
 
+```
+vagrant  pts/0        2021-04-02 13:29 (10.0.2.2)
+```
+
+tty 本地登录的
+
+pts 远程终端登录的
+
+
 **用户管理命令：w**
 
 命令名称：w
@@ -748,6 +769,12 @@ windows的搜索工具：Everything
 
 范例：
 > $ w
+
+```
+ 13:49:05 up 20 min,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+vagrant  pts/0    10.0.2.2         13:29    0.00s  0.21s  0.05s sshd: vagrant [priv]
+```
 
 #### 4.6 压缩解压命令
 
