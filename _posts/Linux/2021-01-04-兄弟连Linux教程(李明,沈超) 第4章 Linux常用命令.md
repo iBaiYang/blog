@@ -644,7 +644,7 @@ windows的搜索工具：Everything
 >
 > grep -i multiuser /etc/inittab
 >
-> grep -i ^# /etc/inittab
+> grep -v ^# /etc/inittab
 
 #### 4.4 帮助命令
 
