@@ -142,7 +142,7 @@ config.vm.box = "centos67"
  
 ![]({{site.baseurl}}/images/20200329/20200329191553.jpg)
 
-至此，php安装为完成。
+至此，php安装完成。
 
 #### 安装zip
 
