@@ -666,9 +666,21 @@ windows的搜索工具：Everything
 
 查看ls命令的帮助信息
 > $ man ls
+>
+> /-l
+>
+> n
 
 查看配置文件services的帮助信息
 > $ man services
+
+> whatis ls
+
+> ls --help
+
+> info ls
+
+> apropos 配置文件
 
 **帮助命令：help**
 
@@ -734,6 +746,15 @@ windows的搜索工具：Everything
 范例： 
 > $ who
 
+```
+vagrant  pts/0        2021-04-02 13:29 (10.0.2.2)
+```
+
+tty 本地登录的
+
+pts 远程终端登录的
+
+
 **用户管理命令：w**
 
 命令名称：w
@@ -749,6 +770,12 @@ windows的搜索工具：Everything
 范例：
 > $ w
 
+```
+ 13:49:05 up 20 min,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+vagrant  pts/0    10.0.2.2         13:29    0.00s  0.21s  0.05s sshd: vagrant [priv]
+```
+
 #### 4.6 压缩解压命令
 
 **压缩命令：gzip**
@@ -763,7 +790,7 @@ windows的搜索工具：Everything
 
 语法：gzip [文件]
 
-功能描述：压缩文件
+功能描述：压缩文件，只能压缩文件，不能压缩目录，压缩完会删除原文件
 
 压缩后文件格式：.gz
 
@@ -795,11 +822,11 @@ windows的搜索工具：Everything
 语法：tar  选项[-zcf] [压缩后文件名] [目录]          
 
     -c    打包
-    -v    显示详细信息
+    -v    显示详细信息，查看打包的文件有哪些
     -f     指定文件名
     -z     打包同时压缩
 
-功能描述：打包目录
+功能描述：打包目录，打包的同时可以选择压缩
 
 压缩后文件格式：.tar.gz
 
@@ -830,7 +857,7 @@ tar命令解压缩语法：
 
     -r    压缩目录
 
-功能描述：压缩文件或目录
+功能描述：压缩文件或目录，对比gzip压缩完能保留原文件，windows和linux都支持
 
 压缩后文件格式：.zip
 
@@ -869,7 +896,7 @@ tar命令解压缩语法：
 
     -k   产生压缩文件后保留原文件
 
-功能描述：压缩文件
+功能描述：压缩文件，gzip的升级格式，压缩完保留原文件
 
 压缩后文件格式：.bz2
 
@@ -926,7 +953,7 @@ tar命令解压缩语法：
 
 语法：wall  [message]  
 
-功能描述：发广播信息
+功能描述：发广播信息，给当前在线的所有用户，包括自己
 
 范例：   
 > wall  ShenChao is a honest man!
@@ -947,6 +974,8 @@ tar命令解压缩语法：
 
 范例：  
 > ping 192.168.1.156
+> 
+> ping -c 4 192.168.1.156
 
 **网络命令：ifconfig**
 
@@ -963,6 +992,33 @@ tar命令解压缩语法：
 功能描述：查看和设置网卡信息
 
 范例：
+
+查看网卡信息
+> ifconfig
+
+```
+eth0      Link encap:Ethernet  HWaddr 08:00:27:20:20:F4
+          inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe20:20f4/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:479 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:306 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:51836 (50.6 KiB)  TX bytes:45405 (44.3 KiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+```
+
+lo 回环网卡 127.0.0.1
+
+设置网卡地址
 > ifconfig  eth0 192.168.8.250
 
 **网络命令：mail**
@@ -975,10 +1031,21 @@ tar命令解压缩语法：
 
 语法：mail [用户名]
 
-功能描述：查看发送电子邮件
+功能描述：查看、发送电子邮件，ctrl + d 发送
 
 范例：
 > mail root
+
+接受邮件：
+> mail
+> 
+> 1
+> 
+> h
+>
+> d 1
+>
+> q
 
 **网络命令：last**
 
@@ -1009,7 +1076,35 @@ tar命令解压缩语法：
 
 范例：
 > lastlog
-> 
+
+```
+Username         Port     From             Latest
+root                                       **Never logged in**
+bin                                        **Never logged in**
+daemon                                     **Never logged in**
+adm                                        **Never logged in**
+lp                                         **Never logged in**
+sync                                       **Never logged in**
+shutdown                                   **Never logged in**
+halt                                       **Never logged in**
+mail                                       **Never logged in**
+uucp                                       **Never logged in**
+operator                                   **Never logged in**
+games                                      **Never logged in**
+gopher                                     **Never logged in**
+ftp                                        **Never logged in**
+nobody                                     **Never logged in**
+vcsa                                       **Never logged in**
+saslauth                                   **Never logged in**
+postfix                                    **Never logged in**
+sshd                                       **Never logged in**
+vagrant          pts/0    10.0.2.2         Sat Apr  3 03:48:06 +0100 2021
+vboxadd                                    **Never logged in**
+apache                                     **Never logged in**
+nginx                                      **Never logged in**
+mysql                                      **Never logged in**
+```
+
 > lastlog -u 502
 
 **网络命令：traceroute**
@@ -1052,11 +1147,31 @@ tar命令解压缩语法：
 查看本机监听的端口
 >  netstat -tlun		
 
+```
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address               Foreign Address             State
+tcp        0      0 0.0.0.0:80                  0.0.0.0:*                   LISTEN
+tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN
+tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN
+tcp        0      0 :::3306                     :::*                        LISTEN
+tcp        0      0 :::22                       :::*                        LISTEN
+tcp        0      0 ::1:25                      :::*                        LISTEN
+udp        0      0 0.0.0.0:68                  0.0.0.0:*
+```
+
 查看本机所有的网络连接
 >  netstat -an		
 
 查看本机路由表
->  netstat -rn		
+>  netstat -rn	
+
+```
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+10.0.2.0        0.0.0.0         255.255.255.0   U         0 0          0 eth0
+169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth0
+0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 eth0
+```
 
 **网络命令：setup**
 
@@ -1068,10 +1183,12 @@ tar命令解压缩语法：
 
 语法：setup
 
-功能描述：配置网络
+功能描述：配置网络，redhat系列自带，和ifconfig一样，不过永久生效
 
 范例：
 > setup
+>
+> service network restart
 
 **挂载命令**
 
@@ -1084,7 +1201,15 @@ tar命令解压缩语法：
 命令语法：mount [-t 文件系统] 设备文件名 挂载点
 
 范例：
-> mount -t iso9660 /dev/sr0 /mnt/cdrom
+> mkdir /mnt/cdrom
+>
+> mount -t iso9660 /dev/sr0 /mnt/cdrom/
+> 
+> cd /mnt/cdrom/
+> 
+> cd 
+>
+> umount /dev/sr0
 
 #### 4.8 关机重启命令
 
@@ -1096,6 +1221,10 @@ tar命令解压缩语法：
     -c： 取消前一个关机命令
     -h： 关机
     -r： 重启
+
+> shutdown -r now
+
+先关闭服务，再关机
 
 **2、其他关机命令**
 
@@ -1124,10 +1253,41 @@ tar命令解压缩语法：
 修改系统默认运行级别
 > [root@localhost ~]# cat /etc/inittab
 
-    id:3:initdefault:
+```
+# inittab is only used by upstart for the default runlevel.
+#
+# ADDING OTHER CONFIGURATION HERE WILL HAVE NO EFFECT ON YOUR SYSTEM.
+#
+# System initialization is started by /etc/init/rcS.conf
+#
+# Individual runlevels are started by /etc/init/rc.conf
+#
+# Ctrl-Alt-Delete is handled by /etc/init/control-alt-delete.conf
+#
+# Terminal gettys are handled by /etc/init/tty.conf and /etc/init/serial.conf,
+# with configuration in /etc/sysconfig/init.
+#
+# For information on how to write upstart event handlers, or how
+# upstart works, see init(5), init(8), and initctl(8).
+#
+# Default runlevel. The runlevels used are:
+#   0 - halt (Do NOT set initdefault to this)
+#   1 - Single user mode
+#   2 - Multiuser, without NFS (The same as 3, if you do not have networking)
+#   3 - Full multiuser mode
+#   4 - unused
+#   5 - X11
+#   6 - reboot (Do NOT set initdefault to this)
+#
+id:3:initdefault:
+```
 
 查询系统运行级别
 > [root@localhost ~]# runlevel
+
+```
+N 3
+```
 
 **5、退出登录命令**
 
