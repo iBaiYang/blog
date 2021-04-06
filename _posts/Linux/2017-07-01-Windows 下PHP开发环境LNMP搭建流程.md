@@ -98,15 +98,15 @@ config.vm.box = "centos67"
 
 > vagrant
 
-；切换到root用户：
+切换到root用户：
 
 > sudo su
 
-；用source命令，让/etc/profile文件立刻生效，而不用重新登录：
+用source命令，让/etc/profile文件立刻生效，而不用重新登录：
 
 > source /etc/profile 
 
-；如图：
+如图：
 
 ![]({{site.baseurl}}/images/20200329/20200329191547.jpg)
 
