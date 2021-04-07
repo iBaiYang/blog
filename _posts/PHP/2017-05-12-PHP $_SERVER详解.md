@@ -266,7 +266,7 @@ $_SERVER['AUTH_TYPE'] #当 PHP 运行在 Apache 模块方式下，并且正在�
 ![]({{site.baseurl}}/images/20190901/20190901001514.jpeg)
 
 
-$_SERVER 除了查看 外部服务器变量，有是获取到的可能是错误的，我们还可以修正为正确的环境变量，如：
+$_SERVER 除了查看 外部服务器变量，有时获取到的可能是错误的，我们还可以修正为正确的环境变量，如：
 ```
 // set correct script paths
 $_SERVER['SERVER_NAME'] = 'localhost';
