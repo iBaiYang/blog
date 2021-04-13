@@ -676,7 +676,7 @@ windows的搜索工具：Everything
 
 > whatis ls
 
-> ls --help
+`ls --help`
 
 > info ls
 

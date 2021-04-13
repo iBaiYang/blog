@@ -112,7 +112,7 @@ config.vm.box = "centos67"
 
 #### 安装PHP：
 
-到用户目录下： 
+到软件资源目录下： 
 > cd /usr/local/src/
 
 切换yum源：
