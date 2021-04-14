@@ -1105,7 +1105,8 @@ nginx                                      **Never logged in**
 mysql                                      **Never logged in**
 ```
 
-> lastlog -u 502
+查看指定用户登录记录：
+> lastlog -u mysql
 
 **网络命令：traceroute**
 
