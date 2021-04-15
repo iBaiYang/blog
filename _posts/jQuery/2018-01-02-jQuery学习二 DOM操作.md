@@ -9,8 +9,6 @@ meta: DOM （文档对象模型(Document Object Model)）。
 
 ### 正文
 
-<http://blog.sina.com.cn/s/blog_6aba78b40102xafy.html>
-
 #### 第三章：jQuery中的DOM操作
 
 DOM （文档对象模型(Document Object Model)）。
@@ -19,17 +17,17 @@ DOM （文档对象模型(Document Object Model)）。
 
 HTML文档：
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7h8C9DXjubc)
+![]({{site.baseurl}}/images/20210415/20210415105501.jpeg)
 
 查找节点：
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7h8CdLLp8ea)
+![]({{site.baseurl}}/images/20210415/20210415105503.jpeg)
 
 创建节点：
 
 jQuery的工厂函数 $()，创建DOM对象，并封装成jQuery对象后返回。
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7h8T5wWECae)
+![]({{site.baseurl}}/images/20210415/20210415105505.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -67,17 +65,17 @@ $(function(){
 </html>
 ```
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7h8Tggqn41e)
+![]({{site.baseurl}}/images/20210415/20210415105507.jpeg)
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7h8Tix8ll03)
+![]({{site.baseurl}}/images/20210415/20210415105509.jpeg)
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7h8TlkJEvd3)
+![]({{site.baseurl}}/images/20210415/20210415105511.jpeg)
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7h8TngxPj81)
+![]({{site.baseurl}}/images/20210415/20210415105513.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7h8TGcIWVd5)
+![]({{site.baseurl}}/images/20210415/20210415105515.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7h8TODksgb0)
+![]({{site.baseurl}}/images/20210415/20210415105517.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -110,7 +108,7 @@ $(function(){
 
 > $("ul li").remove("li[title!=菠萝]");  // 把li元素中属性title不等于"菠萝"的li元素删除 
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7h8TTtCUU88)
+![]({{site.baseurl}}/images/20210415/20210415105519.jpeg)
 
 > $("ul li:eq(1)").empty(); // 找到第二个li元素节点后，清空此元素里的内容 
 
@@ -134,17 +132,17 @@ $(function(){
 }); 
 ```
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7h8VjTN2T4f)
+![]({{site.baseurl}}/images/20210415/20210415105521.jpeg)
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7h8Vrtg5Od0)
+![]({{site.baseurl}}/images/20210415/20210415105523.jpeg)
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7h8VEZrtn81)
+![]({{site.baseurl}}/images/20210415/20210415105525.jpeg)
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7h8VFwE1Q02)
+![]({{site.baseurl}}/images/20210415/20210415105527.jpeg)
 
-![](http://s2.sinaimg.cn/mw690/001XbchKzy7h8VLW0Kdb1)
+![]({{site.baseurl}}/images/20210415/20210415105529.jpeg)
 
-![](http://s3.sinaimg.cn/mw690/001XbchKzy7h8VSGtASd2)
+![]({{site.baseurl}}/images/20210415/20210415105531.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -219,7 +217,7 @@ $(function(){
 </html>
 ```
 
-![](http://s1.sinaimg.cn/mw690/001XbchKzy7h8WbcHwk10)
+![]({{site.baseurl}}/images/20210415/20210415105533.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -292,15 +290,15 @@ $(function(){
 </html>
 ```
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7h8WiWCiHaf)
+![]({{site.baseurl}}/images/20210415/20210415105535.jpeg)
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7h8WnUekY3c)
+![]({{site.baseurl}}/images/20210415/20210415105537.jpeg)
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7h8WyVIIs0c)
+![]({{site.baseurl}}/images/20210415/20210415105539.jpeg)
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7h8Wx5anC08)
+![]({{site.baseurl}}/images/20210415/20210415105541.jpeg)
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7h8WECQ3W54)
+![]({{site.baseurl}}/images/20210415/20210415105543.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -382,15 +380,15 @@ $(function(){
 </html>
 ```
 
-![](http://s9.sinaimg.cn/orignal/001XbchKzy7haa3eeik28)
+![]({{site.baseurl}}/images/20210415/20210415105545.jpeg)
 
-![](http://s6.sinaimg.cn/mw690/001XbchKzy7haabgyKpb5)
+![]({{site.baseurl}}/images/20210415/20210415105547.jpeg)
 
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7haawCoJ1d7)
+![]({{site.baseurl}}/images/20210415/20210415105549.jpeg)
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7haaQdKiGd6)
+![]({{site.baseurl}}/images/20210415/20210415105551.jpeg)
 
-![](http://s13.sinaimg.cn/mw690/001XbchKzy7haaQzJ8g9c)
+![]({{site.baseurl}}/images/20210415/20210415105553.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -472,15 +470,15 @@ $(function(){
 </html>
 ```
 
-![](http://s5.sinaimg.cn/mw690/001XbchKzy7hab1SRyA34)
+![]({{site.baseurl}}/images/20210415/20210415105555.jpeg)
 
-![](http://s4.sinaimg.cn/mw690/001XbchKzy7hab7vQgHf3)
+![]({{site.baseurl}}/images/20210415/20210415105557.jpeg)
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7habqjepE16)
+![]({{site.baseurl}}/images/20210415/20210415105559.jpeg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7habr6qar0f)
+![]({{site.baseurl}}/images/20210415/20210415105561.jpeg)
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7habrljdl2f)
+![]({{site.baseurl}}/images/20210415/20210415105563.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -552,9 +550,9 @@ $(function(){
 </html>
 ```
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7habwyKwi1a)
+![]({{site.baseurl}}/images/20210415/20210415105565.jpeg)
 
-![](http://s7.sinaimg.cn/mw690/001XbchKzy7habwYVnM66)
+![]({{site.baseurl}}/images/20210415/20210415105567.jpeg)
 
 ```
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -651,7 +649,9 @@ $(function(){
 </html>
 ```
 
+### 参考资料
 
+<http://blog.sina.com.cn/s/blog_6aba78b40102xafy.html>
 
 
 
