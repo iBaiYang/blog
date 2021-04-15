@@ -11,21 +11,21 @@ meta: 一般文件上传，我们可以用AjaxUpLoad.js。
 ### 正文
 一般文件上传，我们可以用AjaxUpLoad.js：
 
-![](http://s8.sinaimg.cn/mw690/001XbchKzy7hgXXg8o747&690)
+![]({{site.baseurl}}/images/20210415/20210415105120.jpeg)
 
 在html页面中引入后使用：
 
-![](http://s15.sinaimg.cn/mw690/001XbchKzy7hgY5Cj5Ice&690)
+![]({{site.baseurl}}/images/20210415/20210415105122.jpeg)
 
-![](http://s10.sinaimg.cn/mw690/001XbchKzy7hgYd1xupa9&690)
+![]({{site.baseurl}}/images/20210415/20210415105124.jpeg)
 
 页面效果：
 
-![](http://s16.sinaimg.cn/mw690/001XbchKzy7hgYi1YVFff&690)
+![]({{site.baseurl}}/images/20210415/20210415105126.jpeg)
 
 看一下后端的处理：
 
-![](http://s11.sinaimg.cn/mw690/001XbchKzy7hgYtIHbkda&690)
+![]({{site.baseurl}}/images/20210415/20210415105128.jpeg)
 
 举一反三，看看就明白了。
 
