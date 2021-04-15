@@ -30,9 +30,9 @@ meta: 一般文件上传，我们可以用AjaxUpLoad.js。
 
 举一反三，看看就明白了。
 
-move_uploaded_file()的路径文件夹要存在。
+`move_uploaded_file()`的路径文件夹要存在。
 
-删除文件时可以用 @unlink(文件路径)
+删除文件时可以用 `@unlink(文件路径)`
 
 
 <br/><br/><br/><br/><br/>
