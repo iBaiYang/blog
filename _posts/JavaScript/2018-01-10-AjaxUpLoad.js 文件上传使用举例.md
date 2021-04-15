@@ -9,6 +9,7 @@ meta: 一般文件上传，我们可以用AjaxUpLoad.js。
 {:toc}
 
 ### 正文
+
 一般文件上传，我们可以用AjaxUpLoad.js：
 
 ![]({{site.baseurl}}/images/20210415/20210415105120.jpeg)
