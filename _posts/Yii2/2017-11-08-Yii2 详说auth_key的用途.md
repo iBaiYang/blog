@@ -9,7 +9,9 @@ meta: Yii2 详说auth_key的用途
 
 ### 正文
 
-当我们用yii2开始项目时，在migrate初始生成user表时，会看到里面有一个auth_key字段，这个字段是做什么用的呢？查阅好多资料后，还是云里雾里，莫名其妙，不知所从。其实这个字段是用来用cookie自动登录验证的，这样即使session丢失了，只要cookie信息还存在，那么就可以用cookie中的相关信息完成自动登录并写入session。
+当我们用yii2开始项目时，在migrate初始生成user表时，会看到里面有一个auth_key字段，这个字段是做什么用的呢？
+查阅好多资料后，还是云里雾里，莫名其妙，不知所从。其实这个字段是用来用cookie自动登录验证的，这样即使session丢失了，
+只要cookie信息还存在，那么就可以用cookie中的相关信息完成自动登录并写入session。
 
 这里有详细的解说过程，可以看看：<http://www.yii-china.com/post/detail/323.html>
 
@@ -590,9 +592,9 @@ use yii\filters\AccessControl;
     }
 ```
 
-yii\filters\AccessControl中：
+yii\filters\AccessControl ，ACF访问过滤控制：
 
-```
+```php
 namespace yii\filters;
 
 use Yii;
@@ -706,6 +708,7 @@ class AccessControl extends ActionFilter
         $request = Yii::$app->getRequest();
         /* @var $rule AccessRule */
         foreach ($this->rules as $rule) {
+            // 判断是否允许访问
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;
             } elseif ($allow === false) {
@@ -747,7 +750,7 @@ class AccessControl extends ActionFilter
 
 yii\filters\AccessRule中：
 
-```
+```php
     /**
      * Checks whether the Web user is allowed to perform the specified action.
      * @param Action $action the action to be performed
@@ -789,6 +792,7 @@ yii\filters\AccessRule中：
                     return true;
                 }
             } elseif ($role === '@') {
+                // 只允许登录的用户访问，判断是不是没登录的访客，这里会自动 刷新session、cookie，还有自动用 session登录、cookie登录
                 if (!$user->getIsGuest()) {
                     return true;
                 }
@@ -808,8 +812,9 @@ yii\filters\AccessRule中：
 
 yii\web\User中：
 
-```
+```php
     /**
+     * 获取是不是没登录的访客，这里会调用getIdentity() 自动 刷新session、cookie，还有自动用 session登录、cookie登录
      * Returns a value indicating whether the user is a guest (not authenticated).
      * @return bool whether the current user is a guest.
      * @see getIdentity()
@@ -835,6 +840,7 @@ yii\web\User中：
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
                 $this->_identity = null;
+                // 刷新授权状态
                 $this->renewAuthStatus();
             } else {
                 return null;
@@ -845,6 +851,7 @@ yii\web\User中：
     }
 
     /**
+     * 刷新授权状态，刷新session、cookie
      * Updates the authentication status using the information from session and cookie.
      *
      * This method will try to determine the user identity using the [[idParam]] session variable.
