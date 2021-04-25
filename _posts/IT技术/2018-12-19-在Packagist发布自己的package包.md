@@ -114,9 +114,9 @@ composer.json中示例：
 
 点击导航栏的Submit，填写自己package包地址，点击Check，没问题，然后提交：
 
-![](https://github.com/iBaiYang/PictureWareroom/blob/master/20181219/20181219200600.jpg?raw=true)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181219/20181219200600.jpg)
 
-![](https://github.com/iBaiYang/PictureWareroom/blob/master/20181219/20181219200620.jpg?raw=true)
+![](https://raw.githubusercontent.com/iBaiYang/PictureWareroom/master/20181219/20181219200620.jpg)
 
 自动跳转到：
 
