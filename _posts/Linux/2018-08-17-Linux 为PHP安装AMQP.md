@@ -123,13 +123,13 @@ cmake --build . --target install
 
 > cd amqp-1.9.3
 
-phpize化：
-
-> phpize
-
 用find / -name phpize查找命令路径：
 
 > find / -name phpize
+
+phpize化：
+
+> phpize
 
 配置：
 
