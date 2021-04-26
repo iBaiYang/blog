@@ -30,6 +30,35 @@ fclose($src);
 // $size  文件大小
 ```
 
+readfile 读取文件并写入到输出缓冲:
+
+```
+readfile ( string $filename , bool $use_include_path = false , resource $context = ? ) : int
+
+
+参数
+    
+    filename
+    
+        要读取的文件名。
+    use_include_path
+    
+        想要在 include_path 中搜索文件，可使用这个可选的第二个参数，设为 true。
+    context
+    
+        Stream 上下文（context） resource。
+
+返回值
+
+    成功时返回从文件中读入的字节数， 或者在失败时返回 false
+
+错误／异常
+
+    失败时抛出E_WARNING警告。
+
+```
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -43,7 +72,7 @@ fopen() 函数 <http://www.w3school.com.cn/php/func_filesystem_fopen.asp>
 
 fwrite() 函数 <http://www.w3school.com.cn/php/func_filesystem_fwrite.asp>
 
-
+PHP 手册 函数参考 文件系统相关扩展 文件系统 文件系统函数 readfile <https://www.php.net/manual/zh/function.readfile.php>
 
 
 
