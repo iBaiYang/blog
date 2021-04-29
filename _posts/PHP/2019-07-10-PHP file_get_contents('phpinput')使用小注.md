@@ -30,13 +30,13 @@ PHP 提供了一些杂项输入/输出（IO）流，允许访问 PHP 的输入�
 
 php://input 是个可以访问请求的原始数据的只读流。 POST 请求的情况下，最好使用 php://input 来代替 $HTTP_RAW_POST_DATA，
 因为它不依赖于特定的 php.ini 指令。 而且，这样的情况下 $HTTP_RAW_POST_DATA 默认没有填充， 
-比激活 always_populate_raw_post_data 潜在需要更少的内存。 enctype="multipart/form-data" 的时候 php://input 是无效的。 
+比激活 always_populate_raw_post_data 潜在需要更少的内存。 `enctype="multipart/form-data"` 的时候 php://input 是无效的。 
 
 $HTTP_RAW_POST_DATA 在php7.0中被移除了。
 
-post提交的原始数据是这样的：key1=value1&key2=value2
+post提交的原始数据是这样的：`key1=value1&key2=value2`
 
-$_POST是php对post原始数据分割后填充的，最后形如：$_POST = 【"key1" => "value1", "key2" => "value2"】;
+$_POST是php对post原始数据分割后填充的，最后形如：`$_POST = ["key1" => "value1", "key2" => "value2"]`;
 
 php://input获取到的就是post提交的原始数据，如key1=value1&key2=value2，但一般更多的是获取post提交的json格式化数据包，如：
 ```
@@ -47,10 +47,12 @@ echo $postData['key1'];
 
 注意点：
 
-1. Content-Type仅在取值为application/x-www-data-urlencoded和multipart/form-data两种情况下，PHP才会将http请求数据包中相应的数据填入全局变量$_POST
+1. Content-Type仅在取值为`application/x-www-data-urlencoded`和`multipart/form-data`两种情况下，
+   PHP才会将http请求数据包中相应的数据填入全局变量$_POST
 2. PHP不能识别的Content-Type类型的时候，会将http请求包中相应的数据填入变量$HTTP_RAW_POST_DATA
-3. 只有Coentent-Type为multipart/form-data的时候，PHP不会将http请求数据包中的相应数据填入php://input，否则其它情况都会。填入的长度，由Coentent-Length指定。
-4. 只有Content-Type为application/x-www-data-urlencoded时，php://input数据才跟$_POST数据相一致。
+3. 只有Coentent-Type为`multipart/form-data`的时候，PHP不会将http请求数据包中的相应数据填入php://input，
+   否则其它情况都会。填入的长度，由Coentent-Length指定。
+4. 只有Content-Type为`application/x-www-data-urlencoded`时，php://input数据才跟$_POST数据相一致。
 5. php://input数据总是跟$HTTP_RAW_POST_DATA相同，但是php://input比$HTTP_RAW_POST_DATA更凑效，且不需要特殊设置php.ini
 6. PHP会将PATH字段的query_path部分，填入全局变量$_GET。通常情况下，GET方法提交的http请求，body为空。
 
