@@ -1219,6 +1219,7 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 > [root@localhost ~]# shutdown [选项] 时间
 
 选项：
+
     -c： 取消前一个关机命令
     -h： 关机
     -r： 重启
