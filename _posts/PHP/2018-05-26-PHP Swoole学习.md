@@ -436,6 +436,8 @@ Task进程根据数据包中的"url"运行相应处理逻辑器并把数据包�
 
 [Hyperf](https://hyperf.wiki/2.1/#/) 是一个Swoole框架，学习它可以更好的理解Swoole及使用。
 
+php高性能框架Hyperf 视频学习地址 [https://www.bilibili.com/video/BV1WZ4y1x7Hw](https://www.bilibili.com/video/BV1WZ4y1x7Hw)
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
