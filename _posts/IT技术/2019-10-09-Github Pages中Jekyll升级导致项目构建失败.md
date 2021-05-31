@@ -45,9 +45,12 @@ ruby 2.3.3p222 (2016-11-21) [x86_64-linux-gnu]
 准备安装rvm，切换到国内源：
 
 > sudo apt-get install gem
+> 
 > sudo apt-get install bundler
 
-> gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/
+```
+gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/
+```
 
 再看一下gem的版本：
 
@@ -62,7 +65,9 @@ curl -L get.rvm.io | bash -s stable
 
 可能报错，按照报错提示：
 
-> gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+```
+gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+```
 
 然后再安装rvm：
 ```
@@ -71,7 +76,9 @@ curl -L get.rvm.io | bash -s stable
 
 看到 Thanks for installing RVM 🙏 ，说明安装成功。
 
-> echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >>~/.bashrc
+```
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >>~/.bashrc
+```
 
 > source ~/.bashrc
 
@@ -133,9 +140,9 @@ Configuration file: /home/baiyang/www/blog/_config.yml
 
 最后定下来居然是这个地方的问题，html文件头标记：
 
-    ```
-    !DOCTYPE html  
-    ```
+```
+!DOCTYPE html  
+```
 
 把这一行删了就好了，jekyll build看一下：
 ```
