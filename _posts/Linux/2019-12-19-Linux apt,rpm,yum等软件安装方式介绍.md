@@ -259,9 +259,11 @@ SRPM 的文件名是以 ***.src.rpm 这种格式来命名。
 `–recompile`  rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打包，还同时 进行‘安装’了！
 
 使用范例：
+```
 > rpmbuild --rebuild rp-pppoe-3.5-32.1.src.rpm
 >
 > rpm -ivh rp-pppoe-3.5-32.1.rpm
+```
 
 #### yum
 
@@ -311,11 +313,13 @@ deb包下载后，安装：
 > dpkg -i package-name.deb
 
 卸载软件包：
-> dpkg -r package-name            
-`--remove， 移除软件包，但保留其配置文件，不是完全意义上的卸载`
+> dpkg -r package-name           
 
-> dpkg -P package-name            
-`--purge， 清除软件包的所有文件（removes everything,including conffiles），实现指定软件包的完全卸载`
+`--remove`， 移除软件包，但保留其配置文件，不是完全意义上的卸载
+
+> dpkg -P package-name      
+
+`--purge`， 清除软件包的所有文件（removes everything,including conffiles），实现指定软件包的完全卸载
 
 使用查询示例：
 ```
