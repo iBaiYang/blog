@@ -127,6 +127,27 @@ Speed 为每分钟多少个请求，是根据Requests计算出来的
 
 Requests 指定时间内成功多少个请求，失败多少个请求
 
+看一下baidu.com的请求，不过webbench不支持https请求：
+```
+root@baiyang-PC:/usr/local# webbench -c 100 -t 10 http://www.baidu.com/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://www.baidu.com/
+100 clients, running 10 sec.
+
+Speed=1830 pages/min, 10254077 bytes/sec.
+Requests: 305 susceed, 0 failed.
+root@baiyang-PC:/usr/local# 
+root@baiyang-PC:/usr/local# 
+root@baiyang-PC:/usr/local# webbench -c 100 -t 10 https://www.baidu.com/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Only HTTP protocol is directly supported, set --proxy for others.
+root@baiyang-PC:/usr/local# 
+```
+
 #### ab压测工具使用
 
 ab(Apache Bench)是apache下的一个工具，主要用于做web站点的压力测试。我们下面安装这个工具并压测一下。
@@ -140,6 +161,124 @@ ab(Apache Bench)是apache下的一个工具，主要用于做web站点的压力�
 ```
 -n 1000  请求次数
 -c 50  并发量 
+```
+
+用https和http访问baidu.com看一下：
+```
+root@baiyang-PC:/usr/local# ab -n 1000 -c 100 https://www.baidu.com/
+This is ApacheBench, Version 2.3 <$Revision: 1757674 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking www.baidu.com (be patient)
+Completed 100 requests
+Completed 200 requests
+Completed 300 requests
+Completed 400 requests
+Completed 500 requests
+Completed 600 requests
+Completed 700 requests
+Completed 800 requests
+Completed 900 requests
+Completed 1000 requests
+Finished 1000 requests
+
+
+Server Software:        BWS/1.1
+Server Hostname:        www.baidu.com
+Server Port:            443
+SSL/TLS Protocol:       TLSv1.2,ECDHE-RSA-AES128-GCM-SHA256,2048,128
+TLS Server Name:        www.baidu.com
+
+Document Path:          /
+Document Length:        227 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.808 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      1081958 bytes
+HTML transferred:       227000 bytes
+Requests per second:    1237.96 [#/sec] (mean)
+Time per request:       80.778 [ms] (mean)
+Time per request:       0.808 [ms] (mean, across all concurrent requests)
+Transfer rate:          1308.03 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       35   57   9.1     56      86
+Processing:     9   21  12.4     19     195
+Waiting:        9   17  11.1     15     184
+Total:         56   78  14.0     76     262
+
+Percentage of the requests served within a certain time (ms)
+  50%     76
+  66%     80
+  75%     83
+  80%     84
+  90%     89
+  95%     92
+  98%    106
+  99%    122
+ 100%    262 (longest request)
+root@baiyang-PC:/usr/local# 
+root@baiyang-PC:/usr/local# 
+root@baiyang-PC:/usr/local# ab -n 1000 -c 100 http://www.baidu.com/
+This is ApacheBench, Version 2.3 <$Revision: 1757674 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking www.baidu.com (be patient)
+Completed 100 requests
+Completed 200 requests
+Completed 300 requests
+Completed 400 requests
+Completed 500 requests
+Completed 600 requests
+Completed 700 requests
+Completed 800 requests
+Completed 900 requests
+Completed 1000 requests
+Finished 1000 requests
+
+
+Server Software:        BWS/1.1
+Server Hostname:        www.baidu.com
+Server Port:            80
+
+Document Path:          /
+Document Length:        299778 bytes
+
+Concurrency Level:      100
+Time taken for tests:   18.670 seconds
+Complete requests:      1000
+Failed requests:        986
+   (Connect: 0, Receive: 0, Length: 986, Exceptions: 0)
+Total transferred:      300926249 bytes
+HTML transferred:       299789513 bytes
+Requests per second:    53.56 [#/sec] (mean)
+Time per request:       1866.981 [ms] (mean)
+Time per request:       18.670 [ms] (mean, across all concurrent requests)
+Transfer rate:          15740.56 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        7    8   1.0      8      23
+Processing:   110 1762 1063.2   1491    5994
+Waiting:        9  318 250.7    251    1282
+Total:        118 1770 1063.2   1499    6003
+
+Percentage of the requests served within a certain time (ms)
+  50%   1499
+  66%   2019
+  75%   2402
+  80%   2666
+  90%   3455
+  95%   3847
+  98%   4300
+  99%   4450
+ 100%   6003 (longest request)
+root@baiyang-PC:/usr/local# 
 ```
 
 <br/><br/><br/><br/><br/>
