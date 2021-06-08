@@ -394,31 +394,219 @@ undefined 	指示未定义的值。
 
 函数 	描述
 
+encodeURI() 	把字符串编码为 URI。
+
 decodeURI() 	解码某个编码的 URI。
 
-decodeURIComponent() 	解码一个编码的 URI 组件。
+```
+<script>
+var uri="my test.php?name=ståle&car=saab&sex=男";
+document.write(encodeURI(uri)+ "<br>");
+document.write(decodeURI(uri));
+</script>
 
-encodeURI() 	把字符串编码为 URI。
+输出：
+my%20test.php?name=st%C3%A5le&car=saab&sex=%E7%94%B7
+my test.php?name=ståle&car=saab&sex=男 
+```
 
 encodeURIComponent() 	把字符串编码为 URI 组件。
 
+decodeURIComponent() 	解码一个编码的 URI 组件。
+
+```
+<script>
+var uri="http://w3cschool.cc/my test.asp?name=ståle&car=saab&sex=男";
+var uri_encode=encodeURIComponent(uri);
+document.write(uri_encode);
+document.write("<br>");
+document.write(decodeURIComponent(uri_encode));
+</script>
+
+输出：
+http%3A%2F%2Fw3cschool.cc%2Fmy%20test.asp%3Fname%3Dst%C3%A5le%26car%3Dsaab%26sex%3D%E7%94%B7
+http://w3cschool.cc/my test.asp?name=ståle&car=saab&sex=男 
+```
+
 escape() 	对字符串进行编码。
+
+unescape() 	对由 escape() 编码的字符串进行解码。
+
+```
+<script>
+var uri="my test.php?name=ståle&car=saab&sex=男";
+document.write(escape(uri)+ "<br>");
+document.write(unescape(uri));
+</script>
+
+输出：
+my%20test.php%3Fname%3Dst%E5le%26car%3Dsaab%26sex%3D%u7537
+my test.php?name=ståle&car=saab&sex=男 
+```
 
 eval() 	计算 JavaScript 字符串，并把它作为脚本代码来执行。
 
+```
+<script>
+eval("x=10;y=20;document.write(x*y)");
+document.write("<br>" + eval("2+2"));
+document.write("<br>" + eval(x+17));
+</script>
+
+输出：
+200
+4
+27 
+```
+
 isFinite() 	检查某个值是否为有穷大的数。
 
-isNaN() 	检查某个值是否是数字。
+```
+<script>
+document.write(isFinite(123)+ "<br>");
+document.write(isFinite(-1.23)+ "<br>");
+document.write(isFinite(5-2)+ "<br>");
+document.write(isFinite(0)+ "<br>");
+document.write(isFinite("Hello")+ "<br>");
+document.write(isFinite("2005/12/12")+ "<br>");
+</script>
+
+输出：
+true
+true
+true
+true
+false
+false
+```
+
+isNaN() 	检查某个值是否是非数字。
+
+```
+<script>
+document.write(isNaN(123)+ "<br>");
+document.write(isNaN(-1.23)+ "<br>");
+document.write(isNaN(5-2)+ "<br>");
+document.write(isNaN(0)+ "<br>");
+document.write(isNaN("Hello")+ "<br>");
+document.write(isNaN("2005/12/12")+ "<br>");
+</script>
+
+输出：
+false
+false
+false
+false
+true
+true
+```
 
 Number() 	把对象的值转换为数字。
 
+```
+<script>
+var test1= new Boolean(true);
+var test2= new Boolean(false);
+var test3= new Date();
+var test4= new String("999");
+var test5= new String("999 888");
+
+document.write(Number(test1)+ "<br>");
+document.write(Number(test2)+ "<br>");
+document.write(Number(test3)+ "<br>");
+document.write(Number(test4)+ "<br>");
+document.write(Number(test5)+ "<br>");
+</script> 
+
+输出：
+1
+0
+1623120127185
+999
+NaN
+```
+
 parseFloat() 	解析一个字符串并返回一个浮点数。
+
+```
+document.write(parseFloat("10") + "<br>");
+document.write(parseFloat("10.33") + "<br>");
+document.write(parseFloat("34 45 66") + "<br>");
+document.write(parseFloat(" 60 ") + "<br>");
+document.write(parseFloat("40 years") + "<br>");
+document.write(parseFloat("He was 40") + "<br>");
+
+输出：
+10
+10.33
+34
+60
+40
+NaN 
+```
 
 parseInt() 	解析一个字符串并返回一个整数。
 
+```
+document.write(parseInt("10") + "<br>");
+document.write(parseInt("10.33") + "<br>");
+document.write(parseInt("34 45 66") + "<br>");
+document.write(parseInt(" 60 ") + "<br>");
+document.write(parseInt("40 years") + "<br>");
+document.write(parseInt("He was 40") + "<br>");
+ 
+document.write("<br>");
+document.write(parseInt("10",10)+ "<br>");
+document.write(parseInt("010")+ "<br>");
+document.write(parseInt("10",8)+ "<br>");
+document.write(parseInt("0x10")+ "<br>");
+document.write(parseInt("10",16)+ "<br>");
+
+输出：
+10
+10
+34
+60
+40
+NaN
+
+10
+10
+8
+16
+16
+```
+
 String() 	把对象的值转换为字符串。
 
-unescape() 	对由 escape() 编码的字符串进行解码。
+```
+<script>
+var test1 = new Boolean(1);
+var test2 = new Boolean(0);
+var test3 = new Boolean(true);
+var test4 = new Boolean(false);
+var test5 = new Date();
+var test6 = new String("999 888");
+var test7 = 12345;
+
+document.write(String(test1)+ "<br>");
+document.write(String(test2)+ "<br>");
+document.write(String(test3)+ "<br>");
+document.write(String(test4)+ "<br>");
+document.write(String(test5)+ "<br>");
+document.write(String(test6)+ "<br>");
+document.write(String(test7)+ "<br>");
+</script> 
+
+输出：
+true
+false
+true
+false
+Tue Jun 08 2021 10:46:03 GMT+0800 (中国标准时间)
+999 888
+12345
+```
 
 
 <br/><br/><br/><br/><br/>
