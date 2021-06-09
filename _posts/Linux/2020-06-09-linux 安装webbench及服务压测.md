@@ -91,7 +91,10 @@ webbench.o:	webbench.c socket.c Makefile
 #### 压测
 
 查看一下帮助：
+```
 > webbench -help
+```
+
 
 输出：
 
@@ -114,7 +117,9 @@ webbench [option]... URL
 ```
 
 一般常用的是：
+```
 > webbench -c 500 -t 30 http://127.0.0.1/test.php
+```
 
 ```
 -c 500  并发客户端数
@@ -153,10 +158,14 @@ root@baiyang-PC:/usr/local#
 ab(Apache Bench)是apache下的一个工具，主要用于做web站点的压力测试。我们下面安装这个工具并压测一下。
 
 安装：
+```
 > sudo apt install apache2-utils
+```
 
 压测：
+```
 > ab -n 1000 -c 50 http://127.0.0.1/test.php
+```
 
 ```
 -n 1000  请求次数
