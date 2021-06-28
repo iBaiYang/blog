@@ -255,8 +255,8 @@ SRPM 的文件名是以 ***.src.rpm 这种格式来命名。
 使用 rpmbuild 命令安装SRPM包
 
 选项： 
-`–rebuild`  进行‘编译’与‘打包’的动作，最后会产生 RPM 的软件包，但是产生的 RPM 软件包并没有安装到系统上。
-`–recompile`  rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打包，还同时 进行‘安装’了！
+`–-rebuild`  进行‘编译’与‘打包’的动作，最后会产生 RPM 的软件包，但是产生的 RPM 软件包并没有安装到系统上。
+`–-recompile` ， rebuild 仅‘编译并打包’而已，而 recompile 不但进行编译跟打包，还同时 进行‘安装’了！
 
 使用范例：
 ```
