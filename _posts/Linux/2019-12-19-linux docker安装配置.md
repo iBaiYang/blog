@@ -639,7 +639,7 @@ ENTRYPOINT ["docker-php-entrypoint"]
 EOF
 ```
 
-cat > 文件名 << EOF  用来创建文件，在这之后输入任何东西，都是在文件里的，输入完成之后EOF结尾代表结束。
+`cat > 文件名 << EOF`  用来创建文件，在这之后输入任何东西，都是在文件里的，输入完成之后EOF结尾代表结束。
 
 BUILD_NUMBER 和 BUILD_ID 是全局变量。
 
@@ -685,9 +685,9 @@ Successfully built 5e849ed7a72d
 Successfully tagged crm:test
 ```
 
-镜像crm:test生成成功。
+镜像`crm:test`生成成功。
 
-配置文件./crm.json，压缩包文件./dist/crm.tar.gz，我们需要在当前目录下准备好。
+配置文件`./crm.json`，压缩包文件`./dist/crm.tar.gz`，我们需要在当前目录下准备好。
 
 #### 原环境php清空
 
@@ -708,7 +708,9 @@ Successfully tagged crm:test
 这里可以看到php散落在各个地方。
 
 还好当时安装的都是php7的版本，我们搜一下php7开头的有哪些：
+```
 > find / -name 'php7*'
+```
 
 发现列出了很长的一个列表，既有7.0，又有7.1，还有7.4。既然无法一个一个卸载，那就物理删除吧：
 ```
@@ -716,7 +718,9 @@ find / -name 'php7*'|xargs rm -rf
 ```
 
 操作完成后，再搜索看一下：
+```
 > find / -name 'php7*'
+```
 
 接下来就是一些很琐碎的相关文件删除了，先大致搜索看看：
 > find / -name php.ini
