@@ -24,7 +24,7 @@ Features: AsynchDNS GSS-Negotiate IDN IPv6 Largefile NTLM NTLM_WB SSL libz unix-
 ```
 
 我们需要安装OpenSSL，Centos中安装软件用yum比较方便，不过国内需要换一下yum源，不然yum找不到软件包。
-yum源换位国内源后，安装OpenSSL，再重新编译安装Curl，然后就可以使用了。
+yum源换为国内源后，安装OpenSSL，再重新编译安装Curl，然后就可以使用了。
 
 #### 更换yum源
 
