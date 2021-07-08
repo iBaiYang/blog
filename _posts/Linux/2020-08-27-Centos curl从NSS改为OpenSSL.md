@@ -205,7 +205,9 @@ configure: error: no acceptable C compiler found in $PATH
 
 动态链接库管理命令：
 
+```
 > echo "/usr/local/lib" >>/etc/ld.so.conf
+```
 
 > ldconfig
 
