@@ -171,7 +171,7 @@ zip jpg.zip *.jpg   zip格式的压缩，需要先下载zip for linux
 ```
 tar –xvf file.tar        解压 *.tar包
 tar -xzvf file.tar.gz    解压 *.tar.gz
-tar -xzvf file.tar.gz    解压 *.tgz
+tar -xzvf file.tgz       解压 *.tgz
 tar -xjvf file.tar.bz2   解压 *.tar.bz2
 tar –xZvf file.tar.Z     解压 *.tar.Z
 unrar e file.rar         解压 *.rar
