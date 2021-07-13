@@ -106,9 +106,10 @@ php-config: /usr/bin/php-config /usr/bin/php-config7.1 /usr/share/man/man1/php-c
 
 编译配置：
 
+```
 > sudo phpize
-
 > sudo ./configure --with-php-config=/usr/bin/php-config7.1
+```
 
 编译并安装：
 
