@@ -312,6 +312,8 @@ Kafka史上最详细原理总结上 <https://www.jianshu.com/p/734cf729d77b>
 
 Kafka史上最详细原理总结下 <https://www.jianshu.com/p/acf010e67a19>
 
+深入详解 Kafka，从源码到架构全部讲透 <https://mp.weixin.qq.com/s/7Jm0cCNlxrCfTVRnVoXivw>
+
 DMA：为什么Kafka这么快？ <https://weibo.com/ttarticle/p/show?id=2309404597571816391045>
 
 kafka极简教程 <https://mp.weixin.qq.com/s?__biz=MzU0OTE4MzYzMw==&mid=2247483788&idx=1&sn=9a30a9d1ef1f904b8d3ccda57aa2556b&chksm=fbb28872ccc501642b65acbf77bc10d48c70ae43641282a5eaf7e9483860a9b1acfa3061badc&scene=21#wechat_redirect>
