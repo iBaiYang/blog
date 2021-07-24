@@ -281,6 +281,8 @@ PHP 手册 函数参考 其它服务 网络 网络 函数 header <https://www.ph
 
 [页面编码声明方法详解(header或meta)](http://www.jb51.net/article/22501.htm)
 
+PHP之常见Header详解 <https://zhuanlan.zhihu.com/p/66573422>
+
 PHP如何解析header头部信息 <https://zhuanlan.zhihu.com/p/134565445>
 
 使用PHP开发一个HTTP服务器 <https://zhuanlan.zhihu.com/p/32981060>
