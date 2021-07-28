@@ -119,5 +119,5 @@ b.恢复备份文件
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-
+MySQL 5.6 GTID 原理以及使用 <https://www.cnblogs.com/zejin2008/p/7705473.html>
 
