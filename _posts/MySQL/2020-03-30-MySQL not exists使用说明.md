@@ -55,7 +55,7 @@ WHERE NOT EXISTS (
 ```
 
 <br/><br/><br/><br/><br/>
-### 参考资料：
+### 参考资料
    
 MySQL文档 13.2.8. Subquery语法 <https://www.mysqlzh.com/doc/126/647.html>
 

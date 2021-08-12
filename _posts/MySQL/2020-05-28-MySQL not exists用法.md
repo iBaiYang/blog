@@ -236,7 +236,7 @@ end loop
 我们要根据实际的情况做相应的优化，不能绝对的说谁的效率高谁的效率低，所有的事都是相对的。
 
 <br/><br/><br/><br/><br/>
-### 参考资料：
+### 参考资料
 
 浅谈sql中的in与not in,exists与not exists的区别以及性能分析 <https://blog.csdn.net/baidu_37107022/article/details/77278381>
 
