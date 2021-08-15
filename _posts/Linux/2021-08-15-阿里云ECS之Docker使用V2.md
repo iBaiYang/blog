@@ -1373,16 +1373,6 @@ server {
 
 ### 附录
 
-我们打印phpinfo信息看一下：
-
-![]({{site.baseurl}}/images/20200602/20200602154735.png)
-
-![]({{site.baseurl}}/images/20200602/20200602154737.png)
-
-![]({{site.baseurl}}/images/20200602/20200602154739.png)
-
-![]({{site.baseurl}}/images/20200602/20200602154741.png)
-
 ```
 docker run --name server-mysql  -p 3306:3306  -e MYSQL_ROOT_PASSWORD=abc$123* -v /web/mysql/data:/var/lib/mysql -v /web/mysql/conf.d:/etc/mysql/conf.d -v /web/mysql/logs:/logs  -v /etc/localtime:/etc/localtime:ro -d mysql:5.7
 
