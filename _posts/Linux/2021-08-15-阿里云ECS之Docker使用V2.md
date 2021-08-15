@@ -589,58 +589,14 @@ c6b99eed3bc6        mysql:5.7           "docker-entrypoint..."   34 seconds ago 
 接下来可以新建用户和新建库：
 
 进入mysql容器：
-
 > docker exec -it server-mysql /bin/bash
 
 首先用root登录mysql
-
 > mysql -u root -p
 
 输入密码，进入。
 
-**创建用户**，语法：
-```
-CREATE USER 'username'@'host' IDENTIFIED BY 'password';
-```
 
-user_name：要创建用户的名字。
-
-host：表示要这个新创建的用户允许从哪台机登陆，如果只允许从本机登陆，则 填　`localhost` ，如果允许从远程登陆，则填 `%`
-
-password：新创建用户的登陆数据库密码，如果没密码可以不写。
-
-如：
-```
-CREATE USER 'dog'@'%' IDENTIFIED BY '123456';
-```
-
-**创建数据库**：
-
-> CREATE DATABASE IF NOT EXISTS dog DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
-
-**用户数据库赋权**，语法：
-
-`GRANT privileges ON databasename.tablename TO 'username'@'host';`
-
-privileges：表示要授予什么权力，例如可以有 select ， insert ，delete，update等，如果要授予全部权力，则填 ALL
-
-databasename.tablename：表示用户的权限能用在哪个库的哪个表中，如果想要用户的权限很作用于所有的数据库所有的表，则填 `*.*`，`*`是一个通配符，表示全部。
-
-`'username'@'host'`：表示授权给哪个用户。
-
-如：
-```
-GRANT  ALL  ON  dog.*  TO  'dog'@'%';
-```
-
-注意：
-
-用以上命令授权的用户不能给其他用户授权，如果想这个用户能够给其他用户授权，就要在后面加上  WITH GRANT OPTION
-
-如： 
-```
-GRANT  ALL  ON   *.*   TO  'aaa'@'%'  WITH GRANT OPTION;
-```
 
 ### php安装
 
@@ -650,18 +606,18 @@ GRANT  ALL  ON   *.*   TO  'aaa'@'%'  WITH GRANT OPTION;
 
 输出：
 ```
-Trying to pull repository docker.io/library/php ... 
+Trying to pull repository docker.io/library/php ...
 7.1.30-fpm: Pulling from docker.io/library/php
-f5d23c7fed46: Pull complete 
-4f36b8588ea0: Pull complete 
-6f4f95ddefa8: Pull complete 
-187af28c9b1d: Pull complete 
-7ba9cd8f12bd: Pull complete 
-19ce450f6a80: Pull complete 
-6a0aa94e79c7: Pull complete 
-3097ec58d870: Pull complete 
-05ecbde01690: Pull complete 
-ab28ea58dda0: Pull complete 
+f5d23c7fed46: Pull complete
+4f36b8588ea0: Pull complete
+6f4f95ddefa8: Pull complete
+187af28c9b1d: Pull complete
+7ba9cd8f12bd: Pull complete
+19ce450f6a80: Pull complete
+6a0aa94e79c7: Pull complete
+3097ec58d870: Pull complete
+05ecbde01690: Pull complete
+ab28ea58dda0: Pull complete
 Digest: sha256:a0f0773dc2f92ca8f4dab7c7c525574d467d3aa4bb27424bb7f0540a7c9efcd0
 Status: Downloaded newer image for docker.io/php:7.1.30-fpm
 ```
