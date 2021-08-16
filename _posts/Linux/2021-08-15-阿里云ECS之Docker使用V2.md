@@ -968,7 +968,7 @@ rm -f libphp.la       modules/* libs/*
 > 
 > docker start server-phpfpm
 
-##### pdo_mysql拓展安装
+#### pdo_mysql拓展安装
 
 一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
 ```
