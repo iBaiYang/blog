@@ -118,7 +118,7 @@ config.vm.box = "centos67"
 切换yum源：
 > rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
-如果失败，换成国内Yum源试一下。
+如果失败，换成国内Yum源试一下。这里可能会碰到选哪个源、证书过期等问题，一个一个解决吧。
 
 安装php及其拓展： 
 > yum install php70w php70w-common php70w-fpm php70w-opcache php70w-cli php70w-devel php70w-mysql php70w-gd php70w-mbstring php70w-mcrypt php70w-pear php70w-bcmath php70w-pecl-imagick php70w-pecl-redis php70w-pecl-memcached
