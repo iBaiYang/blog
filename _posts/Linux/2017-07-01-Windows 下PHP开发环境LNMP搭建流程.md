@@ -118,10 +118,359 @@ config.vm.box = "centos67"
 切换yum源：
 > rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
-安装php： 
-> yum install php70w php70w-opcache php70w-cli php70w-devel php70w-fpm php70w-gd php70w-mbstring php70w-mcrypt php70w-mysql php70w-pear php70w-bcmath
+如果失败，换成国内Yum源试一下。
 
-一路确定：
+安装php及其拓展： 
+> yum install php70w php70w-common php70w-fpm php70w-opcache php70w-cli php70w-devel php70w-mysql php70w-gd php70w-mbstring php70w-mcrypt php70w-pear php70w-bcmath php70w-pecl-imagick php70w-pecl-redis php70w-pecl-memcached
+
+输出：
+```
+[root@localhost src]# yum install php70w php70w-common php70w-fpm php70w-opcache php70w-cli php70w-devel php70w-mysql php70w-gd php70w-mbstring php70w-mcrypt php70w-pear php70w-bcmath php70w-pecl-imagick php70w-pecl-redis php70w-pecl-memcached
+Loaded plugins: fastestmirror
+Setting up Install Process
+Loading mirror speeds from cached hostfile
+Could not get metalink https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=x86_64 error was
+14: problem making ssl connection
+ * base: mirrors.aliyun.com
+ * epel: ftp.lysator.liu.se
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+ * webtatic: uk.repo.webtatic.com
+http://mirrors.aliyun.com/centos/6/os/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 404 Not Found"
+Trying other mirror.
+http://mirrors.aliyuncs.com/centos/6/os/x86_64/repodata/repomd.xml: [Errno 12] Timeout on http://mirrors.aliyuncs.com/centos/6/os/x86_64/repodata/repomd.xml: (28, 'connect() timed out!')
+Trying other mirror.
+http://mirrors.cloud.aliyuncs.com/centos/6/os/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 6 - "Couldn't resolve host 'mirrors.cloud.aliyuncs.com'"
+Trying other mirror.
+http://mirrors.aliyun.com/centos/6/extras/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 404 Not Found"
+Trying other mirror.
+http://mirrors.aliyuncs.com/centos/6/extras/x86_64/repodata/repomd.xml: [Errno 12] Timeout on http://mirrors.aliyuncs.com/centos/6/extras/x86_64/repodata/repomd.xml: (28, 'connect() timed out!')
+Trying other mirror.
+http://mirrors.cloud.aliyuncs.com/centos/6/extras/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 6 - "Couldn't resolve host 'mirrors.cloud.aliyuncs.com'"
+Trying other mirror.
+puppetlabs-pc1                                           | 2.5 kB     00:00
+puppetlabs-pc1/primary_db                                | 236 kB     00:00
+http://mirrors.aliyun.com/centos/6/updates/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 404 Not Found"
+Trying other mirror.
+http://mirrors.aliyuncs.com/centos/6/updates/x86_64/repodata/repomd.xml: [Errno 12] Timeout on http://mirrors.aliyuncs.com/centos/6/updates/x86_64/repodata/repomd.xml: (28, 'connect() timed out!')
+Trying other mirror.
+http://mirrors.cloud.aliyuncs.com/centos/6/updates/x86_64/repodata/repomd.xml: [Errno 14] PYCURL ERROR 6 - "Couldn't resolve host 'mirrors.cloud.aliyuncs.com'"
+Trying other mirror.
+webtatic                                                 | 3.6 kB     00:00
+webtatic/primary_db                                      | 229 kB     00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package php70w.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: httpd-mmn = 20051115 for package: php70w-7.0.33-1.w6.x86_64
+--> Processing Dependency: httpd for package: php70w-7.0.33-1.w6.x86_64
+---> Package php70w-bcmath.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-cli.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-common.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-devel.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: pcre-devel(x86-64) for package: php70w-devel-7.0.33-1.w6.x86_64
+--> Processing Dependency: automake for package: php70w-devel-7.0.33-1.w6.x86_64
+--> Processing Dependency: autoconf for package: php70w-devel-7.0.33-1.w6.x86_64
+---> Package php70w-fpm.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-gd.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: libpng12.so.0(PNG12_0)(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libjpeg.so.62(LIBJPEG_6.2)(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libpng12.so.0()(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libjpeg.so.62()(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libfreetype.so.6()(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libXpm.so.4()(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+--> Processing Dependency: libX11.so.6()(64bit) for package: php70w-gd-7.0.33-1.w6.x86_64
+---> Package php70w-mbstring.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-mcrypt.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: libmcrypt.so.4()(64bit) for package: php70w-mcrypt-7.0.33-1.w6.x86_64
+--> Processing Dependency: libltdl.so.7()(64bit) for package: php70w-mcrypt-7.0.33-1.w6.x86_64
+---> Package php70w-mysql.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: php70w-pdo(x86-64) for package: php70w-mysql-7.0.33-1.w6.x86_64
+---> Package php70w-opcache.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-pear.noarch 1:1.10.4-1.w6 will be installed
+--> Processing Dependency: php70w-xml for package: 1:php70w-pear-1.10.4-1.w6.noarch
+--> Processing Dependency: php70w-posix for package: 1:php70w-pear-1.10.4-1.w6.noarch
+---> Package php70w-pecl-imagick.x86_64 0:3.4.3-1.w6 will be installed
+--> Processing Dependency: libMagickWand.so.5()(64bit) for package: php70w-pecl-imagick-3.4.3-1.w6.x86_64
+--> Processing Dependency: libMagickCore.so.5()(64bit) for package: php70w-pecl-imagick-3.4.3-1.w6.x86_64
+---> Package php70w-pecl-memcached.x86_64 0:3.0.4-1.w6 will be installed
+--> Processing Dependency: php-pecl-igbinary(x86-64) for package: php70w-pecl-memcached-3.0.4-1.w6.x86_64
+--> Processing Dependency: libmemcachedutil.so.2()(64bit) for package: php70w-pecl-memcached-3.0.4-1.w6.x86_64
+--> Processing Dependency: libmemcached.so.11()(64bit) for package: php70w-pecl-memcached-3.0.4-1.w6.x86_64
+---> Package php70w-pecl-redis.x86_64 0:3.1.6-1.w6 will be installed
+--> Running transaction check
+---> Package ImageMagick.x86_64 0:6.7.2.7-2.el6 will be installed
+--> Processing Dependency: libwmflite-0.2.so.7()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libwmf-0.2.so.7()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libtiff.so.3()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: librsvg-2.so.2()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: liblcms.so.1()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libjasper.so.1()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libgs.so.8()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libgdk_pixbuf-2.0.so.0()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libfontconfig.so.1()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libcairo.so.2()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libXt.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libXext.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libSM.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libImath.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libIlmThread.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libIlmImf.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libIex.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libICE.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+--> Processing Dependency: libHalf.so.6()(64bit) for package: ImageMagick-6.7.2.7-2.el6.x86_64
+---> Package autoconf.noarch 0:2.63-5.1.el6 will be installed
+---> Package automake.noarch 0:1.11.1-4.el6 will be installed
+---> Package freetype.x86_64 0:2.3.11-15.el6_6.1 will be installed
+---> Package httpd.x86_64 0:2.2.15-47.el6.centos will be installed
+--> Processing Dependency: httpd-tools = 2.2.15-47.el6.centos for package: httpd-2.2.15-47.el6.centos.x86_64
+--> Processing Dependency: apr-util-ldap for package: httpd-2.2.15-47.el6.centos.x86_64
+--> Processing Dependency: /etc/mime.types for package: httpd-2.2.15-47.el6.centos.x86_64
+--> Processing Dependency: libaprutil-1.so.0()(64bit) for package: httpd-2.2.15-47.el6.centos.x86_64
+--> Processing Dependency: libapr-1.so.0()(64bit) for package: httpd-2.2.15-47.el6.centos.x86_64
+---> Package libX11.x86_64 0:1.6.0-6.el6 will be installed
+--> Processing Dependency: libX11-common = 1.6.0-6.el6 for package: libX11-1.6.0-6.el6.x86_64
+--> Processing Dependency: libxcb.so.1()(64bit) for package: libX11-1.6.0-6.el6.x86_64
+---> Package libXpm.x86_64 0:3.5.10-2.el6 will be installed
+---> Package libjpeg-turbo.x86_64 0:1.2.1-3.el6_5 will be installed
+---> Package libmcrypt.x86_64 0:2.5.8-9.el6 will be installed
+---> Package libmemcached10.x86_64 0:1.0.16-1.ius.el6 will be installed
+---> Package libpng.x86_64 2:1.2.49-1.el6_2 will be installed
+---> Package libtool-ltdl.x86_64 0:2.2.6-15.5.el6 will be installed
+---> Package pcre-devel.x86_64 0:7.8-7.el6 will be installed
+---> Package php70w-pdo.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-pecl-igbinary.x86_64 0:2.0.5-1.w6 will be installed
+---> Package php70w-process.x86_64 0:7.0.33-1.w6 will be installed
+---> Package php70w-xml.x86_64 0:7.0.33-1.w6 will be installed
+--> Processing Dependency: libxslt.so.1(LIBXML2_1.0.24)(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libxslt.so.1(LIBXML2_1.0.22)(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libxslt.so.1(LIBXML2_1.0.18)(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libxslt.so.1(LIBXML2_1.0.13)(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libxslt.so.1(LIBXML2_1.0.11)(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libxslt.so.1()(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Processing Dependency: libexslt.so.0()(64bit) for package: php70w-xml-7.0.33-1.w6.x86_64
+--> Running transaction check
+---> Package OpenEXR-libs.x86_64 0:1.6.1-8.1.el6 will be installed
+---> Package apr.x86_64 0:1.3.9-5.el6_2 will be installed
+---> Package apr-util.x86_64 0:1.3.9-3.el6_0.1 will be installed
+---> Package apr-util-ldap.x86_64 0:1.3.9-3.el6_0.1 will be installed
+---> Package cairo.x86_64 0:1.8.8-6.el6_6 will be installed
+--> Processing Dependency: libpixman-1.so.0()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+--> Processing Dependency: libXrender.so.1()(64bit) for package: cairo-1.8.8-6.el6_6.x86_64
+---> Package fontconfig.x86_64 0:2.8.0-5.el6 will be installed
+---> Package gdk-pixbuf2.x86_64 0:2.24.1-6.el6_7 will be installed
+---> Package ghostscript.x86_64 0:8.70-21.el6 will be installed
+--> Processing Dependency: urw-fonts >= 1.1 for package: ghostscript-8.70-21.el6.x86_64
+--> Processing Dependency: ghostscript-fonts for package: ghostscript-8.70-21.el6.x86_64
+--> Processing Dependency: libcupsimage.so.2()(64bit) for package: ghostscript-8.70-21.el6.x86_64
+--> Processing Dependency: libcups.so.2()(64bit) for package: ghostscript-8.70-21.el6.x86_64
+---> Package httpd-tools.x86_64 0:2.2.15-47.el6.centos will be installed
+---> Package ilmbase.x86_64 0:1.0.1-6.1.el6 will be installed
+---> Package jasper-libs.x86_64 0:1.900.1-16.el6_6.3 will be installed
+---> Package lcms-libs.x86_64 0:1.19-1.el6 will be installed
+---> Package libICE.x86_64 0:1.0.6-1.el6 will be installed
+---> Package libSM.x86_64 0:1.2.1-2.el6 will be installed
+---> Package libX11-common.noarch 0:1.6.0-6.el6 will be installed
+---> Package libXext.x86_64 0:1.3.2-2.1.el6 will be installed
+---> Package libXt.x86_64 0:1.1.4-6.1.el6 will be installed
+---> Package librsvg2.x86_64 0:2.26.0-14.el6 will be installed
+--> Processing Dependency: libgsf >= 1.6.0 for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: gtk2 >= 2.9.0 for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libpangoft2-1.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libpangocairo-1.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libpango-1.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libgtk-x11-2.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libgsf-1.so.114()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libgdk-x11-2.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libcroco-0.6.so.3()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+--> Processing Dependency: libatk-1.0.so.0()(64bit) for package: librsvg2-2.26.0-14.el6.x86_64
+---> Package libtiff.x86_64 0:3.9.4-10.el6_5 will be installed
+---> Package libwmf.x86_64 0:0.2.8.4-25.el6_7 will be installed
+---> Package libwmf-lite.x86_64 0:0.2.8.4-25.el6_7 will be installed
+---> Package libxcb.x86_64 0:1.9.1-3.el6 will be installed
+--> Processing Dependency: libXau.so.6()(64bit) for package: libxcb-1.9.1-3.el6.x86_64
+---> Package libxslt.x86_64 0:1.1.26-2.el6_3.1 will be installed
+---> Package mailcap.noarch 0:2.1.31-2.el6 will be installed
+--> Running transaction check
+---> Package atk.x86_64 0:1.30.0-1.el6 will be installed
+---> Package cups-libs.x86_64 1:1.4.2-72.el6 will be installed
+--> Processing Dependency: libgnutls.so.26(GNUTLS_1_4)(64bit) for package: 1:cups-libs-1.4.2-72.el6.x86_64
+--> Processing Dependency: libgnutls.so.26()(64bit) for package: 1:cups-libs-1.4.2-72.el6.x86_64
+--> Processing Dependency: libavahi-common.so.3()(64bit) for package: 1:cups-libs-1.4.2-72.el6.x86_64
+--> Processing Dependency: libavahi-client.so.3()(64bit) for package: 1:cups-libs-1.4.2-72.el6.x86_64
+---> Package ghostscript-fonts.noarch 0:5.50-23.2.el6 will be installed
+--> Processing Dependency: xorg-x11-font-utils for package: ghostscript-fonts-5.50-23.2.el6.noarch
+---> Package gtk2.x86_64 0:2.24.23-6.el6 will be installed
+--> Processing Dependency: libXrandr >= 1.2.99.4-2 for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: hicolor-icon-theme for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXrandr.so.2()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXinerama.so.1()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXi.so.6()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXfixes.so.3()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXdamage.so.1()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXcursor.so.1()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+--> Processing Dependency: libXcomposite.so.1()(64bit) for package: gtk2-2.24.23-6.el6.x86_64
+---> Package libXau.x86_64 0:1.0.6-4.el6 will be installed
+---> Package libXrender.x86_64 0:0.9.8-2.1.el6 will be installed
+---> Package libcroco.x86_64 0:0.6.2-5.el6 will be installed
+---> Package libgsf.x86_64 0:1.14.15-5.el6 will be installed
+--> Processing Dependency: GConf2 for package: libgsf-1.14.15-5.el6.x86_64
+--> Processing Dependency: GConf2 for package: libgsf-1.14.15-5.el6.x86_64
+---> Package pango.x86_64 0:1.28.1-10.el6 will be installed
+--> Processing Dependency: libthai >= 0.1.9 for package: pango-1.28.1-10.el6.x86_64
+--> Processing Dependency: libthai.so.0(LIBTHAI_0.1)(64bit) for package: pango-1.28.1-10.el6.x86_64
+--> Processing Dependency: libthai.so.0()(64bit) for package: pango-1.28.1-10.el6.x86_64
+--> Processing Dependency: libXft.so.2()(64bit) for package: pango-1.28.1-10.el6.x86_64
+---> Package pixman.x86_64 0:0.32.4-4.el6 will be installed
+---> Package urw-fonts.noarch 0:2.4-10.el6 will be installed
+--> Running transaction check
+---> Package GConf2.x86_64 0:2.28.0-6.el6 will be installed
+--> Processing Dependency: sgml-common for package: GConf2-2.28.0-6.el6.x86_64
+--> Processing Dependency: dbus for package: GConf2-2.28.0-6.el6.x86_64
+--> Processing Dependency: libpolkit-gobject-1.so.0()(64bit) for package: GConf2-2.28.0-6.el6.x86_64
+--> Processing Dependency: libORBit-2.so.0()(64bit) for package: GConf2-2.28.0-6.el6.x86_64
+---> Package avahi-libs.x86_64 0:0.6.25-15.el6 will be installed
+---> Package gnutls.x86_64 0:2.8.5-18.el6 will be installed
+---> Package hicolor-icon-theme.noarch 0:0.11-1.1.el6 will be installed
+---> Package libXcomposite.x86_64 0:0.4.3-4.el6 will be installed
+---> Package libXcursor.x86_64 0:1.1.14-2.1.el6 will be installed
+---> Package libXdamage.x86_64 0:1.1.3-4.el6 will be installed
+---> Package libXfixes.x86_64 0:5.0.1-2.1.el6 will be installed
+---> Package libXft.x86_64 0:2.3.1-2.el6 will be installed
+---> Package libXi.x86_64 0:1.7.2-2.2.el6 will be installed
+---> Package libXinerama.x86_64 0:1.1.3-2.1.el6 will be installed
+---> Package libXrandr.x86_64 0:1.4.1-2.1.el6 will be installed
+---> Package libthai.x86_64 0:0.1.12-3.el6 will be installed
+---> Package xorg-x11-font-utils.x86_64 1:7.2-11.el6 will be installed
+--> Processing Dependency: libfontenc.so.1()(64bit) for package: 1:xorg-x11-font-utils-7.2-11.el6.x86_64
+--> Processing Dependency: libXfont.so.1()(64bit) for package: 1:xorg-x11-font-utils-7.2-11.el6.x86_64
+--> Running transaction check
+---> Package ORBit2.x86_64 0:2.14.17-5.el6 will be installed
+--> Processing Dependency: libIDL-2.so.0()(64bit) for package: ORBit2-2.14.17-5.el6.x86_64
+---> Package dbus.x86_64 1:1.2.24-8.el6_6 will be installed
+---> Package libXfont.x86_64 0:1.4.5-5.el6_7 will be installed
+---> Package libfontenc.x86_64 0:1.0.5-2.el6 will be installed
+---> Package polkit.x86_64 0:0.96-11.el6 will be installed
+--> Processing Dependency: ConsoleKit for package: polkit-0.96-11.el6.x86_64
+--> Processing Dependency: libeggdbus-1.so.0()(64bit) for package: polkit-0.96-11.el6.x86_64
+---> Package sgml-common.noarch 0:0.6.3-33.el6 will be installed
+--> Running transaction check
+---> Package ConsoleKit.x86_64 0:0.4.1-3.el6 will be installed
+--> Processing Dependency: libck-connector.so.0()(64bit) for package: ConsoleKit-0.4.1-3.el6.x86_64
+---> Package eggdbus.x86_64 0:0.6-3.el6 will be installed
+---> Package libIDL.x86_64 0:0.8.13-2.1.el6 will be installed
+--> Running transaction check
+---> Package ConsoleKit-libs.x86_64 0:0.4.1-3.el6 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package                  Arch      Version                   Repository   Size
+================================================================================
+Installing:
+ php70w                   x86_64    7.0.33-1.w6               webtatic    2.7 M
+ php70w-bcmath            x86_64    7.0.33-1.w6               webtatic     34 k
+ php70w-cli               x86_64    7.0.33-1.w6               webtatic    2.6 M
+ php70w-common            x86_64    7.0.33-1.w6               webtatic    1.2 M
+ php70w-devel             x86_64    7.0.33-1.w6               webtatic    2.7 M
+ php70w-fpm               x86_64    7.0.33-1.w6               webtatic    1.3 M
+ php70w-gd                x86_64    7.0.33-1.w6               webtatic    125 k
+ php70w-mbstring          x86_64    7.0.33-1.w6               webtatic    950 k
+ php70w-mcrypt            x86_64    7.0.33-1.w6               webtatic     24 k
+ php70w-mysql             x86_64    7.0.33-1.w6               webtatic     74 k
+ php70w-opcache           x86_64    7.0.33-1.w6               webtatic    120 k
+ php70w-pear              noarch    1:1.10.4-1.w6             webtatic    353 k
+ php70w-pecl-imagick      x86_64    3.4.3-1.w6                webtatic    127 k
+ php70w-pecl-memcached    x86_64    3.0.4-1.w6                webtatic     91 k
+ php70w-pecl-redis        x86_64    3.1.6-1.w6                webtatic    169 k
+Installing for dependencies:
+ ConsoleKit               x86_64    0.4.1-3.el6               base         82 k
+ ConsoleKit-libs          x86_64    0.4.1-3.el6               base         17 k
+ GConf2                   x86_64    2.28.0-6.el6              base        964 k
+ ImageMagick              x86_64    6.7.2.7-2.el6             base        1.9 M
+ ORBit2                   x86_64    2.14.17-5.el6             base        168 k
+ OpenEXR-libs             x86_64    1.6.1-8.1.el6             base        197 k
+ apr                      x86_64    1.3.9-5.el6_2             base        123 k
+ apr-util                 x86_64    1.3.9-3.el6_0.1           base         87 k
+ apr-util-ldap            x86_64    1.3.9-3.el6_0.1           base         15 k
+ atk                      x86_64    1.30.0-1.el6              base        195 k
+ autoconf                 noarch    2.63-5.1.el6              base        781 k
+ automake                 noarch    1.11.1-4.el6              base        550 k
+ avahi-libs               x86_64    0.6.25-15.el6             base         55 k
+ cairo                    x86_64    1.8.8-6.el6_6             base        309 k
+ cups-libs                x86_64    1:1.4.2-72.el6            base        321 k
+ dbus                     x86_64    1:1.2.24-8.el6_6          base        207 k
+ eggdbus                  x86_64    0.6-3.el6                 base         91 k
+ fontconfig               x86_64    2.8.0-5.el6               base        186 k
+ freetype                 x86_64    2.3.11-15.el6_6.1         base        361 k
+ gdk-pixbuf2              x86_64    2.24.1-6.el6_7            updates     501 k
+ ghostscript              x86_64    8.70-21.el6               base        4.4 M
+ ghostscript-fonts        noarch    5.50-23.2.el6             base        590 k
+ gnutls                   x86_64    2.8.5-18.el6              base        347 k
+ gtk2                     x86_64    2.24.23-6.el6             base        3.2 M
+ hicolor-icon-theme       noarch    0.11-1.1.el6              base         40 k
+ httpd                    x86_64    2.2.15-47.el6.centos      updates     830 k
+ httpd-tools              x86_64    2.2.15-47.el6.centos      updates      77 k
+ ilmbase                  x86_64    1.0.1-6.1.el6             base         72 k
+ jasper-libs              x86_64    1.900.1-16.el6_6.3        base        137 k
+ lcms-libs                x86_64    1.19-1.el6                base        100 k
+ libICE                   x86_64    1.0.6-1.el6               base         53 k
+ libIDL                   x86_64    0.8.13-2.1.el6            base         83 k
+ libSM                    x86_64    1.2.1-2.el6               base         37 k
+ libX11                   x86_64    1.6.0-6.el6               base        586 k
+ libX11-common            noarch    1.6.0-6.el6               base        192 k
+ libXau                   x86_64    1.0.6-4.el6               base         24 k
+ libXcomposite            x86_64    0.4.3-4.el6               base         20 k
+ libXcursor               x86_64    1.1.14-2.1.el6            base         28 k
+ libXdamage               x86_64    1.1.3-4.el6               base         18 k
+ libXext                  x86_64    1.3.2-2.1.el6             base         35 k
+ libXfixes                x86_64    5.0.1-2.1.el6             base         17 k
+ libXfont                 x86_64    1.4.5-5.el6_7             updates     137 k
+ libXft                   x86_64    2.3.1-2.el6               base         55 k
+ libXi                    x86_64    1.7.2-2.2.el6             base         37 k
+ libXinerama              x86_64    1.1.3-2.1.el6             base         13 k
+ libXpm                   x86_64    3.5.10-2.el6              base         51 k
+ libXrandr                x86_64    1.4.1-2.1.el6             base         23 k
+ libXrender               x86_64    0.9.8-2.1.el6             base         24 k
+ libXt                    x86_64    1.1.4-6.1.el6             base        165 k
+ libcroco                 x86_64    0.6.2-5.el6               base        100 k
+ libfontenc               x86_64    1.0.5-2.el6               base         24 k
+ libgsf                   x86_64    1.14.15-5.el6             base        116 k
+ libjpeg-turbo            x86_64    1.2.1-3.el6_5             base        174 k
+ libmcrypt                x86_64    2.5.8-9.el6               epel         96 k
+ libmemcached10           x86_64    1.0.16-1.ius.el6          webtatic    154 k
+ libpng                   x86_64    2:1.2.49-1.el6_2          base        182 k
+ librsvg2                 x86_64    2.26.0-14.el6             base        140 k
+ libthai                  x86_64    0.1.12-3.el6              base        183 k
+ libtiff                  x86_64    3.9.4-10.el6_5            base        343 k
+ libtool-ltdl             x86_64    2.2.6-15.5.el6            base         44 k
+ libwmf                   x86_64    0.2.8.4-25.el6_7          updates     132 k
+ libwmf-lite              x86_64    0.2.8.4-25.el6_7          updates      51 k
+ libxcb                   x86_64    1.9.1-3.el6               base        110 k
+ libxslt                  x86_64    1.1.26-2.el6_3.1          base        452 k
+ mailcap                  noarch    2.1.31-2.el6              base         27 k
+ pango                    x86_64    1.28.1-10.el6             base        351 k
+ pcre-devel               x86_64    7.8-7.el6                 base        320 k
+ php70w-pdo               x86_64    7.0.33-1.w6               webtatic     81 k
+ php70w-pecl-igbinary     x86_64    2.0.5-1.w6                webtatic     38 k
+ php70w-process           x86_64    7.0.33-1.w6               webtatic     34 k
+ php70w-xml               x86_64    7.0.33-1.w6               webtatic    112 k
+ pixman                   x86_64    0.32.4-4.el6              base        243 k
+ polkit                   x86_64    0.96-11.el6               base        162 k
+ sgml-common              noarch    0.6.3-33.el6              base         43 k
+ urw-fonts                noarch    2.4-10.el6                base        3.1 M
+ xorg-x11-font-utils      x86_64    1:7.2-11.el6              base         75 k
+
+Transaction Summary
+================================================================================
+Install      91 Package(s)
+
+Total download size: 38 M
+Installed size: 135 M
+Is this ok [y/N]: 
+```
+
+一路确定，等待安装完成：
 > y
 
 如图：
@@ -538,4 +887,6 @@ win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant�
 Nginx学习（一）之安装、控制、配置 <https://www.cnblogs.com/qiye5757/p/9614571.html>
 
 yum安装最新版php7 <https://blog.csdn.net/zhezhebie/article/details/73325663>
+
+linux使用国内镜像源 <https://blog.csdn.net/zhezhebie/article/details/73484695>
 
