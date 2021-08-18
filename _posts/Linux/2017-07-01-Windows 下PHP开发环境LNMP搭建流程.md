@@ -934,3 +934,5 @@ yum安装最新版php7 <https://blog.csdn.net/zhezhebie/article/details/73325663
 
 linux使用国内镜像源 <https://blog.csdn.net/zhezhebie/article/details/73484695>
 
+清华大学开源软件镜像站 CentOS 镜像使用帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/centos/>
+
