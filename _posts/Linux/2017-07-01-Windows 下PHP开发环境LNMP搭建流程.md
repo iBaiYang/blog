@@ -537,3 +537,5 @@ win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant�
 
 Nginx学习（一）之安装、控制、配置 <https://www.cnblogs.com/qiye5757/p/9614571.html>
 
+yum安装最新版php7 <https://blog.csdn.net/zhezhebie/article/details/73325663>
+
