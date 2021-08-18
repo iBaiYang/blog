@@ -936,3 +936,5 @@ linux使用国内镜像源 <https://blog.csdn.net/zhezhebie/article/details/7348
 
 清华大学开源软件镜像站 CentOS 镜像使用帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/centos/>
 
+超详细的 Vagrant 上手指南 <https://zhuanlan.zhihu.com/p/259833884>
+
