@@ -11,7 +11,8 @@ meta: Windows 下PHP开发环境LNMP搭建流程
 
 #### 安装Linux
 
-在windows下，我们开发php应用时，一般会选择WAMP，但部署到服务器时，我们又选择的是LNMP，所以偶尔会导致应用运行环境不兼容的问题。所以最好我们开发环境也是LNMP的。下面说一下windows下LNMP环境搭建的流程：
+在windows下，我们开发php应用时，一般会选择WAMP，但部署到服务器时，我们又选择的是LNMP，
+所以偶尔会导致应用运行环境不兼容的问题。所以最好我们开发环境也是LNMP的。下面说一下windows下LNMP环境搭建的流程：
 
 首先，我们要安装VirtualBox和vagrant，这两个软件：
 
@@ -19,7 +20,9 @@ meta: Windows 下PHP开发环境LNMP搭建流程
 
 VirtualBox 是一款开源虚拟机软件；Vagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。 
 
-我们要选择我们的虚拟化开发环境位置，因为已经在本地安装过一个虚拟开发环境了，所以这次安装第二个虚拟化开发环境。我们选择在D:/vagrant2下。我们要把将要安装的Linux包放在这个目录下，我这次用的box包是vagrant-centos-6.7.box，把它copy到D:/vagrant2/box下并重命名一下，如图：
+我们要选择我们的虚拟化开发环境位置，因为已经在本地安装过一个虚拟开发环境了，所以这次安装第二个虚拟化开发环境。
+我们选择在D:/vagrant2下。我们要把将要安装的Linux包放在这个目录下，我这次用的box包是vagrant-centos-6.7.box，
+把它copy到D:/vagrant2/box下并重命名一下，如图：
     
 ![]({{site.baseurl}}/images/20200329/20200329191534.jpg)
 
