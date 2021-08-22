@@ -165,6 +165,8 @@ mount: /var/www: unknown filesystem type 'vboxsf'.
 G:\vagrant2>
 ```
 
+报共享文件夹无法链接错误，Centos6.7的可以，Centos8.3的不可以，可能是Centos包的问题，不好解决。
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
@@ -173,3 +175,7 @@ centos/8 Vagrant box <https://app.vagrantup.com/centos/boxes/8>
 vagrant+centos7 安装报错 <https://blog.csdn.net/shilei_zhang/article/details/72811274>
 
 vagrant-安装教程及常见问题 <https://blog.csdn.net/ty_hf/article/details/78314583>
+
+vagrant共享文件夹挂载失败 <https://blog.csdn.net/ifeng6/article/details/76316991>
+
+CentOS 8 成为绝版！到底发生了什么? <https://zhuanlan.zhihu.com/p/341881553>
