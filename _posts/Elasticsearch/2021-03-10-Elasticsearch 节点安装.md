@@ -71,7 +71,7 @@ vm.max_map_count=655360
 
 /usr/local/elasticsearch/config/elasticsearch.yml
 ```
-cluster.name: cluster_test_gaofeng
+cluster.name: cluster_test_xiaowang
 node.name: 192.168.40.44
 path:
 data:
