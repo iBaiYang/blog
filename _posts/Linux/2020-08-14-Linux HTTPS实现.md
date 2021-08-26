@@ -74,7 +74,10 @@ server {
 
 第三点:使用certbot申请证书
 
-使用方法：`certbot certonly --webroot -w [Web站点目录] -d [站点域名] -m [联系人email地址] --agree-tos`
+使用方法：
+```
+certbot certonly --webroot -w [Web站点目录] -d [站点域名] -m [联系人email地址] --agree-tos
+```
 
 `-w [Web站点目录]` 要是站点可以被网络访问到的地址，因为会在这个目录下生成`/.well-known/acme-challenge/****`文件，用来验证域名归属。
 
@@ -295,7 +298,8 @@ ssl_session_timeout  过期时间，10m表示10分钟
 
 #### 设置定时任务自动更新证书
 
-因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。更新时certbot会检查更新30内即将到期的所有证书，可以根据需要频繁运行。
+因为letsencrypt申请的证书3个月会过期，所以我们要有个自动重新更新申请证书的定时任务。
+更新时certbot会检查更新30天内即将到期的所有证书，可以根据需要频繁运行。
 
 可以使用crontab定时更新。
 
