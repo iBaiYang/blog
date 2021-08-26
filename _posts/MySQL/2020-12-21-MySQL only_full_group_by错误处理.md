@@ -18,9 +18,9 @@ this is incompatible with sql_mode=only_full_group_by
 ```
 
 翻译过来是： ORDER BY子句不在GROUP BY子句中，包含非聚合列 `information_schema.PROFILING.SEQ`，
-它在功能上不依赖于GROUPBY子句中的列，这与sql模式 `only_full_group_by` 不兼容。
+它在功能上不依赖于GROUP BY子句中的列，这与sql模式 `only_full_group_by` 不兼容。
 
-大意是说 GROUP BY 的 字段未在 select 中出现一类的，这是MySQL严格模式，我们修改下模式就好了。
+大意是说 ORDER BY 的 字段未在 GROUP BY 中出现一类的，这是MySQL严格模式，我们修改下模式就好了。
 
 如果MySQL安装在docker中，先进入相应docker容器：
 > docker exec -it server-mysql /bin/bash
@@ -48,10 +48,12 @@ this is incompatible with sql_mode=only_full_group_by
 set global sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 ```
 
-再次查看MySQL模式，可能发现没有变化，那我们只修改要改的表，选择表：
+重启MySQL服务，再次查看MySQL模式。
+
+我们也可以只修改要改的库，选择表：
 > use test;
 
-重新执行：
+执行：
 ```
 set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 ```
