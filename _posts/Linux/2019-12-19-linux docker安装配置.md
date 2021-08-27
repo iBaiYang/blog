@@ -249,20 +249,20 @@ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> c
 
 containerd.io、docker-ce-cli、docker-ce分别是干什么的：
 
-containerd.io - daemon to interface with the OS API (in this case, LXC - Linux Containers), 
+containerd.io   - daemon to interface with the OS API (in this case, LXC - Linux Containers), 
 essentially decouples Docker from the OS, also provides container services for non-Docker container managers
 
-docker-ce - Docker daemon, this is the part that does all the management work, requires the other two on Linux
+docker-ce   - Docker daemon, this is the part that does all the management work, requires the other two on Linux
 
-docker-ce-cli - CLI tools to control the daemon, you can install them on their own if you want to control a remote Docker daemon.
+docker-ce-cli   - CLI tools to control the daemon, you can install them on their own if you want to control a remote Docker daemon.
 
 翻译过来是：
 
-containerd.io-与OS API进行交互的守护程序（在本例中为LXC-Linux容器），从本质上将Docker与OS分离，还为非Docker容器管理器提供容器服务。
+containerd.io    -与OS API进行交互的守护程序（在本例中为LXC-Linux容器），从本质上将Docker与OS分离，还为非Docker容器管理器提供容器服务。
 
-docker-ce-Docker守护程序，这是完成所有管理工作的部分，在Linux上需要另外两个。
+docker-ce    -Docker守护程序，这是完成所有管理工作的部分，在Linux上需要另外两个。
 
-docker-ce-cli-用于控制守护程序的CLI工具，如果要控制远程Docker守护程序，则可以单独安装它们。
+docker-ce-cli    -用于控制守护程序的CLI工具，如果要控制远程Docker守护程序，则可以单独安装它们。
 
 Docker是虚拟化容器引擎，我们可以运行hello world映像，验证Docker引擎是否正确安装：
 > sudo docker run hello-world
