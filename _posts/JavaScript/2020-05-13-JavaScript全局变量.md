@@ -153,13 +153,13 @@ func();
 
 myName = "global"; // 全局变量 
 function func() { 
-    var myName; // 等同于 -> var myName = undefined 
+    var myName; // 因为变量提升，等同于 -> var myName = undefined 
     alert(myName); // undefined 
     myName = "local"; 
     alert(myName); // 局部变量 
 } 
 ```
-
+    
 #### 实际使用
 
 ##### 访问全局对象
@@ -266,8 +266,7 @@ namespace.Event = {};
 * 函数创建：
 通过声明 function 实现，函数里设置初始变量，公共方法写入 prototype。
 
-1. 普通写法：
-
+1.普通写法：
 ```
 // 创建一个命名空间
 var NameSpace = NameSpace || {};
@@ -282,8 +281,7 @@ NameSpace.Hello.prototype.sayHello = function(_name) {
 var hello = new NameSpace.Hello();
 ```
 
-2. 简洁写法：
-
+2.简洁写法：
 ```
 var NameSpace = window.NameSpace || {};
 NameSpace.Hello = new function() {
@@ -375,28 +373,29 @@ YourGlobal.namespace("Books").ANewBook = {};
 
 ##### 多次重复使用
 
-在window.onload = function(){ } 中使用var 变量名 声明全局变量，以后可以在与浏览器该页面多次操作交互的子函数中随时访问和修改这个全局变量，
+在`window.onload = function(){ }` 中使用`var 变量名` 声明全局变量，
+以后可以在与浏览器该页面多次操作交互的子函数中随时访问和修改这个全局变量，
 这样就使这个变量像数据库中的具体字段值一样，可以保存唯一值，具体操作中也可以作为唯一的判断标准。
 
-同理，在Jquery中，$(function(){}) 或者 $(document).ready(function(){}) 中使用var 变量名 也是声明为全局变量。
+同理，在Jquery中，`$(function(){})` 或者 `$(document).ready(function(){})` 中使用`var 变量名` 也是声明为全局变量。
 
 #### JavaScript 全局属性
 
-属性 	描述
+属性         描述
 
-Infinity 	代表正的无穷大的数值。
+Infinity         代表正的无穷大的数值。
 
-NaN 	指示某个值是不是数字值。
+NaN         指示某个值是不是数字值。
 
-undefined 	指示未定义的值。
+undefined         指示未定义的值。
 
 #### JavaScript 全局函数
 
-函数 	描述
+函数         描述
 
-encodeURI() 	把字符串编码为 URI。
+encodeURI()         把字符串编码为 URI。
 
-decodeURI() 	解码某个编码的 URI。
+decodeURI()         解码某个编码的 URI。
 
 ```
 <script>
@@ -410,9 +409,9 @@ my%20test.php?name=st%C3%A5le&car=saab&sex=%E7%94%B7
 my test.php?name=ståle&car=saab&sex=男 
 ```
 
-encodeURIComponent() 	把字符串编码为 URI 组件。
+encodeURIComponent()         把字符串编码为 URI 组件。
 
-decodeURIComponent() 	解码一个编码的 URI 组件。
+decodeURIComponent()         解码一个编码的 URI 组件。
 
 ```
 <script>
@@ -428,9 +427,9 @@ http%3A%2F%2Fw3cschool.cc%2Fmy%20test.asp%3Fname%3Dst%C3%A5le%26car%3Dsaab%26sex
 http://w3cschool.cc/my test.asp?name=ståle&car=saab&sex=男 
 ```
 
-escape() 	对字符串进行编码。
+escape()         对字符串进行编码。
 
-unescape() 	对由 escape() 编码的字符串进行解码。
+unescape()         对由 escape() 编码的字符串进行解码。
 
 ```
 <script>
@@ -444,7 +443,7 @@ my%20test.php%3Fname%3Dst%E5le%26car%3Dsaab%26sex%3D%u7537
 my test.php?name=ståle&car=saab&sex=男 
 ```
 
-eval() 	计算 JavaScript 字符串，并把它作为脚本代码来执行。
+eval()         计算 JavaScript 字符串，并把它作为脚本代码来执行。
 
 ```
 <script>
@@ -459,7 +458,7 @@ document.write("<br>" + eval(x+17));
 27 
 ```
 
-isFinite() 	检查某个值是否为有穷大的数。
+isFinite()         检查某个值是否为有穷大的数。
 
 ```
 <script>
@@ -480,7 +479,7 @@ false
 false
 ```
 
-isNaN() 	检查某个值是否是非数字。
+isNaN()         检查某个值是否是非数字。
 
 ```
 <script>
@@ -501,7 +500,7 @@ true
 true
 ```
 
-Number() 	把对象的值转换为数字。
+Number()         把对象的值转换为数字。
 
 ```
 <script>
@@ -526,7 +525,7 @@ document.write(Number(test5)+ "<br>");
 NaN
 ```
 
-parseFloat() 	解析一个字符串并返回一个浮点数。
+parseFloat()         解析一个字符串并返回一个浮点数。
 
 ```
 document.write(parseFloat("10") + "<br>");
@@ -545,7 +544,7 @@ document.write(parseFloat("He was 40") + "<br>");
 NaN 
 ```
 
-parseInt() 	解析一个字符串并返回一个整数。
+parseInt()         解析一个字符串并返回一个整数。
 
 ```
 document.write(parseInt("10") + "<br>");
@@ -577,7 +576,7 @@ NaN
 16
 ```
 
-String() 	把对象的值转换为字符串。
+String()         把对象的值转换为字符串。
 
 ```
 <script>
