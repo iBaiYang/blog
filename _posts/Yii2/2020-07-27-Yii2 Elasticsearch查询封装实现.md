@@ -104,7 +104,7 @@ class LElasticSearch extends Component
 {
     public $host;
     /** @var int  */
-    public $retries;
+    public $retries = 3;
     // HTTP handler
     public $handler;
     /** @var  Client $instance */
@@ -559,9 +559,9 @@ namespace common\components\ES;
 
 use common\components\LElasticSearch;
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class ActiveQuery extends Object
+class ActiveQuery extends BaseObject
 {
     private $where = [];
     private $sort = [];
