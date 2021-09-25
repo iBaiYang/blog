@@ -44,7 +44,7 @@ while( true )
     /*
     之所以不会占据CPU,因为CPU运算的时候,类似有个指挥官的家伙会调度,进程切换,简称调度,它只会指挥准备开始打战和正在打战的人,
     而正在休息军人(阻塞中)不需要命令他们打战,这样也符合常理了
-    你也可以看到下图,调度只在运行和就绪之间的,所以cpu不会傻傻等正在休息的士兵起来了,在再指挥
+    你也可以看到下图,调度只在运行和就绪之间的,所以cpu不会傻傻等正在休息的士兵起来了,再指挥
     */
     // 所以你不用担心while循环会将机器拖垮，不会的 
     $connection_socket = socket_accept( $listen_socket );
@@ -444,8 +444,12 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 ![](/blog/images/20200921/20200921002111.png)
 
 
-- 配置php的cli环境配置文件，注意不是apache2，也不是fpm的，而是cli的php.ini，添加一句:`extension = '/usr/lib/php/20151012/event.so'`，
-然后在终端中执行php -m看下，是不是有event呢？
+- 配置php的cli环境配置文件，注意不是apache2，也不是fpm的，而是cli的php.ini，添加一句:
+```
+extension = '/usr/lib/php/20151012/event.so'
+```
+
+，然后在终端中执行`php -m`下，是不是有event呢？
 
 好了，今天到这里正式收官，下一篇继续嗑php和他的event扩展二三事！
 
