@@ -40,11 +40,11 @@ kerberos认证，HTTP上传，代理服务器， cookies，用户名/密码认�
 
 上面提到的相关内容，过去都有过记录：
 
-socket <https://ibaiyang.github.io/blog/php/2019/08/27/PHP-socket%E7%BC%96%E7%A8%8B.html>
+socket <https://ibaiyang.github.io/blog/php/2019/08/27/PHP-socket编程.html>
 
-stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
+stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream实现服务器客户端.html>
 
-curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL%E8%AF%A6%E8%A7%A3.html>
+curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL详解.html>
 
 #### Sockets
 
