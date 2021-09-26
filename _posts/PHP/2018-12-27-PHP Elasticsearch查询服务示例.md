@@ -695,6 +695,47 @@ Es支持的聚合分析的语法如：
 ]
 ```
 
+### 后记
+
+#### 用户认证
+
+在一次项目对接中用到了ES，连接时报了错，用curl请求报错是一样的：
+```
+[root@localhost]$ curl -XGET '172.16.0.1:9200/longlat-*'
+{"error":{"root_cause":[{"type":"security_exception","reason":"missing authentication token for REST request [/longlat-*]",
+"header":{"WWW-Authenticate":"Basic realm=\"security\" charset=\"UTF-8\""}}],"type":"security_exception",
+"reason":"missing authentication token for REST request [/longlat-*]",
+"header":{"WWW-Authenticate":"Basic realm=\"security\" charset=\"UTF-8\""}},"status":401}
+```
+
+查询后，说是Elasticsearch安装x-pack插件后,无法正常按照之前的参数来进行CRUL操作，因为安装的x-pack的插件中新增了Shield的安全机制。 
+
+解决方法：在使用crul命令的时候加入两个参数：`-u username:password` ，格式如下：
+```
+curl -u lastic:changeme -XGET '172.16.0.1:9200/longlat-*'
+```
+
+请求时发现的确可以了。
+
+但是vendor类库elasticsearch/elasticsearch 怎么把认证信息加上呢？
+
+查询后，发现在`setHosts()`时就把用户认证信息放入了：
+```
+$hosts = [
+    'http://user:pass@localhost:9200',       // HTTP Basic Authentication
+    'http://user2:pass2@other-host.com:9200' // Different credentials on different host
+];
+
+$client = ClientBuilder::create()->setHosts($hosts)->build();
+```
+
+如：
+```
+$hosts = [
+    "lastic:changeme@172.16.0.1:9200"
+];
+```
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
@@ -729,3 +770,9 @@ Elasticsearch实用的聚合操作Aggs <https://zhuanlan.zhihu.com/p/37500880>
 ElasticSearch聚合aggs入门 <https://www.cnblogs.com/pilihaotian/p/5845754.html>
 
 Elasticsearch: 权威指南 » 聚合 <https://www.elastic.co/guide/cn/elasticsearch/guide/current/aggregations.html>
+
+Elasticsearch安装后x-pack插件后使用CRUL <https://blog.csdn.net/u012332735/article/details/56475522>
+
+Elasticsearch-PHP » 配置 <https://www.elastic.co/guide/cn/elasticsearch/php/current/_configuration.html>
+
+Elasticsearch-PHP » 安全 <https://www.elastic.co/guide/cn/elasticsearch/php/current/_security.html>
