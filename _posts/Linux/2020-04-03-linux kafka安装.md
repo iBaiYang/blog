@@ -316,7 +316,7 @@ Kafka史上最详细原理总结下 <https://www.jianshu.com/p/acf010e67a19>
 
 DMA：为什么Kafka这么快？ <https://weibo.com/ttarticle/p/show?id=2309404597571816391045>
 
-kafka极简教程 <https://mp.weixin.qq.com/s?__biz=MzU0OTE4MzYzMw==&mid=2247483788&idx=1&sn=9a30a9d1ef1f904b8d3ccda57aa2556b&chksm=fbb28872ccc501642b65acbf77bc10d48c70ae43641282a5eaf7e9483860a9b1acfa3061badc&scene=21#wechat_redirect>
+kafka极简教程 <https://mp.weixin.qq.com/s?__biz=MzU0OTE4MzYzMw==&mid=2247483788&idx=1&sn=9a30a9d1ef1f904b8d3ccda57aa2556b>
 
 什么是mmap？  <https://mp.weixin.qq.com/s/-W3oh_fFugZLMF8P5RFSjQ>
 
@@ -327,3 +327,5 @@ kafka极简教程 <https://mp.weixin.qq.com/s?__biz=MzU0OTE4MzYzMw==&mid=2247483
 <https://time.geekbang.org/column/article/118657>
 
 <https://www.toutiao.com/i6898240850917114380/>
+
+Kafka 3.0.0正式发布，脱离ZooKeeper，Kafka Controller Quorum（KRaft）可抢先体验 <https://mp.weixin.qq.com/s/T3s-inLA6PuzwKMfb1InIQ>
