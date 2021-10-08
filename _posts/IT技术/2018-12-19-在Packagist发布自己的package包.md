@@ -92,7 +92,7 @@ composer.json中示例：
     "authors": [
         {
             "name": "baiyang",
-            "email": "zhuyingu@126.com"
+            "email": "baiyang@email.com"
         }
     ],
     "require": {},

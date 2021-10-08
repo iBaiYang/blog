@@ -947,7 +947,7 @@ ZZ 是:wq的快捷键
 
 ls是别名  \ls 转义符可以使用ls本来命令
 
-自动替换  :ab mymail yongestcat@126.com
+自动替换  :ab mymail yongestcat@email.com
 
 这些设置重启失效  要永久生效 要写入对应用户的home目录下的vim配置文件 /root/.vimrc   这里面只能放编辑模式的命令  不用加:
 5 软件包管理

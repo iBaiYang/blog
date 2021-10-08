@@ -83,7 +83,7 @@ Docker在启动时会开启一个虚拟网桥设备docker0，默认的地址为1
 FROM centos:7
 
 # 维护者
-MAINTAINER baiyang@126.com
+MAINTAINER baiyang@email.com
 
 # 安装wget下载工具
 RUN yum install -y wget 

@@ -521,7 +521,7 @@ Dockerfile 文件:
 FROM centos:7
 
 # 维护者
-MAINTAINER www  ibaiyang@126.com
+MAINTAINER www  ibaiyang@email.com
 
 # 设置变量
 ENV PHPIZE_DEPS \
