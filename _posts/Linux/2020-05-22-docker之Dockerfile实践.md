@@ -117,7 +117,7 @@ RUN ./configure --user=nginx --group=nginx --prefix=/usr/local/nginx --with-file
 # 切换到Nginx的配置目录
 WORKDIR /usr/local/nginx/conf
 
-# 建立子配置文件夹，个人爱好，可以不建，或者叫其它名称都可以，但最好不要带特殊符号
+# 建立子配置文件夹，可以不建，或者叫其它名称都可以，但最好不要带特殊符号
 # RUN mkdir vhost
 
 # 设置变量，执行命令时，就可以省略前缀目录了	
