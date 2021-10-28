@@ -1,3 +1,4 @@
+
 ---
 layout: post
 categories: Yii2
@@ -8,8 +9,6 @@ meta: Yii2 高级模板advanced安装并初始化流程
 {:toc}
 
 ### 正文
-
-<http://blog.sina.com.cn/s/blog_6aba78b40102x55u.html>
 
 下面流程：
 
@@ -643,6 +642,8 @@ exit($exitCode);
 
 <br/><br/><br/><br/><br/>
 ### 参考资料 
+
+<http://blog.sina.com.cn/s/blog_6aba78b40102x55u.html>
 
 <http://www.weixistyle.com/yii2-video-play.php?chapter=3.1&title=博客系统需求>
 
