@@ -41,7 +41,7 @@ echo byteSubstr($decoded, $length, $length) ^ byteSubstr($decoded, 0, $length);
 // 输出 4QZXH07byR3_3wAZBoF1YC_VaOUv6bkm
 ```
 
-关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf%E7%BB%BC%E5%90%88.html>
+关于csrf可以看这里：<https://ibaiyang.github.io/blog/yii2/2017/12/03/Yii2-csrf综合.html>
 
 ![]({{site.baseurl}}/images/20200417/20200417132764.jpeg)
 
