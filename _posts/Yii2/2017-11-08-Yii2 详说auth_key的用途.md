@@ -1080,7 +1080,8 @@ protected function removeIdentityCookie()
 
 #### 总结
 
-auth_key是用来做cookie自动登录用的，在创建用户时第一次生成，之后基本不会再修改。
+auth_key是用来做cookie自动登录验证用的，是一个随机字符串，在创建用户时第一次生成，之后基本不会再修改，
+总不能把密码放入cookie中，所以选了auth_key。
 
 ```
     /**
