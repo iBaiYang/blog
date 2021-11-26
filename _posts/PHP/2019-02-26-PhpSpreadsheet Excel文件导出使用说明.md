@@ -7,7 +7,7 @@ meta: 上面说了Excel文件导入，下面说一下Excel文件导出
 * content
 {:toc}
 
-### 正文
+## 正文
 
 控制器部分：
 ```
@@ -119,7 +119,7 @@ class LPhpSpreadsheet
 }
 ```
 
-#### sql表保存为Excel
+### sql表保存为Excel
 
 有时我们会向外展示数据库表结构，我们可以直接使用数据库管理工具把指向的数据库表结构导出，导出数据demo.sql文件内容如：
 ```
@@ -338,7 +338,7 @@ public function actionTableToExcel($filePath = 'demo.sql')
 里面用到的多起正则匹配，需要把正则搞清楚。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 PHPOffice/PhpSpreadsheet官方文档 <https://phpspreadsheet.readthedocs.io/en/stable/>
 
