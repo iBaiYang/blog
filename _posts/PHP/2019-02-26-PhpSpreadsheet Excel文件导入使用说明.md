@@ -7,7 +7,12 @@ meta: Excel文件导入，以前可以用PHPExcel，但这个库已经不维护�
 * content
 {:toc}
 
-### 正文
+## 正文
+
+Excel文件导入，以前可以用PHPExcel，但这个库已经不维护了，现在改为PhpSpreadsheet库了，所以下面说说这个库怎么导入Excel文件。
+
+phpoffice/phpspreadsheet 包 Packagist：<https://packagist.org/packages/phpoffice/phpspreadsheet> ，
+官方文档：<https://phpspreadsheet.readthedocs.io/en/latest/> , 或 <https://phpoffice.github.io/PhpSpreadsheet/>
 
 我们前端使用ajax-upload把Excel文件导入后端：
 
@@ -21,9 +26,11 @@ composer中引入phpspreadsheet：
 ```
 
 控制器部分：
-```
+```php
+<?php
 use ClientLogic;
 
+class DoController {
     /**
      * 客户导入操作
      * @return string
@@ -44,12 +51,17 @@ use ClientLogic;
             'data' => [],
         ]);
     }
+    
+     /*其他方法*/
+}
 ```
 
 逻辑处理层：
-```
+```php
+<?php
 use LReadExcel;
 
+class ClientLogic {
     /**
      * 客户导入
      * @param string $file
@@ -106,10 +118,14 @@ use LReadExcel;
             ]
         ];
     }
+    
+    /*其他方法*/
+}
 ```
 
 Excel读取组件层：
-```
+```php
+<?php
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 /**
@@ -148,7 +164,7 @@ class LReadExcel
 可以看到Excel文件核心读取处理是在 LReadExcel 类中，读取为数组结构返回过去。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 PHPOffice/PhpSpreadsheet <https://github.com/PHPOffice/PhpSpreadsheet>
 

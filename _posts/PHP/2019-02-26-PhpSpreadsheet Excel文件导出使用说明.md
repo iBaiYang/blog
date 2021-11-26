@@ -42,7 +42,8 @@ meta: 上面说了Excel文件导入，下面说一下Excel文件导出
 ```
 
 common\misc\LPhpSpreadsheet.php文件：
-```
+```php
+<?php
 namespace common\misc;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -182,7 +183,8 @@ CREATE TABLE `activity_award` (
 ```
 
 可能我们有跟进一步的需求，需要把这个库结构转存为更加易看的Excel表格，看一下处理代码：
-```
+```php
+<?php
 /**
  * 数据库转为Excel
  * @param string $filePath
