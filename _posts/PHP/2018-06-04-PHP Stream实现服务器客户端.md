@@ -132,7 +132,8 @@ var_dump(stream_get_filters());
 
 虽然过程是一样的，但是读写文件系统中文件的方式与收发 HTTP 消息的方式有所不同，流封装协议的作用是使用通用的接口封装这种差异。
 
-每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：`<scheme>://<target>`，其中 `<scheme>` 是流的封装协议，`<target>` 是流的数据源。
+每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：`<scheme>://<target>`，
+其中 `<scheme>` 是流的封装协议，`<target>` 是流的数据源。
 
 ##### http://流封装协议
 
@@ -178,9 +179,11 @@ PHP有基本的php://stdin，php://stdout，php://stderr包装器对应默认的
 流内容是post请求的数据。当我们将数据放在一个post请求的body体内用来请求一个远程服务的时候，这个流特别好用。
 
 因为php://input是最常用到的流，所以这里列出一些知识点：
-1. php://input 可以读取没有处理过的POST数据。相较于$HTTP_RAW_POST_DATA而言，它给内存带来的压力较小，并且不需要特殊的php.ini设置。php://input不能用于enctype=multipart/form-data。
-2. 仅当Content-Type为application/x-www-form-urlencoded且提交方法是POST方法时，$_POST数据与php://input数据才是”一致”(打上引号，表示它们格式不一致，内容一致)的。其它情况，它们都不一致
-3. php://input读取不到GET数据。是因为_GET数据作为query_path写在http请求头部(header)的PATH字段，而不是写在http请求的body部分。
+1. php://input 可以读取没有处理过的POST数据。相较于$HTTP_RAW_POST_DATA而言，它给内存带来的压力较小，
+并且不需要特殊的php.ini设置。php://input不能用于enctype=multipart/form-data。
+2. 仅当Content-Type为application/x-www-form-urlencoded且提交方法是POST方法时，
+$_POST数据与php://input数据才是”一致”(打上引号，表示它们格式不一致，内容一致)的。其它情况，它们都不一致
+3. php://input读取不到GET数据。是因为$_GET数据作为query_path写在http请求头部(header)的PATH字段，而不是写在http请求的body部分。
 
 ##### 其他流封装协议
 
