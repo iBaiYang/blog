@@ -1097,6 +1097,8 @@ extension=pdo_pgsql.so
 查看拓展是否安装成功：
 > php -m
 
+这里只是给cli添加了拓展，fpm还没有，
+添加方式可以参考 [Win10家庭版WSL2安装Centos7.8](ttps://ibaiyang.github.io/blog/linux/2021/08/28/Win10家庭版WSL2安装Centos7.8.html) 中 Swoole 拓展的安装。
 
 #### apt方式
 
