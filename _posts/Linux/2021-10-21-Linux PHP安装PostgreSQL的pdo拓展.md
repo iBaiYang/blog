@@ -1051,11 +1051,13 @@ root@localhost:/usr/local/src/PDO_PGSQL-1.0.2# whereis php-config
 php-config: /usr/bin/php-config7.1 /usr/bin/php-config /usr/share/man/man1/php-config.1.gz
 ```
 
+```
 > /usr/bin/phpize
 > 
 > ./configure --with-php-config=/usr/bin/php-config
 >
 > make && make install
+```
 
 查找php配置文件地址：
 > whereis php.ini
