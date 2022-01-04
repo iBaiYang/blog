@@ -206,8 +206,7 @@ class ConsumerController extends BaseController
 }
 ```
 
-// ticket队列消费者开始运行
-php yii consumer/start ticket
+ticket队列消费者开始运行：`php yii consumer/start ticket`
 
 actionStart、actionStop就是完整的守护进程开始、运行、关闭。
 
