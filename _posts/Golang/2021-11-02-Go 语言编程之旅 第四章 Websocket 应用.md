@@ -48,4 +48,4 @@ meta: Go 语言编程之旅 第四章 Websocket 应用
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
-
+Go 语言编程之旅：一起用 Go 做项目 <https://golang2.eddycjy.com/>
