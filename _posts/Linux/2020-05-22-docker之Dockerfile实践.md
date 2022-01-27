@@ -88,7 +88,7 @@ MAINTAINER baiyang@email.com
 # 安装wget下载工具
 RUN yum install -y wget 
 
-# 切换到该镜像的usr/lcoal/src/目录，相当于cd，并可以用cd 代替， 但docker官方不建议用cd
+# 切换到该镜像的/usr/lcoal/src/目录，相当于cd，并可以用cd 代替， 但docker官方不建议用cd
 WORKDIR /usr/local/src
 
 # 添加远程文件到当前文件夹， 注意：后面有个点(.) 代表当前目录。ADD可以添加远程文件到镜像，但COPY仅可以添加本地文件到镜像中。
