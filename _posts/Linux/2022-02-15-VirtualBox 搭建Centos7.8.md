@@ -152,10 +152,41 @@ Installed the plugin 'vagrant-vbguest (0.30.0)'!
 G:\virtualbox\centos78>
 ```
 
+安装指定版本：
+> vagrant plugin install vagrant-vbguest --plugin-version 0.21
+
+卸载可以用：
+> vagrant plugin uninstall vagrant-vbguest
+
+输出：
+```
+G:\virtualbox\centos78>vagrant plugin list
+vagrant-vbguest (0.30.0, global)
+
+G:\virtualbox\centos78>
+G:\virtualbox\centos78>
+G:\virtualbox\centos78>vagrant plugin uninstall vagrant-vbguest
+Uninstalling the 'vagrant-vbguest' plugin...
+Successfully uninstalled micromachine-3.0.0
+Successfully uninstalled vagrant-vbguest-0.30.0
+
+G:\virtualbox\centos78>
+G:\virtualbox\centos78>
+G:\virtualbox\centos78>vagrant plugin list
+No plugins installed.
+
+G:\virtualbox\centos78>
+```
+
+
 接着用up启动：
 > vagrant up
 
-输出：
+
+
+
+
+
 
 
 ### 一次错误的经历
@@ -720,3 +751,9 @@ G:\virtualbox\centos78>
 ## 参考资料
 
 centos/7 Vagrant box <https://app.vagrantup.com/centos/boxes/7>
+
+vagrant-vbguest <https://github.com/dotless-de/vagrant-vbguest>
+
+中科大镜像 <https://mirrors.ustc.edu.cn/centos-cloud/centos/7/vagrant/x86_64/images/>
+
+小白速进，五小时linux速成班 centos8安装 <https://www.bilibili.com/video/BV1ey4y1S7Q6?p=6>
