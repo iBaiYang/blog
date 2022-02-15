@@ -20,7 +20,7 @@ win+R，输入cmd打开命令行，切换到 目标盘位置：
 > cd virtualbox\centos78
 
 添加vagrant box：
-> vagrant box add centos7.8 box/CentOS7.8.box
+> vagrant box add centos78 box/centos78.box
 
 用init初始化：
 > vagrant init
@@ -134,12 +134,28 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 9901, host: 9901
   config.vm.network "forwarded_port", guest: 9905, host: 9905
   config.vm.synced_folder "G:/www", "/var/www", create:true, owner:"vagrant", group:"vagrant"
-  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder ".", "/share", disabled: true
   config.vm.provider "virtualbox" do |vb|
   vb.memory = "4096"
   vb.cpus = "2"
 end
 ```
+
+安装 vagrant-vbguest 插件：
+> vagrant plugin install vagrant-vbguest
+
+```
+G:\virtualbox\centos78>vagrant plugin install vagrant-vbguest
+Installing the 'vagrant-vbguest' plugin. This can take a few minutes...
+Installed the plugin 'vagrant-vbguest (0.30.0)'!
+
+G:\virtualbox\centos78>
+```
+
+接着用up启动：
+> vagrant up
+
+输出：
 
 
 ### 一次错误的经历
@@ -153,7 +169,7 @@ win+R，输入cmd打开命令行，切换到 目标盘位置：
 > cd virtualbox\centos78
 
 添加vagrant box：
-> vagrant box add centos7.8 box/CentOS7.8.box
+> vagrant box add centos78 box/centos78.box
 
 用init初始化：
 > vagrant init
