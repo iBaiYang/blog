@@ -684,6 +684,20 @@ default provider will be shown. So if a provider is not listed,
 then the machine is not created for that environment.
 
 G:\virtualbox\centos78>
+G:\virtualbox\centos78>vagrant global-status
+id       name    provider   state    directory
+-------------------------------------------------------------------------
+d512ab0  default virtualbox poweroff G:/vagrant
+
+The above shows information about all known Vagrant environments
+on this machine. This data is cached and may not be completely
+up-to-date (use "vagrant global-status --prune" to prune invalid
+entries). To interact with any of the machines, you can go to that
+directory and run Vagrant, or you can use the ID directly with
+Vagrant commands from any directory. For example:
+"vagrant destroy 1a2b3c4d"
+
+G:\virtualbox\centos78>
 ```
 
 <br/><br/><br/><br/><br/>
