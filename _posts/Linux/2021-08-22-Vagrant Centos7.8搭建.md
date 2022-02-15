@@ -23,7 +23,7 @@ win+R，输入cmd打开命令行，切换到 目标盘位置。
 用init初始化：
 > vagrant init
 
-初始化后，我们会在D:/vagrant2下看到新增了一个文件Vagrantfile，修改这个配置文件，像这样：
+初始化后，我们会在G:/vagrant2下看到新增了一个文件Vagrantfile，修改这个配置文件，像这样：
 ```
 Vagrant.configure("2") do |config|
   config.vm.box = "centos7.8"
