@@ -544,6 +544,32 @@ The log file /var/log/vboxadd-setup.log may contain further information.
 [root@localhost cdrom]#
 ```
 
+重启之后：
+```
+[root@localhost ~]# cd /media/cdrom/
+[root@localhost cdrom]#
+[root@localhost cdrom]# ll
+总用量 0
+[root@localhost cdrom]#
+[root@localhost cdrom]# df
+文件系统                    1K-块     已用     可用 已用% 挂载点
+devtmpfs                  2960384        0  2960384    0% /dev
+tmpfs                     2972160        0  2972160    0% /dev/shm
+tmpfs                     2972160     8760  2963400    1% /run
+tmpfs                     2972160        0  2972160    0% /sys/fs/cgroup
+/dev/mapper/centos-root  17811456  1923608 15887848   11% /
+/dev/sda1                 1038336   198192   840144   20% /boot
+tmpfs                      594436        0   594436    0% /run/user/0
+www                     146799612 62141008 84658604   43% /media/sf_www
+[root@localhost cdrom]#
+[root@localhost cdrom]# ll /media/sf_www
+总用量 3
+-rwxrwx---. 1 root vboxsf  1589 11月 28 2020 说明.txt
+drwxrwx---. 1 root vboxsf  4096 8月  20 2020 资料
+[root@localhost cdrom]#
+[root@localhost cdrom]#
+```
+
 ## 附录
 
 ### 桥接、NAT、Host-only的区别
