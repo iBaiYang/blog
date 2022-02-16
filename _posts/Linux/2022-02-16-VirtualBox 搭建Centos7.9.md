@@ -69,7 +69,7 @@ meta: VirtualBox 搭建Centos7.9
 > yum install -y vim
 
 安装 gcc：
-> yum install -y gcc gcc-devel gcc-c++ gcc-c++-devel make kernel kernel-devel
+> yum install -y gcc gcc-devel gcc-c++ gcc-c++-devel make kernel kernel-devel bzip2
 
 ### 网络配置
 
@@ -367,9 +367,186 @@ Subsystem       sftp    /usr/libexec/openssh/sftp-server
 
 在主机用 putty 连接虚拟机。
 
-### 附录
+### 共享文件夹
 
-#### 桥接、NAT、Host-only的区别
+```
+[root@localhost ~]# df
+文件系统                   1K-块    已用     可用 已用% 挂载点
+devtmpfs                 2960176       0  2960176    0% /dev
+tmpfs                    2972164       0  2972164    0% /dev/shm
+tmpfs                    2972164    8812  2963352    1% /run
+tmpfs                    2972164       0  2972164    0% /sys/fs/cgroup
+/dev/mapper/centos-root 17811456 2004672 15806784   12% /
+/dev/sda1                1038336  184876   853460   18% /boot
+tmpfs                     594436       0   594436    0% /run/user/0
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# lsscsi
+[0:0:0:0]    cd/dvd  VBOX     CD-ROM           1.0   /dev/sr0
+[2:0:0:0]    disk    ATA      VBOX HARDDISK    1.0   /dev/sda
+[root@localhost ~]#
+[root@localhost ~]# mkdir -p /var/www
+[root@localhost ~]#
+[root@localhost ~]# ll /var/www
+总用量 0
+[root@localhost ~]#
+[root@localhost ~]# mount /dev/sr0 /var/www
+mount: /dev/sr0 写保护，将以只读方式挂载
+[root@localhost ~]#
+[root@localhost ~]# ll /var/www
+总用量 46893
+-r--r--r--. 1 root root      763 2月  20 2020 AUTORUN.INF
+-r-xr-xr-x. 1 root root     6384 7月  29 2021 autorun.sh
+dr-xr-xr-x. 2 root root      792 7月  29 2021 cert
+dr-xr-xr-x. 2 root root     1824 7月  29 2021 NT3x
+dr-xr-xr-x. 2 root root     2652 7月  29 2021 OS2
+-r-xr-xr-x. 1 root root     4821 7月  29 2021 runasroot.sh
+-r--r--r--. 1 root root      547 7月  29 2021 TRANS.TBL
+-r--r--r--. 1 root root  3992706 7月  29 2021 VBoxDarwinAdditions.pkg
+-r-xr-xr-x. 1 root root     3949 7月  29 2021 VBoxDarwinAdditionsUninstall.tool
+-r-xr-xr-x. 1 root root  7433652 7月  29 2021 VBoxLinuxAdditions.run
+-r--r--r--. 1 root root  9411584 7月  29 2021 VBoxSolarisAdditions.pkg
+-r-xr-xr-x. 1 root root 16889104 7月  29 2021 VBoxWindowsAdditions-amd64.exe
+-r-xr-xr-x. 1 root root   270840 7月  29 2021 VBoxWindowsAdditions.exe
+-r-xr-xr-x. 1 root root  9995064 7月  29 2021 VBoxWindowsAdditions-x86.exe
+[root@localhost ~]#
+[root@localhost ~]# unmount /dev/sr0
+-bash: unmount: 未找到命令
+[root@localhost ~]#
+[root@localhost ~]# umount /dev/sr0
+[root@localhost ~]#
+[root@localhost ~]# ll /var/www
+总用量 0
+[root@localhost ~]#
+[root@localhost ~]# ll /media
+总用量 0
+[root@localhost ~]#
+[root@localhost ~]# mkdir -p /media/cdrom
+[root@localhost ~]#
+[root@localhost ~]# ll /media
+总用量 0
+drwxr-xr-x. 2 root root 6 2月  16 21:39 cdrom
+[root@localhost ~]#
+[root@localhost ~]# mount /dev/sr0 /media/cdrom
+mount: /dev/sr0 写保护，将以只读方式挂载
+[root@localhost ~]#
+[root@localhost ~]# umount /dev/sr0
+[root@localhost ~]#
+[root@localhost ~]# chmod 0777 /media/cdrom/
+[root@localhost ~]#
+[root@localhost ~]# ll /media
+总用量 0
+drwxrwxrwx. 2 root root 6 2月  16 21:39 cdrom
+[root@localhost ~]#
+[root@localhost ~]# mount /dev/sr0 /media/cdrom
+mount: /dev/sr0 写保护，将以只读方式挂载
+[root@localhost ~]#
+[root@localhost ~]# ll /media/cdrom/
+总用量 46893
+-r--r--r--. 1 root root      763 2月  20 2020 AUTORUN.INF
+-r-xr-xr-x. 1 root root     6384 7月  29 2021 autorun.sh
+dr-xr-xr-x. 2 root root      792 7月  29 2021 cert
+dr-xr-xr-x. 2 root root     1824 7月  29 2021 NT3x
+dr-xr-xr-x. 2 root root     2652 7月  29 2021 OS2
+-r-xr-xr-x. 1 root root     4821 7月  29 2021 runasroot.sh
+-r--r--r--. 1 root root      547 7月  29 2021 TRANS.TBL
+-r--r--r--. 1 root root  3992706 7月  29 2021 VBoxDarwinAdditions.pkg
+-r-xr-xr-x. 1 root root     3949 7月  29 2021 VBoxDarwinAdditionsUninstall.tool
+-r-xr-xr-x. 1 root root  7433652 7月  29 2021 VBoxLinuxAdditions.run
+-r--r--r--. 1 root root  9411584 7月  29 2021 VBoxSolarisAdditions.pkg
+-r-xr-xr-x. 1 root root 16889104 7月  29 2021 VBoxWindowsAdditions-amd64.exe
+-r-xr-xr-x. 1 root root   270840 7月  29 2021 VBoxWindowsAdditions.exe
+-r-xr-xr-x. 1 root root  9995064 7月  29 2021 VBoxWindowsAdditions-x86.exe
+[root@localhost ~]#
+[root@localhost ~]# cd /media/cdrom/
+[root@localhost cdrom]#
+[root@localhost cdrom]# ll
+总用量 46893
+-r--r--r--. 1 root root      763 2月  20 2020 AUTORUN.INF
+-r-xr-xr-x. 1 root root     6384 7月  29 2021 autorun.sh
+dr-xr-xr-x. 2 root root      792 7月  29 2021 cert
+dr-xr-xr-x. 2 root root     1824 7月  29 2021 NT3x
+dr-xr-xr-x. 2 root root     2652 7月  29 2021 OS2
+-r-xr-xr-x. 1 root root     4821 7月  29 2021 runasroot.sh
+-r--r--r--. 1 root root      547 7月  29 2021 TRANS.TBL
+-r--r--r--. 1 root root  3992706 7月  29 2021 VBoxDarwinAdditions.pkg
+-r-xr-xr-x. 1 root root     3949 7月  29 2021 VBoxDarwinAdditionsUninstall.tool
+-r-xr-xr-x. 1 root root  7433652 7月  29 2021 VBoxLinuxAdditions.run
+-r--r--r--. 1 root root  9411584 7月  29 2021 VBoxSolarisAdditions.pkg
+-r-xr-xr-x. 1 root root 16889104 7月  29 2021 VBoxWindowsAdditions-amd64.exe
+-r-xr-xr-x. 1 root root   270840 7月  29 2021 VBoxWindowsAdditions.exe
+-r-xr-xr-x. 1 root root  9995064 7月  29 2021 VBoxWindowsAdditions-x86.exe
+[root@localhost cdrom]#
+[root@localhost cdrom]# sh ./VBoxLinuxAdditions.run
+Verifying archive integrity... All good.
+Uncompressing VirtualBox 6.1.26 Guest Additions for Linux........
+VirtualBox Guest Additions installer
+Copying additional installer modules ...
+Installing additional modules ...
+VirtualBox Guest Additions: Starting.
+VirtualBox Guest Additions: Building the VirtualBox Guest Additions kernel
+modules.  This may take a while.
+VirtualBox Guest Additions: To build modules for other installed kernels, run
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup <version>
+VirtualBox Guest Additions: or
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup all
+VirtualBox Guest Additions: Kernel headers not found for target kernel
+3.10.0-1160.el7.x86_64. Please install them and execute
+  /sbin/rcvboxadd setup
+modprobe vboxguest failed
+The log file /var/log/vboxadd-setup.log may contain further information.
+[root@localhost cdrom]#
+[root@localhost cdrom]# ll ../
+总用量 3
+dr-xr-xr-x. 5 root root 2408 7月  29 2021 cdrom
+[root@localhost cdrom]#
+[root@localhost cdrom]# Kernel headers not found for target kernel
+-bash: Kernel: 未找到命令
+[root@localhost cdrom]# 3.10.0-1160.el7.x86_64. Please install them and execute
+-bash: 3.10.0-1160.el7.x86_64.: 未找到命令
+[root@localhost cdrom]#
+[root@localhost cdrom]# yum update -y kernel
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.ustc.edu.cn
+ * extras: mirrors.ustc.edu.cn
+ * updates: mirrors.ustc.edu.cn
+No packages marked for update
+[root@localhost cdrom]#
+[root@localhost cdrom]# cat /etc/redhat-release
+CentOS Linux release 7.9.2009 (Core)
+[root@localhost cdrom]#
+[root@localhost cdrom]# yum install -y kernel-headers perl kernel-devel
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.ustc.edu.cn
+ * extras: mirrors.ustc.edu.cn
+ * updates: mirrors.ustc.edu.cn
+软件包 kernel-headers-3.10.0-1160.53.1.el7.x86_64 已安装并且是最新版本
+软件包 4:perl-5.16.3-299.el7_9.x86_64 已安装并且是最新版本
+软件包 kernel-devel-3.10.0-1160.53.1.el7.x86_64 已安装并且是最新版本
+无须任何处理
+[root@localhost cdrom]#
+[root@localhost cdrom]# /sbin/rcvboxadd setup
+VirtualBox Guest Additions: Starting.
+VirtualBox Guest Additions: Building the VirtualBox Guest Additions kernel
+modules.  This may take a while.
+VirtualBox Guest Additions: To build modules for other installed kernels, run
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup <version>
+VirtualBox Guest Additions: or
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup all
+VirtualBox Guest Additions: Kernel headers not found for target kernel
+3.10.0-1160.el7.x86_64. Please install them and execute
+  /sbin/rcvboxadd setup
+modprobe vboxguest failed
+The log file /var/log/vboxadd-setup.log may contain further information.
+[root@localhost cdrom]#
+```
+
+## 附录
+
+### 桥接、NAT、Host-only的区别
 
 **桥接**
 
@@ -440,6 +617,8 @@ Host-Only 的宗旨就是建立一个与外界隔绝的内部网络，来提高�
 小白速进，五小时linux速成班 centos8安装 <https://www.bilibili.com/video/BV1ey4y1S7Q6?p=6>
 
 Oracle VM VirtualBox 安装 Centos7 并配置静态IP <https://blog.csdn.net/qq_23033339/article/details/80867195>
+
+如何安装Virtual Box的VBox Guest Additions扩展程序 <https://blog.csdn.net/i042416/article/details/82735161>
 
 21/70 桥接、NAT、Host-only上网方式的区别 <https://www.jianshu.com/p/b496f9cae1a9>
 
