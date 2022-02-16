@@ -182,8 +182,10 @@ G:\virtualbox\centos78>
 接着用up启动：
 > vagrant up
 
+还是不行。
 
-
+> vagrant halt
+> vagrant destroy -f
 
 
 
