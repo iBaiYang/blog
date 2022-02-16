@@ -15,7 +15,7 @@ meta: VirtualBox 搭建Centos7.9
 
 启动 VirtualBox，点击新建：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216100706.png)
 
 下一步，选择内存大小，如为 4096 MB。
 
@@ -26,33 +26,35 @@ meta: VirtualBox 搭建Centos7.9
 
 点击该容器，点击 设置，点击 存储：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216101847.png)
 
 选中自己保存的 iso安装包。点击 OK 返回。
 
 点击该容器，点击 设置，点击 系统，在 主板 配置启动顺序：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216102817.png)
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+看一下详细信息：
+
+![]({{site.baseurl}}/images/20220216/20220216103124.png)
 
 点击 启动，进行安装，选择 中文（中国）：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216103517.png)
 
 系统 安装位置(D) ，选择我们分配的硬盘：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216103740.png)
 
 系统 网络和主机名(N) ，选中网卡，切换到 打开 状态：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216103821.png)
 
 开始安装。
 
 安装过程中，设置 ROOT密码：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216104206.png)
 
 等待安装完成，点击 重启。
 
@@ -89,7 +91,7 @@ meta: VirtualBox 搭建Centos7.9
 
 点击该容器，点击 设置，点击 网络，启用 网卡2，选择 Host-Only 网络：
 
-![]({{site.baseurl}}/images/20220216/20220212170826.png)
+![]({{site.baseurl}}/images/20220216/20220216111554.png)
 
 配置网卡：
 > cd /etc/sysconfig/network-scripts
