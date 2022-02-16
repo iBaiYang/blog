@@ -13,6 +13,8 @@ meta: VirtualBox 搭建Centos7.9
 
 在Centos官网下载iso安装包 [Centos download](http://isoredirect.centos.org/centos/7/isos/x86_64/) ，保存到指定位置。
 
+### 安装
+
 启动 VirtualBox，点击新建：
 
 ![]({{site.baseurl}}/images/20220216/20220216100706.png)
@@ -115,6 +117,7 @@ ifdown        ifdown-ippp  ifdown-ppp     ifdown-TeamPort  ifup-bnep     ifup-is
 编辑网卡配置文件：
 > vi ifcfg-enp0s8
 
+如配置IP为 192.168.56.103：
 ```
 TYPE="Ethernet"
 PROXY_METHOD="none"
