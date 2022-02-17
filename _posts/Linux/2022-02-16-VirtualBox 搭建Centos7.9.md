@@ -126,7 +126,7 @@ ifdown        ifdown-ippp  ifdown-ppp     ifdown-TeamPort  ifup-bnep     ifup-is
 编辑网卡配置文件：
 > vi ifcfg-enp0s8
 
-如配置IP为 192.168.56.103：
+如配置IP为 192.168.56.108：
 ```
 TYPE="Ethernet"
 PROXY_METHOD="none"
@@ -143,7 +143,7 @@ NAME="enp0s8"
 UUID="2c874efd8-469f-4991-bfe0-6dd215c8de7d"
 DEVICE="enp0s8"
 ONBOOT="yes"
-IPADDR=192.168.56.103
+IPADDR=192.168.56.108
 GATEWAY=192.168.56.1
 NETMASK=255.255.255.0
 ```
@@ -170,18 +170,16 @@ NETMASK=255.255.255.0
     inet6 ::1/128 scope host
        valid_lft forever preferred_lft forever
 2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 08:00:27:43:ae:ba brd ff:ff:ff:ff:ff:ff
+    link/ether 08:00:27:9a:f5:c4 brd ff:ff:ff:ff:ff:ff
     inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
-       valid_lft 81574sec preferred_lft 81574sec
-    inet6 fe80::b3c6:7975:e3ea:3dc9/64 scope link noprefixroute
+       valid_lft 83148sec preferred_lft 83148sec
+    inet6 fe80::c8da:b480:5500:c6e/64 scope link noprefixroute
        valid_lft forever preferred_lft forever
 3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 08:00:27:55:2b:e2 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.56.101/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
-       valid_lft 526sec preferred_lft 526sec
-    inet 192.168.56.103/24 brd 192.168.56.255 scope global secondary enp0s8
+    link/ether 08:00:27:20:68:ab brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.108/24 brd 192.168.56.255 scope global noprefixroute enp0s8
        valid_lft forever preferred_lft forever
-    inet6 fe80::4206:fbf3:7c07:f2e/64 scope link noprefixroute
+    inet6 fe80::f458:be7a:2271:ab78/64 scope link noprefixroute
        valid_lft forever preferred_lft forever
 [root@localhost ~]# 
 ```
