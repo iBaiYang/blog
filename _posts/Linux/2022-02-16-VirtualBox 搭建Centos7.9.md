@@ -3137,7 +3137,59 @@ echo "hello";
 > 
 > usermod -aG vboxsf apache
 
+发现还是不行，关闭SELinux后才可以了，临时关闭（设置SELinux 成为permissive模式）：
+> setenforce 0
 
+```php
+[root@localhost ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+[root@localhost ~]#
+[root@localhost ~]# setenforce 0
+[root@localhost ~]#
+[root@localhost ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   permissive
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
+（`setenforce 1` 设置SELinux 成为enforcing模式）
+
+永久关闭：
+> vi /etc/selinux/config
+
+```
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+```
+
+将`SELINUX=enforcing` 改为 `SELINUX=disabled`
+
+设置后需要重启才能生效
 
 
 
@@ -3317,3 +3369,5 @@ Centos7.8 安装PHP7.4 <https://ibaiyang.github.io/blog/linux/2021/08/29/Centos7
 Win10家庭版WSL2安装Centos7.8 <https://ibaiyang.github.io/blog/linux/2021/08/28/Win10家庭版WSL2安装Centos7.8.html>
 
 CentOS 7 的防火墙开启 http 80 端口 <https://chaishiwei.com/blog/1274.html>
+
+CentOS 7.X 关闭SELinux <https://www.cnblogs.com/activiti/p/7552677.html>
