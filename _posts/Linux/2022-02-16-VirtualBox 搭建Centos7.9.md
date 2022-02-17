@@ -1379,6 +1379,117 @@ docker.io/php       7.1.30-fpm          0b13895891aa        2 years ago         
 [root@localhost ~]#
 ```
 
+创建容器并运行：
+```
+docker run --name server-nginx -p 80:80 -v /media/sf_www:/usr/share/nginx/html -v /etc/localtime:/etc/localtime:ro --link server-php:php --privileged=true -d nginx
+```
+
+```
+[root@localhost ~]# docker run --name server-nginx -p 80:80 -v /media/sf_www:/usr/share/nginx/html -v /etc/localtime:/etc/localtime:ro --link server-php:php --privileged=true -d nginx
+813daeef096da35779aad49277aec10ee9cfff59c48bf230680595c6e6a6445d
+[root@localhost ~]#
+[root@localhost ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+813daeef096d        nginx               "/docker-entrypoin..."   6 seconds ago       Up 4 seconds        0.0.0.0:80->80/tcp       server-nginx
+83199b3ed9ba        php:7.1.30-fpm      "docker-php-entryp..."   31 minutes ago      Up 31 minutes       0.0.0.0:9000->9000/tcp   server-php
+[root@localhost ~]#
+```
+
+进入server-nginx容器：
+> docker exec -it server-nginx /bin/bash
+
+```
+[root@localhost ~]# docker exec -it server-nginx /bin/bash
+root@813daeef096d:/#
+root@813daeef096d:/# cat /etc/nginx/nginx.conf
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+root@813daeef096d:/#
+root@813daeef096d:/# ls -l /etc/nginx/conf.d/
+total 4
+-rw-r--r--. 1 root root 1093 Feb 17 12:07 default.conf
+root@813daeef096d:/#
+root@813daeef096d:/# cat /etc/nginx/conf.d/default.conf
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+root@813daeef096d:/#
+root@813daeef096d:/#
+```
+
+
 
 
 
