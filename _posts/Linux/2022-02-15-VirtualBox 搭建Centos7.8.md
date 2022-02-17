@@ -17,6 +17,7 @@ meta: VirtualBox 搭建Centos7.8
 
 win+R，输入cmd打开命令行，切换到 目标盘位置：
 > g:
+> 
 > cd virtualbox\centos78
 
 添加vagrant box：
@@ -185,6 +186,7 @@ G:\virtualbox\centos78>
 还是不行。
 
 > vagrant halt
+> 
 > vagrant destroy -f
 
 
