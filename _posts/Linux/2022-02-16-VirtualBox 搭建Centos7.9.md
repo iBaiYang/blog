@@ -2414,6 +2414,134 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service
 
 ### Nginx安装
 
+#### 防火墙设置
+
+
+
+**方法一**
+
+停止防火墙服务：
+> systemctl stop firewalld
+
+```
+[root@localhost ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since 四 2022-02-17 18:13:56 CST; 2h 16min ago
+     Docs: man:firewalld(1)
+ Main PID: 722 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─722 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+[root@localhost ~]# systemctl stop firewalld
+[root@localhost ~]#
+[root@localhost ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: inactive (dead) since 四 2022-02-17 20:30:55 CST; 3min 53s ago
+     Docs: man:firewalld(1)
+  Process: 722 ExecStart=/usr/sbin/firewalld --nofork --nopid $FIREWALLD_ARGS (code=exited, status=0/SUCCESS)
+ Main PID: 722 (code=exited, status=0/SUCCESS)
+
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 20:30:52 localhost.localdomain systemd[1]: Stopping firewalld - dynamic firewall daemon...
+2月 17 20:30:55 localhost.localdomain systemd[1]: Stopped firewalld - dynamic firewall daemon.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+```
+
+防火墙不再开机自启动：
+> systemctl disable firewalld
+
+**方法二**
+
+开放端口的情况：
+> firewall-cmd --list-all
+
+```
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+`services: dhcpv6-client ssh` 表示 ssh 服务是放行的，而 `ports:` 这里为空，表示无端口号放行。
+
+接下来通过以下命令开放http 80 端口：
+> sudo firewall-cmd --add-service=http --permanent
+>
+> sudo firewall-cmd --add-port=80/tcp --permanent
+
+命令末尾的`--permanent`表示用久有效，不加这句的话重启后刚才开放的端口就又失效了。
+
+然后重启防火墙：
+> sudo firewall-cmd --reload
+
+再次查看端口的开放情况：
+> sudo firewall-cmd --list-all
+
+```
+[root@localhost ~]# firewall-cmd --add-service=http --permanent
+success
+[root@localhost ~]#
+[root@localhost ~]# sudo firewall-cmd --add-port=80/tcp --permanent
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --reload
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+
+#### 方法一
+
 ```
 [root@localhost ~]# yum install -y nginx
 已加载插件：fastestmirror, product-id, search-disabled-repos, subscription-manager
@@ -2645,6 +2773,7 @@ tcp   LISTEN     0      100                     [::1]:25        [::]:*          
 [root@localhost ~]#
 ```
 
+#### 方法二
 
 **安装**
 
@@ -3003,4 +3132,4 @@ Centos7.8 安装PHP7.4 <https://ibaiyang.github.io/blog/linux/2021/08/29/Centos7
 
 Win10家庭版WSL2安装Centos7.8 <https://ibaiyang.github.io/blog/linux/2021/08/28/Win10家庭版WSL2安装Centos7.8.html>
 
-
+CentOS 7 的防火墙开启 http 80 端口 <https://chaishiwei.com/blog/1274.html>
