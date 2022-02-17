@@ -570,6 +570,125 @@ drwxrwx---. 1 root vboxsf  4096 8月  20 2020 资料
 [root@localhost cdrom]#
 ```
 
+### docker安装
+
+移除老版本：
+```
+yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine
+```
+
+安装docker:
+> yum install -y docker
+
+设置开机自动启动:
+> systemctl enable docker
+
+```
+[root@localhost ~]# systemctl enable docker
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[root@localhost ~]#
+```
+
+启动：
+> systemctl start docker
+
+```
+[root@localhost ~]# systemctl status docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: http://docs.docker.com
+[root@localhost ~]#
+[root@localhost ~]# systemctl start docker
+[root@localhost ~]#
+[root@localhost ~]# systemctl status docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since 四 2022-02-17 09:46:58 CST; 15s ago
+     Docs: http://docs.docker.com
+ Main PID: 2093 (dockerd-current)
+   CGroup: /system.slice/docker.service
+           ├─2093 /usr/bin/dockerd-current --add-runtime docker-runc=/usr/libexec/docker/d...
+           └─2101 /usr/bin/docker-containerd-current -l unix:///var/run/docker/libcontaine...
+
+2月 17 09:46:56 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:56.3..."
+2月 17 09:46:57 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:57.6..."
+2月 17 09:46:57 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:57.6..."
+2月 17 09:46:57 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:57.6..."
+2月 17 09:46:58 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:58.1..."
+2月 17 09:46:58 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:58.5..."
+2月 17 09:46:58 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:58.6..."
+2月 17 09:46:58 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:58.6...1
+2月 17 09:46:58 localhost.localdomain dockerd-current[2093]: time="2022-02-17T09:46:58.6..."
+2月 17 09:46:58 localhost.localdomain systemd[1]: Started Docker Application Container ...e.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+```
+
+查看版本：
+> docker version
+
+```
+[root@localhost ~]# docker version
+Client:
+ Version:         1.13.1
+ API version:     1.26
+ Package version: docker-1.13.1-208.git7d71120.el7_9.x86_64
+ Go version:      go1.10.3
+ Git commit:      7d71120/1.13.1
+ Built:           Mon Jun  7 15:36:09 2021
+ OS/Arch:         linux/amd64
+
+Server:
+ Version:         1.13.1
+ API version:     1.26 (minimum version 1.12)
+ Package version: docker-1.13.1-208.git7d71120.el7_9.x86_64
+ Go version:      go1.10.3
+ Git commit:      7d71120/1.13.1
+ Built:           Mon Jun  7 15:36:09 2021
+ OS/Arch:         linux/amd64
+ Experimental:    false
+[root@localhost ~]#
+```
+
+docker配置：
+```
+[root@localhost ~]# ls -l /etc/docker
+总用量 20
+drwxr-xr-x. 5 root root    75 2月  17 09:44 certs.d
+-rw-r--r--. 1 root root     3 12月  4 2019 daemon.json
+-rw-------. 1 root root   244 2月  17 09:46 key.json
+-rw-r--r--. 1 root root 10850 4月  28 2020 seccomp.json
+[root@localhost ~]#
+```
+
+修改docker仓库地址：
+> vi /etc/docker/daemon.json 
+
+写入内容，保存并退出：
+```
+{"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
+```
+
+### php安装
+
+
+
+### nginx安装
+
+> docker pull nginx
+
+
+
+
+
+
+
+
+
+
+
+
 ## 附录
 
 ### 桥接、NAT、Host-only的区别
