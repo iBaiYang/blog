@@ -1489,14 +1489,156 @@ root@813daeef096d:/#
 root@813daeef096d:/#
 ```
 
+我们在 `G:\www\vhost` 下新建 `nginx.conf` 文件，写入内容：
+```
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
 
 
+events {
+    worker_connections  1024;
+}
 
 
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /usr/share/nginx/html/vhost/*.conf;
+}
+```
+
+在 `G:\www\vhost` 下新建 `test.com.conf` 文件，写入内容：
+```
+server {
+    listen       80;
+    server_name  test.com www.test.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html/test;
+        index  index.html index.htm index.php;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root           /var/www/html/test;
+        fastcgi_pass   php:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+在 `G:\www\test` 下新建 `index.php` 文件，写入内容：
+```
+<?php
+phpinfo();
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.56.108    test.com
+```
+
+然后在server-nginx容器中，移动nginx配置文件：
+> mv /usr/share/nginx/html/vhost/nginx.conf /etc/nginx/nginx.conf
+
+```
+root@813daeef096d:/# mv /usr/share/nginx/html/vhost/nginx.conf /etc/nginx/nginx.conf
+root@813daeef096d:/#
+root@813daeef096d:/# cat /etc/nginx/nginx.conf
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
 
 
+events {
+    worker_connections  1024;
+}
 
 
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /usr/share/nginx/html/vhost/*.conf;
+}
+root@813daeef096d:/#
+```
+
+重启server-nginx容器：
+> docker restart server-nginx
+
+```
+[root@localhost ~]# docker restart server-nginx
+server-nginx
+[root@localhost ~]#
+[root@localhost ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+813daeef096d        nginx               "/docker-entrypoin..."   2 hours ago         Up 3 seconds        0.0.0.0:80->80/tcp       server-nginx
+83199b3ed9ba        php:7.1.30-fpm      "docker-php-entryp..."   2 hours ago         Up 2 hours          0.0.0.0:9000->9000/tcp   server-php
+[root@localhost ~]#
+```
 
 
 ## 附录
