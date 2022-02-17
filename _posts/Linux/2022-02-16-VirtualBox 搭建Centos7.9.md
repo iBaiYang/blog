@@ -670,7 +670,7 @@ drwxr-xr-x. 5 root root    75 2月  17 09:44 certs.d
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-### php安装
+#### php安装
 
 下载镜像：
 > docker pull php:7.1.30-fpm
@@ -799,7 +799,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 [root@localhost ~]#
 ```
 
-#### mysqli拓展安装
+##### mysqli拓展安装
 
 上面没有 mysqli 模块，安装mysqli拓展。
 
@@ -993,7 +993,7 @@ root@83199b3ed9ba:~#
 root@83199b3ed9ba:~#
 ```
 
-#### pdo_mysql拓展安装
+##### pdo_mysql拓展安装
 
 安装pdo_mysql拓展：
 > docker-php-ext-install pdo_mysql
@@ -1172,7 +1172,7 @@ zlib
 root@83199b3ed9ba:~#
 ```
 
-#### bcmath拓展安装
+##### bcmath拓展安装
 
 bcmath拓展可进行一些精度数学运行，需要安装好。
 
@@ -1353,7 +1353,7 @@ rm -f libphp.la       modules/* libs/*
 root@83199b3ed9ba:~#
 ```
 
-### nginx安装
+#### nginx安装
 
 > docker pull nginx
 
@@ -1640,6 +1640,22 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 [root@localhost ~]#
 ```
 
+浏览器访问 test.com ，显示：403 Forbidden 。
+
+nginx没有文件读取权限。
+
+查看共享文件夹：
+> ls -l /media/sf_www
+
+```
+drwxrwx---. 1 root vboxsf  4096 2月  17 14:42 test
+```
+
+`chmod 777` 没有效果，虚拟机中装docker，docker中安装nginx，执行不了。
+
+看样子要在虚拟机中直接装nginx等服务了，运行时，给用户追加到共享文件夹的权限组中，如`usermod -aG vboxsf nginx`。
+
+或者共享文件夹只作为文件源，把共享文件夹中文件复制到 nginx 和 PHP 读取目录下。
 
 ## 附录
 
