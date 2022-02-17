@@ -369,6 +369,8 @@ Subsystem       sftp    /usr/libexec/openssh/sftp-server
 
 ### 共享文件夹
 
+![]({{site.baseurl}}/images/20220216/20220216170702.png)
+
 ```
 [root@localhost ~]# df
 文件系统                   1K-块    已用     可用 已用% 挂载点
