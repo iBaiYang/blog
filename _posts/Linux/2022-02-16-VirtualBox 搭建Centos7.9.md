@@ -2414,8 +2414,277 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service
 
 ### Nginx安装
 
+**安装**
+
+> yum install -y nginx
+
+```
+[root@localhost ~]# yum install -y nginx
+已加载插件：fastestmirror, product-id, search-disabled-repos, subscription-manager
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Loading mirror speeds from cached hostfile
+ * base: mirrors.ustc.edu.cn
+ * epel: hkg.mirror.rackspace.com
+ * extras: mirrors.ustc.edu.cn
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.ustc.edu.cn
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 nginx.x86_64.1.1.20.1-9.el7 将被 安装
+--> 正在处理依赖关系 nginx-filesystem = 1:1.20.1-9.el7，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libcrypto.so.1.1(OPENSSL_1_1_0)(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1(OPENSSL_1_1_0)(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1(OPENSSL_1_1_1)(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 nginx-filesystem，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 redhat-indexhtml，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libcrypto.so.1.1()(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libprofiler.so.0()(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1()(64bit)，它被软件包 1:nginx-1.20.1-9.el7.x86_64 需要
+--> 正在检查事务
+---> 软件包 centos-indexhtml.noarch.0.7-9.el7.centos 将被 安装
+---> 软件包 gperftools-libs.x86_64.0.2.6.1-1.el7 将被 安装
+---> 软件包 nginx-filesystem.noarch.1.1.20.1-9.el7 将被 安装
+---> 软件包 openssl11-libs.x86_64.1.1.1.1k-2.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+===========================================================================================================
+ Package                        架构                 版本                         源                  大小
+===========================================================================================================
+正在安装:
+ nginx                          x86_64               1:1.20.1-9.el7               epel               587 k
+为依赖而安装:
+ centos-indexhtml               noarch               7-9.el7.centos               base                92 k
+ gperftools-libs                x86_64               2.6.1-1.el7                  base               272 k
+ nginx-filesystem               noarch               1:1.20.1-9.el7               epel                24 k
+ openssl11-libs                 x86_64               1:1.1.1k-2.el7               epel               1.5 M
+
+事务概要
+===========================================================================================================
+安装  1 软件包 (+4 依赖软件包)
+
+总下载量：2.4 M
+安装大小：6.7 M
+Downloading packages:
+(1/5): gperftools-libs-2.6.1-1.el7.x86_64.rpm                                       | 272 kB  00:00:00
+(2/5): nginx-filesystem-1.20.1-9.el7.noarch.rpm                                     |  24 kB  00:00:00
+(3/5): centos-indexhtml-7-9.el7.centos.noarch.rpm                                   |  92 kB  00:00:00
+(4/5): nginx-1.20.1-9.el7.x86_64.rpm                                                | 587 kB  00:00:00
+(5/5): openssl11-libs-1.1.1k-2.el7.x86_64.rpm                                       | 1.5 MB  00:00:14
+-----------------------------------------------------------------------------------------------------------
+总计                                                                       168 kB/s | 2.4 MB  00:00:14
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : 1:openssl11-libs-1.1.1k-2.el7.x86_64                                                   1/5
+  正在安装    : gperftools-libs-2.6.1-1.el7.x86_64                                                     2/5
+  正在安装    : 1:nginx-filesystem-1.20.1-9.el7.noarch                                                 3/5
+  正在安装    : centos-indexhtml-7-9.el7.centos.noarch                                                 4/5
+  正在安装    : 1:nginx-1.20.1-9.el7.x86_64                                                            5/5
+  验证中      : centos-indexhtml-7-9.el7.centos.noarch                                                 1/5
+  验证中      : 1:nginx-filesystem-1.20.1-9.el7.noarch                                                 2/5
+  验证中      : gperftools-libs-2.6.1-1.el7.x86_64                                                     3/5
+  验证中      : 1:openssl11-libs-1.1.1k-2.el7.x86_64                                                   4/5
+  验证中      : 1:nginx-1.20.1-9.el7.x86_64                                                            5/5
+
+已安装:
+  nginx.x86_64 1:1.20.1-9.el7
+
+作为依赖被安装:
+  centos-indexhtml.noarch 0:7-9.el7.centos               gperftools-libs.x86_64 0:2.6.1-1.el7
+  nginx-filesystem.noarch 1:1.20.1-9.el7                 openssl11-libs.x86_64 1:1.1.1k-2.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# nginx -v
+nginx version: nginx/1.20.1
+[root@localhost ~]#
+```
+
+设置开机自动启动：
+> systemctl enable nginx
+
+启动：
+> systemctl start nginx
+
+```
+[root@localhost ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@localhost ~]#
+[root@localhost ~]# systemctl enable nginx
+Created symlink from /etc/systemd/system/multi-user.target.wants/nginx.service to /usr/lib/systemd/system/nginx.service.
+[root@localhost ~]#
+[root@localhost ~]# systemctl start nginx
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
+**配置**
+
+查看配置：
+```
+[root@localhost ~]# cat /etc/nginx/nginx.conf
+# For more information on configuration, see:
+#   * Official English Documentation: http://nginx.org/en/docs/
+#   * Official Russian Documentation: http://nginx.org/ru/docs/
+
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    include /etc/nginx/conf.d/*.conf;
+
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  _;
+        root         /usr/share/nginx/html;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+
+# Settings for a TLS enabled server.
+#
+#    server {
+#        listen       443 ssl http2;
+#        listen       [::]:443 ssl http2;
+#        server_name  _;
+#        root         /usr/share/nginx/html;
+#
+#        ssl_certificate "/etc/pki/nginx/server.crt";
+#        ssl_certificate_key "/etc/pki/nginx/private/server.key";
+#        ssl_session_cache shared:SSL:1m;
+#        ssl_session_timeout  10m;
+#        ssl_ciphers HIGH:!aNULL:!MD5;
+#        ssl_prefer_server_ciphers on;
+#
+#        # Load configuration files for the default server block.
+#        include /etc/nginx/default.d/*.conf;
+#
+#        error_page 404 /404.html;
+#            location = /40x.html {
+#        }
+#
+#        error_page 500 502 503 504 /50x.html;
+#            location = /50x.html {
+#        }
+#    }
+
+}
+
+[root@localhost ~]# ls -l /etc/nginx/conf.d/
+总用量 0
+[root@localhost ~]#
+```
+
+在 `/etc/nginx/conf.d/` 下新建文件并编辑：
+> touch /etc/nginx/conf.d/test.com.conf
+>
+> vim /etc/nginx/conf.d/test.com.conf
+
+写入内容：
+```
+server {
+    listen       80;
+    server_name  test.com;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
 
 
+
+
+
+在 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_www/vhost/*.conf;` 
+> vi /etc/nginx/nginx.conf
+
+在 `G:\www\vhost` 下新建 `test.com.conf` 文件，写入内容：
+```
+server {
+    listen       80;
+    server_name  test.com;
+
+    location / {
+        root   /media/sf_www/test;
+        index  index.html index.htm;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+在 `G:\www\test` 下新建 `index.html` 文件，写入内容：
+```
+hello
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.56.108    test.com
+```
+
+重启 ngnix 服务：
+> systemctl restart nginx
+
+浏览器访问 test.com，查看效果。
 
 
 ## 附录
