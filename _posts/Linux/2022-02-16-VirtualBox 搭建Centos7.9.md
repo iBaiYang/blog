@@ -2416,9 +2416,9 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service
 
 #### 防火墙设置
 
+装了nginx后，主机始终无法访问虚拟机的80端口，最后发现是防火墙的问题，需要进行设置。
 
-
-**方法一**
+##### 方法一
 
 停止防火墙服务：
 > systemctl stop firewalld
@@ -2472,7 +2472,7 @@ Hint: Some lines were ellipsized, use -l to show in full.
 防火墙不再开机自启动：
 > systemctl disable firewalld
 
-**方法二**
+##### 方法二
 
 开放端口的情况：
 > firewall-cmd --list-all
@@ -2539,241 +2539,13 @@ public (active)
 [root@localhost ~]#
 ```
 
+##### 方法三
 
-#### 方法一
+通过 iptables
 
-```
-[root@localhost ~]# yum install -y nginx
-已加载插件：fastestmirror, product-id, search-disabled-repos, subscription-manager
+#### 常规安装
 
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Loading mirror speeds from cached hostfile
- * base: mirrors.ustc.edu.cn
- * epel: mirrors.nipa.cloud
- * extras: mirrors.ustc.edu.cn
- * remi-safe: mirror.netweaver.uk
- * updates: mirrors.ustc.edu.cn
-正在解决依赖关系
---> 正在检查事务
----> 软件包 nginx.x86_64.1.1.20.2-1.el7.ngx 将被 安装
---> 解决依赖关系完成
-
-依赖关系解决
-
-===================================================================================================================
- Package              架构                  版本                                 源                           大小
-===================================================================================================================
-正在安装:
- nginx                x86_64                1:1.20.2-1.el7.ngx                   nginx-stable                790 k
-
-事务概要
-===================================================================================================================
-安装  1 软件包
-
-总下载量：790 k
-安装大小：2.8 M
-Downloading packages:
-nginx-1.20.2-1.el7.ngx.x86_64.rpm                                                           | 790 kB  00:00:02
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  正在安装    : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
-----------------------------------------------------------------------
-
-Thanks for using nginx!
-
-Please find the official documentation for nginx here:
-* https://nginx.org/en/docs/
-
-Please subscribe to nginx-announce mailing list to get
-the most important news about nginx:
-* https://nginx.org/en/support.html
-
-Commercial subscriptions for nginx are available on:
-* https://nginx.com/products/
-
-----------------------------------------------------------------------
-  验证中      : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
-
-已安装:
-  nginx.x86_64 1:1.20.2-1.el7.ngx
-
-完毕！
-[root@localhost ~]#
-[root@localhost ~]# systemctl status nginx
-● nginx.service - nginx - high performance web server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: inactive (dead)
-     Docs: http://nginx.org/en/docs/
-[root@localhost ~]#
-[root@localhost ~]# systemctl enable nginx
-Created symlink from /etc/systemd/system/multi-user.target.wants/nginx.service to /usr/lib/systemd/system/nginx.service.
-[root@localhost ~]#
-[root@localhost ~]# cat /etc/nginx/nginx.conf
-
-user  nginx;
-worker_processes  auto;
-
-error_log  /var/log/nginx/error.log notice;
-pid        /var/run/nginx.pid;
-
-
-events {
-    worker_connections  1024;
-}
-
-
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main;
-
-    sendfile        on;
-    #tcp_nopush     on;
-
-    keepalive_timeout  65;
-
-    #gzip  on;
-
-    include /etc/nginx/conf.d/*.conf;
-}
-[root@localhost ~]#
-[root@localhost ~]# ls -l /etc/nginx/conf.d/
-总用量 4
--rw-r--r--. 1 root root 1072 11月 16 23:02 default.conf
-[root@localhost ~]#
-[root@localhost ~]# cat /etc/nginx/conf.d/default.conf
-server {
-    listen       80;
-    server_name  localhost;
-
-    #access_log  /var/log/nginx/host.access.log  main;
-
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-    }
-
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    #location ~ \.php$ {
-    #    root           html;
-    #    fastcgi_pass   127.0.0.1:9000;
-    #    fastcgi_index  index.php;
-    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-    #    include        fastcgi_params;
-    #}
-
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
-}
-
-[root@localhost ~]#
-[root@localhost ~]# lsof -nP -iTCP -sTCP:LISTEN
-COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-php-fpm 1121   root    7u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-sshd    1126   root    3u  IPv4  19701      0t0  TCP *:22 (LISTEN)
-sshd    1126   root    4u  IPv6  19703      0t0  TCP *:22 (LISTEN)
-php-fpm 1243 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1244 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1246 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1247 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1248 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-master  1394   root   13u  IPv4  19968      0t0  TCP 127.0.0.1:25 (LISTEN)
-master  1394   root   14u  IPv6  19969      0t0  TCP [::1]:25 (LISTEN)
-[root@localhost ~]#
-[root@localhost ~]#
-[root@localhost ~]# ss -tunlp
-Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
-udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
-udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
-udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
-tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
-tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
-tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
-tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
-tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
-[root@localhost ~]#
-[root@localhost ~]#
-[root@localhost ~]# systemctl start nginx
-[root@localhost ~]#
-[root@localhost ~]# systemctl status nginx
-● nginx.service - nginx - high performance web server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
-   Active: active (running) since 四 2022-02-17 20:02:31 CST; 12s ago
-     Docs: http://nginx.org/en/docs/
-  Process: 2154 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf (code=exited, status=0/SUCCESS)
- Main PID: 2155 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─2155 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
-           ├─2156 nginx: worker process
-           ├─2157 nginx: worker process
-           ├─2158 nginx: worker process
-           └─2159 nginx: worker process
-
-2月 17 20:02:31 localhost.localdomain systemd[1]: Starting nginx - high performance web server...
-2月 17 20:02:31 localhost.localdomain systemd[1]: Started nginx - high performance web server.
-[root@localhost ~]#
-[root@localhost ~]# lsof -nP -iTCP -sTCP:LISTEN
-COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-php-fpm 1121   root    7u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-sshd    1126   root    3u  IPv4  19701      0t0  TCP *:22 (LISTEN)
-sshd    1126   root    4u  IPv6  19703      0t0  TCP *:22 (LISTEN)
-php-fpm 1243 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1244 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1246 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1247 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-php-fpm 1248 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
-master  1394   root   13u  IPv4  19968      0t0  TCP 127.0.0.1:25 (LISTEN)
-master  1394   root   14u  IPv6  19969      0t0  TCP [::1]:25 (LISTEN)
-nginx   2155   root    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
-nginx   2156  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
-nginx   2157  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
-nginx   2158  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
-nginx   2159  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
-[root@localhost ~]#
-[root@localhost ~]# ss -tunlp
-Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
-udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
-udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
-udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
-tcp   LISTEN     0      128                         *:80           *:*                   users:(("nginx",pid=2159,fd=6),("nginx",pid=2158,fd=6),("nginx",pid=2157,fd=6),("nginx",pid=2156,fd=6),("nginx",pid=2155,fd=6))
-tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
-tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
-tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
-tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
-tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
-[root@localhost ~]#
-[root@localhost ~]#
-```
-
-#### 方法二
+一般就是直接yum默认源安装，也可以采用下面指定yum源安装。
 
 **安装**
 
@@ -3048,6 +2820,327 @@ hello
 浏览器访问 test.com，查看效果。
 
 
+#### 指定源安装
+
+安装管理repository及扩展包的工具，yum-utils：
+> yum install -y yum-utils
+
+设置nginx的yum仓库配置：
+> vi /etc/yum.repos.d/nginx.repo
+
+写入：
+```
+[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+```
+
+安装执行：
+> yum install -y nginx
+
+```
+[root@localhost ~]# yum install -y nginx
+已加载插件：fastestmirror, product-id, search-disabled-repos, subscription-manager
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Loading mirror speeds from cached hostfile
+ * base: mirrors.ustc.edu.cn
+ * epel: mirrors.nipa.cloud
+ * extras: mirrors.ustc.edu.cn
+ * remi-safe: mirror.netweaver.uk
+ * updates: mirrors.ustc.edu.cn
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 nginx.x86_64.1.1.20.2-1.el7.ngx 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+===================================================================================================================
+ Package              架构                  版本                                 源                           大小
+===================================================================================================================
+正在安装:
+ nginx                x86_64                1:1.20.2-1.el7.ngx                   nginx-stable                790 k
+
+事务概要
+===================================================================================================================
+安装  1 软件包
+
+总下载量：790 k
+安装大小：2.8 M
+Downloading packages:
+nginx-1.20.2-1.el7.ngx.x86_64.rpm                                                           | 790 kB  00:00:02
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
+----------------------------------------------------------------------
+
+Thanks for using nginx!
+
+Please find the official documentation for nginx here:
+* https://nginx.org/en/docs/
+
+Please subscribe to nginx-announce mailing list to get
+the most important news about nginx:
+* https://nginx.org/en/support.html
+
+Commercial subscriptions for nginx are available on:
+* https://nginx.com/products/
+
+----------------------------------------------------------------------
+  验证中      : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
+
+已安装:
+  nginx.x86_64 1:1.20.2-1.el7.ngx
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# systemctl status nginx
+● nginx.service - nginx - high performance web server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: http://nginx.org/en/docs/
+[root@localhost ~]#
+[root@localhost ~]# systemctl enable nginx
+Created symlink from /etc/systemd/system/multi-user.target.wants/nginx.service to /usr/lib/systemd/system/nginx.service.
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/nginx/nginx.conf
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/nginx/conf.d/
+总用量 4
+-rw-r--r--. 1 root root 1072 11月 16 23:02 default.conf
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/nginx/conf.d/default.conf
+server {
+    listen       80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+[root@localhost ~]#
+[root@localhost ~]# lsof -nP -iTCP -sTCP:LISTEN
+COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+php-fpm 1121   root    7u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+sshd    1126   root    3u  IPv4  19701      0t0  TCP *:22 (LISTEN)
+sshd    1126   root    4u  IPv6  19703      0t0  TCP *:22 (LISTEN)
+php-fpm 1243 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1244 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1246 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1247 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1248 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+master  1394   root   13u  IPv4  19968      0t0  TCP 127.0.0.1:25 (LISTEN)
+master  1394   root   14u  IPv6  19969      0t0  TCP [::1]:25 (LISTEN)
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# ss -tunlp
+Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
+udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
+udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
+udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
+tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
+tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
+tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
+tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
+tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# systemctl start nginx
+[root@localhost ~]#
+[root@localhost ~]# systemctl status nginx
+● nginx.service - nginx - high performance web server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since 四 2022-02-17 20:02:31 CST; 12s ago
+     Docs: http://nginx.org/en/docs/
+  Process: 2154 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf (code=exited, status=0/SUCCESS)
+ Main PID: 2155 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─2155 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+           ├─2156 nginx: worker process
+           ├─2157 nginx: worker process
+           ├─2158 nginx: worker process
+           └─2159 nginx: worker process
+
+2月 17 20:02:31 localhost.localdomain systemd[1]: Starting nginx - high performance web server...
+2月 17 20:02:31 localhost.localdomain systemd[1]: Started nginx - high performance web server.
+[root@localhost ~]#
+[root@localhost ~]# lsof -nP -iTCP -sTCP:LISTEN
+COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+php-fpm 1121   root    7u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+sshd    1126   root    3u  IPv4  19701      0t0  TCP *:22 (LISTEN)
+sshd    1126   root    4u  IPv6  19703      0t0  TCP *:22 (LISTEN)
+php-fpm 1243 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1244 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1246 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1247 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+php-fpm 1248 apache    9u  IPv4  20520      0t0  TCP 127.0.0.1:9000 (LISTEN)
+master  1394   root   13u  IPv4  19968      0t0  TCP 127.0.0.1:25 (LISTEN)
+master  1394   root   14u  IPv6  19969      0t0  TCP [::1]:25 (LISTEN)
+nginx   2155   root    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
+nginx   2156  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
+nginx   2157  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
+nginx   2158  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
+nginx   2159  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
+[root@localhost ~]#
+[root@localhost ~]# ss -tunlp
+Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
+udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
+udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
+udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
+tcp   LISTEN     0      128                         *:80           *:*                   users:(("nginx",pid=2159,fd=6),("nginx",pid=2158,fd=6),("nginx",pid=2157,fd=6),("nginx",pid=2156,fd=6),("nginx",pid=2155,fd=6))
+tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
+tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
+tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
+tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
+tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
+浏览器访问 192.168.56.108，查看效果。
+
+**WEB配置**
+
+修改`/etc/nginx/nginx.conf`：
+> vi /etc/nginx/nginx.conf
+
+在 `include /etc/nginx/conf.d/*.conf;` 替换为 `include /media/sf_www/vhost/virtualbox/*.conf;`
+
+在 `G:\www\vhost\virtualbox` 下新建 `test.com.conf` 文件，写入内容：
+```
+server {
+    listen       80;
+    server_name  test.com www.test.com;
+
+    location / {
+        root   /media/sf_www/test;
+        index  index.html index.htm;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
+
+在 `G:\www\test` 下新建 `index.php` 文件，写入内容：
+```
+<?php
+echo "hello";
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.56.108    test.com
+```
+
+重启 ngnix 服务：
+> systemctl restart nginx
+
+浏览器访问 test.com，查看效果。
+
+#### 用户权限
+
+> usermod -aG vboxsf nginx
+> 
+> usermod -aG vboxsf apache
+
+
+
+
+
 ## 附录
 
 ### 桥接、NAT、Host-only的区别
@@ -3113,6 +3206,97 @@ Host-Only 的宗旨就是建立一个与外界隔绝的内部网络，来提高�
 但大型服务商会常常利用这个功能。如果你想为 VMnet1 网段提供路由功能，那就需要使用RRAS，
 而不能使用 XP 或 2000 的 ICS，因为 ICS 会把内网的 IP 地址改为 192.168.0.1，
 但虚拟机是不会给 VMnet1 虚拟网卡分配这个地址的，那么主机和虚拟机之间就不能通信了。
+
+
+### Firewall 防火墙
+
+Firewall 的 Zone 还能将不同的网络连接归类到不同的信任级别：
+```
+drop: 丢弃所有进入的包，而不给出任何响应
+block: 拒绝所有外部发起的连接，允许内部发起的连接
+public: 允许指定的进入连接
+external: 同上，对伪装的进入连接，一般用于路由转发
+dmz: 允许受限制的进入连接
+work: 允许受信任的计算机被限制的进入连接，类似 workgroup
+home: 同上，类似 homegroup
+internal: 同上，范围针对所有互联网用户
+trusted: 信任所有连接
+```
+
+过滤规则解释如下：
+```
+source: 根据源地址过滤（优先级最高）
+interface: 根据网卡过滤（优先级次高）
+service: 根据服务名过滤
+port: 根据端口过滤
+icmp-block: icmp 报文过滤，按照 icmp 类型配置
+masquerade: ip 地址伪装
+forward-port: 端口转发
+rule: 自定义规则
+```
+
+命令：
+```
+# 查看是否开启
+systemctl status firewalld.service
+# 打开防火墙
+systemctl start firewalld.service
+# 停用防火墙
+systemctl disable firewalld
+# 禁用防火墙
+systemctl stop firewalld.service
+
+# 开机启动
+systemctl enable firewalld
+# 取消开机启动
+systemctl disable firewalld
+
+# 查看运行状态
+firewall-cmd --state
+# 查看接口信息
+firewall-cmd --list-all
+
+# 更新防火墙规则方法1:无需断开连接，动态更改规则
+firewall-cmd --reload
+# 更新防火墙规则方法2:断开连接，以重启的方式更改规则
+firewall-cmd --complete-reload
+
+# 查看帮助
+firewall-cmd --help
+--zone=NAME # 指定 Zone
+--permanent # 为永久生效
+--timeout=seconds # 持续一段时间，到期后自动移除，经常用于调试，且不能与 --permanent 同时使用
+
+# 追加一个8181端口，永久有效
+firewall-cmd --add-port=8181/tcp --permanent
+# 追加一段端口范围
+firewall-cmd --add-port=6000-6600/tcp
+# 开放 ftp 服务
+firewall-cmd --add-service=ftp
+# 添加eth0 接口至 public 信任等级，永久有效
+firewall-cmd --zone=public --add-interface=eth0 --permanent
+
+# 配置 public zone 的端口转发
+firewall-cmd --zone=public --add-masquerade
+# 然后转发 tcp 22 端口至 9527
+firewall-cmd --zone=public --add-forward-port=port=22:proto=tcp:toport=9527
+# 转发 22 端口数据至另一个 ip 的相同端口上
+firewall-cmd --zone=public --add-forward-port=port=22:proto=tcp:toaddr=192.168.1.123
+# 转发 22 端口数据至另一 ip 的 9527 端口上
+firewall-cmd --zone=public --add-forward-port=port=22:proto=tcp:toport=9527:toaddr=192.168.1.100
+
+# IP 封禁
+firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='192.168.1.123' reject"
+# 通过 ipset 来封禁 ip
+firewall-cmd --permanent --zone=public --new-ipset=blacklist --type=hash:ip
+firewall-cmd --permanent --zone=public --ipset=blacklist --add-entry=192.168.1.123
+# 封禁网段
+firewall-cmd --permanent --zone=public --new-ipset=blacklist --type=hash:net
+firewall-cmd --permanent --zone=public --ipset=blacklist --add-entry=192.168.1.0/24
+# 倒入 ipset 规则 blacklist，然后封禁 blacklist
+firewall-cmd --permanent --zone=public --new-ipset-from-file=/path/blacklist.xml
+firewall-cmd --permanent --zone=public --add-rich-rule='rule source ipset=blacklist drop'
+```
 
 
 <br/><br/><br/><br/><br/>
