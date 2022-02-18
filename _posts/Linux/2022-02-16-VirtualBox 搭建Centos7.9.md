@@ -1624,6 +1624,444 @@ rm -f libphp.la       modules/* libs/*
 root@83199b3ed9ba:~#
 ```
 
+##### gd拓展安装
+
+更新软件源
+> apt update 
+
+安装各种库
+> apt install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev
+
+安装gd拓展
+> docker-php-ext-install gd
+
+```
+[root@localhost ~]# docker exec -it server-php /bin/bash
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+hash
+iconv
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# cd ~
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# docker-php-ext-install gd
+Configuring for:
+PHP Api Version:         20160303
+Zend Module Api No:      20160303
+Zend Extension Api No:   320160303
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for cc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc accepts -g... yes
+checking for cc option to accept ISO C89... none needed
+checking how to run the C preprocessor... cc -E
+checking for icc... no
+checking for suncc... no
+checking whether cc understands -c and -o together... yes
+checking for system library directory... lib
+checking if compiler supports -R... no
+checking if compiler supports -Wl,-rpath,... yes
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... x86_64-pc-linux-gnu
+checking for PHP prefix... /usr/local
+checking for PHP includes... -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib
+checking for PHP extension directory... /usr/local/lib/php/extensions/no-debug-non-zts-20160303
+checking for PHP installed headers prefix... /usr/local/include/php
+checking if debug is enabled... no
+checking if zts is enabled... no
+checking for re2c... re2c
+checking for re2c version... 1.1.1 (ok)
+checking for gawk... no
+checking for nawk... nawk
+checking if nawk is broken... no
+checking for GD support... yes, shared
+checking for the location of libwebp... no
+checking for the location of libjpeg... no
+checking for the location of libpng... no
+checking for the location of libz... no
+checking for the location of libXpm... no
+checking for FreeType 2... no
+checking whether to enable truetype string function in GD... no
+checking whether to enable JIS-mapped Japanese font support in GD... no
+If configure fails try --with-webp-dir=<DIR>
+If configure fails try --with-jpeg-dir=<DIR>
+configure: error: png.h not found.
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# apt update
+Get:1 http://deb.debian.org/debian buster InRelease [122 kB]
+Get:2 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
+Get:3 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
+Get:4 http://deb.debian.org/debian buster/main amd64 Packages [7906 kB]
+Get:5 http://security.debian.org/debian-security buster/updates/main amd64 Packages [316 kB]
+Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [8792 B]
+Fetched 8469 kB in 26s (324 kB/s)
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+55 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# apt install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following package was automatically installed and is no longer required:
+  lsb-base
+Use 'apt autoremove' to remove it.
+The following additional packages will be installed:
+  libfreetype6 libjpeg62-turbo libjpeg62-turbo-dev libpng-tools libpng16-16 libwebp6 libwebpdemux2 libwebpmux3 zlib1g-dev
+Suggested packages:
+  freetype2-doc
+The following NEW packages will be installed:
+  libfreetype6 libfreetype6-dev libjpeg-dev libjpeg62-turbo libjpeg62-turbo-dev libpng-dev libpng-tools libpng16-16 libwebp-dev
+  libwebp6 libwebpdemux2 libwebpmux3 zlib1g-dev
+0 upgraded, 13 newly installed, 0 to remove and 55 not upgraded.
+Need to get 3058 kB of archives.
+After this operation, 8222 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian buster/main amd64 libpng16-16 amd64 1.6.36-6 [292 kB]
+Get:2 http://deb.debian.org/debian buster/main amd64 libfreetype6 amd64 2.9.1-3+deb10u2 [380 kB]
+Get:3 http://deb.debian.org/debian buster/main amd64 zlib1g-dev amd64 1:1.2.11.dfsg-1 [214 kB]
+Get:4 http://deb.debian.org/debian buster/main amd64 libpng-dev amd64 1.6.36-6 [300 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 libfreetype6-dev amd64 2.9.1-3+deb10u2 [544 kB]
+Get:6 http://deb.debian.org/debian buster/main amd64 libjpeg62-turbo amd64 1:1.5.2-2+deb10u1 [133 kB]
+Get:7 http://deb.debian.org/debian buster/main amd64 libjpeg62-turbo-dev amd64 1:1.5.2-2+deb10u1 [208 kB]
+Get:8 http://deb.debian.org/debian buster/main amd64 libjpeg-dev all 1:1.5.2-2+deb10u1 [57.7 kB]
+Get:9 http://deb.debian.org/debian buster/main amd64 libpng-tools amd64 1.6.36-6 [140 kB]
+Get:10 http://deb.debian.org/debian buster/main amd64 libwebp6 amd64 0.6.1-2+deb10u1 [261 kB]
+Get:11 http://deb.debian.org/debian buster/main amd64 libwebpmux3 amd64 0.6.1-2+deb10u1 [97.8 kB]
+Get:12 http://deb.debian.org/debian buster/main amd64 libwebpdemux2 amd64 0.6.1-2+deb10u1 [87.6 kB]
+Get:13 http://deb.debian.org/debian buster/main amd64 libwebp-dev amd64 0.6.1-2+deb10u1 [344 kB]
+Fetched 3058 kB in 2s (1460 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libpng16-16:amd64.
+(Reading database ... 12651 files and directories currently installed.)
+Preparing to unpack .../00-libpng16-16_1.6.36-6_amd64.deb ...
+Unpacking libpng16-16:amd64 (1.6.36-6) ...
+Selecting previously unselected package libfreetype6:amd64.
+Preparing to unpack .../01-libfreetype6_2.9.1-3+deb10u2_amd64.deb ...
+Unpacking libfreetype6:amd64 (2.9.1-3+deb10u2) ...
+Selecting previously unselected package zlib1g-dev:amd64.
+Preparing to unpack .../02-zlib1g-dev_1%3a1.2.11.dfsg-1_amd64.deb ...
+Unpacking zlib1g-dev:amd64 (1:1.2.11.dfsg-1) ...
+Selecting previously unselected package libpng-dev:amd64.
+Preparing to unpack .../03-libpng-dev_1.6.36-6_amd64.deb ...
+Unpacking libpng-dev:amd64 (1.6.36-6) ...
+Selecting previously unselected package libfreetype6-dev:amd64.
+Preparing to unpack .../04-libfreetype6-dev_2.9.1-3+deb10u2_amd64.deb ...
+Unpacking libfreetype6-dev:amd64 (2.9.1-3+deb10u2) ...
+Selecting previously unselected package libjpeg62-turbo:amd64.
+Preparing to unpack .../05-libjpeg62-turbo_1%3a1.5.2-2+deb10u1_amd64.deb ...
+Unpacking libjpeg62-turbo:amd64 (1:1.5.2-2+deb10u1) ...
+Selecting previously unselected package libjpeg62-turbo-dev:amd64.
+Preparing to unpack .../06-libjpeg62-turbo-dev_1%3a1.5.2-2+deb10u1_amd64.deb ...
+Unpacking libjpeg62-turbo-dev:amd64 (1:1.5.2-2+deb10u1) ...
+Selecting previously unselected package libjpeg-dev.
+Preparing to unpack .../07-libjpeg-dev_1%3a1.5.2-2+deb10u1_all.deb ...
+Unpacking libjpeg-dev (1:1.5.2-2+deb10u1) ...
+Selecting previously unselected package libpng-tools.
+Preparing to unpack .../08-libpng-tools_1.6.36-6_amd64.deb ...
+Unpacking libpng-tools (1.6.36-6) ...
+Selecting previously unselected package libwebp6:amd64.
+Preparing to unpack .../09-libwebp6_0.6.1-2+deb10u1_amd64.deb ...
+Unpacking libwebp6:amd64 (0.6.1-2+deb10u1) ...
+Selecting previously unselected package libwebpmux3:amd64.
+Preparing to unpack .../10-libwebpmux3_0.6.1-2+deb10u1_amd64.deb ...
+Unpacking libwebpmux3:amd64 (0.6.1-2+deb10u1) ...
+Selecting previously unselected package libwebpdemux2:amd64.
+Preparing to unpack .../11-libwebpdemux2_0.6.1-2+deb10u1_amd64.deb ...
+Unpacking libwebpdemux2:amd64 (0.6.1-2+deb10u1) ...
+Selecting previously unselected package libwebp-dev:amd64.
+Preparing to unpack .../12-libwebp-dev_0.6.1-2+deb10u1_amd64.deb ...
+Unpacking libwebp-dev:amd64 (0.6.1-2+deb10u1) ...
+Setting up libjpeg62-turbo:amd64 (1:1.5.2-2+deb10u1) ...
+Setting up libjpeg62-turbo-dev:amd64 (1:1.5.2-2+deb10u1) ...
+Setting up libpng16-16:amd64 (1.6.36-6) ...
+Setting up libwebp6:amd64 (0.6.1-2+deb10u1) ...
+Setting up zlib1g-dev:amd64 (1:1.2.11.dfsg-1) ...
+Setting up libwebpmux3:amd64 (0.6.1-2+deb10u1) ...
+Setting up libpng-tools (1.6.36-6) ...
+Setting up libwebpdemux2:amd64 (0.6.1-2+deb10u1) ...
+Setting up libpng-dev:amd64 (1.6.36-6) ...
+Setting up libjpeg-dev (1:1.5.2-2+deb10u1) ...
+Setting up libwebp-dev:amd64 (0.6.1-2+deb10u1) ...
+Setting up libfreetype6:amd64 (2.9.1-3+deb10u2) ...
+Setting up libfreetype6-dev:amd64 (2.9.1-3+deb10u2) ...
+Processing triggers for libc-bin (2.28-10) ...
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# docker-php-ext-install gd
+Configuring for:
+PHP Api Version:         20160303
+Zend Module Api No:      20160303
+Zend Extension Api No:   320160303
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for cc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc accepts -g... yes
+checking for cc option to accept ISO C89... none needed
+checking how to run the C preprocessor... cc -E
+checking for icc... no
+checking for suncc... no
+checking whether cc understands -c and -o together... yes
+checking for system library directory... lib
+checking if compiler supports -R... no
+checking if compiler supports -Wl,-rpath,... yes
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... x86_64-pc-linux-gnu
+checking for PHP prefix... /usr/local
+checking for PHP includes... -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib
+checking for PHP extension directory... /usr/local/lib/php/extensions/no-debug-non-zts-20160303
+checking for PHP installed headers prefix... /usr/local/include/php
+checking if debug is enabled... no
+checking if zts is enabled... no
+checking for re2c... re2c
+checking for re2c version... 1.1.1 (ok)
+checking for gawk... no
+checking for nawk... nawk
+checking if nawk is broken... no
+checking for GD support... yes, shared
+checking for the location of libwebp... no
+checking for the location of libjpeg... no
+checking for the location of libpng... no
+checking for the location of libz... no
+checking for the location of libXpm... no
+checking for FreeType 2... no
+checking whether to enable truetype string function in GD... no
+checking whether to enable JIS-mapped Japanese font support in GD... no
+If configure fails try --with-webp-dir=<DIR>
+If configure fails try --with-jpeg-dir=<DIR>
+checking for png_write_image in -lpng... yes
+If configure fails try --with-xpm-dir=<DIR>
+If configure fails try --with-freetype-dir=<DIR>
+checking for fabsf... no
+checking for floorf... no
+checking for ld used by cc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for BSD-compatible nm... /usr/bin/nm -B
+checking whether ln -s works... yes
+checking how to recognize dependent libraries... pass_all
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... yes
+checking dlfcn.h presence... yes
+checking for dlfcn.h... yes
+checking the maximum length of command line arguments... 1572864
+checking command to parse /usr/bin/nm -B output from cc object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if cc supports -fno-rtti -fno-exceptions... no
+checking for cc option to produce PIC... -fPIC
+checking if cc PIC flag -fPIC works... yes
+checking if cc static flag -static works... yes
+checking if cc supports -c -o file.o... yes
+checking whether the cc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: creating ./config.status
+config.status: creating config.h
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/gd.c -o gd.lo
+mkdir .libs
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/gd.c  -fPIC -DPIC -o .libs/gd.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd.c -o libgd/gd.lo
+mkdir libgd/.libs
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd.c  -fPIC -DPIC -o libgd/.libs/gd.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_gd.c -o libgd/gd_gd.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_gd.c  -fPIC -DPIC -o libgd/.libs/gd_gd.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_gd2.c -o libgd/gd_gd2.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_gd2.c  -fPIC -DPIC -o libgd/.libs/gd_gd2.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_io.c -o libgd/gd_io.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_io.c  -fPIC -DPIC -o libgd/.libs/gd_io.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_io_dp.c -o libgd/gd_io_dp.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_io_dp.c  -fPIC -DPIC -o libgd/.libs/gd_io_dp.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_io_file.c -o libgd/gd_io_file.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_io_file.c  -fPIC -DPIC -o libgd/.libs/gd_io_file.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_ss.c -o libgd/gd_ss.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_ss.c  -fPIC -DPIC -o libgd/.libs/gd_ss.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_io_ss.c -o libgd/gd_io_ss.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_io_ss.c  -fPIC -DPIC -o libgd/.libs/gd_io_ss.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_webp.c -o libgd/gd_webp.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_webp.c  -fPIC -DPIC -o libgd/.libs/gd_webp.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_png.c -o libgd/gd_png.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_png.c  -fPIC -DPIC -o libgd/.libs/gd_png.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_jpeg.c -o libgd/gd_jpeg.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_jpeg.c  -fPIC -DPIC -o libgd/.libs/gd_jpeg.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdxpm.c -o libgd/gdxpm.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdxpm.c  -fPIC -DPIC -o libgd/.libs/gdxpm.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdfontt.c -o libgd/gdfontt.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdfontt.c  -fPIC -DPIC -o libgd/.libs/gdfontt.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdfonts.c -o libgd/gdfonts.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdfonts.c  -fPIC -DPIC -o libgd/.libs/gdfonts.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdfontmb.c -o libgd/gdfontmb.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdfontmb.c  -fPIC -DPIC -o libgd/.libs/gdfontmb.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdfontl.c -o libgd/gdfontl.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdfontl.c  -fPIC -DPIC -o libgd/.libs/gdfontl.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdfontg.c -o libgd/gdfontg.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdfontg.c  -fPIC -DPIC -o libgd/.libs/gdfontg.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdtables.c -o libgd/gdtables.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdtables.c  -fPIC -DPIC -o libgd/.libs/gdtables.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdft.c -o libgd/gdft.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdft.c  -fPIC -DPIC -o libgd/.libs/gdft.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdcache.c -o libgd/gdcache.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdcache.c  -fPIC -DPIC -o libgd/.libs/gdcache.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdkanji.c -o libgd/gdkanji.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdkanji.c  -fPIC -DPIC -o libgd/.libs/gdkanji.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/wbmp.c -o libgd/wbmp.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/wbmp.c  -fPIC -DPIC -o libgd/.libs/wbmp.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_wbmp.c -o libgd/gd_wbmp.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_wbmp.c  -fPIC -DPIC -o libgd/.libs/gd_wbmp.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gdhelpers.c -o libgd/gdhelpers.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gdhelpers.c  -fPIC -DPIC -o libgd/.libs/gdhelpers.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_topal.c -o libgd/gd_topal.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_topal.c  -fPIC -DPIC -o libgd/.libs/gd_topal.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_gif_in.c -o libgd/gd_gif_in.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_gif_in.c  -fPIC -DPIC -o libgd/.libs/gd_gif_in.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/xbm.c -o libgd/xbm.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/xbm.c  -fPIC -DPIC -o libgd/.libs/xbm.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_gif_out.c -o libgd/gd_gif_out.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_gif_out.c  -fPIC -DPIC -o libgd/.libs/gd_gif_out.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_security.c -o libgd/gd_security.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_security.c  -fPIC -DPIC -o libgd/.libs/gd_security.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_filter.c -o libgd/gd_filter.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_filter.c  -fPIC -DPIC -o libgd/.libs/gd_filter.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_pixelate.c -o libgd/gd_pixelate.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_pixelate.c  -fPIC -DPIC -o libgd/.libs/gd_pixelate.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_arc.c -o libgd/gd_arc.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_arc.c  -fPIC -DPIC -o libgd/.libs/gd_arc.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_rotate.c -o libgd/gd_rotate.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_rotate.c  -fPIC -DPIC -o libgd/.libs/gd_rotate.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_color.c -o libgd/gd_color.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_color.c  -fPIC -DPIC -o libgd/.libs/gd_color.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_transform.c -o libgd/gd_transform.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_transform.c  -fPIC -DPIC -o libgd/.libs/gd_transform.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_crop.c -o libgd/gd_crop.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_crop.c  -fPIC -DPIC -o libgd/.libs/gd_crop.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_interpolation.c -o libgd/gd_interpolation.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_interpolation.c  -fPIC -DPIC -o libgd/.libs/gd_interpolation.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/gd/libgd/gd_matrix.c -o libgd/gd_matrix.lo
+ cc -I/usr/src/php/ext/gd/libgd -DHAVE_LIBPNG -I. -I/usr/src/php/ext/gd -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/gd/libgd/gd_matrix.c  -fPIC -DPIC -o libgd/.libs/gd_matrix.o
+/bin/bash /usr/src/php/ext/gd/libtool --mode=link cc -DPHP_ATOM_INC -I/usr/src/php/ext/gd/include -I/usr/src/php/ext/gd/main -I/usr/src/php/ext/gd -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2  -Wl,-O1 -Wl,--hash-style=both -pie -o gd.la -export-dynamic -avoid-version -prefer-pic -module -rpath /usr/src/php/ext/gd/modules  gd.lo libgd/gd.lo libgd/gd_gd.lo libgd/gd_gd2.lo libgd/gd_io.lo libgd/gd_io_dp.lo libgd/gd_io_file.lo libgd/gd_ss.lo libgd/gd_io_ss.lo libgd/gd_webp.lo libgd/gd_png.lo libgd/gd_jpeg.lo libgd/gdxpm.lo libgd/gdfontt.lo libgd/gdfonts.lo libgd/gdfontmb.lo libgd/gdfontl.lo libgd/gdfontg.lo libgd/gdtables.lo libgd/gdft.lo libgd/gdcache.lo libgd/gdkanji.lo libgd/wbmp.lo libgd/gd_wbmp.lo libgd/gdhelpers.lo libgd/gd_topal.lo libgd/gd_gif_in.lo libgd/xbm.lo libgd/gd_gif_out.lo libgd/gd_security.lo libgd/gd_filter.lo libgd/gd_pixelate.lo libgd/gd_arc.lo libgd/gd_rotate.lo libgd/gd_color.lo libgd/gd_transform.lo libgd/gd_crop.lo libgd/gd_interpolation.lo libgd/gd_matrix.lo -lpng -lz
+cc -shared  .libs/gd.o libgd/.libs/gd.o libgd/.libs/gd_gd.o libgd/.libs/gd_gd2.o libgd/.libs/gd_io.o libgd/.libs/gd_io_dp.o libgd/.libs/gd_io_file.o libgd/.libs/gd_ss.o libgd/.libs/gd_io_ss.o libgd/.libs/gd_webp.o libgd/.libs/gd_png.o libgd/.libs/gd_jpeg.o libgd/.libs/gdxpm.o libgd/.libs/gdfontt.o libgd/.libs/gdfonts.o libgd/.libs/gdfontmb.o libgd/.libs/gdfontl.o libgd/.libs/gdfontg.o libgd/.libs/gdtables.o libgd/.libs/gdft.o libgd/.libs/gdcache.o libgd/.libs/gdkanji.o libgd/.libs/wbmp.o libgd/.libs/gd_wbmp.o libgd/.libs/gdhelpers.o libgd/.libs/gd_topal.o libgd/.libs/gd_gif_in.o libgd/.libs/xbm.o libgd/.libs/gd_gif_out.o libgd/.libs/gd_security.o libgd/.libs/gd_filter.o libgd/.libs/gd_pixelate.o libgd/.libs/gd_arc.o libgd/.libs/gd_rotate.o libgd/.libs/gd_color.o libgd/.libs/gd_transform.o libgd/.libs/gd_crop.o libgd/.libs/gd_interpolation.o libgd/.libs/gd_matrix.o  -lpng -lz  -Wl,-O1 -Wl,--hash-style=both -Wl,-soname -Wl,gd.so -o .libs/gd.so
+creating gd.la
+(cd .libs && rm -f gd.la && ln -s ../gd.la gd.la)
+/bin/bash /usr/src/php/ext/gd/libtool --mode=install cp ./gd.la /usr/src/php/ext/gd/modules
+cp ./.libs/gd.so /usr/src/php/ext/gd/modules/gd.so
+cp ./.libs/gd.lai /usr/src/php/ext/gd/modules/gd.la
+PATH="$PATH:/sbin" ldconfig -n /usr/src/php/ext/gd/modules
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /usr/src/php/ext/gd/modules
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-Wl,--rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+
+Build complete.
+Don't forget to run 'make test'.
+
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
+Installing header files:          /usr/local/include/php/
+find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+find . -name \*.lo -o -name \*.o | xargs rm -f
+find . -name \*.la -o -name \*.a | xargs rm -f
+find . -name \*.so | xargs rm -f
+find . -name .libs -a -type d|xargs rm -rf
+rm -f libphp.la       modules/* libs/*
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# php -m | grep gd
+gd
+root@83199b3ed9ba:~#
+```
+
+
+
 #### nginx安装
 
 > docker pull nginx
