@@ -2523,7 +2523,7 @@ public (active)
 [root@localhost ~]# firewall-cmd --add-service=http --permanent
 success
 [root@localhost ~]#
-[root@localhost ~]# sudo firewall-cmd --add-port=80/tcp --permanent
+[root@localhost ~]# firewall-cmd --add-port=80/tcp --permanent
 success
 [root@localhost ~]#
 [root@localhost ~]# firewall-cmd --reload
@@ -3096,7 +3096,7 @@ tcp   LISTEN     0      100                     [::1]:25        [::]:*          
 修改`/etc/nginx/nginx.conf`：
 > vi /etc/nginx/nginx.conf
 
-在 `include /etc/nginx/conf.d/*.conf;` 替换为 `include /media/sf_www/vhost/virtualbox/*.conf;`
+把 `include /etc/nginx/conf.d/*.conf;` 替换为 `include /media/sf_www/vhost/virtualbox/*.conf;`
 
 在 `G:\www\vhost\virtualbox` 下新建 `test.com.conf` 文件，写入内容：
 ```
@@ -3145,10 +3145,10 @@ echo "hello";
 > 
 > usermod -aG vboxsf apache
 
-发现还是不行，关闭SELinux后才可以了，临时关闭（设置SELinux 成为permissive模式）：
+发现还是不行，关闭 SELinux 后才可以了，临时关闭（设置 SELinux 成为 permissive 模式）：
 > setenforce 0
 
-```php
+```
 [root@localhost ~]# sestatus
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
@@ -3197,7 +3197,7 @@ SELINUXTYPE=targeted
 
 将`SELINUX=enforcing` 改为 `SELINUX=disabled`
 
-设置后需要重启才能生效
+设置后需要重启才能生效。
 
 
 
@@ -3358,6 +3358,22 @@ firewall-cmd --permanent --zone=public --new-ipset-from-file=/path/blacklist.xml
 firewall-cmd --permanent --zone=public --add-rich-rule='rule source ipset=blacklist drop'
 ```
 
+### SELinux
+
+安全增强型 Linux（Security-Enhanced Linux）简称 SELinux，它是一个 Linux 内核模块，也是 Linux 的一个安全子系统。
+
+SELinux 主要由美国国家安全局开发。2.6 及以上版本的 Linux 内核都已经集成了 SELinux 模块。
+
+SELinux 主要作用就是最大限度地减小系统中服务进程可访问的资源（最小权限原则）。
+
+
+
+
+
+
+
+
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
@@ -3379,3 +3395,8 @@ Win10家庭版WSL2安装Centos7.8 <https://ibaiyang.github.io/blog/linux/2021/08
 CentOS 7 的防火墙开启 http 80 端口 <https://chaishiwei.com/blog/1274.html>
 
 CentOS 7.X 关闭SELinux <https://www.cnblogs.com/activiti/p/7552677.html>
+
+一文彻底明白linux中的selinux到底是什么 <https://blog.csdn.net/yanjun821126/article/details/80828908>
+
+SELinux 入门 <https://linux.cn/article-7317-1.html>
+
