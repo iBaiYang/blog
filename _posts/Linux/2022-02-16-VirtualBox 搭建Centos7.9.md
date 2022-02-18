@@ -1659,7 +1659,7 @@ drwxrwx---. 1 root vboxsf  4096 2月  17 14:42 test
 
 ### PHP安装
 
-**安装源准备**
+#### 安装源准备
 
 我们使用Remi源安装PHP7.4。
 
@@ -1764,7 +1764,7 @@ Running transaction
 [root@localhost ~]#
 ```
 
-**安装PHP**
+#### 安装PHP
 
 ```
 yum --enablerepo=remi-php74 install -y php
@@ -1926,7 +1926,7 @@ Zend Engine v3.4.0, Copyright (c) Zend Technologies
 [root@localhost ~]#
 ```
 
-**安装拓展**
+#### 安装拓展
 
 ```
 yum --enablerepo=remi-php74 install -y php-fpm php-cli php-bcmath php-gd php-json php-mbstring php-mcrypt php-mysqlnd php-opcache php-pdo php-pecl-mcrypt php-xml php-zip
@@ -2374,7 +2374,7 @@ Zend OPcache
 [root@localhost ~]#
 ```
 
-**启动**
+#### 启动
 
 设置开机自动启动：
 > systemctl enable php-fpm
