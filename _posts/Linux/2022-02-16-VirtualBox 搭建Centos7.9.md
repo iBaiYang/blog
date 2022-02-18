@@ -564,8 +564,7 @@ www                     146799612 62141008 84658604   43% /media/sf_www
 [root@localhost cdrom]#
 [root@localhost cdrom]# ll /media/sf_www
 总用量 3
--rwxrwx---. 1 root vboxsf  1589 11月 28 2020 说明.txt
-drwxrwx---. 1 root vboxsf  4096 8月  20 2020 资料
+drwxrwx---. 1 root vboxsf  4096 8月  20 2020 test
 [root@localhost cdrom]#
 [root@localhost cdrom]#
 ```
