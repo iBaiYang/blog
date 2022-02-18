@@ -778,6 +778,132 @@ zlib
 root@c1576b02b628:/var/www/html#
 ```
 
+**权限**
+
+```
+root@83199b3ed9ba:/var/www/html# ls -l test
+total 1
+-rwxrwx---. 1 root 995  5 Feb 17 21:37 index.html
+-rwxrwx---. 1 root 995 22 Feb 18 09:54 index.php
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# groupadd -g 995 vboxsf
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# usermod -aG vboxsf www-data
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+vboxsf:x:995:www-data
+root@83199b3ed9ba:/var/www/html#
+root@83199b3ed9ba:/var/www/html# ls -l test
+total 1
+-rwxrwx---. 1 root vboxsf  5 Feb 17 21:37 index.html
+-rwxrwx---. 1 root vboxsf 22 Feb 18 09:54 index.php
+root@83199b3ed9ba:/var/www/html#
+```
+
+**容器基本操作**
+
 停止容器运行：
 ```
 [root@localhost ~]# docker stop server-php
