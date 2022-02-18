@@ -2475,7 +2475,9 @@ Hint: Some lines were ellipsized, use -l to show in full.
 ##### 方法二
 
 开放端口的情况：
+```
 > firewall-cmd --list-all
+```
 
 ```
 [root@localhost ~]# firewall-cmd --list-all
@@ -2499,17 +2501,23 @@ public (active)
 `services: dhcpv6-client ssh` 表示 ssh 服务是放行的，而 `ports:` 这里为空，表示无端口号放行。
 
 接下来通过以下命令开放http 80 端口：
+```
 > sudo firewall-cmd --add-service=http --permanent
 >
 > sudo firewall-cmd --add-port=80/tcp --permanent
+```
 
-命令末尾的`--permanent`表示用久有效，不加这句的话重启后刚才开放的端口就又失效了。
+命令末尾的`--permanent`表示用久有效；不加这句，重启后刚才开放的端口就又失效了。
 
 然后重启防火墙：
+```
 > sudo firewall-cmd --reload
+```
 
 再次查看端口的开放情况：
+```
 > sudo firewall-cmd --list-all
+```
 
 ```
 [root@localhost ~]# firewall-cmd --add-service=http --permanent
