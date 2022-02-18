@@ -789,6 +789,12 @@ c1576b02b628        php:7.1.30-fpm      "docker-php-entryp..."   18 minutes ago 
 [root@localhost ~]#
 ```
 
+启动容器运行：
+> docker start server-php
+
+重启容器运行：
+> docker restart server-php
+
 删除容器：
 ```
 [root@localhost ~]# docker rm server-php
