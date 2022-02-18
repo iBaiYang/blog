@@ -570,6 +570,144 @@ drwxrwx---. 1 root vboxsf  4096 8月  20 2020 资料
 [root@localhost cdrom]#
 ```
 
+### 防火墙设置
+
+下面装了nginx后，主机始终无法访问虚拟机的80端口，最后发现是防火墙的问题，需要提前进行设置。
+
+#### 方法一
+
+停止防火墙服务：
+> systemctl stop firewalld
+
+```
+[root@localhost ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since 四 2022-02-17 18:13:56 CST; 2h 16min ago
+     Docs: man:firewalld(1)
+ Main PID: 722 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─722 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+[root@localhost ~]# systemctl stop firewalld
+[root@localhost ~]#
+[root@localhost ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: inactive (dead) since 四 2022-02-17 20:30:55 CST; 3min 53s ago
+     Docs: man:firewalld(1)
+  Process: 722 ExecStart=/usr/sbin/firewalld --nofork --nopid $FIREWALLD_ARGS (code=exited, status=0/SUCCESS)
+ Main PID: 722 (code=exited, status=0/SUCCESS)
+
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
+2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
+2月 17 20:30:52 localhost.localdomain systemd[1]: Stopping firewalld - dynamic firewall daemon...
+2月 17 20:30:55 localhost.localdomain systemd[1]: Stopped firewalld - dynamic firewall daemon.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+```
+
+防火墙不再开机自启动：
+> systemctl disable firewalld
+
+#### 方法二
+
+开放端口的情况：
+```
+> firewall-cmd --list-all
+```
+
+```
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+`services: dhcpv6-client ssh` 表示 ssh 服务是放行的，而 `ports:` 这里为空，表示无端口号放行。
+
+接下来通过以下命令开放http 80 端口：
+```
+> sudo firewall-cmd --add-service=http --permanent
+>
+> sudo firewall-cmd --add-port=80/tcp --permanent
+```
+
+命令末尾的`--permanent`表示用久有效；不加这句，重启后刚才开放的端口就又失效了。
+
+然后重启防火墙：
+```
+> sudo firewall-cmd --reload
+```
+
+再次查看端口的开放情况：
+```
+> sudo firewall-cmd --list-all
+```
+
+```
+[root@localhost ~]# firewall-cmd --add-service=http --permanent
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --add-port=80/tcp --permanent
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --reload
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+#### 方法三
+
+通过 iptables
+
+
 ### docker安装
 
 移除老版本：
@@ -779,6 +917,8 @@ root@c1576b02b628:/var/www/html#
 ```
 
 **权限**
+
+思路：查看共享文件夹所属组，新建用户组，把服务用户追增到该用户组下，重启服务。
 
 ```
 root@83199b3ed9ba:/var/www/html# ls -l test
@@ -1533,6 +1673,16 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 ```
 [root@localhost ~]# docker exec -it server-nginx /bin/bash
 root@813daeef096d:/#
+root@813daeef096d:/# ls -l /etc/nginx
+total 24
+drwxr-xr-x. 1 root root   26 Feb 18 10:43 conf.d
+-rw-r--r--. 1 root root 1007 Jan 25 23:03 fastcgi_params
+-rw-r--r--. 1 root root 5349 Jan 25 23:03 mime.types
+lrwxrwxrwx. 1 root root   22 Jan 25 23:13 modules -> /usr/lib/nginx/modules
+-rw-r--r--. 1 root root  648 Jan 25 23:13 nginx.conf
+-rw-r--r--. 1 root root  636 Jan 25 23:03 scgi_params
+-rw-r--r--. 1 root root  664 Jan 25 23:03 uwsgi_params
+root@813daeef096d:/#
 root@813daeef096d:/# cat /etc/nginx/nginx.conf
 
 user  nginx;
@@ -1621,156 +1771,7 @@ root@813daeef096d:/#
 root@813daeef096d:/#
 ```
 
-我们在 `G:\www\vhost` 下新建 `nginx.conf` 文件，写入内容：
-```
-
-user  nginx;
-worker_processes  auto;
-
-error_log  /var/log/nginx/error.log notice;
-pid        /var/run/nginx.pid;
-
-
-events {
-    worker_connections  1024;
-}
-
-
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main;
-
-    sendfile        on;
-    #tcp_nopush     on;
-
-    keepalive_timeout  65;
-
-    #gzip  on;
-
-    include /usr/share/nginx/html/vhost/virtualbox/docker/*.conf;
-}
-```
-
-在 `G:\www\vhost\virtualbox\docker/` 下新建 `test.com.conf` 文件，写入内容：
-```
-server {
-    listen       80;
-    server_name  test.com www.test.com;
-
-    location / {
-        root   /usr/share/nginx/html/test;
-        index  index.htm;
-    }
-
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-    location ~ \.php$ {
-        root           /var/www/html/test;
-        fastcgi_pass   php:9000;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        include        fastcgi_params;
-    }
-}
-```
-
-在 `G:\www\test` 下新建 `index.php` 文件，写入内容：
-```
-<?php
-phpinfo();
-```
-
-在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
-```
-192.168.56.108    test.com
-```
-
-然后在server-nginx容器中，移动nginx配置文件：
-> mv /usr/share/nginx/html/vhost/nginx.conf /etc/nginx/nginx.conf
-
-```
-root@813daeef096d:/# mv /usr/share/nginx/html/vhost/nginx.conf /etc/nginx/nginx.conf
-root@813daeef096d:/#
-root@813daeef096d:/# cat /etc/nginx/nginx.conf
-
-user  nginx;
-worker_processes  auto;
-
-error_log  /var/log/nginx/error.log notice;
-pid        /var/run/nginx.pid;
-
-
-events {
-    worker_connections  1024;
-}
-
-
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main;
-
-    sendfile        on;
-    #tcp_nopush     on;
-
-    keepalive_timeout  65;
-
-    #gzip  on;
-
-    include /usr/share/nginx/html/vhost/virtualbox/docker/*.conf;
-}
-root@813daeef096d:/#
-```
-
-重启server-nginx容器：
-> docker restart server-nginx
-
-```
-[root@localhost ~]# docker restart server-nginx
-server-nginx
-[root@localhost ~]#
-[root@localhost ~]# docker ps -a
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
-813daeef096d        nginx               "/docker-entrypoin..."   2 hours ago         Up 3 seconds        0.0.0.0:80->80/tcp       server-nginx
-83199b3ed9ba        php:7.1.30-fpm      "docker-php-entryp..."   2 hours ago         Up 2 hours          0.0.0.0:9000->9000/tcp   server-php
-[root@localhost ~]#
-```
-
-浏览器访问 test.com ，显示：403 Forbidden 。
-
-nginx没有文件读取权限。
-
-查看共享文件夹：
-> ls -l /media/sf_www
-
-```
-drwxrwx---. 1 root vboxsf  4096 2月  17 14:42 test
-```
-
-`chmod 777` 没有效果，虚拟机中装docker，docker中安装nginx，执行不了。
-
-看样子要在虚拟机中直接装nginx等服务了，运行时，给用户追加到共享文件夹的权限组中，如`usermod -aG vboxsf nginx`。
-
-或者共享文件夹只作为文件源，把共享文件夹中文件复制到 nginx 和 PHP 读取目录下。
-
-
-思路：查看共享文件夹所属组，新建用户组，把服务用户追增到该用户组下，重启服务。
-
-
+容器内没有 vi、vim ,我们安装后，再编辑 nginx 配置文件。
 
 容器内 apt 更新：
 ```
@@ -1881,114 +1882,84 @@ Processing triggers for libc-bin (2.31-13+deb11u2) ...
 root@ab885b35f165:/#
 ```
 
+编辑 `/etc/nginx/nginx.conf`：
+> vim /etc/nginx/nginx.conf
 
+把 `/etc/nginx/conf.d/*.conf;` 修改为 `include /usr/share/nginx/html/vhost/virtualbox/docker/*.conf;` 。
+
+在 `G:\www\vhost\virtualbox\docker/` 下新建 `test.com.conf` 文件，写入内容：
 ```
-root@b49c3e70492f:/#
-root@b49c3e70492f:/# ls -l /etc/nginx
-total 24
-drwxr-xr-x. 1 root root   26 Feb 18 10:43 conf.d
--rw-r--r--. 1 root root 1007 Jan 25 23:03 fastcgi_params
--rw-r--r--. 1 root root 5349 Jan 25 23:03 mime.types
-lrwxrwxrwx. 1 root root   22 Jan 25 23:13 modules -> /usr/lib/nginx/modules
--rw-r--r--. 1 root root  648 Jan 25 23:13 nginx.conf
--rw-r--r--. 1 root root  636 Jan 25 23:03 scgi_params
--rw-r--r--. 1 root root  664 Jan 25 23:03 uwsgi_params
-root@b49c3e70492f:/#
-root@b49c3e70492f:/# cat /etc/nginx/nginx.conf
-
-user  nginx;
-worker_processes  auto;
-
-error_log  /var/log/nginx/error.log notice;
-pid        /var/run/nginx.pid;
-
-
-events {
-    worker_connections  1024;
-}
-
-
-http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
-
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main;
-
-    sendfile        on;
-    #tcp_nopush     on;
-
-    keepalive_timeout  65;
-
-    #gzip  on;
-
-    include /etc/nginx/conf.d/*.conf;
-}
-root@b49c3e70492f:/#
-root@b49c3e70492f:/# ls -l /etc/nginx/conf.d
-total 4
--rw-r--r--. 1 root root 1093 Feb 18 10:43 default.conf
-root@b49c3e70492f:/#
-root@b49c3e70492f:/# cat /etc/nginx/conf.d/default.conf
 server {
     listen       80;
-    listen  [::]:80;
-    server_name  localhost;
-
-    #access_log  /var/log/nginx/host.access.log  main;
+    server_name  test.com www.test.com;
 
     location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
+        root   /usr/share/nginx/html/test;
+        index  index.htm;
     }
 
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   /usr/share/nginx/html;
     }
 
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    #location ~ \.php$ {
-    #    root           html;
-    #    fastcgi_pass   127.0.0.1:9000;
-    #    fastcgi_index  index.php;
-    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-    #    include        fastcgi_params;
-    #}
-
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
+    location ~ \.php$ {
+        root           /var/www/html/test;
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
 }
-
-root@b49c3e70492f:/#
 ```
 
+在 `G:\www\test` 下新建 `index.php` 文件，写入内容：
 ```
-root@ab885b35f165:/# ls -l /var/www/html
+<?php
+phpinfo();
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.56.108    test.com
+```
+
+重启server-nginx容器：
+> docker restart server-nginx
+
+```
+[root@localhost ~]# docker restart server-nginx
+server-nginx
+[root@localhost ~]#
+[root@localhost ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+813daeef096d        nginx               "/docker-entrypoin..."   2 hours ago         Up 3 seconds        0.0.0.0:80->80/tcp       server-nginx
+83199b3ed9ba        php:7.1.30-fpm      "docker-php-entryp..."   2 hours ago         Up 2 hours          0.0.0.0:9000->9000/tcp   server-php
+[root@localhost ~]#
+```
+
+浏览器访问 test.com ，显示：403 Forbidden 。
+
+nginx没有文件读取权限。
+
+查看共享文件夹：
+> ls -l /media/sf_www
+
+```
+drwxrwx---. 1 root vboxsf  4096 2月  17 14:42 test
+```
+
+`chmod 777` 没有效果，虚拟机中装docker，docker中安装nginx，执行不了。
+
+**权限**
+
+查看文件夹属性：
+```
+root@ab885b35f165:/# ls -l /usr/share/nginx/html
 drwxrwx---. 1 root 995     0 Feb 18 09:54  test
 root@ab885b35f165:/#
 ```
 
-
-
+新建用户组，把nginx用户追加到该用户组中：
 ```
 root@ab885b35f165:/# cat /etc/passwd
 root:x:0:0:root:/root:/bin/bash
@@ -2146,17 +2117,8 @@ vboxsf:x:995:nginx
 root@ab885b35f165:/#
 ```
 
-
-
-
-
-
-
-
-
-
-
-
+配置结束后，重启nginx容器：
+> docker restart server-nginx
 
 ### PHP安装
 
@@ -2914,143 +2876,6 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service
 ```
 
 ### Nginx安装
-
-#### 防火墙设置
-
-装了nginx后，主机始终无法访问虚拟机的80端口，最后发现是防火墙的问题，需要进行设置。
-
-##### 方法一
-
-停止防火墙服务：
-> systemctl stop firewalld
-
-```
-[root@localhost ~]# systemctl status firewalld
-● firewalld.service - firewalld - dynamic firewall daemon
-   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
-   Active: active (running) since 四 2022-02-17 18:13:56 CST; 2h 16min ago
-     Docs: man:firewalld(1)
- Main PID: 722 (firewalld)
-   CGroup: /system.slice/firewalld.service
-           └─722 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
-
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...?).
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
-2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
-Hint: Some lines were ellipsized, use -l to show in full.
-[root@localhost ~]#
-[root@localhost ~]# systemctl stop firewalld
-[root@localhost ~]#
-[root@localhost ~]# systemctl status firewalld
-● firewalld.service - firewalld - dynamic firewall daemon
-   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
-   Active: inactive (dead) since 四 2022-02-17 20:30:55 CST; 3min 53s ago
-     Docs: man:firewalld(1)
-  Process: 722 ExecStart=/usr/sbin/firewalld --nofork --nopid $FIREWALLD_ARGS (code=exited, status=0/SUCCESS)
- Main PID: 722 (code=exited, status=0/SUCCESS)
-
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t n...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -t f...me.
-2月 17 18:14:03 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
-2月 17 18:14:04 localhost.localdomain firewalld[722]: WARNING: COMMAND_FAILED: '/usr/sbin/iptables -w10 -D F...?).
-2月 17 20:30:52 localhost.localdomain systemd[1]: Stopping firewalld - dynamic firewall daemon...
-2月 17 20:30:55 localhost.localdomain systemd[1]: Stopped firewalld - dynamic firewall daemon.
-Hint: Some lines were ellipsized, use -l to show in full.
-[root@localhost ~]#
-```
-
-防火墙不再开机自启动：
-> systemctl disable firewalld
-
-##### 方法二
-
-开放端口的情况：
-```
-> firewall-cmd --list-all
-```
-
-```
-[root@localhost ~]# firewall-cmd --list-all
-public (active)
-  target: default
-  icmp-block-inversion: no
-  interfaces: enp0s3 enp0s8
-  sources:
-  services: dhcpv6-client ssh
-  ports:
-  protocols:
-  masquerade: no
-  forward-ports:
-  source-ports:
-  icmp-blocks:
-  rich rules:
-
-[root@localhost ~]#
-```
-
-`services: dhcpv6-client ssh` 表示 ssh 服务是放行的，而 `ports:` 这里为空，表示无端口号放行。
-
-接下来通过以下命令开放http 80 端口：
-```
-> sudo firewall-cmd --add-service=http --permanent
->
-> sudo firewall-cmd --add-port=80/tcp --permanent
-```
-
-命令末尾的`--permanent`表示用久有效；不加这句，重启后刚才开放的端口就又失效了。
-
-然后重启防火墙：
-```
-> sudo firewall-cmd --reload
-```
-
-再次查看端口的开放情况：
-```
-> sudo firewall-cmd --list-all
-```
-
-```
-[root@localhost ~]# firewall-cmd --add-service=http --permanent
-success
-[root@localhost ~]#
-[root@localhost ~]# firewall-cmd --add-port=80/tcp --permanent
-success
-[root@localhost ~]#
-[root@localhost ~]# firewall-cmd --reload
-success
-[root@localhost ~]#
-[root@localhost ~]# firewall-cmd --list-all
-public (active)
-  target: default
-  icmp-block-inversion: no
-  interfaces: enp0s3 enp0s8
-  sources:
-  services: dhcpv6-client http ssh
-  ports: 80/tcp
-  protocols:
-  masquerade: no
-  forward-ports:
-  source-ports:
-  icmp-blocks:
-  rich rules:
-
-[root@localhost ~]#
-```
-
-##### 方法三
-
-通过 iptables
 
 #### 常规安装
 
