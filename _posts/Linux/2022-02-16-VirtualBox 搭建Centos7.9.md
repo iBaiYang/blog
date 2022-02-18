@@ -701,7 +701,7 @@ docker.io/php       7.1.30-fpm          0b13895891aa        2 years ago         
 
 把-v与容器挂载的目录准备好：
 ```
-mkdir -p /etc/php
+> mkdir -p /etc/php
 ```
 
 创建容器并运行(映射共享文件夹 `/media/sf_www` `)：
