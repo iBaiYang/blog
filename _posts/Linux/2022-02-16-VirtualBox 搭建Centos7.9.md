@@ -151,11 +151,9 @@ NETMASK=255.255.255.0
 重载网卡配置：
 > nmcli c reload
 
-重启网络服务或重启系统：
+重启网络服务或重启系统（reboot）：
 ```
 > systemctl restart netwoek
->
-> reboot
 ```
 
 查看网卡：
@@ -369,6 +367,7 @@ Subsystem       sftp    /usr/libexec/openssh/sftp-server
 
 ![]({{site.baseurl}}/images/20220216/20220216170702.png)
 
+一番瞎折腾：
 ```
 [root@localhost ~]# df
 文件系统                   1K-块    已用     可用 已用% 挂载点
