@@ -1639,7 +1639,9 @@ gd源码文件夹
 > cd /usr/src/php/ext/gd
 
 准备编译
+```
 > docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2
+```
 
 编译安装
 > docker-php-ext-install gd
