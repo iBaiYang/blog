@@ -126,7 +126,7 @@ ifdown        ifdown-ippp  ifdown-ppp     ifdown-TeamPort  ifup-bnep     ifup-is
 编辑网卡配置文件：
 > vi ifcfg-enp0s8
 
-如配置IP为 192.168.56.108：
+在 VirtualBox管理器 管理 - 主机网络管理器 查看主机网卡IP 为 192.168.56.1，这里配置虚拟机的IP，如配置IP为 192.168.56.108：
 ```
 TYPE="Ethernet"
 PROXY_METHOD="none"
