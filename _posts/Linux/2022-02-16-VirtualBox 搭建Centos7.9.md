@@ -2621,14 +2621,14 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 nginx没有文件读取权限。
 
-查看共享文件夹：
+在虚拟机中查看共享文件夹：
 > ls -l /media/sf_www
 
 ```
 drwxrwx---. 1 root vboxsf  4096 2月  17 14:42 test
 ```
 
-`chmod 777` 没有效果，虚拟机中装docker，docker中安装nginx，执行不了。
+`chmod 777` 没有效果，虚拟机中装docker，docker中安装nginx，需要配置权限。
 
 **权限**
 
