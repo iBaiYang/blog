@@ -3765,36 +3765,7 @@ http {
 [root@localhost ~]#
 ```
 
-在 `/etc/nginx/conf.d/` 下新建文件并编辑：
-> touch /etc/nginx/conf.d/test.com.conf
->
-> vim /etc/nginx/conf.d/test.com.conf
-
-写入内容：
-```
-server {
-    listen       80;
-    server_name  test.com;
-
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-    }
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-}
-```
-
-
-
-
-
-在 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_www/vhost/*.conf;` 
+在 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_www/vhost/virtualbox/*.conf;` 
 > vi /etc/nginx/nginx.conf
 
 在 `G:\www\vhost` 下新建 `test.com.conf` 文件，写入内容：
