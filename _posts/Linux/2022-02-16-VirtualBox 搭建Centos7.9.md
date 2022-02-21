@@ -1645,6 +1645,7 @@ gd源码文件夹
 编译安装
 > docker-php-ext-install gd
 
+先跳过编译过程，安装看一下：
 ```
 [root@localhost ~]# docker exec -it server-php /bin/bash
 root@83199b3ed9ba:/var/www/html#
@@ -2070,7 +2071,7 @@ gd
 root@83199b3ed9ba:~#
 ```
 
-跳过编译过程，发现一直报错，`Call to undefined function imagettftext()`，查看phpinfo发现只支持png，所以需要重新编译：
+跳过编译过程，会发现一直报错，`Call to undefined function imagettftext()`，查看phpinfo发现只支持png，所以需要重新编译安装：
 ```
 [root@localhost ~]# docker exec -it server-php /bin/bash
 root@83199b3ed9ba:/var/www/html#
