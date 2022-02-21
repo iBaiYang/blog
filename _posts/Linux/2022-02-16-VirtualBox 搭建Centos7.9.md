@@ -4336,6 +4336,15 @@ firewall-cmd --permanent --zone=public --new-ipset-from-file=/path/blacklist.xml
 firewall-cmd --permanent --zone=public --add-rich-rule='rule source ipset=blacklist drop'
 ```
 
+```
+查看端口：firewall-cmd --permanent --list-ports
+查看哪些程序正在使用互联网：firewall-cmd --permanent --list-services
+添加端口：firewall-cmd --permanent --add-port=8080-8085/tcp
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+加载设置：firewall-cmd --reload
+删除端口：firewall-cmd --permanent --remove-port=8080-8085/tcp
+```
+
 ### SELinux
 
 安全增强型 Linux（Security-Enhanced Linux）简称 SELinux，它是一个 Linux 内核模块，也是 Linux 的一个安全子系统。
@@ -4391,6 +4400,8 @@ Centos7.8 安装PHP7.4 <https://ibaiyang.github.io/blog/linux/2021/08/29/Centos7
 Win10家庭版WSL2安装Centos7.8 <https://ibaiyang.github.io/blog/linux/2021/08/28/Win10家庭版WSL2安装Centos7.8.html>
 
 CentOS 7 的防火墙开启 http 80 端口 <https://chaishiwei.com/blog/1274.html>
+
+防火墙管理 <https://liuurick.github.io/2019/01/11/防火墙管理/>
 
 CentOS 7.X 关闭SELinux <https://www.cnblogs.com/activiti/p/7552677.html>
 
