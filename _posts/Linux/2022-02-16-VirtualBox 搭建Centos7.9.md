@@ -2754,7 +2754,82 @@ Pecl 全称 The PHP Extension Community Library，php 社区扩展库，由社�
 
 ##### swoole拓展安装
 
+安装过程中，有四个可选依赖：
+* sockets
+* openssl
+* http2
+* mysqlnd
 
+如果sockets没有安装，可以安装下：
+> docker-php-ext-install sockets
+
+swoole拓展对php版本有要求，swoole-4.6版本以上需要php7.2，我们这里安装swoole-4.5.10：
+> pecl install swoole-4.5.10
+
+启用swoole拓展：
+> docker-php-ext-enable swoole
+
+```
+root@83199b3ed9ba:~# pecl install swoole-4.5.10
+............选择可选依赖 sockets，openssl，http2，mysqlnd ...................
+............................大段输出............................
+Build process completed successfully
+Installing '/usr/local/lib/php/extensions/no-debug-non-zts-20160303/swoole.so'
+Installing '/usr/local/include/php/ext/swoole/config.h'
+install ok: channel://pecl.php.net/swoole-4.5.10
+configuration option "php_ini" is not set to php.ini location
+You should add "extension=swoole.so" to php.ini
+root@83199b3ed9ba:~# 
+root@83199b3ed9ba:~# docker-php-ext-enable swoole
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+gd
+hash
+iconv
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+redis
+Reflection
+session
+SimpleXML
+sockets
+SPL
+sqlite3
+standard
+swoole
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@83199b3ed9ba:~#
+```
+
+重启容器。
 
 #### 安装nginx
 
