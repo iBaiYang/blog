@@ -1069,6 +1069,57 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 [root@localhost ~]#
 ```
 
+##### PHP容器特殊命令
+
+**docker-php-source**
+
+初始化源码目录
+
+初始化php源码目录：
+> docker-php-source extract 
+
+运行上面命令后，会在`/usr/src`目录下生成一个php源码目录。
+
+清除源码目录：
+> docker-php-source delete 
+
+可以在安装好扩展之后运行，释放磁盘空间。
+
+**docker-php-ext-install**
+
+安装并启用扩展
+> docker-php-ext-install "源码包目录名"
+
+注意事项：
+* “源码包”需要放在/usr/src/php/ext目录下；
+* 默认情况下无/usr/src/php这个目录，需要先运行`docker-php-source extract`生成；
+* docker-php-ext-install安装的扩展，会自动调用docker-php-ext-enable来启用扩展；
+* 卸载扩展，直接删除/usr/local/etc/php/conf.d对应的配置文件即可。
+
+**docker-php-ext-enable**
+
+这个命令是用来启用PHP扩展的。我们使用pecl安装PHP扩展的时候，默认是没有启用这个扩展的，
+如果想要使用这个扩展必须要在php.ini这个配置文件中去配置一下才能使用这个PHP扩展。
+而 docker-php-ext-enable 这个命令则是自动给我们来启动PHP扩展的，不需要你去php.ini这个配置文件中去配置。
+
+如启用redis扩展：
+> docker-php-ext-enable redis
+
+**docker-php-ext-configure**
+
+为扩展设置自定义configure参数
+
+如安装gd图像扩展，Dockerfile如下所示：
+```
+FROM php:7.4-fpm
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
+```
+
 ##### mysqli拓展安装
 
 上面没有 mysqli 模块，安装mysqli拓展。
@@ -2304,6 +2355,351 @@ rm -f libphp.la       modules/* libs/*
 root@83199b3ed9ba:/usr/src/php/ext/gd#
 root@83199b3ed9ba:/usr/src/php/ext/gd#
 ```
+
+##### redis拓展安装
+
+**方式一**
+
+源码编译安装
+
+进入容器：
+> docker exec -it server-php /bin/bash
+
+下载phpredis拓展包：
+> curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz
+
+解压：
+> tar zxf /tmp/redis.tar.gz
+
+移动：
+> mv phpredis-5.3.7 /usr/src/php/ext/redis
+
+安装；
+> docker-php-ext-install redis
+
+退出容器：
+> exit
+
+然后重启容器：
+> docker restart server-php
+
+```
+root@83199b3ed9ba:~# ls -l /usr/src/php/ext
+total 100
+drwxr-xr-x.  4 1000 1000  141 May 28  2019 bcmath
+drwxr-xr-x.  3 1000 1000  157 May 28  2019 bz2
+drwxr-xr-x.  3 1000 1000  255 May 28  2019 calendar
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 com_dotnet
+drwxr-xr-x.  3 1000 1000  139 May 28  2019 ctype
+drwxr-xr-x.  3 1000 1000  174 May 28  2019 curl
+drwxr-xr-x.  4 1000 1000  129 May 28  2019 date
+drwxr-xr-x.  6 1000 1000 4096 May 28  2019 dba
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 dom
+drwxr-xr-x.  4 1000 1000  138 May 28  2019 enchant
+drwxr-xr-x.  3 1000 1000  171 May 28  2019 exif
+-rwxr-xr-x.  1 1000 1000 8652 May 28  2019 ext_skel
+-rw-r--r--.  1 1000 1000 1165 May 28  2019 ext_skel_win32.php
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 fileinfo
+drwxr-xr-x.  4 1000 1000  219 May 28  2019 filter
+drwxr-xr-x.  3 1000 1000  148 May 28  2019 ftp
+drwxr-xr-x.  8 1000 1000 4096 Feb 18 13:56 gd
+drwxr-xr-x.  3 1000 1000  107 May 28  2019 gettext
+drwxr-xr-x.  3 1000 1000  167 May 28  2019 gmp
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 hash
+drwxr-xr-x.  3 1000 1000  124 May 28  2019 iconv
+drwxr-xr-x.  3 1000 1000  133 May 28  2019 imap
+drwxr-xr-x.  3 1000 1000  249 May 28  2019 interbase
+drwxr-xr-x. 21 1000 1000 4096 May 28  2019 intl
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 json
+drwxr-xr-x.  3 1000 1000  145 May 28  2019 ldap
+drwxr-xr-x.  3 1000 1000  129 May 28  2019 libxml
+drwxr-xr-x.  6 1000 1000 4096 May 28  2019 mbstring
+drwxr-xr-x.  3 1000 1000  167 May 28  2019 mcrypt
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 mysqli
+drwxr-xr-x.  2 1000 1000 4096 May 28  2019 mysqlnd
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 oci8
+drwxr-xr-x.  3 1000 1000  172 May 28  2019 odbc
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 opcache
+drwxr-xr-x.  3 1000 1000  157 May 28  2019 openssl
+drwxr-xr-x.  3 1000 1000  180 May 28  2019 pcntl
+drwxr-xr-x.  4 1000 1000  165 May 28  2019 pcre
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 pdo
+drwxr-xr-x.  3 1000 1000  214 May 28  2019 pdo_dblib
+drwxr-xr-x.  3 1000 1000  220 May 28  2019 pdo_firebird
+drwxr-xr-x.  3 1000 1000  264 May 28  2019 pdo_mysql
+drwxr-xr-x.  3 1000 1000  195 May 28  2019 pdo_oci
+drwxr-xr-x.  3 1000 1000  215 May 28  2019 pdo_odbc
+drwxr-xr-x.  3 1000 1000  205 May 28  2019 pdo_pgsql
+drwxr-xr-x.  3 1000 1000  210 May 28  2019 pdo_sqlite
+drwxr-xr-x.  3 1000 1000  157 May 28  2019 pgsql
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 phar
+drwxr-xr-x.  3 1000 1000  104 May 28  2019 posix
+drwxr-xr-x.  3 1000 1000  119 May 28  2019 pspell
+drwxr-xr-x.  3 1000 1000  175 May 28  2019 readline
+drwxr-xr-x.  3 1000 1000  105 May 28  2019 recode
+drwxr-xr-x.  3 1000 1000  117 May 28  2019 reflection
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 session
+drwxr-xr-x.  3 1000 1000  156 May 28  2019 shmop
+drwxr-xr-x.  4 1000 1000  198 May 28  2019 simplexml
+drwxr-xr-x.  3 1000 1000  134 May 28  2019 skeleton
+drwxr-xr-x.  3 1000 1000  101 May 28  2019 snmp
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 soap
+drwxr-xr-x.  3 1000 1000 4096 May 28  2019 sockets
+drwxr-xr-x.  5 1000 1000 4096 May 28  2019 spl
+drwxr-xr-x.  4 1000 1000  154 May 28  2019 sqlite3
+drwxr-xr-x.  4 1000 1000 4096 May 28  2019 standard
+drwxr-xr-x.  3 1000 1000  108 May 28  2019 sysvmsg
+drwxr-xr-x.  3 1000 1000  108 May 28  2019 sysvsem
+drwxr-xr-x.  3 1000 1000  126 May 28  2019 sysvshm
+drwxr-xr-x.  4 1000 1000  170 May 28  2019 tidy
+drwxr-xr-x.  3 1000 1000  225 May 28  2019 tokenizer
+drwxr-xr-x.  3 1000 1000  142 May 28  2019 wddx
+drwxr-xr-x.  3 1000 1000  171 May 28  2019 xml
+drwxr-xr-x.  4 1000 1000  176 May 28  2019 xmlreader
+drwxr-xr-x.  4 1000 1000  150 May 28  2019 xmlrpc
+drwxr-xr-x.  4 1000 1000  182 May 28  2019 xmlwriter
+drwxr-xr-x.  3 1000 1000  142 May 28  2019 xsl
+drwxr-xr-x.  5 1000 1000  184 May 28  2019 zip
+drwxr-xr-x.  3 1000 1000  218 May 28  2019 zlib
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   134    0   134    0     0    103      0 --:--:--  0:00:01 --:--:--   103
+100  287k    0  287k    0     0   133k      0 --:--:--  0:00:02 --:--:--  501k
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# tar xfz /tmp/redis.tar.gz
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# ls /tmp
+redis.tar.gz                           sess_954a1818d858b66e53d3cdd852d63b13
+sess_516869f4cb944e0c34d02a53b90a53a6  sess_o9no55lphsk9m64efocd6bcf0s
+sess_65fd0b6c6dcdef71f1d1cba393f79368
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# ls -l
+total 4
+drwxrwxr-x. 7 root root 4096 Feb 16 02:28 phpredis-5.3.7
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# mv phpredis-5.3.7 /usr/src/php/ext/redis
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# docker-php-ext-install redis
+Configuring for:
+PHP Api Version:         20160303
+Zend Module Api No:      20160303
+Zend Extension Api No:   320160303
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for cc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc accepts -g... yes
+checking for cc option to accept ISO C89... none needed
+checking how to run the C preprocessor... cc -E
+checking for icc... no
+checking for suncc... no
+checking whether cc understands -c and -o together... yes
+checking for system library directory... lib
+checking if compiler supports -R... no
+checking if compiler supports -Wl,-rpath,... yes
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking target system type... x86_64-pc-linux-gnu
+checking for PHP prefix... /usr/local
+checking for PHP includes... -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib
+checking for PHP extension directory... /usr/local/lib/php/extensions/no-debug-non-zts-20160303
+checking for PHP installed headers prefix... /usr/local/include/php
+checking if debug is enabled... no
+checking if zts is enabled... no
+checking for re2c... re2c
+checking for re2c version... 1.1.1 (ok)
+checking for gawk... no
+checking for nawk... nawk
+checking if nawk is broken... no
+checking whether to enable redis support... yes, shared
+checking whether to enable sessions... yes
+checking whether to enable json serializer support... yes
+checking whether to enable igbinary serializer support... no
+checking whether to enable msgpack serializer support... no
+checking whether to enable lzf compression... no
+checking use system liblzf... no
+checking whether to enable Zstd compression... no
+checking use system libsztd... yes
+checking whether to enable lz4 compression... no
+checking use system liblz4... no
+checking for hash includes... /usr/local/include/php
+checking for json includes... /usr/local/include/php
+checking for redis json support... enabled
+checking for redis igbinary support... disabled
+checking for pkg-config... /usr/bin/pkg-config
+checking for git... no
+checking for ld used by cc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for BSD-compatible nm... /usr/bin/nm -B
+checking whether ln -s works... yes
+checking how to recognize dependent libraries... pass_all
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... yes
+checking dlfcn.h presence... yes
+checking for dlfcn.h... yes
+checking the maximum length of command line arguments... 1572864
+checking command to parse /usr/bin/nm -B output from cc object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if cc supports -fno-rtti -fno-exceptions... no
+checking for cc option to produce PIC... -fPIC
+checking if cc PIC flag -fPIC works... yes
+checking if cc static flag -static works... yes
+checking if cc supports -c -o file.o... yes
+checking whether the cc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: creating ./config.status
+config.status: creating config.h
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis.c -o redis.lo
+mkdir .libs
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis.c  -fPIC -DPIC -o .libs/redis.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_commands.c -o redis_commands.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_commands.c  -fPIC -DPIC -o .libs/redis_commands.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/library.c -o library.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/library.c  -fPIC -DPIC -o .libs/library.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_session.c -o redis_session.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_session.c  -fPIC -DPIC -o .libs/redis_session.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_array.c -o redis_array.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_array.c  -fPIC -DPIC -o .libs/redis_array.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_array_impl.c -o redis_array_impl.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_array_impl.c  -fPIC -DPIC -o .libs/redis_array_impl.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_cluster.c -o redis_cluster.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_cluster.c  -fPIC -DPIC -o .libs/redis_cluster.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/cluster_library.c -o cluster_library.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/cluster_library.c  -fPIC -DPIC -o .libs/cluster_library.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/redis_sentinel.c -o redis_sentinel.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/redis_sentinel.c  -fPIC -DPIC -o .libs/redis_sentinel.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/sentinel_library.c -o sentinel_library.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/sentinel_library.c  -fPIC -DPIC -o .libs/sentinel_library.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=compile cc  -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2   -c /usr/src/php/ext/redis/backoff.c -o backoff.lo
+ cc -I. -I/usr/src/php/ext/redis -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -c /usr/src/php/ext/redis/backoff.c  -fPIC -DPIC -o .libs/backoff.o
+/bin/bash /usr/src/php/ext/redis/libtool --mode=link cc -DPHP_ATOM_INC -I/usr/src/php/ext/redis/include -I/usr/src/php/ext/redis/main -I/usr/src/php/ext/redis -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/usr/local/include/php/ext  -fstack-protector-strong -fpic -fpie -O2 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2  -Wl,-O1 -Wl,--hash-style=both -pie -o redis.la -export-dynamic -avoid-version -prefer-pic -module -rpath /usr/src/php/ext/redis/modules  redis.lo redis_commands.lo library.lo redis_session.lo redis_array.lo redis_array_impl.lo redis_cluster.lo cluster_library.lo redis_sentinel.lo sentinel_library.lo backoff.lo
+cc -shared  .libs/redis.o .libs/redis_commands.o .libs/library.o .libs/redis_session.o .libs/redis_array.o .libs/redis_array_impl.o .libs/redis_cluster.o .libs/cluster_library.o .libs/redis_sentinel.o .libs/sentinel_library.o .libs/backoff.o   -Wl,-O1 -Wl,--hash-style=both -Wl,-soname -Wl,redis.so -o .libs/redis.so
+creating redis.la
+(cd .libs && rm -f redis.la && ln -s ../redis.la redis.la)
+/bin/bash /usr/src/php/ext/redis/libtool --mode=install cp ./redis.la /usr/src/php/ext/redis/modules
+cp ./.libs/redis.so /usr/src/php/ext/redis/modules/redis.so
+cp ./.libs/redis.lai /usr/src/php/ext/redis/modules/redis.la
+PATH="$PATH:/sbin" ldconfig -n /usr/src/php/ext/redis/modules
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /usr/src/php/ext/redis/modules
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-Wl,--rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+
+Build complete.
+Don't forget to run 'make test'.
+
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
+find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+find . -name \*.lo -o -name \*.o | xargs rm -f
+find . -name \*.la -o -name \*.a | xargs rm -f
+find . -name \*.so | xargs rm -f
+find . -name .libs -a -type d|xargs rm -rf
+rm -f libphp.la       modules/* libs/*
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+gd
+hash
+iconv
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+redis
+Reflection
+session
+SimpleXML
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@83199b3ed9ba:~#
+```
+
+**方式二**
+
+用 PEAR 编译共享 PECL 扩展库
+
+**方式三**
+
+用 phpize 编译共享 PECL 扩展库
+
+##### swoole拓展安装
+
+
 
 #### 安装nginx
 
@@ -4415,4 +4811,12 @@ SELinux 入门 <https://linux.cn/article-7317-1.html>
 docker php安装GD扩展 <https://www.cnblogs.com/xuezhigu/p/13717353.html>
 
 给docker中的PHP安装 gd扩展 <https://blog.csdn.net/qq_25194685/article/details/90407929>
+
+PHP 手册 安装与配置 PECL 扩展库安装 <https://www.php.net/manual/zh/install.pecl.php>
+
+为docker下的php容器安装php-redis扩展 <https://www.cnblogs.com/wyaokai/p/11904701.html>
+
+phpredis 拓展源码github库 <https://github.com/phpredis/phpredis>
+
+Docker php包自带的几个特殊命令详解 <https://www.jianshu.com/p/682e1d35d032>
 
