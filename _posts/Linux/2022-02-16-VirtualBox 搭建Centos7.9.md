@@ -2687,11 +2687,61 @@ zlib
 [Zend Modules]
 
 root@83199b3ed9ba:~#
+root@83199b3ed9ba:~# php --ri redis
+
+redis
+
+Redis Support => enabled
+Redis Version => 5.3.7
+Redis Sentinel Version => 0.1
+Available serializers => php, json
+
+Directive => Local Value => Master Value
+redis.arrays.algorithm => no value => no value
+redis.arrays.auth => no value => no value
+redis.arrays.autorehash => 0 => 0
+redis.arrays.connecttimeout => 0 => 0
+redis.arrays.distributor => no value => no value
+redis.arrays.functions => no value => no value
+redis.arrays.hosts => no value => no value
+redis.arrays.index => 0 => 0
+redis.arrays.lazyconnect => 0 => 0
+redis.arrays.names => no value => no value
+redis.arrays.pconnect => 0 => 0
+redis.arrays.previous => no value => no value
+redis.arrays.readtimeout => 0 => 0
+redis.arrays.retryinterval => 0 => 0
+redis.arrays.consistent => 0 => 0
+redis.clusters.cache_slots => 0 => 0
+redis.clusters.auth => no value => no value
+redis.clusters.persistent => 0 => 0
+redis.clusters.read_timeout => 0 => 0
+redis.clusters.seeds => no value => no value
+redis.clusters.timeout => 0 => 0
+redis.pconnect.pooling_enabled => 1 => 1
+redis.pconnect.connection_limit => 0 => 0
+redis.pconnect.echo_check_liveness => 1 => 1
+redis.pconnect.pool_detect_dirty => 0 => 0
+redis.pconnect.pool_poll_timeout => 0 => 0
+redis.pconnect.pool_pattern => no value => no value
+redis.session.locking_enabled => 0 => 0
+redis.session.lock_expire => 0 => 0
+redis.session.lock_retries => 10 => 10
+redis.session.lock_wait_time => 2000 => 2000
+root@83199b3ed9ba:~#
 ```
 
 **方式二**
 
 用 PEAR 编译共享 PECL 扩展库
+
+Pecl 全称 The PHP Extension Community Library，php 社区扩展库，由社区编写，维护。
+使用 pecl 方便之处在于我们不用到处找源码包下载编译，配置，不用手动 phpize,configure,make,make install, 
+自动识别模块安装路径，我们只需要编辑 php.ini 配置文件开启扩展，当然我们也需要自己配置一些参数的时候可以先下载源码再构建。
+
+> pecl install redis-4.3.0
+> 
+> docker-php-ext-enable redis
 
 **方式三**
 
@@ -4818,5 +4868,9 @@ PHP 手册 安装与配置 PECL 扩展库安装 <https://www.php.net/manual/zh/i
 
 phpredis 拓展源码github库 <https://github.com/phpredis/phpredis>
 
+Docker pecl安装指定版本的php扩展 <https://www.jianshu.com/p/31c1b296afcd>
+
 Docker php包自带的几个特殊命令详解 <https://www.jianshu.com/p/682e1d35d032>
+
+php 通过 pecl 安装 swoole 扩展 <https://blog.csdn.net/sinat_38878850/article/details/80535350>
 
