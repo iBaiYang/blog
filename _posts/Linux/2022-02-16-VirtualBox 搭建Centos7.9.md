@@ -2377,6 +2377,11 @@ root@83199b3ed9ba:/usr/src/php/ext/gd#
 安装；
 > docker-php-ext-install redis
 
+检查已安装的扩展信息：
+```
+php --ri redis
+```
+
 退出容器：
 > exit
 
