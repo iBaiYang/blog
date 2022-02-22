@@ -2754,13 +2754,13 @@ Pecl 全称 The PHP Extension Community Library，php 社区扩展库，由社�
 
 ##### swoole拓展安装
 
-安装过程中，有四个可选依赖：
+安装过程中，有四个可选依赖拓展：
 * sockets
 * openssl
 * http2
 * mysqlnd
 
-如果sockets没有安装，可以安装下：
+如果sockets拓展没有安装，可以安装下：
 > docker-php-ext-install sockets
 
 swoole拓展对php版本有要求，swoole-4.6版本以上需要php7.2，我们这里安装swoole-4.5.10：
