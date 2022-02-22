@@ -661,7 +661,7 @@ public (active)
 > sudo firewall-cmd --add-port=80/tcp --permanent
 ```
 
-命令末尾的`--permanent`表示用久有效；不加这句，重启后刚才开放的端口就又失效了。
+命令末尾的`--permanent`表示永久有效；不加这句，重启后刚才开放的端口就又失效了。
 
 然后重启防火墙：
 ```
@@ -806,7 +806,7 @@ drwxr-xr-x. 5 root root    75 2月  17 09:44 certs.d
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-#### php安装
+#### 安装php
 
 下载镜像：
 > docker pull php:7.1.30-fpm
@@ -2305,7 +2305,7 @@ root@83199b3ed9ba:/usr/src/php/ext/gd#
 root@83199b3ed9ba:/usr/src/php/ext/gd#
 ```
 
-#### nginx安装
+#### 安装nginx
 
 > docker pull nginx
 
@@ -3766,8 +3766,10 @@ http {
 [root@localhost ~]#
 ```
 
-在 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_www/vhost/virtualbox/*.conf;` 
+编辑nginx配置文件：
 > vi /etc/nginx/nginx.conf
+
+在 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_www/vhost/virtualbox/*.conf;` 
 
 在 `G:\www\vhost` 下新建 `test.com.conf` 文件，写入内容：
 ```
