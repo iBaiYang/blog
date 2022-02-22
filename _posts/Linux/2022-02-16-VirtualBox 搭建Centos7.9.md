@@ -4121,6 +4121,7 @@ echo "hello";
 
 #### 用户权限
 
+把nginx和php用户加入共享文件夹组vboxsf
 > usermod -aG vboxsf nginx
 > 
 > usermod -aG vboxsf apache
