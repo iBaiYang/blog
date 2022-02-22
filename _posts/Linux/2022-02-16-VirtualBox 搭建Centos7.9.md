@@ -2360,7 +2360,7 @@ root@83199b3ed9ba:/usr/src/php/ext/gd#
 
 **方式一**
 
-源码编译安装
+下载源码编译安装
 
 进入容器：
 > docker exec -it server-php /bin/bash
