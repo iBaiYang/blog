@@ -2323,7 +2323,11 @@ Virtual File System  虚拟文件系统
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
+Jenkins持续集成安装部署到项目开发实战详细教程合集 <https://www.ixigua.com/6827368436994146828>
+
 小白速进，五小时linux速成班 centos8安装 <https://www.bilibili.com/video/BV1ey4y1S7Q6?p=6>
+
+https://www.bilibili.com/video/BV1pF411Y7tq <https://www.bilibili.com/video/BV1pF411Y7tq>
 
 Oracle VM VirtualBox 安装 Centos7 并配置静态IP <https://blog.csdn.net/qq_23033339/article/details/80867195>
 
