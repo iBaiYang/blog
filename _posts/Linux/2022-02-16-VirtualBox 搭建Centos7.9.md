@@ -2347,7 +2347,7 @@ SELinux 入门 <https://linux.cn/article-7317-1.html>
 
 用了这么久 Linux ，才知道这些概念 <https://mp.weixin.qq.com/s/10SUh8RKGfSQwXSL14Vw2Q>
 
-
+Filesystem Hierarchy Standard <https://www.pathname.com/fhs/>
 
 
 
