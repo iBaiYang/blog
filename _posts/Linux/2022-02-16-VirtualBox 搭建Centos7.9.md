@@ -2287,6 +2287,20 @@ Filesystem Hierarchy Standard 文件系统层次化标准
 
 ![]({{site.baseurl}}/images/20220219/20220219214453.png)
 
+在早期的 UNIX 系统中，各个厂家都定义了自己文件系统的命名构成，比较混乱，而且难以区分。
+
+为了避免在 Linux 系统上也出现这种命名混乱的问题，在 1994 年推出了 FSSTND(FileSystem Standard) 的 Linux 文件系统层次结构标准，
+后来 UNIX 团队把 FSSTND 发扬光大，成为了后来的 FHS(FileSystem Hierarchy Standard) 。
+
+FHS 标准使得众多的 Linux distributions(Linux 发行版) 有了统一的文件系统命名标准，
+换一种说法：FHS 就是一种文件系统的命名标准。一般来说，Linux distributions 都需要遵循 FHS 规定的
+* 目录结构和目录内容
+* 文件类型的权限
+
+但是，FHS 仅仅定义了两层规范，第一层是 / 下面的各个目录要放什么文件数据，
+比如 /etc 下面需要放设置文件，/bin 和 /sbin 下面需要放可执行文件等；
+第二层是针对 /usr 和 /var 这两个目录来定义的，比如 /usr/share 需要放共享数据，/var/log需要放系统登录文件等。
+
 ### VFS
 
 Virtual File System  虚拟文件系统
@@ -2331,7 +2345,7 @@ CentOS 7.X 关闭SELinux <https://www.cnblogs.com/activiti/p/7552677.html>
 
 SELinux 入门 <https://linux.cn/article-7317-1.html>
 
-
+用了这么久 Linux ，才知道这些概念 <https://mp.weixin.qq.com/s/10SUh8RKGfSQwXSL14Vw2Q>
 
 
 
