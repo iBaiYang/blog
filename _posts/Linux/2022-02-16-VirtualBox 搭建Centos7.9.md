@@ -709,6 +709,9 @@ public (active)
 
 ### PHP安装
 
+PHP和Nginx服务的安装，我们可以已下面的方式在本机直接安装，也可以用Docker实现。
+建议Docker实现，使用Docker会使环境干净好维护。
+
 #### 安装源准备
 
 我们使用Remi源安装PHP7.4。
