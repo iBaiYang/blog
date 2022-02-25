@@ -2156,7 +2156,7 @@ NAT（Network Address Translation）模式实际是虚拟了一个网卡出来�
 然后这个虚拟网卡会再将数据提交给真实机操作系统VMware Network Adapter VMnet8（地址： 192.188.1.1），
 而地址（192.188.1.33 和 192.188.1.1）实际都是由虚拟机软件 VMWare 提供的，具体的交互细节不作研究。
 
-**Host-only**
+**Host-Only**
 
 在 Host-Only 模式下，虚拟网络是一个全封闭的网络，它唯一能够访问的就是主机。其实 Host-Only 网络和 NAT 网络很相似，
 不同的地方就是 Host-Only 网络没有 NAT 服务，所以虚拟网络不能连接到 Internet 。
