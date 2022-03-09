@@ -1080,47 +1080,47 @@ Loading mirror speeds from cached hostfile
 
 依赖关系解决
 
-===========================================================================================================
- Package                          架构            版本                           源                   大小
-===========================================================================================================
+==================================================================================================
+ Package                          架构    版本                           源                   大小
+==================================================================================================
 正在安装:
- php-bcmath                       x86_64          7.4.28-1.el7.remi              remi-php74           80 k
- php-fpm                          x86_64          7.4.28-1.el7.remi              remi-php74          1.8 M
- php-gd                           x86_64          7.4.28-1.el7.remi              remi-php74           89 k
- php-mbstring                     x86_64          7.4.28-1.el7.remi              remi-php74          525 k
- php-mysqlnd                      x86_64          7.4.28-1.el7.remi              remi-php74          255 k
- php-opcache                      x86_64          7.4.28-1.el7.remi              remi-php74          332 k
- php-pdo                          x86_64          7.4.28-1.el7.remi              remi-php74          139 k
- php-pecl-mcrypt                  x86_64          1.0.4-1.el7.remi.7.4           remi-php74           30 k
- php-pecl-zip                     x86_64          1.20.0-1.el7.remi.7.4          remi-php74           63 k
- php-xml                          x86_64          7.4.28-1.el7.remi              remi-php74          209 k
+ php-bcmath                       x86_64  7.4.28-1.el7.remi              remi-php74           80 k
+ php-fpm                          x86_64  7.4.28-1.el7.remi              remi-php74          1.8 M
+ php-gd                           x86_64  7.4.28-1.el7.remi              remi-php74           89 k
+ php-mbstring                     x86_64  7.4.28-1.el7.remi              remi-php74          525 k
+ php-mysqlnd                      x86_64  7.4.28-1.el7.remi              remi-php74          255 k
+ php-opcache                      x86_64  7.4.28-1.el7.remi              remi-php74          332 k
+ php-pdo                          x86_64  7.4.28-1.el7.remi              remi-php74          139 k
+ php-pecl-mcrypt                  x86_64  1.0.4-1.el7.remi.7.4           remi-php74           30 k
+ php-pecl-zip                     x86_64  1.20.0-1.el7.remi.7.4          remi-php74           63 k
+ php-xml                          x86_64  7.4.28-1.el7.remi              remi-php74          209 k
 为依赖而安装:
- dejavu-fonts-common              noarch          2.33-6.el7                     base                 64 k
- dejavu-sans-fonts                noarch          2.33-6.el7                     base                1.4 M
- fontconfig                       x86_64          2.13.0-4.3.el7                 base                254 k
- fontpackages-filesystem          noarch          1.44-8.el7                     base                9.9 k
- fribidi                          x86_64          1.0.2-1.el7_7.1                base                 79 k
- gd3php                           x86_64          2.3.3-4.el7.remi               remi-safe           138 k
- graphite2                        x86_64          1.3.10-1.el7_3                 base                115 k
- harfbuzz                         x86_64          1.7.5-2.el7                    base                267 k
- jbigkit-libs                     x86_64          2.0-11.el7                     base                 46 k
- libX11                           x86_64          1.6.7-4.el7_9                  updates             607 k
- libX11-common                    noarch          1.6.7-4.el7_9                  updates             164 k
- libXau                           x86_64          1.0.8-2.1.el7                  base                 29 k
- libXpm                           x86_64          3.5.12-1.el7                   base                 55 k
- libjpeg-turbo                    x86_64          1.2.90-8.el7                   base                135 k
- libmcrypt                        x86_64          2.5.8-13.el7                   epel                 99 k
- libraqm                          x86_64          0.7.0-4.el7                    epel                 15 k
- libtiff                          x86_64          4.0.3-35.el7                   base                172 k
- libwebp7                         x86_64          1.0.3-1.el7.remi               remi-safe           266 k
- libxcb                           x86_64          1.13-1.el7                     base                214 k
- libxslt                          x86_64          1.1.28-6.el7                   base                242 k
- libzip5                          x86_64          1.8.0-2.el7.remi               remi-safe            64 k
- libzstd                          x86_64          1.5.2-1.el7                    epel                282 k
- oniguruma5php                    x86_64          6.9.7.1-1.el7.remi             remi-safe           205 k
+ dejavu-fonts-common              noarch  2.33-6.el7                     base                 64 k
+ dejavu-sans-fonts                noarch  2.33-6.el7                     base                1.4 M
+ fontconfig                       x86_64  2.13.0-4.3.el7                 base                254 k
+ fontpackages-filesystem          noarch  1.44-8.el7                     base                9.9 k
+ fribidi                          x86_64  1.0.2-1.el7_7.1                base                 79 k
+ gd3php                           x86_64  2.3.3-4.el7.remi               remi-safe           138 k
+ graphite2                        x86_64  1.3.10-1.el7_3                 base                115 k
+ harfbuzz                         x86_64  1.7.5-2.el7                    base                267 k
+ jbigkit-libs                     x86_64  2.0-11.el7                     base                 46 k
+ libX11                           x86_64  1.6.7-4.el7_9                  updates             607 k
+ libX11-common                    noarch  1.6.7-4.el7_9                  updates             164 k
+ libXau                           x86_64  1.0.8-2.1.el7                  base                 29 k
+ libXpm                           x86_64  3.5.12-1.el7                   base                 55 k
+ libjpeg-turbo                    x86_64  1.2.90-8.el7                   base                135 k
+ libmcrypt                        x86_64  2.5.8-13.el7                   epel                 99 k
+ libraqm                          x86_64  0.7.0-4.el7                    epel                 15 k
+ libtiff                          x86_64  4.0.3-35.el7                   base                172 k
+ libwebp7                         x86_64  1.0.3-1.el7.remi               remi-safe           266 k
+ libxcb                           x86_64  1.13-1.el7                     base                214 k
+ libxslt                          x86_64  1.1.28-6.el7                   base                242 k
+ libzip5                          x86_64  1.8.0-2.el7.remi               remi-safe            64 k
+ libzstd                          x86_64  1.5.2-1.el7                    epel                282 k
+ oniguruma5php                    x86_64  6.9.7.1-1.el7.remi             remi-safe           205 k
 
 事务概要
-===========================================================================================================
+=================================================================================================
 安装  10 软件包 (+23 依赖软件包)
 
 总下载量：8.3 M
