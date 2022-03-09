@@ -9,11 +9,11 @@ meta: PHP ArrayIterator,ArrayObject和Array的区别与联系
 
 ## 正文
 
-`Array`是php类型。您可以使用php语言构造`array()`创建一个，或者从php 5.4开始`[]`
+`Array`是php类型。您可以使用php语言结构`array()`创建一个，或者从php 5.4开始用`[]` 。
 
-`ArrayObject`是`object`，其工作方式与数组完全相同。可以使用`new`关键字创建这些内容
+`ArrayObject`是`object`，其工作方式与数组完全相同，可以使用`new`关键字创建这些内容。
 
-`ArrayIterator`与`ArrayObject`类似，但它可以自行迭代。也是使用`new`创建的 
+`ArrayIterator`与`ArrayObject`类似，但它可以自行迭代，也是使用`new`创建的。
 
 ### Array
 
@@ -702,7 +702,7 @@ grape=wow, I love it!
 plum=nah, not me
 ```
 
-### 比较Array vs（ArrayObject / ArrayIterator）
+### 比较Array 与（ArrayObject / ArrayIterator）
 
 它们都可以使用php的数组语法来使用，例如：
 ```
