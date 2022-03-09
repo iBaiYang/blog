@@ -7,12 +7,18 @@ meta: PHP ArrayIterator,ArrayObject和Array的区别与联系
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### Array
+`Array`是php类型。您可以使用php语言构造`array()`创建一个，或者从php 5.4开始`[]`
+
+`ArrayObject`是`object`，其工作方式与数组完全相同。可以使用`new`关键字创建这些内容
+
+`ArrayIterator`与`ArrayObject`类似，但它可以自行迭代。也是使用`new`创建的 
+
+### Array
 
 Array是PHP的类型：
-```php
+```
 namespace {
 
     /**
@@ -47,10 +53,10 @@ $fruits = array (
 echo $fruits["fruits"]["b"];
 ```
 
-#### ArrayObject
+### ArrayObject
 
 Spl 中 ArrayObject类：
-```php
+```
 /**
  * This class allows objects to work as arrays.
  * @link https://php.net/manual/en/class.arrayobject.php
@@ -360,10 +366,10 @@ print_r($b);
 //)
 ```
 
-#### ArrayIterator
+### ArrayIterator
 
 Spl 中 ArrayIterator类：
-```php
+```
 /**
  * This iterator allows to unset and modify values and keys while iterating
  * over Arrays and Objects.
@@ -696,8 +702,59 @@ grape=wow, I love it!
 plum=nah, not me
 ```
 
+### 比较Array vs（ArrayObject / ArrayIterator）
 
-### 参考资料
+它们都可以使用php的数组语法来使用，例如：
+```
+$array[] = 'foo';
+$object[] = 'foo';
+// adds new element with the expected numeric key
+
+$array['bar'] = 'foo';
+$object['bar'] = 'foo';
+// adds new element with the key "bar"
+
+foreach($array as $value);
+foreach($object as $value);
+// iterating over the elements
+```
+
+但是，它们仍然是对象与数组，因此您会注意到其中的差异：
+```
+is_array($array); // true
+is_array($object); // false
+
+is_object($array); // false
+is_object($object); // true
+```
+
+大多数php数组函数都需要数组，因此使用对象会产生错误。有很多这样的功能，例如：
+```
+sort($array); // works as expected
+sort($object); // Warning: sort() expects parameter 1 to be array, object given in ......
+```
+
+最后，对象可以执行您对stdClass对象的期望，即使用对象语法访问公共属性
+```
+$object->foo = 'bar'; // works
+$array->foo = 'bar'; // Warning: Attempt to assign property of non-object in ....
+```
+
+数组（作为本机类型）比对象快得多。另一方面，ArrayObject、ArrayIterator类定义了您可以使用的某些方法，而数组则没有。
+
+### 比较ArrayObject与ArrayIterator
+
+这两个方面的主要区别在于类的方法。
+
+ArrayIterator实现Iterator接口，该接口为其提供与迭代/循环元素相关的方法。 
+ArrayObject有一个名为exchangeArray的方法，它将其内部数组与其他数组交换。
+在ArrayIterator中实现类似的东西意味着要么创建一个新对象，要么循环键入他们一个一个然后逐个设置新数组的元素。
+
+接下来，由于ArrayObject无法迭代，因此当您在foreach中使用它时，它会在内部创建一个ArrayIterator对象（与数组相同）。
+这意味着php会创建原始数据的副本。现在有2个具有相同内容的对象。对于大型阵列来说，这将被证明是低效的。
+但是，您可以指定要用于迭代器的类，因此您可以在代码中使用自定义迭代器。
+
+## 参考资料
 
 PHP 手册 函数参考 变量与类型相关扩展 数组 数组 函数 array <https://www.php.net/manual/zh/function.array.php>
 
@@ -707,6 +764,6 @@ PHP 手册 函数参考 其它基本扩展 SPL 迭代器 ArrayIterator 类 <http
 
 PHP中ArrayIterator,ArrayObject和Array之间的区别 <http://www.voidcn.com/article/p-ytcfleff-btd.html>
 
-
+PHP中ArrayIterator，ArrayObject和Array之间的区别 <https://www.thinbug.com/q/10502719>
 
 
