@@ -732,9 +732,9 @@ Loading mirror speeds from cached hostfile
  * base: mirrors.ustc.edu.cn
  * extras: mirrors.ustc.edu.cn
  * updates: mirrors.ustc.edu.cn
-base                                                                                | 3.6 kB  00:00:00
-extras                                                                              | 2.9 kB  00:00:00
-updates                                                                             | 2.9 kB  00:00:00
+base                                                               | 3.6 kB  00:00:00
+extras                                                             | 2.9 kB  00:00:00
+updates                                                            | 2.9 kB  00:00:00
 正在解决依赖关系
 --> 正在检查事务
 ---> 软件包 epel-release.noarch.0.7-11 将被 安装
@@ -742,26 +742,26 @@ updates                                                                         
 
 依赖关系解决
 
-===========================================================================================================
- Package                       架构                    版本                  源                       大小
-===========================================================================================================
+==============================================================================================
+ Package               架构                    版本                  源                 大小
+==============================================================================================
 正在安装:
- epel-release                  noarch                  7-11                  extras                   15 k
+ epel-release          noarch                  7-11                  extras             15 k
 
 事务概要
-===========================================================================================================
+==============================================================================================
 安装  1 软件包
 
 总下载量：15 k
 安装大小：24 k
 Downloading packages:
-epel-release-7-11.noarch.rpm                                                        |  15 kB  00:00:00
+epel-release-7-11.noarch.rpm                                            |  15 kB  00:00:00
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  正在安装    : epel-release-7-11.noarch                                                               1/1
-  验证中      : epel-release-7-11.noarch                                                               1/1
+  正在安装    : epel-release-7-11.noarch                                     1/1
+  验证中      : epel-release-7-11.noarch                                     1/1
 
 已安装:
   epel-release.noarch 0:7-11
@@ -834,21 +834,21 @@ yum --enablerepo=remi-php74 install -y php
 This system is not registered with an entitlement server. You can use subscription-manager to register.
 
 Loading mirror speeds from cached hostfile
-epel/x86_64/metalink                                                                | 6.8 kB  00:00:00
+epel/x86_64/metalink                                            | 6.8 kB  00:00:00
  * base: mirrors.ustc.edu.cn
  * epel: ftp.iij.ad.jp
  * extras: mirrors.ustc.edu.cn
  * remi-php74: ftp.riken.jp
  * remi-safe: ftp.riken.jp
  * updates: mirrors.ustc.edu.cn
-epel                                                                                | 4.7 kB  00:00:00
-remi-php74                                                                          | 3.0 kB  00:00:00
-remi-safe                                                                           | 3.0 kB  00:00:00
-(1/5): epel/x86_64/group_gz                                                         |  96 kB  00:00:00
-(2/5): remi-php74/primary_db                                                        | 254 kB  00:00:05
-(3/5): epel/x86_64/updateinfo                                                       | 1.1 MB  00:00:34
-(4/5): remi-safe/primary_db                                                         | 2.1 MB  00:01:02
-(5/5): epel/x86_64/primary_db                                                       | 7.0 MB  00:03:33
+epel                                                           | 4.7 kB  00:00:00
+remi-php74                                                     | 3.0 kB  00:00:00
+remi-safe                                                      | 3.0 kB  00:00:00
+(1/5): epel/x86_64/group_gz                                    |  96 kB  00:00:00
+(2/5): remi-php74/primary_db                                   | 254 kB  00:00:05
+(3/5): epel/x86_64/updateinfo                                  | 1.1 MB  00:00:34
+(4/5): remi-safe/primary_db                                    | 2.1 MB  00:01:02
+(5/5): epel/x86_64/primary_db                                  | 7.0 MB  00:03:33
 正在解决依赖关系
 --> 正在检查事务
 ---> 软件包 php.x86_64.0.7.4.28-1.el7.remi 将被 安装
@@ -879,47 +879,47 @@ remi-safe                                                                       
 
 依赖关系解决
 
-===========================================================================================================
- Package                 架构               版本                              源                      大小
-===========================================================================================================
+=======================================================================
+ Package        架构      版本                      源            大小
+=======================================================================
 正在安装:
- php                     x86_64             7.4.28-1.el7.remi                 remi-php74             3.4 M
+ php            x86_64    7.4.28-1.el7.remi        remi-php74    3.4 M
 为依赖而安装:
- apr                     x86_64             1.4.8-7.el7                       base                   104 k
- apr-util                x86_64             1.5.2-6.el7                       base                    92 k
- httpd                   x86_64             2.4.6-97.el7.centos.4             updates                2.7 M
- httpd-tools             x86_64             2.4.6-97.el7.centos.4             updates                 94 k
- libsodium               x86_64             1.0.18-1.el7                      epel                   147 k
- mailcap                 noarch             2.1.41-2.el7                      base                    31 k
- php-cli                 x86_64             7.4.28-1.el7.remi                 remi-php74             5.2 M
- php-common              x86_64             7.4.28-1.el7.remi                 remi-php74             1.2 M
- php-json                x86_64             7.4.28-1.el7.remi                 remi-php74              74 k
- php-sodium              x86_64             7.4.28-1.el7.remi                 remi-php74              85 k
+ apr            x86_64    1.4.8-7.el7              base          104 k
+ apr-util       x86_64    1.5.2-6.el7              base           92 k
+ httpd          x86_64    2.4.6-97.el7.centos.4    updates       2.7 M
+ httpd-tools    x86_64    2.4.6-97.el7.centos.4    updates        94 k
+ libsodium      x86_64    1.0.18-1.el7             epel           147 k
+ mailcap        noarch    2.1.41-2.el7             base            31 k
+ php-cli        x86_64    7.4.28-1.el7.remi        remi-php74    5.2 M
+ php-common     x86_64    7.4.28-1.el7.remi        remi-php74    1.2 M
+ php-json       x86_64    7.4.28-1.el7.remi        remi-php74     74 k
+ php-sodium     x86_64    7.4.28-1.el7.remi        remi-php74     85 k
 
 事务概要
-===========================================================================================================
+=======================================================================
 安装  1 软件包 (+10 依赖软件包)
 
 总下载量：13 M
 安装大小：52 M
 Downloading packages:
-(1/11): apr-util-1.5.2-6.el7.x86_64.rpm                                             |  92 kB  00:00:00
-(2/11): mailcap-2.1.41-2.el7.noarch.rpm                                             |  31 kB  00:00:00
-(3/11): apr-1.4.8-7.el7.x86_64.rpm                                                  | 104 kB  00:00:01
-(4/11): httpd-tools-2.4.6-97.el7.centos.4.x86_64.rpm                                |  94 kB  00:00:01
+(1/11): apr-util-1.5.2-6.el7.x86_64.rpm                        |  92 kB  00:00:00
+(2/11): mailcap-2.1.41-2.el7.noarch.rpm                        |  31 kB  00:00:00
+(3/11): apr-1.4.8-7.el7.x86_64.rpm                             | 104 kB  00:00:01
+(4/11): httpd-tools-2.4.6-97.el7.centos.4.x86_64.rpm           |  94 kB  00:00:01
 warning: /var/cache/yum/x86_64/7/epel/packages/libsodium-1.0.18-1.el7.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID 352c64e5: NOKEY
 libsodium-1.0.18-1.el7.x86_64.rpm 的公钥尚未安装
-(5/11): libsodium-1.0.18-1.el7.x86_64.rpm                                           | 147 kB  00:00:00
-(6/11): httpd-2.4.6-97.el7.centos.4.x86_64.rpm                                      | 2.7 MB  00:00:02
+(5/11): libsodium-1.0.18-1.el7.x86_64.rpm                      | 147 kB  00:00:00
+(6/11): httpd-2.4.6-97.el7.centos.4.x86_64.rpm                 | 2.7 MB  00:00:02
 warning: /var/cache/yum/x86_64/7/remi-php74/packages/php-json-7.4.28-1.el7.remi.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID 00f97f56: NOKEY
 php-json-7.4.28-1.el7.remi.x86_64.rpm 的公钥尚未安装
-(7/11): php-json-7.4.28-1.el7.remi.x86_64.rpm                                       |  74 kB  00:00:01
-(8/11): php-sodium-7.4.28-1.el7.remi.x86_64.rpm                                     |  85 kB  00:00:01
-(9/11): php-common-7.4.28-1.el7.remi.x86_64.rpm                                     | 1.2 MB  00:00:03
-(10/11): php-7.4.28-1.el7.remi.x86_64.rpm                                           | 3.4 MB  00:00:10
-(11/11): php-cli-7.4.28-1.el7.remi.x86_64.rpm                                       | 5.2 MB  00:00:17
------------------------------------------------------------------------------------------------------------
-总计                                                                       717 kB/s |  13 MB  00:00:18
+(7/11): php-json-7.4.28-1.el7.remi.x86_64.rpm                  |  74 kB  00:00:01
+(8/11): php-sodium-7.4.28-1.el7.remi.x86_64.rpm                |  85 kB  00:00:01
+(9/11): php-common-7.4.28-1.el7.remi.x86_64.rpm                | 1.2 MB  00:00:03
+(10/11): php-7.4.28-1.el7.remi.x86_64.rpm                      | 3.4 MB  00:00:10
+(11/11): php-cli-7.4.28-1.el7.remi.x86_64.rpm                  | 5.2 MB  00:00:17
+------------------------------------------------------------------------------------
+总计                                                  717 kB/s |  13 MB  00:00:18
 从 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 检索密钥
 导入 GPG key 0x352C64E5:
  用户ID     : "Fedora EPEL (7) <epel@fedoraproject.org>"
@@ -937,28 +937,28 @@ Running transaction test
 Transaction test succeeded
 Running transaction
 警告：RPM 数据库已被非 yum 程序修改。
-  正在安装    : apr-1.4.8-7.el7.x86_64                                                                1/11
-  正在安装    : apr-util-1.5.2-6.el7.x86_64                                                           2/11
-  正在安装    : httpd-tools-2.4.6-97.el7.centos.4.x86_64                                              3/11
-  正在安装    : php-common-7.4.28-1.el7.remi.x86_64                                                   4/11
-  正在安装    : php-json-7.4.28-1.el7.remi.x86_64                                                     5/11
-  正在安装    : php-cli-7.4.28-1.el7.remi.x86_64                                                      6/11
-  正在安装    : mailcap-2.1.41-2.el7.noarch                                                           7/11
-  正在安装    : httpd-2.4.6-97.el7.centos.4.x86_64                                                    8/11
-  正在安装    : libsodium-1.0.18-1.el7.x86_64                                                         9/11
-  正在安装    : php-sodium-7.4.28-1.el7.remi.x86_64                                                  10/11
-  正在安装    : php-7.4.28-1.el7.remi.x86_64                                                         11/11
-  验证中      : libsodium-1.0.18-1.el7.x86_64                                                         1/11
-  验证中      : mailcap-2.1.41-2.el7.noarch                                                           2/11
-  验证中      : apr-1.4.8-7.el7.x86_64                                                                3/11
-  验证中      : apr-util-1.5.2-6.el7.x86_64                                                           4/11
-  验证中      : httpd-2.4.6-97.el7.centos.4.x86_64                                                    5/11
-  验证中      : php-json-7.4.28-1.el7.remi.x86_64                                                     6/11
-  验证中      : php-common-7.4.28-1.el7.remi.x86_64                                                   7/11
-  验证中      : php-sodium-7.4.28-1.el7.remi.x86_64                                                   8/11
-  验证中      : php-7.4.28-1.el7.remi.x86_64                                                          9/11
-  验证中      : php-cli-7.4.28-1.el7.remi.x86_64                                                     10/11
-  验证中      : httpd-tools-2.4.6-97.el7.centos.4.x86_64                                             11/11
+  正在安装    : apr-1.4.8-7.el7.x86_64                             1/11
+  正在安装    : apr-util-1.5.2-6.el7.x86_64                        2/11
+  正在安装    : httpd-tools-2.4.6-97.el7.centos.4.x86_64           3/11
+  正在安装    : php-common-7.4.28-1.el7.remi.x86_64                4/11
+  正在安装    : php-json-7.4.28-1.el7.remi.x86_64                  5/11
+  正在安装    : php-cli-7.4.28-1.el7.remi.x86_64                   6/11
+  正在安装    : mailcap-2.1.41-2.el7.noarch                        7/11
+  正在安装    : httpd-2.4.6-97.el7.centos.4.x86_64                 8/11
+  正在安装    : libsodium-1.0.18-1.el7.x86_64                      9/11
+  正在安装    : php-sodium-7.4.28-1.el7.remi.x86_64               10/11
+  正在安装    : php-7.4.28-1.el7.remi.x86_64                      11/11
+  验证中      : libsodium-1.0.18-1.el7.x86_64                      1/11
+  验证中      : mailcap-2.1.41-2.el7.noarch                        2/11
+  验证中      : apr-1.4.8-7.el7.x86_64                             3/11
+  验证中      : apr-util-1.5.2-6.el7.x86_64                        4/11
+  验证中      : httpd-2.4.6-97.el7.centos.4.x86_64                 5/11
+  验证中      : php-json-7.4.28-1.el7.remi.x86_64                  6/11
+  验证中      : php-common-7.4.28-1.el7.remi.x86_64                7/11
+  验证中      : php-sodium-7.4.28-1.el7.remi.x86_64                8/11
+  验证中      : php-7.4.28-1.el7.remi.x86_64                       9/11
+  验证中      : php-cli-7.4.28-1.el7.remi.x86_64                  10/11
+  验证中      : httpd-tools-2.4.6-97.el7.centos.4.x86_64          11/11
 
 已安装:
   php.x86_64 0:7.4.28-1.el7.remi
@@ -1126,111 +1126,111 @@ Loading mirror speeds from cached hostfile
 总下载量：8.3 M
 安装大小：27 M
 Downloading packages:
-(1/33): dejavu-fonts-common-2.33-6.el7.noarch.rpm                                   |  64 kB  00:00:00
-(2/33): dejavu-sans-fonts-2.33-6.el7.noarch.rpm                                     | 1.4 MB  00:00:00
-(3/33): fontconfig-2.13.0-4.3.el7.x86_64.rpm                                        | 254 kB  00:00:00
-(4/33): fontpackages-filesystem-1.44-8.el7.noarch.rpm                               | 9.9 kB  00:00:00
-(5/33): graphite2-1.3.10-1.el7_3.x86_64.rpm                                         | 115 kB  00:00:00
-(6/33): fribidi-1.0.2-1.el7_7.1.x86_64.rpm                                          |  79 kB  00:00:00
-(7/33): libX11-common-1.6.7-4.el7_9.noarch.rpm                                      | 164 kB  00:00:00
-(8/33): libX11-1.6.7-4.el7_9.x86_64.rpm                                             | 607 kB  00:00:00
-(9/33): libXau-1.0.8-2.1.el7.x86_64.rpm                                             |  29 kB  00:00:00
-(10/33): libXpm-3.5.12-1.el7.x86_64.rpm                                             |  55 kB  00:00:00
-(11/33): libjpeg-turbo-1.2.90-8.el7.x86_64.rpm                                      | 135 kB  00:00:00
-(12/33): harfbuzz-1.7.5-2.el7.x86_64.rpm                                            | 267 kB  00:00:01
-(13/33): libraqm-0.7.0-4.el7.x86_64.rpm                                             |  15 kB  00:00:00
-(14/33): libtiff-4.0.3-35.el7.x86_64.rpm                                            | 172 kB  00:00:00
-(15/33): libxcb-1.13-1.el7.x86_64.rpm                                               | 214 kB  00:00:00
-(16/33): libxslt-1.1.28-6.el7.x86_64.rpm                                            | 242 kB  00:00:00
-(17/33): libmcrypt-2.5.8-13.el7.x86_64.rpm                                          |  99 kB  00:00:00
-(18/33): libzstd-1.5.2-1.el7.x86_64.rpm                                             | 282 kB  00:00:00
-(19/33): jbigkit-libs-2.0-11.el7.x86_64.rpm                                         |  46 kB  00:00:02
-(20/33): gd3php-2.3.3-4.el7.remi.x86_64.rpm                                         | 138 kB  00:00:02
-(21/33): libzip5-1.8.0-2.el7.remi.x86_64.rpm                                        |  64 kB  00:00:00
-(22/33): php-gd-7.4.28-1.el7.remi.x86_64.rpm                                        |  89 kB  00:00:00
-(23/33): libwebp7-1.0.3-1.el7.remi.x86_64.rpm                                       | 266 kB  00:00:02
-(24/33): php-bcmath-7.4.28-1.el7.remi.x86_64.rpm                                    |  80 kB  00:00:01
-(25/33): oniguruma5php-6.9.7.1-1.el7.remi.x86_64.rpm                                | 205 kB  00:00:01
-(26/33): php-mbstring-7.4.28-1.el7.remi.x86_64.rpm                                  | 525 kB  00:00:00
-(27/33): php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64.rpm                            |  30 kB  00:00:00
-(28/33): php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64.rpm                              |  63 kB  00:00:00
-(29/33): php-xml-7.4.28-1.el7.remi.x86_64.rpm                                       | 209 kB  00:00:00
-(30/33): php-opcache-7.4.28-1.el7.remi.x86_64.rpm                                   | 332 kB  00:00:00
-(31/33): php-mysqlnd-7.4.28-1.el7.remi.x86_64.rpm                                   | 255 kB  00:00:02
-(32/33): php-pdo-7.4.28-1.el7.remi.x86_64.rpm                                       | 139 kB  00:00:02
-(33/33): php-fpm-7.4.28-1.el7.remi.x86_64.rpm                                       | 1.8 MB  00:00:04
+(1/33): dejavu-fonts-common-2.33-6.el7.noarch.rpm              |  64 kB  00:00:00
+(2/33): dejavu-sans-fonts-2.33-6.el7.noarch.rpm                | 1.4 MB  00:00:00
+(3/33): fontconfig-2.13.0-4.3.el7.x86_64.rpm                   | 254 kB  00:00:00
+(4/33): fontpackages-filesystem-1.44-8.el7.noarch.rpm          | 9.9 kB  00:00:00
+(5/33): graphite2-1.3.10-1.el7_3.x86_64.rpm                    | 115 kB  00:00:00
+(6/33): fribidi-1.0.2-1.el7_7.1.x86_64.rpm                     |  79 kB  00:00:00
+(7/33): libX11-common-1.6.7-4.el7_9.noarch.rpm                 | 164 kB  00:00:00
+(8/33): libX11-1.6.7-4.el7_9.x86_64.rpm                        | 607 kB  00:00:00
+(9/33): libXau-1.0.8-2.1.el7.x86_64.rpm                        |  29 kB  00:00:00
+(10/33): libXpm-3.5.12-1.el7.x86_64.rpm                        |  55 kB  00:00:00
+(11/33): libjpeg-turbo-1.2.90-8.el7.x86_64.rpm                 | 135 kB  00:00:00
+(12/33): harfbuzz-1.7.5-2.el7.x86_64.rpm                       | 267 kB  00:00:01
+(13/33): libraqm-0.7.0-4.el7.x86_64.rpm                        |  15 kB  00:00:00
+(14/33): libtiff-4.0.3-35.el7.x86_64.rpm                       | 172 kB  00:00:00
+(15/33): libxcb-1.13-1.el7.x86_64.rpm                          | 214 kB  00:00:00
+(16/33): libxslt-1.1.28-6.el7.x86_64.rpm                       | 242 kB  00:00:00
+(17/33): libmcrypt-2.5.8-13.el7.x86_64.rpm                     |  99 kB  00:00:00
+(18/33): libzstd-1.5.2-1.el7.x86_64.rpm                        | 282 kB  00:00:00
+(19/33): jbigkit-libs-2.0-11.el7.x86_64.rpm                    |  46 kB  00:00:02
+(20/33): gd3php-2.3.3-4.el7.remi.x86_64.rpm                    | 138 kB  00:00:02
+(21/33): libzip5-1.8.0-2.el7.remi.x86_64.rpm                   |  64 kB  00:00:00
+(22/33): php-gd-7.4.28-1.el7.remi.x86_64.rpm                   |  89 kB  00:00:00
+(23/33): libwebp7-1.0.3-1.el7.remi.x86_64.rpm                  | 266 kB  00:00:02
+(24/33): php-bcmath-7.4.28-1.el7.remi.x86_64.rpm               |  80 kB  00:00:01
+(25/33): oniguruma5php-6.9.7.1-1.el7.remi.x86_64.rpm           | 205 kB  00:00:01
+(26/33): php-mbstring-7.4.28-1.el7.remi.x86_64.rpm             | 525 kB  00:00:00
+(27/33): php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64.rpm       |  30 kB  00:00:00
+(28/33): php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64.rpm         |  63 kB  00:00:00
+(29/33): php-xml-7.4.28-1.el7.remi.x86_64.rpm                  | 209 kB  00:00:00
+(30/33): php-opcache-7.4.28-1.el7.remi.x86_64.rpm              | 332 kB  00:00:00
+(31/33): php-mysqlnd-7.4.28-1.el7.remi.x86_64.rpm              | 255 kB  00:00:02
+(32/33): php-pdo-7.4.28-1.el7.remi.x86_64.rpm                  | 139 kB  00:00:02
+(33/33): php-fpm-7.4.28-1.el7.remi.x86_64.rpm                  | 1.8 MB  00:00:04
 -----------------------------------------------------------------------------------------------------------
-总计                                                                       1.2 MB/s | 8.3 MB  00:00:07
+总计 1.2 MB/s | 8.3 MB  00:00:07
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  正在安装    : libjpeg-turbo-1.2.90-8.el7.x86_64                                                     1/33
-  正在安装    : fontpackages-filesystem-1.44-8.el7.noarch                                             2/33
-  正在安装    : dejavu-fonts-common-2.33-6.el7.noarch                                                 3/33
-  正在安装    : dejavu-sans-fonts-2.33-6.el7.noarch                                                   4/33
-  正在安装    : fontconfig-2.13.0-4.3.el7.x86_64                                                      5/33
-  正在安装    : libX11-common-1.6.7-4.el7_9.noarch                                                    6/33
-  正在安装    : libwebp7-1.0.3-1.el7.remi.x86_64                                                      7/33
-  正在安装    : graphite2-1.3.10-1.el7_3.x86_64                                                       8/33
-  正在安装    : harfbuzz-1.7.5-2.el7.x86_64                                                           9/33
-  正在安装    : libxslt-1.1.28-6.el7.x86_64                                                          10/33
-  正在安装    : libXau-1.0.8-2.1.el7.x86_64                                                          11/33
-  正在安装    : libxcb-1.13-1.el7.x86_64                                                             12/33
-  正在安装    : libX11-1.6.7-4.el7_9.x86_64                                                          13/33
-  正在安装    : libXpm-3.5.12-1.el7.x86_64                                                           14/33
-  正在安装    : jbigkit-libs-2.0-11.el7.x86_64                                                       15/33
-  正在安装    : libtiff-4.0.3-35.el7.x86_64                                                          16/33
-  正在安装    : oniguruma5php-6.9.7.1-1.el7.remi.x86_64                                              17/33
-  正在安装    : fribidi-1.0.2-1.el7_7.1.x86_64                                                       18/33
-  正在安装    : libraqm-0.7.0-4.el7.x86_64                                                           19/33
-  正在安装    : gd3php-2.3.3-4.el7.remi.x86_64                                                       20/33
-  正在安装    : libzstd-1.5.2-1.el7.x86_64                                                           21/33
-  正在安装    : libzip5-1.8.0-2.el7.remi.x86_64                                                      22/33
-  正在安装    : libmcrypt-2.5.8-13.el7.x86_64                                                        23/33
-  正在安装    : php-pdo-7.4.28-1.el7.remi.x86_64                                                     24/33
-  正在安装    : php-mysqlnd-7.4.28-1.el7.remi.x86_64                                                 25/33
-  正在安装    : php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64                                          26/33
-  正在安装    : php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64                                            27/33
-  正在安装    : php-gd-7.4.28-1.el7.remi.x86_64                                                      28/33
-  正在安装    : php-mbstring-7.4.28-1.el7.remi.x86_64                                                29/33
-  正在安装    : php-xml-7.4.28-1.el7.remi.x86_64                                                     30/33
-  正在安装    : php-opcache-7.4.28-1.el7.remi.x86_64                                                 31/33
-  正在安装    : php-bcmath-7.4.28-1.el7.remi.x86_64                                                  32/33
-  正在安装    : php-fpm-7.4.28-1.el7.remi.x86_64                                                     33/33
-  验证中      : fontconfig-2.13.0-4.3.el7.x86_64                                                      1/33
-  验证中      : gd3php-2.3.3-4.el7.remi.x86_64                                                        2/33
-  验证中      : php-pdo-7.4.28-1.el7.remi.x86_64                                                      3/33
-  验证中      : libmcrypt-2.5.8-13.el7.x86_64                                                         4/33
-  验证中      : dejavu-fonts-common-2.33-6.el7.noarch                                                 5/33
-  验证中      : fontpackages-filesystem-1.44-8.el7.noarch                                             6/33
-  验证中      : php-fpm-7.4.28-1.el7.remi.x86_64                                                      7/33
-  验证中      : libtiff-4.0.3-35.el7.x86_64                                                           8/33
-  验证中      : php-mbstring-7.4.28-1.el7.remi.x86_64                                                 9/33
-  验证中      : php-bcmath-7.4.28-1.el7.remi.x86_64                                                  10/33
-  验证中      : php-xml-7.4.28-1.el7.remi.x86_64                                                     11/33
-  验证中      : libzstd-1.5.2-1.el7.x86_64                                                           12/33
-  验证中      : libzip5-1.8.0-2.el7.remi.x86_64                                                      13/33
-  验证中      : libxcb-1.13-1.el7.x86_64                                                             14/33
-  验证中      : php-gd-7.4.28-1.el7.remi.x86_64                                                      15/33
-  验证中      : libXpm-3.5.12-1.el7.x86_64                                                           16/33
-  验证中      : libjpeg-turbo-1.2.90-8.el7.x86_64                                                    17/33
-  验证中      : harfbuzz-1.7.5-2.el7.x86_64                                                          18/33
-  验证中      : fribidi-1.0.2-1.el7_7.1.x86_64                                                       19/33
-  验证中      : oniguruma5php-6.9.7.1-1.el7.remi.x86_64                                              20/33
-  验证中      : dejavu-sans-fonts-2.33-6.el7.noarch                                                  21/33
-  验证中      : jbigkit-libs-2.0-11.el7.x86_64                                                       22/33
-  验证中      : libraqm-0.7.0-4.el7.x86_64                                                           23/33
-  验证中      : php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64                                          24/33
-  验证中      : php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64                                            25/33
-  验证中      : php-opcache-7.4.28-1.el7.remi.x86_64                                                 26/33
-  验证中      : libXau-1.0.8-2.1.el7.x86_64                                                          27/33
-  验证中      : libxslt-1.1.28-6.el7.x86_64                                                          28/33
-  验证中      : libX11-1.6.7-4.el7_9.x86_64                                                          29/33
-  验证中      : graphite2-1.3.10-1.el7_3.x86_64                                                      30/33
-  验证中      : libwebp7-1.0.3-1.el7.remi.x86_64                                                     31/33
-  验证中      : libX11-common-1.6.7-4.el7_9.noarch                                                   32/33
-  验证中      : php-mysqlnd-7.4.28-1.el7.remi.x86_64                                                 33/33
+  正在安装    : libjpeg-turbo-1.2.90-8.el7.x86_64                  1/33
+  正在安装    : fontpackages-filesystem-1.44-8.el7.noarch          2/33
+  正在安装    : dejavu-fonts-common-2.33-6.el7.noarch              3/33
+  正在安装    : dejavu-sans-fonts-2.33-6.el7.noarch                4/33
+  正在安装    : fontconfig-2.13.0-4.3.el7.x86_64                   5/33
+  正在安装    : libX11-common-1.6.7-4.el7_9.noarch                 6/33
+  正在安装    : libwebp7-1.0.3-1.el7.remi.x86_64                   7/33
+  正在安装    : graphite2-1.3.10-1.el7_3.x86_64                    8/33
+  正在安装    : harfbuzz-1.7.5-2.el7.x86_64                        9/33
+  正在安装    : libxslt-1.1.28-6.el7.x86_64                       10/33
+  正在安装    : libXau-1.0.8-2.1.el7.x86_64                       11/33
+  正在安装    : libxcb-1.13-1.el7.x86_64                          12/33
+  正在安装    : libX11-1.6.7-4.el7_9.x86_64                       13/33
+  正在安装    : libXpm-3.5.12-1.el7.x86_64                        14/33
+  正在安装    : jbigkit-libs-2.0-11.el7.x86_64                    15/33
+  正在安装    : libtiff-4.0.3-35.el7.x86_64                       16/33
+  正在安装    : oniguruma5php-6.9.7.1-1.el7.remi.x86_64           17/33
+  正在安装    : fribidi-1.0.2-1.el7_7.1.x86_64                    18/33
+  正在安装    : libraqm-0.7.0-4.el7.x86_64                        19/33
+  正在安装    : gd3php-2.3.3-4.el7.remi.x86_64                    20/33
+  正在安装    : libzstd-1.5.2-1.el7.x86_64                        21/33
+  正在安装    : libzip5-1.8.0-2.el7.remi.x86_64                   22/33
+  正在安装    : libmcrypt-2.5.8-13.el7.x86_64                     23/33
+  正在安装    : php-pdo-7.4.28-1.el7.remi.x86_64                  24/33
+  正在安装    : php-mysqlnd-7.4.28-1.el7.remi.x86_64              25/33
+  正在安装    : php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64       26/33
+  正在安装    : php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64         27/33
+  正在安装    : php-gd-7.4.28-1.el7.remi.x86_64                   28/33
+  正在安装    : php-mbstring-7.4.28-1.el7.remi.x86_64             29/33
+  正在安装    : php-xml-7.4.28-1.el7.remi.x86_64                  30/33
+  正在安装    : php-opcache-7.4.28-1.el7.remi.x86_64              31/33
+  正在安装    : php-bcmath-7.4.28-1.el7.remi.x86_64               32/33
+  正在安装    : php-fpm-7.4.28-1.el7.remi.x86_64                  33/33
+  验证中      : fontconfig-2.13.0-4.3.el7.x86_64                   1/33
+  验证中      : gd3php-2.3.3-4.el7.remi.x86_64                     2/33
+  验证中      : php-pdo-7.4.28-1.el7.remi.x86_64                   3/33
+  验证中      : libmcrypt-2.5.8-13.el7.x86_64                      4/33
+  验证中      : dejavu-fonts-common-2.33-6.el7.noarch              5/33
+  验证中      : fontpackages-filesystem-1.44-8.el7.noarch          6/33
+  验证中      : php-fpm-7.4.28-1.el7.remi.x86_64                   7/33
+  验证中      : libtiff-4.0.3-35.el7.x86_64                        8/33
+  验证中      : php-mbstring-7.4.28-1.el7.remi.x86_64              9/33
+  验证中      : php-bcmath-7.4.28-1.el7.remi.x86_64               10/33
+  验证中      : php-xml-7.4.28-1.el7.remi.x86_64                  11/33
+  验证中      : libzstd-1.5.2-1.el7.x86_64                        12/33
+  验证中      : libzip5-1.8.0-2.el7.remi.x86_64                   13/33
+  验证中      : libxcb-1.13-1.el7.x86_64                          14/33
+  验证中      : php-gd-7.4.28-1.el7.remi.x86_64                   15/33
+  验证中      : libXpm-3.5.12-1.el7.x86_64                        16/33
+  验证中      : libjpeg-turbo-1.2.90-8.el7.x86_64                 17/33
+  验证中      : harfbuzz-1.7.5-2.el7.x86_64                       18/33
+  验证中      : fribidi-1.0.2-1.el7_7.1.x86_64                    19/33
+  验证中      : oniguruma5php-6.9.7.1-1.el7.remi.x86_64           20/33
+  验证中      : dejavu-sans-fonts-2.33-6.el7.noarch               21/33
+  验证中      : jbigkit-libs-2.0-11.el7.x86_64                    22/33
+  验证中      : libraqm-0.7.0-4.el7.x86_64                        23/33
+  验证中      : php-pecl-mcrypt-1.0.4-1.el7.remi.7.4.x86_64       24/33
+  验证中      : php-pecl-zip-1.20.0-1.el7.remi.7.4.x86_64         25/33
+  验证中      : php-opcache-7.4.28-1.el7.remi.x86_64              26/33
+  验证中      : libXau-1.0.8-2.1.el7.x86_64                       27/33
+  验证中      : libxslt-1.1.28-6.el7.x86_64                       28/33
+  验证中      : libX11-1.6.7-4.el7_9.x86_64                       29/33
+  验证中      : graphite2-1.3.10-1.el7_3.x86_64                   30/33
+  验证中      : libwebp7-1.0.3-1.el7.remi.x86_64                  31/33
+  验证中      : libX11-common-1.6.7-4.el7_9.noarch                32/33
+  验证中      : php-mysqlnd-7.4.28-1.el7.remi.x86_64              33/33
 
 已安装:
   php-bcmath.x86_64 0:7.4.28-1.el7.remi               php-fpm.x86_64 0:7.4.28-1.el7.remi
@@ -1354,13 +1354,13 @@ Loading mirror speeds from cached hostfile
 总下载量：93 k
 安装大小：200 k
 Downloading packages:
-php-process-7.4.28-1.el7.remi.x86_64.rpm                                            |  93 kB  00:00:01
+php-process-7.4.28-1.el7.remi.x86_64.rpm                       |  93 kB  00:00:01
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  正在安装    : php-process-7.4.28-1.el7.remi.x86_64                                                   1/1
-  验证中      : php-process-7.4.28-1.el7.remi.x86_64                                                   1/1
+  正在安装    : php-process-7.4.28-1.el7.remi.x86_64                1/1
+  验证中      : php-process-7.4.28-1.el7.remi.x86_64                1/1
 
 已安装:
   php-process.x86_64 0:7.4.28-1.el7.remi
@@ -1526,27 +1526,27 @@ Loading mirror speeds from cached hostfile
 总下载量：2.4 M
 安装大小：6.7 M
 Downloading packages:
-(1/5): gperftools-libs-2.6.1-1.el7.x86_64.rpm                                       | 272 kB  00:00:00
-(2/5): nginx-filesystem-1.20.1-9.el7.noarch.rpm                                     |  24 kB  00:00:00
-(3/5): centos-indexhtml-7-9.el7.centos.noarch.rpm                                   |  92 kB  00:00:00
-(4/5): nginx-1.20.1-9.el7.x86_64.rpm                                                | 587 kB  00:00:00
-(5/5): openssl11-libs-1.1.1k-2.el7.x86_64.rpm                                       | 1.5 MB  00:00:14
+(1/5): gperftools-libs-2.6.1-1.el7.x86_64.rpm                  | 272 kB  00:00:00
+(2/5): nginx-filesystem-1.20.1-9.el7.noarch.rpm                |  24 kB  00:00:00
+(3/5): centos-indexhtml-7-9.el7.centos.noarch.rpm              |  92 kB  00:00:00
+(4/5): nginx-1.20.1-9.el7.x86_64.rpm                           | 587 kB  00:00:00
+(5/5): openssl11-libs-1.1.1k-2.el7.x86_64.rpm                  | 1.5 MB  00:00:14
 -----------------------------------------------------------------------------------------------------------
-总计                                                                       168 kB/s | 2.4 MB  00:00:14
+总计 168 kB/s | 2.4 MB  00:00:14
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  正在安装    : 1:openssl11-libs-1.1.1k-2.el7.x86_64                                                   1/5
-  正在安装    : gperftools-libs-2.6.1-1.el7.x86_64                                                     2/5
-  正在安装    : 1:nginx-filesystem-1.20.1-9.el7.noarch                                                 3/5
-  正在安装    : centos-indexhtml-7-9.el7.centos.noarch                                                 4/5
-  正在安装    : 1:nginx-1.20.1-9.el7.x86_64                                                            5/5
-  验证中      : centos-indexhtml-7-9.el7.centos.noarch                                                 1/5
-  验证中      : 1:nginx-filesystem-1.20.1-9.el7.noarch                                                 2/5
-  验证中      : gperftools-libs-2.6.1-1.el7.x86_64                                                     3/5
-  验证中      : 1:openssl11-libs-1.1.1k-2.el7.x86_64                                                   4/5
-  验证中      : 1:nginx-1.20.1-9.el7.x86_64                                                            5/5
+  正在安装    : 1:openssl11-libs-1.1.1k-2.el7.x86_64                1/5
+  正在安装    : gperftools-libs-2.6.1-1.el7.x86_64                  2/5
+  正在安装    : 1:nginx-filesystem-1.20.1-9.el7.noarch              3/5
+  正在安装    : centos-indexhtml-7-9.el7.centos.noarch              4/5
+  正在安装    : 1:nginx-1.20.1-9.el7.x86_64                         5/5
+  验证中      : centos-indexhtml-7-9.el7.centos.noarch              1/5
+  验证中      : 1:nginx-filesystem-1.20.1-9.el7.noarch              2/5
+  验证中      : gperftools-libs-2.6.1-1.el7.x86_64                  3/5
+  验证中      : 1:openssl11-libs-1.1.1k-2.el7.x86_64                4/5
+  验证中      : 1:nginx-1.20.1-9.el7.x86_64                         5/5
 
 已安装:
   nginx.x86_64 1:1.20.1-9.el7
@@ -1779,12 +1779,12 @@ Loading mirror speeds from cached hostfile
 总下载量：790 k
 安装大小：2.8 M
 Downloading packages:
-nginx-1.20.2-1.el7.ngx.x86_64.rpm                                                           | 790 kB  00:00:02
+nginx-1.20.2-1.el7.ngx.x86_64.rpm                                      | 790 kB  00:00:02
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  正在安装    : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
+  正在安装    : 1:nginx-1.20.2-1.el7.ngx.x86_64                             1/1
 ----------------------------------------------------------------------
 
 Thanks for using nginx!
@@ -1800,7 +1800,7 @@ Commercial subscriptions for nginx are available on:
 * https://nginx.com/products/
 
 ----------------------------------------------------------------------
-  验证中      : 1:nginx-1.20.2-1.el7.ngx.x86_64                                                                1/1
+  验证中      : 1:nginx-1.20.2-1.el7.ngx.x86_64                             1/1
 
 已安装:
   nginx.x86_64 1:1.20.2-1.el7.ngx
