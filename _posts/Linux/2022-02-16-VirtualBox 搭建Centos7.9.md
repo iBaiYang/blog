@@ -1766,14 +1766,14 @@ Loading mirror speeds from cached hostfile
 
 依赖关系解决
 
-===================================================================================================================
- Package              架构                  版本                                 源                           大小
-===================================================================================================================
+========================================================================================
+ Package              架构           版本                       源                 大小
+========================================================================================
 正在安装:
- nginx                x86_64                1:1.20.2-1.el7.ngx                   nginx-stable                790 k
+ nginx                x86_64         1:1.20.2-1.el7.ngx         nginx-stable      790 k
 
 事务概要
-===================================================================================================================
+=======================================================================================
 安装  1 软件包
 
 总下载量：790 k
@@ -1915,15 +1915,15 @@ master  1394   root   14u  IPv6  19969      0t0  TCP [::1]:25 (LISTEN)
 [root@localhost ~]#
 [root@localhost ~]#
 [root@localhost ~]# ss -tunlp
-Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
-udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
-udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
-udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
-tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
-tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
-tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
-tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
-tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
+Netid State   Recv-Q Send-Q    Local Address:Port  Peer Address:Port
+udp   UNCONN     0      0               *:68           *:*    users:(("dhclient",pid=1932,fd=6))
+udp   UNCONN     0      0       127.0.0.1:323          *:*    users:(("chronyd",pid=702,fd=5))
+udp   UNCONN     0      0           [::1]:323       [::]:*    users:(("chronyd",pid=702,fd=6))
+tcp   LISTEN     0      128             *:22           *:*    users:(("sshd",pid=1126,fd=3))
+tcp   LISTEN     0      100     127.0.0.1:25           *:*    users:(("master",pid=1394,fd=13))
+tcp   LISTEN     0      128     127.0.0.1:9000         *:*    users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
+tcp   LISTEN     0      128          [::]:22        [::]:*    users:(("sshd",pid=1126,fd=4))
+tcp   LISTEN     0      100         [::1]:25        [::]:*    users:(("master",pid=1394,fd=14))
 [root@localhost ~]#
 [root@localhost ~]#
 [root@localhost ~]# systemctl start nginx
@@ -1964,16 +1964,16 @@ nginx   2158  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
 nginx   2159  nginx    6u  IPv4  23427      0t0  TCP *:80 (LISTEN)
 [root@localhost ~]#
 [root@localhost ~]# ss -tunlp
-Netid State      Recv-Q Send-Q          Local Address:Port     Peer Address:Port
-udp   UNCONN     0      0                           *:68           *:*                   users:(("dhclient",pid=1932,fd=6))
-udp   UNCONN     0      0                   127.0.0.1:323          *:*                   users:(("chronyd",pid=702,fd=5))
-udp   UNCONN     0      0                       [::1]:323       [::]:*                   users:(("chronyd",pid=702,fd=6))
-tcp   LISTEN     0      128                         *:80           *:*                   users:(("nginx",pid=2159,fd=6),("nginx",pid=2158,fd=6),("nginx",pid=2157,fd=6),("nginx",pid=2156,fd=6),("nginx",pid=2155,fd=6))
-tcp   LISTEN     0      128                         *:22           *:*                   users:(("sshd",pid=1126,fd=3))
-tcp   LISTEN     0      100                 127.0.0.1:25           *:*                   users:(("master",pid=1394,fd=13))
-tcp   LISTEN     0      128                 127.0.0.1:9000         *:*                   users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
-tcp   LISTEN     0      128                      [::]:22        [::]:*                   users:(("sshd",pid=1126,fd=4))
-tcp   LISTEN     0      100                     [::1]:25        [::]:*                   users:(("master",pid=1394,fd=14))
+Netid State    Recv-Q Send-Q  Local Address:Port   Peer Address:Port
+udp   UNCONN     0      0               *:68           *:*    users:(("dhclient",pid=1932,fd=6))
+udp   UNCONN     0      0       127.0.0.1:323          *:*    users:(("chronyd",pid=702,fd=5))
+udp   UNCONN     0      0           [::1]:323       [::]:*    users:(("chronyd",pid=702,fd=6))
+tcp   LISTEN     0      128             *:80           *:*    users:(("nginx",pid=2159,fd=6),("nginx",pid=2158,fd=6),("nginx",pid=2157,fd=6),("nginx",pid=2156,fd=6),("nginx",pid=2155,fd=6))
+tcp   LISTEN     0      128             *:22           *:*    users:(("sshd",pid=1126,fd=3))
+tcp   LISTEN     0      100     127.0.0.1:25           *:*    users:(("master",pid=1394,fd=13))
+tcp   LISTEN     0      128     127.0.0.1:9000         *:*    users:(("php-fpm",pid=1248,fd=9),("php-fpm",pid=1247,fd=9),("php-fpm",pid=1246,fd=9),("php-fpm",pid=1244,fd=9),("php-fpm",pid=1243,fd=9),("php-fpm",pid=1121,fd=7))
+tcp   LISTEN     0      128          [::]:22        [::]:*    users:(("sshd",pid=1126,fd=4))
+tcp   LISTEN     0      100         [::1]:25        [::]:*    users:(("master",pid=1394,fd=14))
 [root@localhost ~]#
 [root@localhost ~]#
 ```
