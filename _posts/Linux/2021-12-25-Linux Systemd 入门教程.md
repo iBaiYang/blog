@@ -209,7 +209,7 @@ systemctl status命令用于查看系统状态和单个 Unit 的状态。
 $ systemctl status
 
 # 显示单个 Unit 的状态
-$ sysystemctl status bluetooth.service
+$ systemctl status bluetooth.service
 
 # 显示远程主机的某个 Unit 的状态
 $ systemctl -H root@rhel7.example.com status httpd.service
