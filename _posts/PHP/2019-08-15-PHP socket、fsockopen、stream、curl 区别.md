@@ -328,13 +328,20 @@ if (!$fp) {
 #### cUrl
 
 ```php
+<?php
 function Get($url)
 {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
     $result = curl_exec($ch);
+    if ($result === false) {
+        // 记录日志
+        // write_logs("test",  "Get is false", curl_error($ch));
+    }
     curl_close($ch);
     
     return $result;
@@ -348,7 +355,13 @@ function Post($url, $postData = array())
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
     $result = curl_exec($ch);
+    if ($result === false) {
+        // 记录日志
+        // write_logs("test",  "Post is false", curl_error($ch));
+    }
     curl_close($ch);
     
     return $result;
