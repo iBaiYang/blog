@@ -237,7 +237,6 @@ Another option is to use the  It will show which kind of errors the code structu
 
 ### 语言亮点
 
-
 编程范式
 
 PHP 是一个灵活的动态语言，支持多种编程技巧。这几年一直不断的发展，重要的里程碑包含 PHP 5.0 (2004) 增加了完善的面向对象模型，PHP 5.3 (2009) 增加了匿名函数与命名空间以及 PHP 5.4 (2012) 增加的 traits。
