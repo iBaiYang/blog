@@ -7,6 +7,93 @@ meta: PHP The Right Way 学习
 * content
 {:toc}
 
+## 引言
+ 
+《PHP The Right Way》内容有：
+
+    欢迎阅读
+        其他语言版本
+        参与贡献
+        分享与推广
+    入门指南
+        使用当前稳定版本 (7.1)
+        内置的 Web 服务器
+        Mac 安裝
+        Windows 安裝
+    代码风格指南
+    语言亮点
+        编程范式
+        命名空间
+        PHP 标准库
+        命令行接口
+        Xdebug 调试工具
+    依赖管理
+        Composer 与 Packagist
+        PEAR
+    开发实践
+        基础知识
+        日期和时间
+        设计模式
+        使用 UTF-8 编码
+        国际化和本地化
+    依赖注入
+        基本概念
+        复杂的问题
+        容器
+        延伸阅读
+    数据库
+        MySQL 扩展
+        PDO 扩展
+        数据库交互
+        数据库抽象层
+    使用模板
+        好处
+        原生 PHP 模板
+        编译模板
+        延伸阅读
+    错误与异常
+        错误
+        异常
+    安全
+        Web 应用程序安全
+        密码哈希
+        数据过滤
+        配置文件
+        注册全局变量
+        错误报告
+    测试
+        测试驱动开发
+        行为驱动开发
+        共享服务器
+    服务器与部署
+        平台即服务 (PaaS)
+        虚拟或专用服务器
+        共享服务器
+        Building Your Application
+    虚拟化
+        Vagrant
+        Docker
+    缓存
+        Opcode 缓存
+        对象缓存
+    代码注释
+        PHPDoc
+    资源
+        PHP 官方
+        值得关注的大牛
+        指导
+        PHP Paas 提供商
+        框架
+        组件
+        其他有用的资源
+        视频教程
+        书籍
+    社区
+        用户群
+        PHP 大会
+        Elephpants
+    荣誉
+
 ## 正文
 
 ### 欢迎
@@ -271,8 +358,7 @@ http://your-website.example.com/index.php?XDEBUG_SESSION_START=1
     学习更多 Xdebug
     学习更多 MacGDBp
 
-回到顶部
-依赖管理
+### 依赖管理
 
 PHP 有很多可供使用的库、框架和组件。通常你的项目都会使用到其中的若干项 - 这些就是项目的依赖。直到最近，PHP 也没有一个很好的方式来管理这些项目依赖。即使你通过手动的方式去管理，你依然会为自动加载器而担心。但现在这已经不再是问题了。
 
@@ -421,8 +507,9 @@ $request = new pear2\HTTP\Request();
 
     学习更多 PEAR 和 Composer 的使用
 
-回到顶部
-开发实践
+
+### 开发实践
+
 基础知识
 
 PHP 是一门庞大的语言，各个水平层次的开发者都可以利用它进行迅捷高效的开发。然而在对语言逐渐深入的学习过程中，我们往往会因为走捷径和/或不良习惯而忘记（或忽视掉）基础的知识。为了帮助彻底解决这个问题，这一章的目的就是提醒开发人员注意有关 PHP 的基础编程实践。
@@ -867,8 +954,7 @@ References
     PHP Manual: Gettext
     Gettext Manual
 
-回到顶部
-依赖注入
+### 依赖注入
 
 出自维基百科 Wikipedia:
 
@@ -967,8 +1053,7 @@ class MysqlAdapter implements AdapterInterface {}
     Dependency Injection: Huh?
     Dependency Injection as a tool for testing
 
-回到顶部
-数据库
+### 数据库
 
 绝大多数时候你的 PHP 程序都需要使用数据库来长久地保存数据。这时你有一些不同的选择可以来连接并与数据库进行交互。在 PHP 5.1.0 之前，我们推荐的方式是使用例如 mysqli，pgsql，mssql 等原生驱动。
 
@@ -1128,8 +1213,7 @@ PHPBridge 具有一项非常棒的资源叫做创建一个数据类。它包含�
     Propel
     Zend-db
 
-回到顶部
-使用模板
+### 使用模板
 
 模板提供了一种简便的方式，将展现逻辑从控制器和业务逻辑中分离出来。
 
@@ -1265,8 +1349,8 @@ PHPBridge 具有一项非常棒的资源叫做创建一个数据类。它包含�
     Twig (compiled)
     Zend\View (native, framework specific)
 
-回到顶部
-错误与异常
+### 错误与异常
+
 错误
 
 在许多「重异常」(exception-heavy) 的编程语言中，一旦发生错误，就会抛出异常。这确实是一个可行的方式。不过 PHP 却是一个 「轻异常」(exception-light) 的语言。当然它确实有异常机制，在处理对象时，核心也开始采用这个机制来处理，只是 PHP 会尽可能的执行而无视发生的事情，除非是一个严重错误。
@@ -1411,8 +1495,8 @@ class ValidationException extends Exception {}
     Nesting Exceptions In PHP
     Exception Best Practices in PHP 5.3
 
-回到顶部
-安全
+### 安全
+
 Web 应用程序安全
 
 攻击者无时无刻不在准备对你的 Web 应用程序进行攻击，因此提高你的 Web 应用程序的安全性是非常有必要的。幸运的是，来自开放式 Web 应用程序安全项目 (OWASP) 的有心人已经整理了一份包含了已知安全问题和防御方式的全面的清单。这份清单对于具有安全意识的开发者来说是必读的。由 Padraic Brady 著作的 生存手册：PHP 安全 也是一份很不错的 PHP 安全阅读资料。
@@ -1553,8 +1637,7 @@ log_errors = On
     显示启动错误
     记录错误
 
-回到顶部
-测试
+### 测试
 
 为你的 PHP 程序编写自动化测试被认为是最佳实践，可以帮助你建立良好的应用程序。 自动化测试是非常棒的工具，它能确保你的应用程序在改变或增加新的功能时不会影响现有的功能，不应该忽视。
 
@@ -1620,8 +1703,7 @@ BDD 链接
     Mockery 是一个可以跟 PHPUnit 或者 PHPSpec 整合的 Mock 对象框架
     Prophecy 是个有自己的想法，且非常强大灵活的 PHP 对象 mocking 框架。它整合了 PHPSpec 并且可以和 PHPUnit 一起使用
 
-回到顶部
-服务器与部署
+### 服务器与部署
 
 部署 PHP 应用程序到生产环境中有多种方式。
 Platform as a Service (PaaS)
@@ -1727,8 +1809,7 @@ Chef 不仅仅只是一个部署框架， 它是一个基于 Ruby 的强大的�
     使用 PHPCI 进行持续集成
     使用 Teamcity 进行持续集成
 
-回到顶部
-虚拟化技术
+### 虚拟化技术
 
 在开发和线上阶段使用不同的系统运行环境的话, 经常会遇到各种各样的 BUG, 并且在团队开发的时候, 让所有成员都保持使用最新版本的软件和类库, 也是一件很让人头痛的事情.
 
@@ -1781,8 +1862,7 @@ PHPDocker.io 是另一个很棒的 PHP 相关的 Docker 资源站点。支持自
     Docker Hub
     Docker Hub - official images
 
-回到顶部
-缓存
+### 缓存
 
 PHP 本身来说是非常快的，但是但你当发起远程连接、加载文件等操作时也会遇到瓶颈。 幸运的是，有各种各样的工具可以用来加速你应用程序某些耗时的部分，或者说减少某些耗时任务所需要运行的次数。
 Opcode 缓存
@@ -1837,8 +1917,8 @@ print_r($data);
     XCache APIs
     WinCache Functions
 
-回到顶部
-代码注释
+### 代码注释
+
 PHPDoc
 
 PHPDoc 是注释 PHP 代码的非正式标准。它有许多不同的标记可以使用。完整的标记列表和范例可以查看 PHPDoc 指南。
@@ -1898,8 +1978,8 @@ class DateTimeHelper
 
 第二、第三个方法非常类似，和第一个方法一样使用一个 @param 标记。第二、和第三个方法之间关键差別在注释区块使用／排除 @return 标记。@return void 标记明确告诉我们没有返回值，而过去省略 @return void 声明也具有相同效果（沒有返回任何值）。
 
-回到顶部
-资源
+### 资源
+
 PHP 官方
 
     PHP 官方网站
@@ -2064,8 +2144,7 @@ Youtube 视频
     Minimum Viable Tests - 小步迭代开始学习 PHP 测试
     Domain-Driven Design in PHP - PHP 的 DDD 设计模式详解
 
-回到顶部
-社区
+### 社区
 
 PHP 社区多元化并且规模庞大，成员们也乐意并随时准备好帮助新人。你可以考虑加入当地的 PHP 使用者社区 （PUG） 或者参加教大型的 PHP 会议，从中学习更多最佳实践。你也可以使用 IRC 逛逛 irc.freenode.com 上的 #phpc 频道，也可以关注 @phpc 的Twitter 账号。试着去多结交一些新的开发者，学习新的东西，总之，交一些新朋友！其他的社区资源包含 Google+ 的 PHP Programmer community 以及 StackOverflow。
 
