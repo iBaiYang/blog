@@ -2151,6 +2151,7 @@ PHP 社区多元化并且规模庞大，成员们也乐意并随时准备好帮�
 中文的 PHP 开发者，欢迎加入 Laravel China 社区 （简称 LC）。LC 是 PHP 和 Laravel 开发者社区，致力于为 PHP 和 Laravel 开发者提供一个分享创造、结识伙伴、协同互助的平台。LC 是现代化 PHP 的拥护者。LC 也是这个 PHP The Right Way 中文文档的维护者。
 
 阅读 PHP 官方事件日历
+
 PHP 用户群
 
 如果你住在较大的城市，附近应该就有 PHP 用户群。你可以通过基于 PHP.ug 的 usergroup-list at php.net 这个地址找到当地的 PUG。也可以通过 Meetup.com 或者使用搜索引擎 (i.e. Google) 搜索 php user group near me 。如果你住在比较小的城镇，当地也许还没有 PUG ，如果是这种情形，不妨就开始组建一个。
@@ -2158,11 +2159,13 @@ PHP 用户群
 这里要特别提到两个全球的用户组：NomadPHP 和 PHPWomen。NomadPHP 提供每月两次的在线用户组会议，由 PHP 社区里顶尖的高手进行演讲。PHPWomen 原本是针对女性 PHP 开发者的非排他性的用户组。会员资格发放给那些支持多元化社区的人。PHPWomen 提供了一技术支持，指导和教育的个平台，并且促进了女性的创造力以及专业的氛围。
 
 了解关于 PHP Wiki 上的用户群
+
 PHP 会议
 
 世界各地的 PHP 社区也会举办一些较大型的区域性或国际性的会议，一些知名的社区成员通常会在这些大型活动中现身演讲，这是一个直接和业内领袖学习的好机会。
 
 查找 PHP 会议
+
 ElePHPants
 
 ElePHPant is that beautiful mascot of the PHP project with elephant in their design. It was originally designed for the PHP project in 1998 by Vincent Pontier - spiritual father of thousands of elePHPants around the world and 10 years later adorable plush elephant toy came to birth as well. Now elePHPants are present at many PHP conferences and with many PHP developers at their computers for fun and inspiration.
