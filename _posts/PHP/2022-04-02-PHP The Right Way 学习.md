@@ -191,45 +191,49 @@ IIS7 也有内置的 FastCGI ，你只需要将 PHP 配置为它的处理器即�
 
 ### 代码风格指南
 
-PHP 社区百花齐放，拥有大量的函数库、框架和组件。PHP 开发者通常会在自己的项目中使用若干个外部库，
-因此 PHP 代码遵循（尽可能接近）同一个代码风格就非常重要，这让开发者可以轻松地将多个代码库整合到自己的项目中。
+PHP 社区是庞大而多样的，由无数的库、框架和组件组成。PHP 开发人员通常会选择其中的几个并将它们组合到一个项目中。
+PHP 代码遵循 (尽可能接近) 通用的代码样式很重要，这样开发人员就可以轻松地为他们的项目混合和匹配各种库。
 
-PHP标准组 提出并发布了一系列的风格建议。其中有部分是关于代码风格的，即 PSR-0, PSR-1, PSR-2 和 PSR-4。
-这些推荐只是一些被其他项目所遵循的规则，如 Drupal, Zend, Symfony, CakePHP, phpBB, AWS SDK, FuelPHP, Lithium 等。
-你可以把这些规则用在自己的项目中，或者继续使用自己的风格。
+PHP-FIG 已经提出并批准了一系列风格建议。并不是所有的都与代码风格有关，但是确实与代码风格有关的是  PSR-1, PSR-12 and PSR-4。
+这些建议仅仅是 Drupal、 Zend、 Symfony、 Laravel、 CakePHP、 phpBB、 AWS SDK、 FuelPHP、 Lithium 等许多项目正在采用的一系列规则。
+你可以在你自己的项目中使用它们，或者继续使用你自己的个人风格。
 
-通常情况下，你应该遵循一个已知的标准来编写 PHP 代码。可能是 PSR 的组合或者是 PEAR 或 Zend 编码准则中的一个。
-这代表其他开发者能够方便的阅读和使用你的代码，并且使用这些组件的应用程序可以和其他第三方的组件保持一致。
+理想情况下，您应该编写遵循已知标准的 PHP 代码。这可能是 PSRs 的任何组合，或者是 PEAR 或 Zend 制定的编码标准之一。
+这意味着其他开发人员可以轻松地阅读和使用您的代码，而实现组件的应用程序甚至可以在使用大量第三方代码时保持一致性。
 
-    阅读 PSR-0
     阅读 PSR-1
-    阅读 PSR-2
+    阅读 PSR-12
     阅读 PSR-4
-    阅读 PEAR 编码准则
-    阅读 Symfony 编码准则
+    阅读关于 PEAR 编码标准
+    阅读关于 Symfony 编码标准
 
-你可以使用 PHP_CodeSniffer 来检查代码是否符合这些准则，文本编辑器 Sublime Text 的插件也可以提供实时检查。
+你可以使用 PHP_CodeSniffer 根据这些建议中的任何一个检查代码，并为诸如 Sublime Text 之类的文本编辑器提供实时反馈插件。
 
-你可以通过任意以下两个工具来自动修正你的程序语法，让它符合标准：
+你可以使用以下工具之一自动修复代码布局:
 
-    一个是 PHP Coding Standards Fixer，它具有良好的测试。
-    另一个是随 PHP_CodeSniffer 安装的 PHP Code 美化修整器。
+    一个是 PHP Coding Standards Fixer 它有一个经过很好测试的代码库
+    此外 PHP Code Beautifier and Fixer 可以使用 PHP _ codesniffer 附带的工具相应地调整代码
 
-你也可以手动运行 phpcs 命令：
+你可以在 shell 中手动运行 phpcs:
 
-    phpcs -sw --standard=PSR2 file.php
+    phpcs -sw --standard=PSR1 file.php
 
-它会显示出相应的错误以及如何修正的方法。同时，这条命令你也可以用在 git hook 中，如果你的分支代码不符合选择的代码标准则无法提交。
+它将显示错误并描述如何修复它们。在 git hook 中包含这个命令也很有帮助。
+这样，包含违反所选标准的分支就不能进入存储库，直到这些违反被修复。
 
-如果你已经安装了 PHP_CodeSniffer，你将可以使用 PHP Code 美化修整器 来格式化代码：
-    
-    phpcbf -w --standard=PSR2 file.php
+如果你有 PHP_CodeSniffer, 那么你可以通过 PHP Code Beautifier 和 Fixer 自动修复它报告的代码布局问题。
 
-另一个选项是使用 PHP 编码标准修复器，他可以让你预览编码不合格的部分：
+    phpcbf -w --standard=PSR1 file.php
 
-    php-cs-fixer fix -v --level=psr2 file.php
+Another option is to use the  It will show which kind of errors the code structure had before it fixed them.
 
-所有的变量名称以及代码结构建议用英文编写。注释可以使用任何语言，只要让现在以及未来的小伙伴能够容易阅读理解即可。
+另一个选择是使用 PHP Coding Standards Fixer。它将显示代码结构在修复之前出现了哪些错误。
+
+    php-cs-fixer fix -v --rules=@PSR1 file.php
+
+所有符号名称和代码基础结构都首选英语。注释可以用任何语言编写，所有当前和未来可能正在编写代码库的各方都可以轻松阅读。
+
+最后，编写干净的 PHP 代码的一个很好的补充资源是 Clean Code PHP.
 
 ### 语言亮点
 
