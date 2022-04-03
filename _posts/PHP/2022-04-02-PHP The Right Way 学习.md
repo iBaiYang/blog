@@ -355,7 +355,7 @@ Hello, world
 Xdebug 是一个 php 的调试器，它可以被用来在很多 IDE (集成开发环境) 中做断点调试以及堆栈检查。
 它还可以像 PHPUnit 和 KCacheGrind 一样，做代码覆盖检查或者程序性能跟踪。
 
-如果你仍在使用 var_dump()/print_r() 调试，经常会发现自己处于困境，并且仍然找不到解决办法。这时，你该使用调试器了。
+如果你仍在使用 `var_dump()`/`print_r()` 调试，经常会发现自己处于困境，并且仍然找不到解决办法。这时，你该使用调试器了。
 
 安装 Xdebug 可能很棘手，但是其中最重要的一种特性「远程调试」 - 当您在本地开发代码，
 然后在虚拟机或者其他服务器上测试时，远程调试可能是你想要的一种方式
@@ -368,8 +368,7 @@ php_value xdebug.remote_port 9000
 
 「remote host」 和 「remote port」 这两项对应和你本地开发机监听的地址和端口。
 然后将你的 IDE 设置成「listen for connections」模式，并访问网址：
-
-http://your-website.example.com/index.php?XDEBUG_SESSION_START=1
+`http://your-website.example.com/index.php?XDEBUG_SESSION_START=1`
 
 你的 IDE 将会拦截当前执行的脚本状态，运行你设置的断点并查看内存中的值。
 
