@@ -270,8 +270,8 @@ PHP 5.4 增加了将闭包绑定到对象作用域中的特性，并改善其可
 **元编程**
 
 PHP 通过反射 API 和魔术方法等机制，支持多种形式的元编程。有许多魔术方法，
-如 __get()， __set()， __clone()， __toString()， __invoke() 等，可供开发者改变类的行为。 
-Ruby 开发者常说 PHP 缺少 method_missing 方法，实际上通过 __call() 和 __callStatic() 就可以完成相同的功能。
+如 `__get()`， `__set()`， `__clone()`， `__toString()`， `__invoke()` 等，可供开发者改变类的行为。 
+Ruby 开发者常说 PHP 缺少 method_missing 方法，实际上通过 `__call()` 和 `__callStatic()` 就可以完成相同的功能。
 
     阅读魔术方法
     阅读反射
@@ -318,9 +318,9 @@ CLI PHP 程序功能强大，因为您可以直接使用应用程序的代码，
 
 > php -i
 
--i 选项将像 phpinfo() 函数一样打印您的 PHP 配置.
+`-i` 选项将像 `phpinfo()` 函数一样打印您的 PHP 配置.
 
--a 选项提供了一个交互式 shell，类似于 Ruby 的 IRB 或 Python 的交互式 shell。这也有许多其他有用的 命令行选项。
+`-a` 选项提供了一个交互式 shell，类似于 Ruby 的 IRB 或 Python 的交互式 shell。这也有许多其他有用的 命令行选项。
 
 接下来编写一个简单的 「Hello, $name」 CLI 程序， 先创建名为 hello.php 的脚本
 
@@ -337,7 +337,7 @@ echo "Hello, $name" . PHP_EOL;
 PHP 会在脚本运行时根据参数设置两个特殊的变量，$argc 是一个整数，表示参数个数，
 $argv 是一个数组变量，包含每个参数的值，它的第一个元素一直是 PHP 脚本的名称，在本例中为 hello.php。
 
-命令运行失败时，可以通过 exit() 表达式返回一个非 0 整数来通知 shell，常用的 exit 返回码可以查看列表。
+命令运行失败时，可以通过 `exit()` 表达式返回一个非 0 整数来通知 shell，常用的 exit 返回码可以查看列表。
 
 运行上面的脚本，在命令行输入：
 ```
