@@ -378,6 +378,169 @@ php_value xdebug.remote_port 9000
     学习更多 Xdebug
     学习更多 MacGDBp
 
+### 依赖管理 
+
+PHP 有大量的库、框架和组件可供选择。你可能会在项目中使用其中的一部分，这就是项目的依赖。
+以前，PHP 没有一个好的方法来管理这些项目依赖。即使你手动管理它们，你仍然不得不担心自动加载器。
+现在这不再是个问题了。
+
+目前有两个主要的 PHP 依赖管理工具 - Composer 和 PEAR 。Composer 是目前最流行的 PHP 依赖管理工具，
+而 PEAR 在之前很长一段时间里是主要的依赖管理工具。了解 PEAR 的历史是一个好主意，
+因为即使你从来没有使用过它，你可能仍然会发现对它的引用。
+
+#### Composer 与扩展包
+
+Composer 是值得推荐的 PHP 的依赖管理工具。在 composer.json 文件中列出项目的依赖项，通过几个简单的命令，
+Composer 会自动下载项目的依赖项并为你设置自动加载。Composer 类似于 node.js 中的 NPM，或者 Ruby 世界中的 Bundler 。
+
+**如何安装 Composer**
+
+下载 Composer 的最安全方式是 按照官方说明（ 本站文档）。这将验证安装程序是否损坏或被篡改。
+安装程序会在你的 当前工作目录中 安装一个 composer.phar 二进制文件。
+
+我们推荐你 全局 安装 Composer（例如，在 `/usr/local/bin` 中安装一个副本）。要做到这一点，接下来运行这个命令：
+
+> mv composer.phar /usr/local/bin/composer
+
+注意：如果上述操作因权限问题而失败，请使用 sudo 作为前缀。
+
+本地使用 Composer 的话，你可以运行 php composer.phar ，全局的话是：composer。
+
+**Windows 环境下安装**
+
+对于 Windows 用户来说，最简单的方法是使用 ComposerSetup 安装程序，它执行全局安装并设置你的 $PATH ，
+这样你就可以在任何目录下用命令行调用 composer。
+
+**如何配置和安装依赖项**
+
+Composer 在一个 composer.json 的文件中记录了你的项目的依赖关系。如果你愿意，你可以手工管理它，或者使用 Composer 本身。
+`composer require` 命令添加一个依赖项，如果你没有 composer.json 文件它将会创建一个。
+下面是一个例子，它将 Twig 作为你的项目的依赖项。
+```
+composer require twig/twig:^2.0
+```
+
+或者，`composer init` 命令会指导你为你的项目创建一个完整的 composer.json 文件。
+无论哪种方式，一旦你创建了 composer.json 文件，你就可以告诉 Composer 下载并安装你的依赖项到 `vendor/` 目录中。
+这也适用于你已经下载的已提供 composer.json 文件的项目。
+
+> composer install
+
+接下来，在你的应用程序的主要 PHP 文件中添加这一行，这将告诉 PHP 使用 Composer 的自动加载器来获取你的依赖项。
+
+```
+<?php
+require 'vendor/autoload.php';
+```
+
+现在，你可以使用你的项目依赖，并且依赖会按需自动加载。
+
+**更新依赖项**
+
+Composer 创建了一个名为 `composer.lock` 的文件，存放了当你首次运行 `composer install` 时每个包的准确版本。
+如果你将项目共享给他人，要确保 `composer.lock` 也一起共享出去，
+这样别人在执行 `composer install` 的时候也会安装和你一样的包版本。想要更新依赖项，执行 `composer update` 命令就可以了。
+在项目部署时不要使用 `composer update`，只执行 `composer install` 就可以了，
+不然你会在生产环境中安装了和开发环境不同版本的依赖包。
+
+这在你需要灵活定义版本时非常有用。例如 `~1.8` 意味着任何高于 `1.8.0` 的版本，但要小于 `2.0.x-dev`。
+你同样可以使用 `*` 通配符，例如 `1.8.*`。
+这样配置后，Composer 的 `composer update` 命令会将所有的依赖项升级到符合你设定的最新版本。
+
+**更新通知**
+
+要接收有关新版本发布的通知，你可以注册 libraries.io，它是一种 web 服务，可以在依赖有新版本时向你发送通知。
+
+**检查你的依赖项是否存在安全问题**
+
+PHP 本地安全检查助手（Local PHP Security Checker） 是一个命令行工具，
+它会检查你的 `composer.lock` 文件，并告诉你是否需要更新哪些依赖项。
+
+**使用 Composer 处理全局依赖**
+
+Composer 同样可以处理全局依赖以及它们的二进制文件。用法很简单，只需要在命令前面加上 `global` 前缀。
+例如你想安装 PHPUnit 并让它全局可用，你只需要执行这条命令：
+```
+composer global require phpunit/phpunit
+```
+
+这将创建一个 `~/.composer` 文件夹，您的全局依赖项位于该文件夹中。 
+为了让已安装的软件包的二进制文件随处可用，您需要将 `~/.composer/vendor/bin` 文件夹添加到您的 `$PATH` 变量中。
+
+    了解 Composer
+
+#### PEAR
+
+一些 PHP 开发人员喜欢的资深包管理器是 PEAR。 它的行为与 Composer 相似，但有一些显着差异。
+
+PEAR 要求每个包都具有特定的结构，这意味着包的作者必须准备好与 PEAR 一起使用。 
+使用未准备好与 PEAR 一起工作的项目是不可能的。
+
+PEAR 全局安装包，这意味着一旦它们可用于该服务器上的所有项目，就在安装它们之后。 
+如果许多项目依赖具有相同版本的相同包，这可能很好，但如果两个项目之间出现版本冲突，则可能会导致问题。
+
+**如何安装 PEAR**
+
+您可以通过下载 “.phar” 安装程序并执行来安装 PEAR。 PEAR 文档对每个操作系统都有详细的安装说明。
+
+如果您使用的是 Linux，您还可以查看您的分发包管理器。 例如，Debian 和 Ubuntu 有一个 apt `php-pear` 包。
+
+**如何安装包**
+
+如果该包在 PEAR 包列表 中，您可以通过指定官方名称进行安装：
+> pear install foo
+
+如果软件包托管在另一个频道上，您需要先 “发现” 该频道，并在安装时指定它。 
+有关此主题的更多信息，请参阅 使用频道文档。
+
+    了解 PEAR
+
+**使用 Composer 来安装 PEAR 扩展包**
+
+如果你已经使用着 Composer ，并且还想安装一些 PEAR 扩展包，那么可以使用 Composer 来处理 PEAR 依赖项。
+下面是从 `pear2.php.net` 安装扩展包的示例：
+```
+{
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "https://pear2.php.net"
+        }
+    ],
+    "require": {
+        "pear-pear2/PEAR2_Text_Markdown": "*",
+        "pear-pear2/PEAR2_HTTP_Request": "*"
+    }
+}
+```
+
+第一部分 "`repositories`" 是告知 Composer 它应该 “初始化”（即在 PEAR 的术语 “发现”）一个 pear 包。
+然后， `require` 部分将在包名称前加上前缀，如下所示：
+```
+pear-channel/Package
+```
+
+为了避免发生冲突，前缀 “pear” 是硬编码写死的，由于 pear-channel 可能会与另一个软件包供应商名称相同，
+因此可以用 channel 短名称（或者是完整 URL）来引用软件包所在的 channel 。
+
+安装扩展包后，它将放到你的 vendor 文件夹中，并可以通过 Composer 的自动加载器进行加载:
+```
+vendor/pear-pear2.php.net/PEAR2_HTTP_Request/pear2/HTTP/Request.php
+```
+
+要使用这个 PEAR 包，只需像这样引用它即可：
+```
+<?php
+$request = new pear2\HTTP\Request();
+```
+
+    学习更多 PEAR 和 Composer 的使用
+
+
+
+
+
+
 
 
 ## 参考资料
