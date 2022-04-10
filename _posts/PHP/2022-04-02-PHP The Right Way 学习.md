@@ -884,6 +884,62 @@ i18n 和 l10n 最经典且常被用作参考的方法是 Unix 工具，名为 `g
        └─ ...
 ```
 
+**复数形式**
+
+正如我们在介绍中所说的，不同的语言可能有不同的复数规则。然而，gettext 再次将我们从麻烦中拯救出来。
+当创建新的 `.po` 文件时，必须声明该语言的 复数规则 ，对于复数敏感的翻译片段将针对每个规则具有不同的形式。 
+在代码中调用 Gettext 时，你必须指定与句子相关的数字，并且它将确定要使用的正确形式，若有必要的话甚至使用字符串替换。
+
+复数规则包括复数形式的数量，以及带有变量 `n` 的布尔表达式，用来确定给定数字属于哪条规则（从 0 开始计数）。例如：
+
+* 日语： `nplurals=1; plural=0` - 只有一条规则
+* 英语： `nplurals=2; plural=(n != 1);` - 有两条规则，当名词数量 N 为 1 时使用第一条规则，其他情况使用第二条规则
+* 巴西葡萄牙语： `nplurals=2; plural=(n > 1);` - 有两条规则，当 N 大于 1 时使用第二条规则，其他情况使用第一条规则
+
+现在，你已经了解了复数规则的工作原理 - 假如你还不太清楚，请查看 LingoHub 教程 更深入的解释 
+- 可能你希望能直接从 列表 中复制所需规则，而不用手工编写。
+
+当调用 Gettext 对带有数量的句子进行本地化时，你还必须向其提供相应的数字。
+Gettext 会根据数量计算出应该生效的规则，并使用正确的本地化版本。对于定义的每条复数规则，你需要在`.po` 文件中包含不同的句子。
+
+**实现示例**
+
+在理论之后，让我们付诸实际。这是一个 `.po` 文件的节选 —— 不要在意它的格式，看它的整体内容。晒后你会知道如何来编辑它。
+
+```
+msgid ""
+msgstr ""
+"Language: pt_BR\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "We are now translating some strings"
+msgstr "Nós estamos traduzindo algumas strings agora"
+
+msgid "Hello %1$s! Your last visit was on %2$s"
+msgstr "Olá %1$s! Sua última visita foi em %2$s"
+
+msgid "Only one unread message"
+msgid_plural "%d unread messages"
+msgstr[0] "Só uma mensagem não lida"
+msgstr[1] "%d mensagens não lidas"
+```
+
+第一部分的作用类似于标题，特别 `msgid` 和 `msgstr` 都是空的。它描述了文件编码、复数形式和其他不太相关的内容。
+第二部分将一个简单的字符串从英语翻译成巴西葡萄牙语，第三部分也做了相同的事，但使用了 `sprintf` 中的字符串替换，
+因此翻译中可能包含用户名和访问日期。最后一部分是多元化形式的示例，在英语中显示单数和复数版本为 「msgid」，
+对应的翻译为 「msgstr」 0 和 1（取决于复数规则给出的数字）。
+这里使用了字符串替换，因此可以使用「% d」直接在句子中看到数字。
+复数形式总是有两个 `msgid`（单数和复数），所以不建议使用复杂的语言作为翻译源。
+
+**关于 l10n 键的讨论**
+
+
+
+
+
+
+
 
 
 
