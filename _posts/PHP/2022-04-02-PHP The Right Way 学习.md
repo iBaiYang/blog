@@ -1267,7 +1267,7 @@ interface AdapterInterface {}
 class MysqlAdapter implements AdapterInterface {}
 ```
 
-现在 Database 类依赖于接口，相比依赖于具体实现有更多的优势。
+现在 `Database` 类依赖于接口，相比依赖于具体实现有更多的优势。
 
 假设我们现在进行团队开发，一位同事负责设计开发适配器。在第一个例子中，我们必须等待适配器完成后，
 才能正确的模拟它进行单元测试。现在由于依赖的是一个接口 / 约定，我们能轻松地模拟接口测试，
