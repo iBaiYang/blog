@@ -91,5 +91,9 @@ FastAdmin 官方文档 <https://doc.fastadmin.net/doc>
 
 FastAdmin开发系列之视频教程 <https://www.fastadmin.net/video.html>
 
+FastAdmin开发者文档 <https://doc.fastadmin.net/developer/55.html>
+
+一张图解析FastAdmin中的表格列表的功能 <https://ask.fastadmin.net/article/323.html>
+
 
 
