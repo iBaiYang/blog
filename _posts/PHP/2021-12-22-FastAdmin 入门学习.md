@@ -136,6 +136,9 @@ server {
 后台开发的每一个功能模块都是基于MVC的设计模式进行开发 。
 在FastAdmin中，我们提供了一键生成CRUD的功能，这个一键生成CRUD生成的文件也就是我们标准的MVC文件。
 
+一键生成test表的CRUD：
+> php think crud -t test
+
 以下是一个标准的功能模块所涉及到的文件
 ```
 ├── application
