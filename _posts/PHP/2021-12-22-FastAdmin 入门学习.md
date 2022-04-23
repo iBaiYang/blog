@@ -139,6 +139,11 @@ server {
 一键生成test表的CRUD：
 > php think crud -t test
 
+或者：
+```
+> php think crud --table=fa_test
+```
+
 以下是一个标准的功能模块所涉及到的文件
 ```
 ├── application
