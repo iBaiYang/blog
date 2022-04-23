@@ -15,6 +15,52 @@ meta: FastAdmin 入门学习
 
 再就是项目实战，慢慢上手。
 
+### 开始前的准备
+
+#### 相关文档
+
+1.fastadmin的文档 <https://doc.fastadmin.net/docs>
+
+2.thinkphp的文档 <https://www.kancloud.cn/manual/thinkphp5_1/353947>
+
+3.bootstrap-table中文文档 <https://www.bootstrap-table.com.cn/doc/getting-started/introduction/>
+
+4.bootstrap中文文档 <https://www.bootcss.com/>
+
+5.selectPage 中文文档 <https://terryz.gitee.io/selectpage/docs.html>
+
+#### 必读帖子
+
+首先是必读的帖子，是fa的作者整理出的，可以说没有一句废话，所以每句都仔细看下，不然会漏掉一些知识点。
+
+1.关于表格（bootstrap-table）的问题
+
+一张图解析FastAdmin中的表格列表的功能 <https://ask.fastadmin.net/article/323.html>
+
+2.所有关于弹出窗口的问题，在下面链接里找答案
+
+一张图解析FastAdmin中的弹出窗口的功能 <https://ask.fastadmin.net/article/2527.html>
+
+3.关于表单生成器
+
+一张图解析FastAdmin中的FormBuilder表单生成器 <https://ask.fastadmin.net/article/5567.html>
+
+4.官方常见问题必看
+
+<https://doc.fastadmin.net/docs/faq.html#toc-0>
+
+5.列表用echats渲染，瞬间高大上
+
+使用表格的templateView实现一个图表渲染的功能 <https://ask.fastadmin.net/article/117.html>
+
+6.如何移除图片上传后预览中的删除按钮
+
+<https://ask.fastadmin.net/article/1204.html>
+
+7.数据库创建说明文档
+
+<https://doc.fastadmin.net/doc/database.html>
+
 ### 完整包安装
 
 * 前往官网下载页面 <https://www.fastadmin.net/download.html> 下载完整包解压到你的项目目录
@@ -83,11 +129,58 @@ server {
 # If you want to use SSL, enable it at: Menu > Nginx > SSL > Enabled
 ```
 
+### 架构
+
+#### 功能模块
+
+后台开发的每一个功能模块都是基于MVC的设计模式进行开发 。
+在FastAdmin中，我们提供了一键生成CRUD的功能，这个一键生成CRUD生成的文件也就是我们标准的MVC文件。
+
+以下是一个标准的功能模块所涉及到的文件
+```
+├── application
+│   └── admin
+│       ├── controller
+│       │   └── Test.php        //控制器类
+│       ├── lang
+│       │   ├── zh-cn
+│       │   │   └── test.php    //功能语言包,按需加载
+│       │   └── zh-cn.php       //后台语言包,默认加载
+│       ├── model
+│       │   └── Test.php        //模型类
+│       ├── validate
+│       │   └── Test.php        //验证器类
+│       └── view
+│           └── test
+│               ├── index.html   //列表视图
+│               ├── add.html     //添加视图
+│               └── edit.html    //编辑视图
+└── public
+    └── assets
+        └── js
+            └── backend
+                └── test.js      //功能模块JS文件
+```
+
+在FastAdmin中每一个功能模块至少对应一个功能模块JS文件，也就是说每一个控制器都对应一个同名的JS文件，
+其次每一个控制器的方法对应JS文件中同名的方法。
+
+### 数据库
+
+<https://doc.fastadmin.net/doc/database.html>
+
+
+
+
+
+
 ## 参考资料
 
 FastAdmin 官方文档 <https://doc.fastadmin.net/doc>
 
 写代码的猫叔：fastadmin系列教程:小白学习之路 <https://www.bilibili.com/video/BV1Ji4y1V7ZV>
+
+写代码的猫叔 fastadmin笔记 <https://www.yuque.com/siri/fastadmin/sacpb8>
 
 FastAdmin开发系列之视频教程 <https://www.fastadmin.net/video.html>
 
