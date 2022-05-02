@@ -1507,13 +1507,13 @@ views/foo-list.php
 
 **使用 Plates 类库**
 
-
+![]({{site.baseurl}}/images/20220502/20220502143844.png)
 
 **原生 PHP 模板使用继承的示例**
 
 使用 Plates 类库
 
-
+![]({{site.baseurl}}/images/20220502/20220502143904.png)
 
 **编译模板**
 
@@ -1529,12 +1529,13 @@ views/foo-list.php
 
 使用 Twig 类库。
 
-
+![]({{site.baseurl}}/images/20220502/20220502143917.png)
 
 **使用继承的编译模板示例**
 
 使用 Twig 类库。
 
+![]({{site.baseurl}}/images/20220502/20220502143937.png)
 
 **延伸阅读**
 
