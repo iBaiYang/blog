@@ -2404,10 +2404,160 @@ class DateTimeHelper
 
 ### 资源 
 
+#### PHP 官方
 
+* PHP 官方网站
+* PHP 官方文档
 
+#### 值得关注的大牛
 
+刚开始的时候，你很难一下子找到妙趣横生又经验丰富的 PHP 社区成员，你可以在以下链接找到 PHP 社区成员的 Twitter：
 
+* https://www.ogprogrammer.com/2017/06/28/how-to-get-connected-with-the-php-community/
+* https://twitter.com/CalEvans/lists/phpeople
+
+#### PHP 的 Paas 提供商
+
+* AppFog
+* Amezmo
+* AWS Elastic Beanstalk
+* Cloudways
+* Divio
+* Engine Yard Cloud
+* fortrabbit
+* Google App Engine
+* Heroku
+* IBM Cloud
+* Jelastic
+* Microsoft Azure
+* Nanobox
+* Pivotal Web Services
+* Platform.sh
+* Red Hat OpenShift
+
+要查看这些 PaaS 主机目前的版本，请访问 PHP 版本.
+
+#### 框架
+
+许多 PHP 开发者使用框架来构建 web 应用程序，而不是重新造轮子。
+框架将许多低级问题抽象出来，并提供有用又易于使用的接口来完成常见的任务。
+
+你没必要在每个项目都使用框架。有时候，原生的 PHP 才是正确的选择。
+若你的确需要一个框架，那么有以下三种主要类型：
+* 微型框架
+* 全栈框架
+* 组件框架
+
+微型框架基本上是一个封装的路由，用来转发 HTTP 请求至一个闭包，控制器，或方法等等，
+尽可能地加快开发的速度，有时还会使用一些类库来帮助开发，例如一个基本的数据库封装等等。
+它们主要用于构建远程 HTTP 服务。
+
+许多的框架会在微型框架上加入相当多的功能，我们则称之为全栈框架。这些框架通常会提供 ORMs ，身份认证扩展包等等。
+
+组件框架是多个独立的类库所结合起来的。不同的组件框架可以一起使用，从而形成一个微型或全栈框架。
+
+#### 组件
+
+正如标题提到的，「组件」是另一种建立，发布及推动开源的方式。现在存在的各种的组件库，其中最主要的两个为：
+* Packagist
+* PEAR
+
+这两个组件库都有用来安装及升级的命令行工具，在依赖管理小节中已经详细解释了这一点。
+
+此外，还有基于组件构成的框架的提供商提供不包含框架的组件。这些项目提供了另一个包的来源，理想情况下这些包几乎不依赖于其他包或特定框架。
+
+例如，你可以使用 FuelPHP 验证包，而不需要使用 FuelPHP 框架本身。
+
+    Aura
+    CakePHP Components
+        Collection
+        Database
+        Datasource
+        Event
+        I18n
+        ORM
+    FuelPHP
+    Hoa Project
+    Symfony Components
+    The League of Extraordinary Packages
+    Laravel’s Illuminate Components
+        IoC Container
+        Eloquent ORM
+        Queue
+
+Laravel 的 Illuminate 组件 将更好地与 Laravel 框架解耦。现在我们只列出那些和 Laravel 框架最没有依赖关系的组件。
+
+#### 其他有用资源
+
+速查表
+
+* PHP 速查表 - 用于对比不同 PHP 版本下，变量比较、算术运算、变量判断的结果差异
+* 现代 PHP 速查表 在一个统一的文档中记录现代 PHP（PHP 7.0+）的习惯用法。
+* OWASP 安全备忘单 - 提供有关特定应用程序安全主题的高价值信息的简明集合。
+
+更多最佳实践
+
+* PHP 最佳实践
+* 为什么应该使用受支持的 PHP 版本（Why You Should Be Using Supported PHP Versions）
+
+PHP 和 Web 开发社区的相关资讯
+
+你可以通过订阅周刊资讯，及时获取关于新的类库、近期新闻、活动事件以及社区公告，此外还有不定时发布的资源：
+
+* PHP 周报
+* JavaScript 周报
+* 前端聚焦（Frontend Focus）
+* 移动端 Web 周报
+
+你可能对其他平台的周报也感兴趣，这里是 部分列表.
+
+PHP 世界
+
+* PHP Developer blog
+
+#### 视频教程
+
+YouTube 频道
+
+* PHP 学院（ PHP Academy ）
+* The New Boston
+* Sherif Ramadan
+* Level Up Tuts
+
+付费视频
+
+* 标准和最佳实践
+* Pluralsight 的 PHP 教程
+* Lynda.com 的 PHP 教程
+* Tutsplus 的 PHP 教程
+* Laracasts
+
+#### 书籍
+
+市面上有很多关于 PHP 的书，但遗憾的是，当中有大量相当陈旧，已经不再正确的资料。
+你要特别提防关于「 PHP 6 」的书，因为这是一个并不存在的版本。PHP 5.6 的下一个大版本直接就是「 PHP 7 」， 原因看这里
+
+本节的目标是做成一份 PHP 开发推荐书籍的活文档。如果你想添加自己的书籍，请发送一个 PR ，我们将对你提交的内容相关性进行审核。
+
+免费书籍
+
+* PHP Pandas - 教会每个人成为一名 web 开发者。
+* PHP 之道 - 该网站可完全免费地获取这本书。
+* 在 PHP 项目中使用 Libsodium - 教你使用 PHP 的 Libsodium 扩展，一个先进、安全与快速的加密库。
+
+付费书籍
+
+* 如何构建 API - 任何人都想要有 API ，你应当学习如何构建它们。
+* 现代 PHP - 涵盖现代 PHP 的特性、最佳实践、测试、调优、部署和设置开发环境等内容。
+* 构建安全的 PHP 应用程序 - 高级开发人员在多年的经验中积累的安全基础知识，浓缩在这本快速简单的手册中。
+* 改造遗留的 PHP 应用程序 - 通过小步迭代，升级遗留的 PHP 旧项目。
+* PHP 安全：核心概念 - 最常见的安全术语概念的指南，并提供了一些 PHP 日常中的范例。
+* 扩展 PHP - 停止在运维工作上浪费时间，将重心放回编码本身。
+* PHP 信号 - 当编写从命令行运行的 PHP 脚本时，PCNLT 信号非常有帮助。
+* 最小可行性测试 - 长期从事 PHP 测试的布道者 Chris Hartjes 认为，这是在你开始在测试前所必须掌握的。
+* PHP 的领域驱动设计 - 通过 PHP 编写的示例，展示了领域驱动设计的体系结构风格（六角架构、CQRS 或 
+事件溯源 (Event Sourcing) ）、战术设计模式（ Tactical Design Patterns ）
+和 限界上下文集成 （Bounded Context Integration）。
 
 ### 社区
 
@@ -2452,9 +2602,9 @@ PHP 项目那可爱的吉祥物名叫 ElePHPant ，设计中是一头大象。
 
 英文版本维护者
 
-    Josh Lockhart
-    Phil Sturgeon
-    Project Contributors
+* Josh Lockhart
+* Phil Sturgeon
+* Project Contributors
 
 中文版本维护者
 
