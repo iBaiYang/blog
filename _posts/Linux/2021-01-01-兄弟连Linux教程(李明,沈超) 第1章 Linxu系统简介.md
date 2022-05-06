@@ -1011,9 +1011,15 @@ r 描述文件
 
 rpm包文件提取：
 
-rpm2cpio 包全名 | \                将rpm格式改为cpio格式
+`rpm2cpio 包全名 | \`                将rpm格式改为cpio格式
 
-cpio -idv .文件绝对路径        i copy-in模式，还原      d还原时自动新建目录   v详细    cpio是一个标准工具，它用于创建软件档案文件和从档案文件中提取文件
+`cpio -idv .文件绝对路径`        
+
+    i copy-in模式，还原      
+    d还原时自动新建目录   
+    v详细    
+    
+cpio是一个标准工具，它用于创建软件档案文件和从档案文件中提取文件
 
 yum在线管理
 
@@ -1021,7 +1027,7 @@ yum在线管理
 
 yum在redhat中需要收费
 
-网络yum源 vi /etc/yum.repos.d/CentOS-Base.repo
+网络yum源 `vi /etc/yum.repos.d/CentOS-Base.repo`
 
 [base] 容器名称
 
@@ -1273,9 +1279,9 @@ passwd命令
 
 -u 解锁用户  仅root
 
---stdin 可通过管道符输出的数据作为用户的密码
+`--stdin` 可通过管道符输出的数据作为用户的密码
 
-echo "123" | passwd --stdin lamp   一般用与shell编程
+`echo "123" | passwd --stdin lamp`   一般用与shell编程
 
 whoami
 
