@@ -386,9 +386,8 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
 执行权限：所有用户
 
-语法：
+语法：`chmod  [{ugoa}{+-=}{rwx}] [文件或目录]`
 
-    chmod  [{ugoa}{+-=}{rwx}] [文件或目录] 
     [mode=421 ]  [文件或目录] 
     -R  递归修改
     
@@ -431,7 +430,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
 执行权限：所有用户
 
-语法：chown  [用户] [文件或目录] 
+语法：`chown  [用户] [文件或目录]`
 
 功能描述：改变文件或目录的所有者
 
@@ -450,7 +449,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
 执行权限：所有用户
 
-语法：chgrp  [用户组]  [文件或目录] 
+语法：`chgrp  [用户组]  [文件或目录] `
 
 功能描述：改变文件或目录的所属组
 
@@ -469,7 +468,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
 执行权限：所有用户
 
-语法：umask [-S]
+语法：`umask [-S]`
 
     -S   以rwx形式显示新建文件缺省权限
             
@@ -516,7 +515,7 @@ u=rwx,g=rx,o=rx
 
 执行权限：所有用户
 
-语法：find  [搜索范围]  [匹配条件]
+语法：`find  [搜索范围]  [匹配条件]`
 
 功能描述：文件搜索
 
@@ -582,7 +581,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：locate  文件名 
+语法：`locate  文件名`
 
 功能描述：在文件资料库中查找文件
 
@@ -602,7 +601,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：which  命令
+语法：`which  命令`
 
 功能描述：搜索命令所在目录及别名信息
 
@@ -617,7 +616,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：whereis  [命令名称] 
+语法：`whereis  [命令名称]`
 
 功能描述：搜索命令所在目录及帮助文档路径
 
@@ -632,7 +631,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：grep  -iv [指定字串] [文件]
+语法：`grep  -iv [指定字串] [文件]`
 
 功能描述：在文件中搜寻字串匹配的行并输出
 
@@ -658,7 +657,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：man  [命令或配置文件]
+语法：`man  [命令或配置文件]`
 
 功能描述：获得帮助信息
 
@@ -674,14 +673,6 @@ windows的搜索工具：Everything
 查看配置文件services的帮助信息
 > $ man services
 
-> whatis ls
-
-`ls --help`
-
-> info ls
-
-> apropos 配置文件
-
 **帮助命令：help**
 
 命令名称：help
@@ -690,7 +681,7 @@ windows的搜索工具：Everything
 
 执行权限：所有用户
 
-语法：help 命令
+语法：`help 命令`
 
 功能描述：获得Shell内置命令的帮助信息
 
@@ -698,6 +689,16 @@ windows的搜索工具：Everything
 
 查看umask命令的帮助信息
 > $ help umask
+
+**其他帮助命令**
+
+> whatis ls
+
+`ls --help`
+
+> info ls
+
+> apropos 配置文件
 
 #### 4.5 用户管理命令
 
