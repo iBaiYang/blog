@@ -323,7 +323,7 @@ www.netcraft.com 扫描和踩点网站
 
 ### 2 Linux系统安装
 
-磁盘分区
+**磁盘分区**
 
 分区类型
 
@@ -345,17 +345,12 @@ i节点 inode列表
 
 硬件设备文件名：
 
-IDE硬盘             hd[a-d]
-
-SCSI/SATA/USB硬盘      sd[a-p]
-
-光驱                    cdrom或sr0
-
-鼠标                     mouse
-
-打印机(25针)                 lp[0-2]
-
-打印机（USB）                 /dev/usb/lp[0-15]
+    IDE硬盘             hd[a-d]
+    SCSI/SATA/USB硬盘      sd[a-p]
+    光驱                    cdrom或sr0
+    鼠标                     mouse
+    打印机(25针)                 lp[0-2]
+    打印机（USB）                 /dev/usb/lp[0-15]
 
 ide 133MB  最古老， scsi都淘汰了 200MB贵服务器
 
@@ -376,17 +371,14 @@ swap分区 交换分区  内存1.5-2倍  不超过2G
 
 安装日志：
 
-/root/install.log:存储了安装在系统中的软件包及其版本信息
-
-/root/install.log.syslog 存储安装过程中留下的事件记录
-
-/root/anaconda-ks.cfg 已Kickstart配置文件的格式记录安装过程的选项设置  作为无人值守安装的模板
+    /root/install.log:存储了安装在系统中的软件包及其版本信息
+    /root/install.log.syslog 存储安装过程中留下的事件记录
+    /root/anaconda-ks.cfg 已Kickstart配置文件的格式记录安装过程的选项设置  作为无人值守安装的模板
 
 linux 严格区分大小写
 
-命令全是小写
-
-文件名区分大小写
+    命令全是小写
+    文件名区分大小写
 
 tab键自动补全
 
@@ -398,51 +390,29 @@ linux不通过扩展名区分文件类型
 
 linux存储设备都必须挂载后才能使用
 
-目录作用
+**目录作用**
 
-/bin  存放系统命令，普通用户和root都可以执行
-
-/sbin 保存和系统环境设置相关的命令，只有root能执行
-
-/usr/bin
-
-/usr/sbin
-
-/boot 系统启动目录
-
-/dev 设备文件
-
-/etc  配置文件
-
-/home 宿主目录
-
-/lib 系统函数库
-
-/lost+found/ 当系统崩溃或意外关机而产生的文件碎片。当系统启动过程fsck工具会检查这里，并修复系统   每个分区都有自己的这个目录
-
-/media 挂载目录   多媒体设备  光盘
-
-/mnt 挂载目录 u盘移动硬盘或其他操作系统分区
-
-/misc 挂载目录 系统建议用来挂载nfs服务的共享目录
-
-/opt 第三方软件保存位置  用处不多，现在外部软件一般放/usr/local目录
-
-/proc 虚拟文件系统  放内存中 当前系统的进程和硬件信息
-
-/sys  虚拟文件系统  放内存中 存放内核相关信息
-
-/root  root家目录
-
-/srv  服务数据目录
-
-/tmp 临时
-
-/usr 系统软件资源目录
-
-/var 动态数据保存位置。保存缓存、日志及软件运行产生的文件
-
-usr  unix system resource
+    /bin  存放系统命令，普通用户和root都可以执行
+    /sbin 保存和系统环境设置相关的命令，只有root能执行
+    /usr/bin
+    /usr/sbin
+    /boot 系统启动目录
+    /dev 设备文件
+    /etc  配置文件
+    /home 宿主目录
+    /lib 系统函数库
+    /lost+found/ 当系统崩溃或意外关机而产生的文件碎片。当系统启动过程fsck工具会检查这里，并修复系统   每个分区都有自己的这个目录
+    /media 挂载目录   多媒体设备  光盘
+    /mnt 挂载目录 u盘移动硬盘或其他操作系统分区
+    /misc 挂载目录 系统建议用来挂载nfs服务的共享目录
+    /opt 第三方软件保存位置  用处不多，现在外部软件一般放/usr/local目录
+    /proc 虚拟文件系统  放内存中 当前系统的进程和硬件信息
+    /sys  虚拟文件系统  放内存中 存放内核相关信息
+    /root  root家目录
+    /srv  服务数据目录
+    /tmp 临时
+    /usr 系统软件资源目录         usr  unix system resource
+    /var 动态数据保存位置。保存缓存、日志及软件运行产生的文件
 
 服务器不允许关机，只能重启
 
@@ -458,10 +428,10 @@ usr  unix system resource
 
 
 
-mint 默认不启用root用户,sudo passwd root来启用
+mint 默认不启用root用户,`sudo passwd root`来启用
 
-mint也默认不启用ssh,sudo apt-get install openssh-server然后修改配置文件vi /etc/ssh/sshd_config 修改PermitRootLogin yes行，来允许root用户ssh远程登陆
-
+mint 也默认不启用ssh，`sudo apt-get install openssh-server`然后修改配置文件`vi /etc/ssh/sshd_config`，
+修改 PermitRootLogin yes 行，来允许root用户ssh远程登陆
 
 
 
@@ -469,13 +439,13 @@ mint也默认不启用ssh,sudo apt-get install openssh-server然后修改配置�
 
 3.1 文件处理命令
 
-命令格式  命令 [-选项] [参数] ls -al /etc     中括号表示可选
+`命令格式  命令 [-选项] [参数]`    `ls -al /etc`     中括号表示可选
 
-个别命令不遵守此格式 多个选项可以写一起  简化选项和完整选项  -a  --all
+个别命令不遵守此格式 多个选项可以写一起  简化选项和完整选项  `-a`  `--all`
 
 目录处理命令：
 
-ls  list    /bin/ls  -aldh
+`ls`  list    `/bin/ls  -aldh`
 
 所有者  所属组  其他人  ugo rwx  读写执行权限  777 软链接 硬链接
 
@@ -483,41 +453,41 @@ ls  list    /bin/ls  -aldh
 
 .开头的文件表示隐藏文件   .当前目录  ..父目录
 
-mkdir /bin 创建目录   -p 表示递归创建 -m=mode  可以同时创建多个目录 空格分割
+`mkdir` /bin 创建目录   `-p` 表示递归创建 `-m=mode`  可以同时创建多个目录 空格分割
 
-cd 切换目录 change directory  shell内置命令
+`cd` 切换目录 change directory  shell内置命令
 
-pwd  /bin 显示当前目录
+`pwd`  /bin 显示当前目录
 
-rmdir  remove empty directories  /bin   删除空目录
+`rmdir`  remove empty directories  /bin   删除空目录
 
-cp copy /bin   -rp   r表示递归 p保留文件属性 可以复制多个文件
+`cp` copy /bin   -rp   r表示递归 p保留文件属性 可以复制多个文件
 
-mv move /bin  剪切、改名 可以剪切多个
+`mv` move /bin  剪切、改名 可以剪切多个
 
-clear ctl+l  清屏
+`clear` ctl+l  清屏
 
-rm 删除文件 remove /bin -rf f表示强制执行
+`rm` 删除文件 remove /bin -rf f表示强制执行
 
 文件处理命令：
 
-touch /bin 创建空文件 文件名如果是有空格 加双引号 不建议
+`touch` /bin 创建空文件 文件名如果是有空格 加双引号 不建议
 
-cat 查看文件 /bin -n 显示行号
+`cat` 查看文件 /bin -n 显示行号
 
-tac 导致显示
+`tac` 导致显示
 
-more 分页显示文件内容 /bin   空格或f 翻页 q或Q退出 enter换行
+`more` 分页显示文件内容 /bin   空格或f 翻页 q或Q退出 enter换行
 
-less 同more不过可以向上翻页  pageup 上箭头 还可以搜索 /词儿  高亮显示搜索到的  n显示下个搜索到的
+`less` 同more不过可以向上翻页  pageup 上箭头 还可以搜索 /词儿  高亮显示搜索到的  n显示下个搜索到的
 
-head 查看前几行 -n  默认10行
+`head` 查看前几行 -n  默认10行
 
-tail -fn  查看后几行  -f实时监控
+`tail -fn`  查看后几行  -f实时监控
 
 链接命令：
 
-ln link /bin  ln -s [原文件] [目标文件]  -s表示软连接  不加表示硬链接
+`ln` link /bin  `ln -s [原文件] [目标文件]`  `-s`表示软连接  不加表示硬链接
 
 软连接类似win快捷方式，l标记权限全是777 软连接很小
 
@@ -525,19 +495,19 @@ ln link /bin  ln -s [原文件] [目标文件]  -s表示软连接  不加表示�
 
 硬链接删除源文件，目标文件依然可以使用。软链接一旦删除源文件，目标文件不可用
 
-和cp -p的不同处 修改一处后，另外一处也会同时更新。
+和`cp -p`的不同处 修改一处后，另外一处也会同时更新。
 
 硬链接不能跨分区  硬链接不能对目录使用
 
 3.2 权限管理命令
 
-chmod  root和所有者可以改权限
+`chmod`  root和所有者可以改权限
 
 change the permissions mode of a file
 
 /bin
 
--R 递归修改 mode=421 ｛ugoa｝+-=｛rwx｝
+`-R` 递归修改 mode=421 ｛ugoa｝+-=｛rwx｝
 
 可以同时进行多个授权
 
@@ -549,35 +519,35 @@ change the permissions mode of a file
 
 对目录有r权限就一般有x权限
 
-chown  只有root可以改
+`chown`  只有root可以改
 
 change file ownership
 
-chgrp
+`chgrp`
 
-useradd
+`useradd`
 
-groupadd
+`groupadd`
 
 一般谁创建的文件 谁就是所有者
 
 一个用户有多个组 单有个缺省组  文件的创建者的缺省组就是文件的所属组
 
-umask -S 缺省权限   u=rwx,g=rx,o=rx
+`umask -S` 缺省权限   u=rwx,g=rx,o=rx
 
 创建目录的权限和缺省权限一样
 
 创建文件的权限是缺省权限去除x权限  防木马病毒
 
-umask          0022   0 特殊权限  022  真正的权限是777-022=755
+`umask 0022`   0 特殊权限  022  真正的权限是777-022=755
 
-umask 023
+`umask 023`
 
 3.3 文件搜索命令
 
-find  搜索会占用大量资源 不要在服务高峰期使用 window中everything挺好用的，不过没有linux版本，并且只支持ntfs分区
+`find`  搜索会占用大量资源 不要在服务高峰期使用 window中everything挺好用的，不过没有linux版本，并且只支持ntfs分区
 
-/bin      find [搜索范围] [匹配条件]
+/bin      `find [搜索范围] [匹配条件]`
 
 -name 根据文件名搜索  find /etc -name init
 
@@ -601,11 +571,12 @@ find  搜索会占用大量资源 不要在服务高峰期使用 window中everyt
 
 -mmin 文件内容 modify
 
-find /etc -cmin -50  查找50分钟以内修改过文件属性的文件 +-
+`find /etc -cmin -50`  查找50分钟以内修改过文件属性的文件 +-
 
-连接选项  -a两个条件同时满足 -o两个条件满足任一           find / -size +163840 -a -size -204800
+连接选项  -a两个条件同时满足 -o两个条件满足任一           `
+find / -size +163840 -a -size -204800`
 
-find /etc -name init -exec ls -l {} \;                  -exec/-ok 命令 {} \; 对搜索结果执行操作     -ok有确认询问
+`find /etc -name init -exec ls -l {} \;`                  `-exec/-ok 命令 {} \;` 对搜索结果执行操作     `-ok`有确认询问
 
 -type 根据文件类型  f文件 d目录 l软连接
 
@@ -615,7 +586,7 @@ locate命令
 
 /usr/bin 在文件资料库中查找
 
-yum install -y mlocate
+`yum install -y mlocate`
 
 会定期更新
 
@@ -627,51 +598,54 @@ locate -i 不区分大小写
 
 /tmp目录不被收录  某些目录不被收录
 
-which 命令搜索  which ls  还能搜到命令别名
+`which` 命令搜索  which ls  还能搜到命令别名
 
-whereis  还能搜到帮助文件
+`whereis`  还能搜到帮助文件
 
-grep  -i 不区分大小写  -v排除指定字符串  ^表示行首  反向查找 屏蔽
+`grep  -i` 不区分大小写  `-v`排除指定字符串  `^`表示行首  反向查找 屏蔽
 
 3.4 帮助命令
 
 
 
-man manual /usr/bin
+`man` manual /usr/bin
 
 可以查命令帮助 也可以查配置的帮住
 
-man ls
+`man ls`
 
-man services  不可以写绝对路径
+`man services`  不可以写绝对路径
 
 可以    /内容   查找
 
-man passwd 优先查命令   1一般是命令的帮住 5一般是配置文件的帮住
+`man passwd` 优先查命令   `1`一般是命令的帮助 `5`一般是配置文件的帮助
 
-man 5 passwd 是查配置
+`man 5 passwd` 是查配置
 
-whatis 可以查到命令的简短介绍  就是帮助文档的name部分
+`whatis` 可以查到命令的简短介绍  就是帮助文档的name部分
 
-apropos 可以查配置文件的简短介绍 也不要加绝对路径
+`apropos` 可以查配置文件的简短介绍 也不要加绝对路径
 
---help  只看选项 不会man那么长
+只看选项 不会man那么长
+```
+--help
+```  
 
-info 和man大同小异
+`info` 和man大同小异
 
-help  可以查看shell内置命令的帮助
+`help`  可以查看shell内置命令的帮助
 
 shell内置命令找不到路径
 
 3.5 用户管理命令
 
-useradd 加用户
+`useradd` 加用户
 
-passwd 改密码  普通用户改自己密码需要满足复杂度要求
+`passwd` 改密码  普通用户改自己密码需要满足复杂度要求
 
-who 查看哪些用户登录   tty表示本地登录 pts表示远程终端
+`who` 查看哪些用户登录   tty表示本地登录 pts表示远程终端
 
-w 查看登录用户及正在干嘛
+`w` 查看登录用户及正在干嘛
 
 3.6 压缩解压命令
 
@@ -679,7 +653,7 @@ w 查看登录用户及正在干嘛
 
 常用压缩格式
 
-.gz linux中常用格式 命令gzip  gunzip解压缩 或者gzip -d
+`.gz` linux中常用格式 命令gzip  gunzip解压缩 或者gzip -d
 
 压缩比很惊人 差不多5倍
 
@@ -687,7 +661,7 @@ w 查看登录用户及正在干嘛
 
 压缩解压均不保留源文件
 
-.zip linux和win通用格式
+`.zip` linux和win通用格式
 
 zip命令 保留源文件 -r压缩目录
 
@@ -695,17 +669,17 @@ zip命令 保留源文件 -r压缩目录
 
 unzip解压缩  不区分文件和目录
 
-.tar .tar.gz可以压缩目录
+`.tar` .tar.gz可以压缩目录
 
 tar命令 -z 打包同时压缩格式为gz -c打包  -v verbose详细  -f 指定文件名  -x解包  -j打包同时压缩格式为bz2
 
-.bz2   gzip的升级版
+`.bz2`   gzip的升级版
 
 bzip2命令 -k可以保留原文件 压缩比惊人
 
 bunzip2 解压缩.bz2文件 -k可以保留源文件 bzip2 -d也可以解压
 
-tar -xjf 可以解压.tar.bz2文件
+`tar -xjf` 可以解压.tar.bz2文件
 
 3.7 网络命令
 
@@ -745,29 +719,29 @@ tcp才可以监听端口  udp不可以  udp可以直接发送
 
 setup 修改网络， 是redhat中特有的 其他版本没有  永久生效
 
-yum install -y setuptool
+`yum install -y setuptool`
 
 安装工具组件如 ntsysv(系统服务）system-config-networktui（网络服务）iptables(防火墙配置）
 
-yum install system-config-securitylevel-tui
+`yum install system-config-securitylevel-tui`
 
-yum install iptables
+`yum install iptables`
 
-yum install ntsysv
+`yum install ntsysv`
 
-yum install system-config-network-tui  centos7,已经setup已经无法配置网络了，该命令中无法找到，推荐使用nmtui命令
+`yum install system-config-network-tui`  centos7,已经setup已经无法配置网络了，该命令中无法找到，推荐使用nmtui命令
 
-service network restart 重启网卡
+`service network restart` 重启网卡
 
 mount 挂载
 
-mount -t iso9660 /dev/sr0 /mnt/cdrom
+`mount -t iso9660 /dev/sr0 /mnt/cdrom`
 
-/dev/cdrom 是/dev/sr0的软连接
+`/dev/cdrom` 是/dev/sr0的软连接
 
--t iso9660 可以不写 默认就是
+`-t iso9660` 可以不写 默认就是
 
-umount /dev/sr0
+`umount /dev/sr0`
 
 如果正在挂载目录中，是卸载不了提示设备忙，要退出挂载目录
 
