@@ -971,7 +971,7 @@ rpm包依赖性
 
 6.查该软件包会向系统里面写入哪些文件：执行 rpm -qpl rpm包名
 
-rpm -qa|grep
+`rpm -qa|grep`
 
 rpm -qi  包名
 
