@@ -303,7 +303,16 @@ if (\DIRECTORY_SEPARATOR === '/') {
 Worker::runAll();
 ```
 
-
+里面这一段，就是加载 .env 配置：
+```
+if (class_exists('Dotenv\Dotenv') && file_exists(base_path() . '/.env')) {
+    if (method_exists('Dotenv\Dotenv', 'createUnsafeImmutable')) {
+        Dotenv::createUnsafeImmutable(base_path())->load();
+    } else {
+        Dotenv::createMutable(base_path())->load();
+    }
+}
+```
 
 
 ## 参考资料
