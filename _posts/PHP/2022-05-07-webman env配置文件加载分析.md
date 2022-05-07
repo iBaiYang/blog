@@ -334,7 +334,6 @@ $host = env('database.hostname', '127.0.0.1');
 使用包 `illuminate/support` ,好多包依赖于这个包，如 `illuminate/bus` 、 `illuminate/database` 、 `illuminate/events` 、
 `illuminate/events` 、 `illuminate/pagination` 、 `illuminate/pipeline` 、 `illuminate/redis` 等。
 
-
 项目 `composer.json` 文件 中增加 `psr/container` 、 `illuminate/support`：
 ```
   "require": {
@@ -346,6 +345,11 @@ $host = env('database.hostname', '127.0.0.1');
     "illuminate/support": "^8.83"
   },
 ```
+
+安装包：
+> composer update psr/container
+>
+> composer update illuminate/support
 
 ```
 root@02891538d8c9:/var/www/html/webman_v1.3.7# composer update illuminate/support
