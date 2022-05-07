@@ -437,7 +437,7 @@ mint 也默认不启用ssh，`sudo apt-get install openssh-server`然后修改�
 
 ### 3 常用命令
 
-3.1 文件处理命令
+#### 3.1 文件处理命令
 
 `命令格式  命令 [-选项] [参数]`    `ls -al /etc`     中括号表示可选
 
@@ -499,7 +499,7 @@ mint 也默认不启用ssh，`sudo apt-get install openssh-server`然后修改�
 
 硬链接不能跨分区  硬链接不能对目录使用
 
-3.2 权限管理命令
+#### 3.2 权限管理命令
 
 `chmod`  root和所有者可以改权限
 
@@ -543,7 +543,7 @@ change file ownership
 
 `umask 023`
 
-3.3 文件搜索命令
+#### 3.3 文件搜索命令
 
 `find`  搜索会占用大量资源 不要在服务高峰期使用 window中everything挺好用的，不过没有linux版本，并且只支持ntfs分区
 
@@ -557,19 +557,19 @@ change file ownership
 
 搜索范围越小越好  能不在根目录下就不要全局搜索 严重耗费资源
 
--size 指定文件大小   +-  linux一个数据块512B  就是0.5k   查找大于100M的文件find / -size +204800
-
--user  找所有者的文件
-
--group 找所属组的文件
+    -size 指定文件大小   +-  linux一个数据块512B  就是0.5k   查找大于100M的文件find / -size +204800
+    
+    -user  找所有者的文件
+    
+    -group 找所属组的文件
 
 根据时间属性查找
 
--amin 访问时间 access
-
--cmin 文件属性 change
-
--mmin 文件内容 modify
+    -amin 访问时间 access
+    
+    -cmin 文件属性 change
+    
+    -mmin 文件内容 modify
 
 `find /etc -cmin -50`  查找50分钟以内修改过文件属性的文件 +-
 
@@ -578,9 +578,9 @@ find / -size +163840 -a -size -204800`
 
 `find /etc -name init -exec ls -l {} \;`                  `-exec/-ok 命令 {} \;` 对搜索结果执行操作     `-ok`有确认询问
 
--type 根据文件类型  f文件 d目录 l软连接
-
--inum 根据i节点查找        可以找硬链接
+    -type 根据文件类型  f文件 d目录 l软连接
+    
+    -inum 根据i节点查找        可以找硬链接
 
 locate命令
 
@@ -604,9 +604,7 @@ locate -i 不区分大小写
 
 `grep  -i` 不区分大小写  `-v`排除指定字符串  `^`表示行首  反向查找 屏蔽
 
-3.4 帮助命令
-
-
+#### 3.4 帮助命令
 
 `man` manual /usr/bin
 
@@ -637,7 +635,7 @@ locate -i 不区分大小写
 
 shell内置命令找不到路径
 
-3.5 用户管理命令
+#### 3.5 用户管理命令
 
 `useradd` 加用户
 
@@ -647,7 +645,7 @@ shell内置命令找不到路径
 
 `w` 查看登录用户及正在干嘛
 
-3.6 压缩解压命令
+#### 3.6 压缩解压命令
 
 绝大多数病毒很难感染压缩文件
 
@@ -681,43 +679,43 @@ bunzip2 解压缩.bz2文件 -k可以保留源文件 bzip2 -d也可以解压
 
 `tar -xjf` 可以解压.tar.bz2文件
 
-3.7 网络命令
+#### 3.7 网络命令
 
-write  发信息给服务器上其他用户，登录了的用户才能发信息  最初的及时通讯 ctrl+d结束
-
-wall 给所有在线用户发信 ， writeall的意思
-
-ping  给远程用户发送icmp包，检测目标是否存在，每经过一个路由节点ttl减少1  不同系统ttl初始值不一样 可以大概判断对方操作系统类型 linux是64
-
-ifconfig 查看当前网络 eth0是初始网卡  lo是回环网卡用户检测tcpip是否通畅，mac地址是固话在网卡的只读存储器中的地址不可变
-
-ifconfig eth0 192.0.0.0 可以临时更改ip
-
-mail 邮件命令 用户不在线也可以 mail用户名发信  mail啥都不跟收信 输入help查看帮助 输入序列号查看信 h可以看到信列表  d 1 删除邮件
-
-last 重启信息都有 所有用户登录信息  非常有效 常用的命令
-
-lastlog 同last只记录最后一次登录 lastlog -u 502指定用户
-
-traceroute 显示数据包到主机间的路径   凡走过必留痕迹  结果显示**是被该节点屏蔽了
-
-netstat 显示网络相关信息 -t tcp协议 -u udp协议  -l 监听 -r路由 -n 显示ip端口
-
-netstat -tlun 查看本机监听的端口
-
-netstat -an 查看本机所有的网络连接
-
-netstat -rn 查看本机路由
-
-tcp 传输控制协议 有三次握手协议  更可靠  类似打电话
-
-udp 用户数据报协议 更快  类似发短信
-
-tcp才可以监听端口  udp不可以  udp可以直接发送
+    write  发信息给服务器上其他用户，登录了的用户才能发信息  最初的及时通讯 ctrl+d结束
+    
+    wall 给所有在线用户发信 ， writeall的意思
+    
+    ping  给远程用户发送icmp包，检测目标是否存在，每经过一个路由节点ttl减少1  不同系统ttl初始值不一样 可以大概判断对方操作系统类型 linux是64
+    
+    ifconfig 查看当前网络 eth0是初始网卡  lo是回环网卡用户检测tcpip是否通畅，mac地址是固话在网卡的只读存储器中的地址不可变
+    
+    ifconfig eth0 192.0.0.0 可以临时更改ip
+    
+    mail 邮件命令 用户不在线也可以 mail用户名发信  mail啥都不跟收信 输入help查看帮助 输入序列号查看信 h可以看到信列表  d 1 删除邮件
+    
+    last 重启信息都有 所有用户登录信息  非常有效 常用的命令
+    
+    lastlog 同last只记录最后一次登录 lastlog -u 502指定用户
+    
+    traceroute 显示数据包到主机间的路径   凡走过必留痕迹  结果显示**是被该节点屏蔽了
+    
+    netstat 显示网络相关信息 -t tcp协议 -u udp协议  -l 监听 -r路由 -n 显示ip端口
+    
+    netstat -tlun 查看本机监听的端口
+    
+    netstat -an 查看本机所有的网络连接
+    
+    netstat -rn 查看本机路由
+    
+    tcp 传输控制协议 有三次握手协议  更可靠  类似打电话
+    
+    udp 用户数据报协议 更快  类似发短信
+    
+    tcp才可以监听端口  udp不可以  udp可以直接发送
 
 发起端口是随机的  目标端口才是22 80等端口
 
-setup 修改网络， 是redhat中特有的 其他版本没有  永久生效
+    setup 修改网络， 是redhat中特有的 其他版本没有  永久生效
 
 `yum install -y setuptool`
 
@@ -733,81 +731,65 @@ setup 修改网络， 是redhat中特有的 其他版本没有  永久生效
 
 `service network restart` 重启网卡
 
-mount 挂载
+#### 3.8 关机重启命令
 
-`mount -t iso9660 /dev/sr0 /mnt/cdrom`
-
-`/dev/cdrom` 是/dev/sr0的软连接
-
-`-t iso9660` 可以不写 默认就是
-
-`umount /dev/sr0`
-
-如果正在挂载目录中，是卸载不了提示设备忙，要退出挂载目录
-
-3.8 关机重启命令
-
-
-
-shutdown
-
-shutdown -h now
-
-shutdown -h 8:30
-
-shutdown -r now
-
-shutdown -r 8:30
+    shutdown
+    
+    shutdown -h now
+    
+    shutdown -h 8:30
+    
+    shutdown -r now
+    
+    shutdown -r 8:30
 
 最早期只有shutdown 可以正确保存服务，目前其他命令也可以不过推荐使用shutdown
 
--c 取消前一个关机命令
-
--h 关机
-
--r 重启
+    -c 取消前一个关机命令
+    
+    -h 关机
+    
+    -r 重启
 
 服务器不能关机 只能重启 谨记
 
-halt
-
-poweroff  相当于直接断电  比较危险
-
-init 0
+    halt
+    
+    poweroff  相当于直接断电  比较危险
+    
+    init 0
 
 上面3个命令也可以关机
 
-reboot重启
-
-init 6也可以重启
+    reboot重启
+    
+    init 6也可以重启
 
 系统运行级别：表示linux启动时候可以进入的级别号
 
-0 关机
+    0 关机
+    
+    1 单用户      类似win启动f8安全模式，启动最小服务，启动最小核心程序，用户修复系统，只能root登陆，没有图形界面和win安全模式不一样
+    
+    2 不完全多用户，不含nfs服务    nfs验证机制弱，不建议用这个文件共享
+    
+    3 完全多用户
+    
+    4 未分配
+    
+    5 图形界面
+    
+    6 重启
 
-1 单用户      类似win启动f8安全模式，启动最小服务，启动最小核心程序，用户修复系统，只能root登陆，没有图形界面和win安全模式不一样
-
-2 不完全多用户，不含nfs服务    nfs验证机制弱，不建议用这个文件共享
-
-3 完全多用户
-
-4 未分配
-
-5 图形界面
-
-6 重启
-
-cat /etc/inittab 是init的配置文件  别改0或6   改错就不好了
+`cat /etc/inittab` 是init的配置文件  别改0或6   改错就不好了
 
 X11代表图形界面 X表示X-window
 
-runlevel 查询系统运行级别
-
-logout 注销  做完操作一定要退出  防止安全隐患
+    runlevel 查询系统运行级别
+    
+    logout 注销  做完操作一定要退出  防止安全隐患
 
 ### 4 Vim文本编辑器
-
-
 
 vim是vi的增强版
 
