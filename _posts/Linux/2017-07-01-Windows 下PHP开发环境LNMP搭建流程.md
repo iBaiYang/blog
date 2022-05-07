@@ -1655,6 +1655,12 @@ Aborted
 
 查询后，应该安装 docker-io，而不是 docker。需要卸载 docker，然后安装 docker-io。
 
+docker-io, docker-engin 是以前早期的版本，版本号是 1.*。
+
+docker-ce 是社区版本，适用于刚刚开始docker 和开发基于docker研发的应用开发者或者小型团队。
+
+docker-ee 是docker的企业版，适用于企业级开发，同样也适用于开发、分发和运行商务级别的应用的IT 团队。
+
 ##### 方法一 
 
 查询之前是否已经安装docker，及docker的版本：
@@ -3097,6 +3103,164 @@ total 108
 
 ##### 方法二
 
+docker 安装要求内核大于3.10 ， 而centos6 机器上内核一般是2.6 ， 除了升级内核外， 还可以安装低版本的docker。
+
+机器环境：
+```
+[root@localhost ~]# uname -a
+Linux localhost.localdomain 2.6.32-573.7.1.el6.x86_64 #1 SMP Tue Sep 22 22:00:00 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+[root@localhost ~]#
+[root@localhost ~]# uname -r
+2.6.32-573.7.1.el6.x86_64
+[root@localhost ~]#
+```
+
+指定地址安装：
+> yum install https://get.docker.com/rpm/1.7.1/centos-6/RPMS/x86_64/docker-engine-1.7.1-1.el6.x86_64.rpm
+
+启动服务：
+> service docker start
+
+查看版本：
+> docker version
+
+```
+[root@localhost ~]# yum install https://get.docker.com/rpm/1.7.1/centos-6/RPMS/x86_64/docker-engine-1.7.1-1.el6.x86_64.rpm
+Loaded plugins: fastestmirror
+Setting up Install Process
+docker-engine-1.7.1-1.el6.x86_64.rpm                                        | 4.5 MB     00:02
+Examining /var/tmp/yum-root-N2CNHT/docker-engine-1.7.1-1.el6.x86_64.rpm: docker-engine-1.7.1-1.el6.x86_64
+Marking /var/tmp/yum-root-N2CNHT/docker-engine-1.7.1-1.el6.x86_64.rpm to be installed
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+Resolving Dependencies
+--> Running transaction check
+---> Package docker-engine.x86_64 0:1.7.1-1.el6 will be installed
+--> Processing Dependency: libcgroup for package: docker-engine-1.7.1-1.el6.x86_64
+--> Processing Dependency: xz for package: docker-engine-1.7.1-1.el6.x86_64
+--> Running transaction check
+---> Package libcgroup.x86_64 0:0.40.rc1-27.el6_10 will be installed
+---> Package xz.x86_64 0:4.999.9-0.5.beta.20091007git.el6 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+===================================================================================================
+ Package        Arch    Version                           Repository                          Size
+===================================================================================================
+Installing:
+ docker-engine  x86_64  1.7.1-1.el6                       /docker-engine-1.7.1-1.el6.x86_64   19 M
+Installing for dependencies:
+ libcgroup      x86_64  0.40.rc1-27.el6_10                updates                            131 k
+ xz             x86_64  4.999.9-0.5.beta.20091007git.el6  base                               137 k
+
+Transaction Summary
+===================================================================================================
+Install       3 Package(s)
+
+Total size: 19 M
+Total download size: 268 k
+Installed size: 20 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/2): libcgroup-0.40.rc1-27.el6_10.x86_64.rpm                              | 131 kB     00:00
+(2/2): xz-4.999.9-0.5.beta.20091007git.el6.x86_64.rpm                       | 137 kB     00:00
+---------------------------------------------------------------------------------------------------
+Total                                                              588 kB/s | 268 kB     00:00
+Running rpm_check_debug
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : libcgroup-0.40.rc1-27.el6_10.x86_64                                             1/3
+  Installing : xz-4.999.9-0.5.beta.20091007git.el6.x86_64                                      2/3
+  Installing : docker-engine-1.7.1-1.el6.x86_64                                                3/3
+  Verifying  : xz-4.999.9-0.5.beta.20091007git.el6.x86_64                                      1/3
+  Verifying  : docker-engine-1.7.1-1.el6.x86_64                                                2/3
+  Verifying  : libcgroup-0.40.rc1-27.el6_10.x86_64                                             3/3
+
+Installed:
+  docker-engine.x86_64 0:1.7.1-1.el6
+
+Dependency Installed:
+  libcgroup.x86_64 0:0.40.rc1-27.el6_10        xz.x86_64 0:4.999.9-0.5.beta.20091007git.el6
+
+Complete!
+[root@localhost ~]#
+[root@localhost ~]# docker -v
+Docker version 1.7.1, build 786b29d
+[root@localhost ~]#
+[root@localhost ~]# docker version
+Client version: 1.7.1
+Client API version: 1.19
+Go version (client): go1.4.2
+Git commit (client): 786b29d
+OS/Arch (client): linux/amd64
+Get http:///var/run/docker.sock/v1.19/version: dial unix /var/run/docker.sock: no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS?
+[root@localhost ~]#
+[root@localhost ~]# service docker start
+Starting cgconfig service:                                 [  OK  ]
+Starting docker:                                           [  OK  ]
+[root@localhost ~]#
+[root@localhost ~]# docker version
+Client version: 1.7.1
+Client API version: 1.19
+Go version (client): go1.4.2
+Git commit (client): 786b29d
+OS/Arch (client): linux/amd64
+Server version: 1.7.1
+Server API version: 1.19
+Go version (server): go1.4.2
+Git commit (server): 786b29d
+OS/Arch (server): linux/amd64
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/init.d/
+total 268
+-rwxr-xr-x  1 root root  3580 Mar 22  2017 auditd
+-r-xr-xr-x  1 root root  1362 Nov 15  2017 blk-availability
+-rwxr-xr-x  1 root root  5222 Oct  9  2018 cgconfig
+-rwxr-xr-x  1 root root  3580 Oct  9  2018 cgred
+-rwxr-xr-x  1 root root  2826 Aug 23  2016 crond
+-rwxr-xr-x  1 root root  2506 Jul 14  2015 docker
+-rw-r--r--  1 root root 25592 Apr 27  2018 functions
+-rwxr-xr-x  1 root root  5985 Apr 27  2018 halt
+-rwxr-xr-x  1 root root  2001 Jun 19  2018 htcacheclean
+-rwxr-xr-x  1 root root  3488 Jun 19  2018 httpd
+-rwxr-xr-x  1 root root 11244 Jun 19  2018 ip6tables
+-rwxr-xr-x  1 root root 11123 Jun 19  2018 iptables
+-rwxr-xr-x  1 root root  4535 Jun  9  2017 iscsi
+-rwxr-xr-x  1 root root  3990 Jun  9  2017 iscsid
+-rwxr-xr-x  1 root root   652 Apr 27  2018 killall
+-r-xr-xr-x  1 root root  2137 Nov 15  2017 lvm2-lvmetad
+-r-xr-xr-x  1 root root  3045 Nov 15  2017 lvm2-monitor
+-rwxr-xr-x  1 root root  3246 Oct 29  2015 mcollective
+-rwxr-xr-x  1 root root  2571 Jan 26  2017 mdmonitor
+-rwxr-xr-x  1 root root  2523 Oct  9  2018 multipathd
+-rwxr-xr-x  1 root root  6377 Jun  2  2020 mysqld
+-rwxr-xr-x  1 root root  4334 Apr 27  2018 netconsole
+-rwxr-xr-x  1 root root  5309 Apr 27  2018 netfs
+-rwxr-xr-x  1 root root  6742 Apr 27  2018 network
+-rwxr-xr-x  1 root root  3615 Apr 21  2020 nginx
+-rwxr-xr-x  1 root root  3646 Apr 21  2020 nginx-debug
+-rwxr-xr-x  1 root root  2060 Dec  7  2018 php-fpm
+-rwxr-xr-x  1 root root  3912 Mar 23  2017 postfix
+-rwxr-xr-x  1 root root  3514 Oct 29  2015 puppet
+-rwxr-xr-x  1 root root  1513 Dec  7  2016 rdisc
+-rwxr-xr-x  1 root root  1822 Nov 18  2016 restorecond
+-rwxr-xr-x  1 root root  2011 Dec  1  2017 rsyslog
+-rwxr-xr-x  1 root root  1698 Nov 18  2016 sandbox
+-rwxr-xr-x. 1 root root  2056 Feb 27  2015 saslauthd
+-rwxr-xr-x  1 root root   647 Apr 27  2018 single
+-rwxr-xr-x  1 root root  4621 Apr  9  2019 sshd
+-rwxr-xr-x  1 root root  2294 Nov 13  2019 udev-post
+-rwxr-xr-x  1 root root 15767 Nov  2  2015 vboxadd
+-rwxr-xr-x  1 root root  5378 Nov  2  2015 vboxadd-service
+-rwxr-xr-x  1 root root 21637 Nov  2  2015 vboxadd-x11
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
 ####
 
 
@@ -3132,3 +3296,4 @@ yum安装的repo源地址都有哪些？都保存在什么地方？ <https://new
 
 玩转 docker 入门(1) docker 在 CentOS 7.4 的安装部署 <https://blog.csdn.net/a33130317/article/details/80882225>
 
+docker-io, docker-ce, docker-ee 区别 <https://blog.csdn.net/zsy_1991/article/details/90261419>
