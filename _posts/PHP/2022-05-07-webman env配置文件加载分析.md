@@ -159,7 +159,7 @@ Use the `composer fund` command to find out more!
 root@02891538d8c9:/var/www/html/webman_v1.3.7#
 ```
 
-`.env` 文件中写入配置内容，如：
+项目根目录下的`.env` 文件中写入配置内容，如：
 ```
 # 数据库配置
 database.hostname = 127.0.0.1
