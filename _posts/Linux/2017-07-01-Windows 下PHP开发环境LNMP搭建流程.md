@@ -1655,6 +1655,8 @@ Aborted
 
 查询后，应该安装 docker-io，而不是 docker。需要卸载 docker，然后安装 docker-io。
 
+##### 方法一 
+
 查询之前是否已经安装docker，及docker的版本：
 > yum list installed | grep docker
 
@@ -3063,6 +3065,10 @@ golang-github-docker-spdystream-devel.noarch : A multiplexed stream library usin
   Name and summary matches only, use "search all" for everything.
 [root@localhost ~]#
 ```
+
+没实现。
+
+##### 方法二
 
 ####
 
