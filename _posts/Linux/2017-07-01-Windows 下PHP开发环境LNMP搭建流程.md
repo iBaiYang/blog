@@ -3261,10 +3261,99 @@ total 268
 [root@localhost ~]#
 ```
 
-####
+##### php-fpm7.4安装
 
+> docker pull php:7.4-fpm
 
-####
+```
+[root@localhost ~]# ls -l /etc/docker
+total 4
+-rw------- 1 root root 281 May  7 06:43 key.json
+[root@localhost ~]#
+[root@localhost ~]# docker search php
+NAME                                      DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+php                                       While designed for web development, the PH...   6560      [OK]
+composer                                  Composer is a dependency manager written i...   863       [OK]
+adminer                                   Database management in a single PHP file.       707       [OK]
+phpmyadmin                                phpMyAdmin - A web interface for MySQL and...   526       [OK]
+mediawiki                                 MediaWiki is a free software open source w...   415       [OK]
+php-zendserver                            Zend Server - the integrated PHP applicati...   201       [OK]
+yourls                                    YOURLS is a set of PHP scripts that will a...   171       [OK]
+bitnami/php-fpm                           Bitnami PHP-FPM Docker Image                    147                  [OK]
+bitnami/phpmyadmin                        Bitnami Docker Image for phpMyAdmin             36                   [OK]
+circleci/php                              CircleCI images for PHP                         33       
+bitnami/phpbb                             Bitnami Docker Image for phpBB                  25                   [OK]
+silintl/php7                              PHP7 with Apache running on Ubuntu              22                   [OK]
+bitnami/phppgadmin                                                                        9        
+phpcollab/phpcollab                       phpCollab is an open source internet-enabl...   7        
+newrelic/php-daemon                       New Relic’s PHP daemon gathers APM data ...     3        
+silintl/phpmyadmin                                                                        3                    [OK]
+cimg/php                                                                                  2        
+drud/phpmyadmin                           PHPMyadmin container for ddev                   1        
+pipelinecomponents/php-linter             PHP parallel linter in a container for git...   0        
+pipelinecomponents/php-security-checker   PHP Security checker in a container for gi...   0        
+pipelinecomponents/phpunit                PHPUnit in a container for gitlab-ci            0        
+pipelinecomponents/php-codesniffer        PHP Codesniffer in a container for gitlab-ci    0        
+okteto/php                                                                                0        
+droidwiki/php-fpm                                                                         0        
+clearlinux/php-fpm                        PHP FastCGI Process Manager implementation...   0        
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# docker pull php:7.4-fpm
+7.4-fpm: Pulling from php
+be51c9a6f025: Pulling fs layer
+ca754eb7c169: Pulling fs layer
+483ab49979f2: Pull complete
+a636e7160f00: Pull complete
+3d14394f5f1e: Pull complete
+0b765b5cdf1e: Pull complete
+7ca714d0a8b5: Pull complete
+4f6240fb46b9: Pull complete
+2922d3b37dff: Pull complete
+7e1fc5c99309: Pull complete
+d593dfb77228: Pull complete
+7fb67c3dc211: Pull complete
+567b0df4e3d1: Pull complete
+2f60ff1716dd: Pull complete
+aaacb5402f6d: Pull complete
+cd597d09259d: Pull complete
+4d0e5c09b590: Pull complete
+a9a53b6fa06d: Pull complete
+3eb202308d62: Pull complete
+9ea73c5686ce: Pull complete
+4ac47beb13dd: Pull complete
+68fa544281ce: Pull complete
+d7048de9af95: Pull complete
+8a5a017d2581: Pull complete
+cf9f802b5646: Pull complete
+Digest: sha256:2f3a17cfb3b16bc98c76391a066db249ec74304098051543740fabf95fa9ddc8
+Status: Downloaded newer image for php:7.4-fpm
+[root@localhost ~]#
+[root@localhost ~]# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+php                 7.4-fpm             cf9f802b5646        2 weeks ago         442.8 MB
+[root@localhost ~]#
+```
+
+把容器挂载的目录准备好：
+> mkdir /etc/php-fpm7.4
+
+创建容器并运行：
+```
+docker run --name php-fpm7.4 -p 9000:9000 -v /etc/php-fpm7.4:/usr/local/etc/php -v /var/www:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php:7.4-fpm
+```
+
+```
+[root@localhost ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                       PORTS               NAMES
+d0c44ce8d3d0        php:7.4-fpm         "docker-php-entrypoi   3 minutes ago       Exited (127) 3 minutes ago                       php-fpm7.4
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
+##### 
 
 
 
@@ -3297,3 +3386,6 @@ yum安装的repo源地址都有哪些？都保存在什么地方？ <https://new
 玩转 docker 入门(1) docker 在 CentOS 7.4 的安装部署 <https://blog.csdn.net/a33130317/article/details/80882225>
 
 docker-io, docker-ce, docker-ee 区别 <https://blog.csdn.net/zsy_1991/article/details/90261419>
+
+CentOs6下如何安装Docker <https://blog.csdn.net/qq_39246334/article/details/109299414>
+
