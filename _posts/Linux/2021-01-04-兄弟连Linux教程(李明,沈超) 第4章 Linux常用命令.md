@@ -935,7 +935,7 @@ tar命令解压缩语法：
 
 执行权限：所有用户
 
-语法：write  <用户名>   
+语法：`write  <用户名>`   
 
 功能描述：给用户发信息，以Ctrl+D保存结束
 
@@ -952,7 +952,7 @@ tar命令解压缩语法：
 
 执行权限：所有用户
 
-语法：wall  [message]  
+语法：`wall  [message]`  
 
 功能描述：发广播信息，给当前在线的所有用户，包括自己
 
@@ -967,7 +967,7 @@ tar命令解压缩语法：
 
 执行权限：所有用户
 
-语法：ping  选项  IP地址
+语法：`ping  选项  IP地址`
 
     -c  指定发送次数
 
@@ -988,7 +988,7 @@ tar命令解压缩语法：
 
 执行权限：root
 
-语法：ifconfig  网卡名称  IP地址
+语法：`ifconfig  网卡名称  IP地址`
 
 功能描述：查看和设置网卡信息
 
@@ -1030,7 +1030,7 @@ lo 回环网卡 127.0.0.1
 
 执行权限：所有用户
 
-语法：mail [用户名]
+语法：`mail [用户名]`
 
 功能描述：查看、发送电子邮件，ctrl + d 发送
 
@@ -1056,7 +1056,7 @@ lo 回环网卡 127.0.0.1
 
 执行权限：所有用户
 
-语法：last
+语法：`last`
 
 功能描述：列出目前与过去登入系统的用户信息
 
@@ -1071,7 +1071,7 @@ lo 回环网卡 127.0.0.1
 
 执行权限：所有用户
 
-语法：lastlog
+语法：`lastlog`
 
 功能描述：检查某特定用户上次登录的时间
 
@@ -1117,7 +1117,7 @@ mysql                                      **Never logged in**
 
 执行权限：所有用户
 
-语法：traceroute
+语法：`traceroute`
 
 功能描述：显示数据包到主机间的路径
 
@@ -1132,7 +1132,7 @@ mysql                                      **Never logged in**
 
 执行权限：所有用户
 
-语法：netstat  [选项]
+语法：`netstat  [选项]`
 
 功能描述：显示网络相关信息
 
@@ -1183,7 +1183,7 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 
 执行权限：root
 
-语法：setup
+语法：`setup`
 
 功能描述：配置网络，redhat系列自带，和ifconfig一样，不过永久生效
 
@@ -1191,27 +1191,6 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 > setup
 >
 > service network restart
-
-**挂载命令**
-
-命令名称：mount
-
-命令位置：/bin/mount
-
-执行权限：所有用户
-
-命令语法：mount [-t 文件系统] 设备文件名 挂载点
-
-范例：
-> mkdir /mnt/cdrom
->
-> mount -t iso9660 /dev/sr0 /mnt/cdrom/
-> 
-> cd /mnt/cdrom/
-> 
-> cd 
->
-> umount /dev/sr0
 
 #### 4.8 关机重启命令
 
