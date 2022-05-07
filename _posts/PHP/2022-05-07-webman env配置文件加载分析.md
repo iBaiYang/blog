@@ -583,9 +583,11 @@ webman 安装 <https://www.workerman.net/doc/webman/install.html>
 
 vlucas/phpdotenv <https://packagist.org/packages/vlucas/phpdotenv>
 
+vlucas/phpdotenv <https://github.com/vlucas/phpdotenv>
+
 新版webman,取消env的原因是什么?  <https://www.workerman.net/q/7534>
 
-
+laravel的vlucas/phpdotenv源码解读 <https://blog.csdn.net/linqing727/article/details/81986894>
 
 
 
