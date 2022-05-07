@@ -9,6 +9,10 @@ meta: webman env配置文件加载分析
 
 ## 正文
 
+webman env配置文件加载，使用的包是 `vlucas/phpdotenv`，Laravel 也使用的这个包加载env配置文件。
+
+获取配置使用的是包 `illuminate/support`，Laravel 也使用的这个包。
+
 ### webman安装
 
 composer 安装 webman：
