@@ -7,9 +7,9 @@ meta: Windows 下PHP开发环境LNMP搭建流程
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### 安装Linux
+### 安装Linux
 
 在windows下，我们开发php应用时，一般会选择WAMP，但部署到服务器时，我们又选择的是LNMP，
 所以偶尔会导致应用运行环境不兼容的问题。所以最好我们开发环境也是LNMP的。下面说一下windows下LNMP环境搭建的流程：
@@ -113,7 +113,7 @@ config.vm.box = "centos67"
 
 ![]({{site.baseurl}}/images/20200329/20200329191547.jpg)
 
-#### 安装PHP：
+### 安装PHP：
 
 到软件资源目录下： 
 > cd /usr/local/src/
@@ -540,14 +540,14 @@ php70w-xmlrpc
 
 至此，php安装完成。
 
-#### 安装zip
+### 安装zip
 
 给linux安装zip： 
 > yum install zip
 
 ![]({{site.baseurl}}/images/20200329/20200329191554.jpg)
 
-#### 安装unzip
+### 安装unzip
 
 给linux安装unzip： 
 
@@ -555,7 +555,7 @@ php70w-xmlrpc
 
 ![]({{site.baseurl}}/images/20200329/20200329191555.jpg)
 
-#### 安装vim
+### 安装vim
 
 给linux安装vim： 
 
@@ -565,7 +565,7 @@ php70w-xmlrpc
 
 ![]({{site.baseurl}}/images/20200329/20200329191557.jpg)
 
-#### 安装Swoole拓展：
+### 安装Swoole拓展：
 
 下载swoole：swoole-src-1.9.9.zip
 
@@ -617,7 +617,7 @@ move到当前目录前：
 
 至此：swoole安装完成。
     
-#### 安装Nginx：
+### 安装Nginx：
 
 到上层目录下（即/etc）： 
 
@@ -655,7 +655,7 @@ enabled=1
 
 至此，nginx安装完成。
  
-#### 安装MySQL
+### 安装MySQL
 
 到用户目录下： 
 
@@ -752,7 +752,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION
 
 至此，MySQL的所有安装和配置都完成了。
 
-#### 站点配置
+### 站点配置
 
 在D:/www目录下建设站点文件，如test项目
 
@@ -875,7 +875,7 @@ server {
 
 说明，该虚拟开发环境正常。接下来就是我们大展身手进行项目开发的操作了。
 
-#### 附言
+### 附言
 
 1、 exit退出root账户：
 
@@ -905,7 +905,7 @@ windows命令行中
 
 ![]({{site.baseurl}}/images/20200329/20200329191597.jpg)
 
-#### 每日启动
+### 每日启动
 
 win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant服务：
 
@@ -927,7 +927,7 @@ win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant�
 
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 <https://stackoverflow.com/questions/9479117/vagrant-virtualbox-apache2-strange-cache-behaviour#>
 
