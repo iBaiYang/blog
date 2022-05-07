@@ -1664,7 +1664,9 @@ docker-ee 是docker的企业版，适用于企业级开发，同样也适用于�
 ##### 方法一 
 
 查询之前是否已经安装docker，及docker的版本：
+```
 > yum list installed | grep docker
+```
 
 卸载安装的docker：
 > yum remove -y docker.x86_64
