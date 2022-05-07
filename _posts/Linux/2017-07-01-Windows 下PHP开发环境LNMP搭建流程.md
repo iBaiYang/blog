@@ -540,6 +540,27 @@ php70w-xmlrpc
 
 至此，php安装完成。
 
+查看安装的php：
+```
+[root@localhost ~]# yum list installed | grep php
+php70w.x86_64          7.0.33-1.w6      @webtatic
+php70w-bcmath.x86_64   7.0.33-1.w6      @webtatic
+php70w-cli.x86_64      7.0.33-1.w6      @webtatic
+php70w-common.x86_64   7.0.33-1.w6      @webtatic
+php70w-devel.x86_64    7.0.33-1.w6      @webtatic
+php70w-fpm.x86_64      7.0.33-1.w6      @webtatic
+php70w-gd.x86_64       7.0.33-1.w6      @webtatic
+php70w-mbstring.x86_64 7.0.33-1.w6      @webtatic
+php70w-mcrypt.x86_64   7.0.33-1.w6      @webtatic
+php70w-mysql.x86_64    7.0.33-1.w6      @webtatic
+php70w-opcache.x86_64  7.0.33-1.w6      @webtatic
+php70w-pdo.x86_64      7.0.33-1.w6      @webtatic
+php70w-pear.noarch     1:1.10.4-1.w6    @webtatic
+php70w-process.x86_64  7.0.33-1.w6      @webtatic
+php70w-xml.x86_64      7.0.33-1.w6      @webtatic
+[root@localhost ~]#
+```
+
 ### 安装zip
 
 给linux安装zip： 
@@ -925,6 +946,681 @@ win + R 输入cmd调出命令行工具，启动VirtualBox虚拟机中的Vagrant�
 
 然后浏览器就可以访问站点服务了。
 
+### 安装docker
+
+想把PHP升级到7.4版，想到了docker。
+
+先卸载老版本docker：
+> yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine
+
+再安装docker：
+> yum install -y docker
+
+过程：
+```
+[root@localhost ~]# yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine
+Loaded plugins: fastestmirror
+Setting up Remove Process
+No Match for argument: docker
+Determining fastest mirrors
+https://mirrors.tuna.tsinghua.edu.cn/centos/6/os/x86_64/repodata/repomd.xml: [Errno 14] Peer cert cannot be verified or peer cert invalid
+Trying other mirror.
+Error: Cannot retrieve repository metadata (repomd.xml) for repository: base. Please verify its path and try again
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# yum install -y docker
+Loaded plugins: fastestmirror
+Setting up Install Process
+Loading mirror speeds from cached hostfile
+https://mirrors.tuna.tsinghua.edu.cn/centos/6/os/x86_64/repodata/repomd.xml: [Errno 14] Peer cert cannot be verified or peer cert invalid
+Trying other mirror.
+Error: Cannot retrieve repository metadata (repomd.xml) for repository: base. Please verify its path and try again
+[root@localhost ~]#
+```
+
+发现报错了，yum源的问题。
+
+#### yum源配置
+
+查看Linux版本：
+> cat /etc/issue
+
+过程：
+```
+[root@localhost ~]# uname
+Linux
+[root@localhost ~]# uname -a
+Linux localhost.localdomain 2.6.32-573.7.1.el6.x86_64 #1 SMP Tue Sep 22 22:00:00 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/issue
+CentOS release 6.7 (Final)
+Kernel \r on an \m
+
+[root@localhost ~]#
+```
+
+确认版本是：CentOS 6.7 。
+
+旧yum源备份：
+```
+[root@localhost ~]# ls -l /etc/yum.repos.d/
+total 76
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/CentOS-Base.repo
+# CentOS-Base.repo
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for CentOS updates
+# unless you are manually picking other mirrors.
+#
+# If the mirrorlist= does not work for you, as a fall back you can try the
+# remarked out baseurl= line instead.
+#
+#
+
+
+[base]
+name=CentOS-$releasever - Base
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/$releasever/os/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-6
+
+#released updates
+[updates]
+name=CentOS-$releasever - Updates
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/$releasever/updates/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-6
+
+
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/$releasever/extras/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-6
+
+
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/$releasever/centosplus/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-6
+
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-$releasever - Contrib
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/$releasever/contrib/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=contrib
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-6
+
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/epel.repo
+[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+
+[epel-debuginfo]
+name=Extra Packages for Enterprise Linux 6 - $basearch - Debug
+baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch/debug
+#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-6&arch=$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+
+[epel-source]
+name=Extra Packages for Enterprise Linux 6 - $basearch - Source
+baseurl=http://download.fedoraproject.org/pub/epel/6/SRPMS
+#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-6&arch=$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak.20220507        
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/yum.repos.d/
+total 76
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo.bak.20220507
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak.20220507
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo
+[root@localhost ~]#
+```
+
+这里选用 阿里开源镜像，访问 <https://developer.aliyun.com/mirror>，查看相应命令。
+
+下载新的 CentOS-Base.repo：
+> wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-6.10.repo
+
+下载新的 epel扩展源。EPEL (Extra Packages for Enterprise Linux), 
+是由 Fedora Special Interest Group 维护的 Enterprise Linux（RHEL、CentOS）中经常用到的包。
+阿里云提示（epel6官方源已下线，建议切换epel-archive源）：
+> wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-archive-6.repo
+
+如果 wget 命令不可用，使用 curl 命令：
+> curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-6.10.repo
+>
+> curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-archive-6.repo
+
+过程：
+```
+[root@localhost ~]# wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-6.10.repo
+--2022-05-07 03:43:49--  https://mirrors.aliyun.com/repo/Centos-vault-6.10.repo
+Resolving mirrors.aliyun.com... 112.132.37.238, 112.132.37.240, 112.132.37.237, ...
+Connecting to mirrors.aliyun.com|112.132.37.238|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2533 (2.5K) [application/octet-stream]
+Saving to: `/etc/yum.repos.d/CentOS-Base.repo'
+
+100%[=====================================================================>] 2,533       --.-K/s   in 0s
+
+2022-05-07 03:43:49 (7.69 MB/s) - `/etc/yum.repos.d/CentOS-Base.repo' saved [2533/2533]
+
+[root@localhost ~]#
+[root@localhost ~]# wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-archive-6.repo
+--2022-05-07 03:44:33--  http://mirrors.aliyun.com/repo/epel-archive-6.repo
+Resolving mirrors.aliyun.com... 112.132.37.238, 112.132.37.240, 112.132.37.237, ...
+Connecting to mirrors.aliyun.com|112.132.37.238|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 712 [application/octet-stream]
+Saving to: `/etc/yum.repos.d/epel.repo'
+
+100%[=====================================================================>] 712         --.-K/s   in 0.006s
+
+2022-05-07 03:44:33 (119 KB/s) - `/etc/yum.repos.d/epel.repo' saved [712/712]
+
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/yum.repos.d/
+total 84
+-rw-r--r--  1 root root 2533 Mar  2 09:33 CentOS-Base.repo
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo.bak.20220507
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo
+-rw-r--r--  1 root root  712 Mar  2 09:37 epel.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak.20220507
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/CentOS-Base.repo
+# CentOS-Base.repo
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for CentOS updates
+# unless you are manually picking other mirrors.
+#
+# If the mirrorlist= does not work for you, as a fall back you can try the
+# remarked out baseurl= line instead.
+#
+#
+
+[base]
+name=CentOS-vault-6.10 - Base - mirrors.aliyun.com
+failovermethod=priority
+baseurl=http://mirrors.aliyun.com/centos-vault/6.10/os/$basearch/
+        http://mirrors.aliyuncs.com/centos-vault/6.10/os/$basearch/
+        http://mirrors.cloud.aliyuncs.com/centos-vault/6.10/os/$basearch/
+gpgcheck=1
+gpgkey=http://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-6
+
+#released updates
+[updates]
+name=CentOS-vault-6.10 - Updates - mirrors.aliyun.com
+failovermethod=priority
+baseurl=http://mirrors.aliyun.com/centos-vault/6.10/updates/$basearch/
+        http://mirrors.aliyuncs.com/centos-vault/6.10/updates/$basearch/
+        http://mirrors.cloud.aliyuncs.com/centos-vault/6.10/updates/$basearch/
+gpgcheck=1
+gpgkey=http://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-6
+
+#additional packages that may be useful
+[extras]
+name=CentOS-vault-6.10 - Extras - mirrors.aliyun.com
+failovermethod=priority
+baseurl=http://mirrors.aliyun.com/centos-vault/6.10/extras/$basearch/
+        http://mirrors.aliyuncs.com/centos-vault/6.10/extras/$basearch/
+        http://mirrors.cloud.aliyuncs.com/centos-vault/6.10/extras/$basearch/
+gpgcheck=1
+gpgkey=http://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-6
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-vault-6.10 - Plus - mirrors.aliyun.com
+failovermethod=priority
+baseurl=http://mirrors.aliyun.com/centos-vault/6.10/centosplus/$basearch/
+        http://mirrors.aliyuncs.com/centos-vault/6.10/centosplus/$basearch/
+        http://mirrors.cloud.aliyuncs.com/centos-vault/6.10/centosplus/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=http://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-6
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-vault-6.10 - Contrib - mirrors.aliyun.com
+failovermethod=priority
+baseurl=http://mirrors.aliyun.com/centos-vault/6.10/contrib/$basearch/
+        http://mirrors.aliyuncs.com/centos-vault/6.10/contrib/$basearch/
+        http://mirrors.cloud.aliyuncs.com/centos-vault/6.10/contrib/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=http://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-6
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/epel.repo
+[epel-archive]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+baseurl=http://mirrors.aliyun.com/epel-archive/6/$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+
+[epel-archive-debuginfo]
+name=Extra Packages for Enterprise Linux 6 - $basearch - Debug
+baseurl=http://mirrors.aliyun.com/epel-archive/6/$basearch/debug
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=0
+
+[epel-archive-source]
+name=Extra Packages for Enterprise Linux 6 - $basearch - Source
+baseurl=http://mirrors.aliyun.com/epel-archive/6/SRPMS
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=0
+[root@localhost ~]#
+```
+
+清理缓存：
+> yum clean all
+
+生成缓存：
+> yum makecache
+
+过程：
+```
+[root@localhost ~]# yum clean all
+Loaded plugins: fastestmirror
+Cleaning repos: base epel-archive extras gitlab-ce nginx puppetlabs-pc1 updates webtatic
+Cleaning up Everything
+Cleaning up list of fastest mirrors
+[root@localhost ~]#
+[root@localhost ~]# yum makecache
+Loaded plugins: fastestmirror
+Determining fastest mirrors
+Could not retrieve mirrorlist https://mirror.webtatic.com/yum/el6/x86_64/mirrorlist error was
+14: problem making ssl connection
+Error: Cannot find a valid baseurl for repo: webtatic
+[root@localhost ~]#
+```
+
+发现报错了：`Could not retrieve mirrorlist https://mirror.webtatic.com/yum/el6/x86_64/mirrorlist error was 14:problem making ssl connection`
+
+查看本地已有的repo地址：
+> yum repolist
+
+```
+[root@localhost ~]# yum repolist
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+Could not retrieve mirrorlist https://mirror.webtatic.com/yum/el6/x86_64/mirrorlist error was
+14: problem making ssl connection
+base                                                                                    | 3.7 kB     00:00
+base/primary_db                                                                         | 4.7 MB     00:08
+epel-archive                                                                            | 4.7 kB     00:00
+epel-archive/primary_db                                                                 | 6.1 MB     00:05
+extras                                                                                  | 3.4 kB     00:00
+extras/primary_db                                                                       |  29 kB     00:00
+https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el6/repodata/repomd.xml: [Errno 14] Peer cert cannot be verified or peer cert invalid
+Trying other mirror.
+nginx                                                                                   | 2.9 kB     00:00
+nginx/primary_db                                                                        |  64 kB     00:00
+puppetlabs-pc1                                                                          | 2.5 kB     00:00
+puppetlabs-pc1/primary_db                                                               | 236 kB     00:00
+updates                                                                                 | 3.4 kB     00:00
+updates/primary_db                                                                      |  12 MB     00:09
+repo id                            repo name                                                             status
+base                               CentOS-vault-6.10 - Base - mirrors.aliyun.com                          6,713
+epel-archive                       Extra Packages for Enterprise Linux 6 - x86_64                        12,581
+extras                             CentOS-vault-6.10 - Extras - mirrors.aliyun.com                           47
+gitlab-ce                          Gitlab CE Repository                                                       0
+nginx                              nginx repo                                                               208
+puppetlabs-pc1                     Puppet Labs PC1 Repository el 6 - x86_64                                 192
+updates                            CentOS-vault-6.10 - Updates - mirrors.aliyun.com                       1,193
+webtatic                           Webtatic Repository EL6 - x86_64                                           0
+repolist: 20,934
+[root@localhost ~]#
+```
+
+看到了webtatic源，曾经安装PHP时用到的源，查看内容：
+```
+[root@localhost ~]# cat /etc/yum.repos.d/webtatic-archive.repo
+[webtatic-archive]
+name=Webtatic Repository EL6 - $basearch - Archive
+#baseurl=https://repo.webtatic.com/yum/el6-archive/$basearch/
+mirrorlist=https://mirror.webtatic.com/yum/el6-archive/$basearch/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-archive-debuginfo]
+name=Webtatic Repository EL6 - $basearch - Archive Debug
+#baseurl=https://repo.webtatic.com/yum/el6-archive/$basearch/debug/
+mirrorlist=https://mirror.webtatic.com/yum/el6-archive/$basearch/debug/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-archive-source]
+name=Webtatic Repository EL6 - $basearch - Archive Source
+#baseurl=https://repo.webtatic.com/yum/el6-archive/SRPMS/
+mirrorlist=https://mirror.webtatic.com/yum/el6-archive/SRPMS/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/webtatic.repo
+[webtatic]
+name=Webtatic Repository EL6 - $basearch
+#baseurl=https://repo.webtatic.com/yum/el6/$basearch/
+mirrorlist=https://mirror.webtatic.com/yum/el6/$basearch/mirrorlist
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-debuginfo]
+name=Webtatic Repository EL6 - $basearch - Debug
+#baseurl=https://repo.webtatic.com/yum/el6/$basearch/debug/
+mirrorlist=https://mirror.webtatic.com/yum/el6/$basearch/debug/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-source]
+name=Webtatic Repository EL6 - $basearch - Source
+#baseurl=https://repo.webtatic.com/yum/el6/SRPMS/
+mirrorlist=https://mirror.webtatic.com/yum/el6/SRPMS/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/yum.repos.d/webtatic-testing.repo
+[webtatic-testing]
+name=Webtatic Repository EL6 - $basearch - Testing
+#baseurl=https://repo.webtatic.com/yum/el6-testing/$basearch/
+mirrorlist=https://mirror.webtatic.com/yum/el6-testing/$basearch/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-testing-debuginfo]
+name=Webtatic Repository EL6 - $basearch - Testing Debug
+#baseurl=https://repo.webtatic.com/yum/el6-testing/$basearch/debug/
+mirrorlist=https://mirror.webtatic.com/yum/el6-testing/$basearch/debug/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+
+[webtatic-testing-source]
+name=Webtatic Repository EL6 - $basearch - Testing Source
+#baseurl=https://repo.webtatic.com/yum/el6-testing/SRPMS/
+mirrorlist=https://mirror.webtatic.com/yum/el6-testing/SRPMS/mirrorlist
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-webtatic-el6
+[root@localhost ~]#
+[root@localhost ~]#
+```
+
+把webtatic这3个源移除掉：
+```
+[root@localhost ~]# mv /etc/yum.repos.d/webtatic-archive.repo /etc/yum.repos.d/webtatic-archive.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/webtatic.repo /etc/yum.repos.d/webtatic.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/webtatic-testing.repo /etc/yum.repos.d/webtatic-testing.repo.bak.20220507          
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/yum.repos.d
+total 84
+-rw-r--r--  1 root root 2533 Mar  2 09:33 CentOS-Base.repo
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo.bak.20220507
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo
+-rw-r--r--  1 root root  712 Mar  2 09:37 epel.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak.20220507
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo.bak.20220507
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo.bak.20220507
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo.bak.20220507
+[root@localhost ~]#
+```
+
+保险期间，只保留上面下载的两个源，其他的都移除掉：
+```
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Debuginfo.repo /etc/yum.repos.d/CentOS-Debuginfo.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-fasttrack.repo /etc/yum.repos.d/CentOS-fasttrack.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Media.repo /etc/yum.repos.d/CentOS-Media.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Vault.repo /etc/yum.repos.d/CentOS-Vault.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/gitlab-ce.repo /etc/yum.repos.d/gitlab-ce.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/mysql-community-source.repo /etc/yum.repos.d/mysql-community-source.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/nginx.repo /etc/yum.repos.d/nginx.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# mv /etc/yum.repos.d/puppetlabs-pc1.repo /etc/yum.repos.d/puppetlabs-pc1.repo.bak.20220507
+[root@localhost ~]#
+[root@localhost ~]# ls -l /etc/yum.repos.d
+total 84
+-rw-r--r--  1 root root 2533 Mar  2 09:33 CentOS-Base.repo
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo.bak.20220507
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo.bak.20220507
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo.bak.20220507
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo.bak.20220507
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo.bak.20220507
+-rw-r--r--  1 root root  712 Mar  2 09:37 epel.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak.20220507
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo.bak.20220507
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo.bak.20220507
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo.bak.20220507
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo.bak.20220507
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo.bak.20220507
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo.bak.20220507
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo.bak.20220507
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo.bak.20220507
+[root@localhost ~]#
+```
+
+重新清理缓存，生成缓存：
+> yum clean all
+> 
+> yum makecache
+
+过程：
+```
+[root@localhost ~]# yum clean all
+Loaded plugins: fastestmirror
+Cleaning repos: base epel-archive extras updates
+Cleaning up Everything
+Cleaning up list of fastest mirrors
+[root@localhost ~]#
+[root@localhost ~]# yum makecache
+Loaded plugins: fastestmirror
+Determining fastest mirrors
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+base                                                         | 3.7 kB     00:00
+base/group_gz                                                | 242 kB     00:00
+base/filelists_db                                            | 6.4 MB     00:05
+base/primary_db                                              | 4.7 MB     00:03
+base/other_db                                                | 2.8 MB     00:02
+epel-archive                                                 | 4.7 kB     00:00
+epel-archive/group_gz                                        |  74 kB     00:00
+epel-archive/filelists_db                                    | 7.9 MB     00:06
+epel-archive/prestodelta                                     |  574 B     00:00
+epel-archive/primary_db                                      | 6.1 MB     00:07
+epel-archive/other_db                                        | 3.0 MB     00:04
+extras                                                       | 3.4 kB     00:00
+extras/filelists_db                                          |  24 kB     00:00
+extras/prestodelta                                           | 2.2 kB     00:00
+extras/primary_db                                            |  29 kB     00:00
+extras/other_db                                              |  14 kB     00:00
+updates                                                      | 3.4 kB     00:00
+updates/filelists_db                                         | 8.4 MB     00:06
+updates/prestodelta                                          | 357 kB     00:00
+updates/primary_db                                           |  12 MB     00:11
+updates/other_db                                             | 479 kB     00:00
+Metadata Cache Created
+[root@localhost ~]#
+```
+
+#### 安装docker
+
+安装docker：
+> yum install -y docker
+
+```
+[root@localhost ~]# yum install -y docker
+Loaded plugins: fastestmirror
+Setting up Install Process
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+Resolving Dependencies
+--> Running transaction check
+---> Package docker.x86_64 0:1.5-5.el6 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+======================================================================================
+ Package               Arch             Version            Repository            Size
+======================================================================================
+Installing:
+ docker                x86_64           1.5-5.el6          epel-archive          19 k
+
+Transaction Summary
+======================================================================================
+Install       1 Package(s)
+
+Total download size: 19 k
+Installed size: 37 k
+Downloading Packages:
+docker-1.5-5.el6.x86_64.rpm                                      |  19 kB     00:00
+Running rpm_check_debug
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : docker-1.5-5.el6.x86_64                           1/1
+  Verifying  : docker-1.5-5.el6.x86_64                           1/1
+
+Installed:
+  docker.x86_64 0:1.5-5.el6
+
+Complete!
+[root@localhost ~]#
+```
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
@@ -940,4 +1636,12 @@ linux使用国内镜像源 <https://blog.csdn.net/zhezhebie/article/details/7348
 清华大学开源软件镜像站 CentOS 镜像使用帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/centos/>
 
 超详细的 Vagrant 上手指南 <https://zhuanlan.zhihu.com/p/259833884>
+
+Centos7环境下更新PHP7.2到PHP7.4（WordPress） <https://chenyan98.cn/391.html>
+
+CentOS6 yum源设置为国内aliyun yum源 <https://blog.csdn.net/zhuifeng2014/article/details/108019120>
+
+阿里开源镜像站 <https://developer.aliyun.com/mirror>
+
+yum安装的repo源地址都有哪些？都保存在什么地方？ <https://newsn.net/say/yum-repo-list.html>
 
