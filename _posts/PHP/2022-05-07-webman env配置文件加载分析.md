@@ -159,6 +159,16 @@ Use the `composer fund` command to find out more!
 root@02891538d8c9:/var/www/html/webman_v1.3.7#
 ```
 
+`.env` 文件中写入配置内容，如：
+```
+# 数据库配置
+database.hostname = 127.0.0.1
+database.database = dataku
+database.username = xyz
+database.password = abc123
+database.hostport = 3306
+```
+
 ### webman启动
 
 webman启动：
@@ -185,7 +195,7 @@ Workerman[start.php] not run
 root@02891538d8c9:/var/www/html/webman_v1.3.7#
 ```
 
-### env加载分析
+### .env加载分析
 
 start.php 内容：
 ```php
@@ -314,10 +324,260 @@ if (class_exists('Dotenv\Dotenv') && file_exists(base_path() . '/.env')) {
 }
 ```
 
+### 获取分析
+
+在项目代码中获取环境配置，如：
+```
+$host = env('database.hostname', '127.0.0.1');
+```
+
+使用包 `illuminate/support` ,好多包依赖于这个包，如 `illuminate/bus` 、 `illuminate/database` 、 `illuminate/events` 、
+`illuminate/events` 、 `illuminate/pagination` 、 `illuminate/pipeline` 、 `illuminate/redis` 等。
+
+
+项目 `composer.json` 文件 中增加 `psr/container` 、 `illuminate/support`：
+```
+  "require": {
+    "php": ">=7.2",
+    "workerman/webman-framework": "^1.3.12",
+    "monolog/monolog": "^2.0",
+    "vlucas/phpdotenv": "^5.4",
+    "psr/container": "^1.0",
+    "illuminate/support": "^8.83"
+  },
+```
+
+```
+root@02891538d8c9:/var/www/html/webman_v1.3.7# composer update illuminate/support
+Loading composer repositories with package information
+Updating dependencies
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1
+    - illuminate/contracts[v8.0.0, ..., v8.83.11] require psr/container ^1.0 -> found psr/contaut the package is fixed to 2.0.2 (lock file version) by a partial update and that version does s an argument for the update command.
+    - illuminate/support[v8.83.0, ..., v8.83.11] require illuminate/contracts ^8.0 -> satisfiab ..., v8.83.11].
+    - Root composer.json requires illuminate/support ^8.83 -> satisfiable by illuminate/support
+
+Use the option --with-all-dependencies (-W) to allow upgrades, downgrades and removals for packversions.
+root@02891538d8c9:/var/www/html/webman_v1.3.7#
+root@02891538d8c9:/var/www/html/webman_v1.3.7# composer update psr/container
+Loading composer repositories with package information
+
+Updating dependencies
+Lock file operations: 11 installs, 1 update, 0 removals
+  - Locking doctrine/inflector (2.0.4)
+  - Locking illuminate/collections (v8.83.11)
+  - Locking illuminate/contracts (v8.83.11)
+  - Locking illuminate/macroable (v8.83.11)
+  - Locking illuminate/support (v8.83.0)
+  - Locking nesbot/carbon (2.58.0)
+  - Downgrading psr/container (2.0.2 => 1.1.2)
+  - Locking psr/simple-cache (1.0.1)
+  - Locking symfony/deprecation-contracts (v2.5.1)
+  - Locking symfony/translation (v5.4.8)
+  - Locking symfony/translation-contracts (v2.5.1)
+  - Locking voku/portable-ascii (1.6.1)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 11 installs, 1 update, 0 removals
+  - Downloading symfony/translation-contracts (v2.5.1)
+  - Downloading symfony/deprecation-contracts (v2.5.1)
+  - Downloading symfony/translation (v5.4.8)
+  - Downloading nesbot/carbon (2.58.0)
+  - Downloading illuminate/collections (v8.83.11)
+  - Installing voku/portable-ascii (1.6.1): Extracting archive
+  - Installing symfony/translation-contracts (v2.5.1): Extracting archive
+  - Installing symfony/deprecation-contracts (v2.5.1): Extracting archive
+  - Installing symfony/translation (v5.4.8): Extracting archive
+  - Installing nesbot/carbon (2.58.0): Extracting archive
+  - Installing illuminate/macroable (v8.83.11): Extracting archive
+  - Installing psr/simple-cache (1.0.1): Extracting archive
+  - Downgrading psr/container (2.0.2 => 1.1.2): Extracting archive
+  - Installing illuminate/contracts (v8.83.11): Extracting archive
+  - Installing illuminate/collections (v8.83.11): Extracting archive
+  - Installing doctrine/inflector (2.0.4): Extracting archive
+  - Installing illuminate/support (v8.83.0): Extracting archive
+ 11/12 [=========================>--]  91%    Skipped installation of bin bin/carbon for package nesbot/carbon: file not found in package
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+> support\Plugin::install
+9 package suggestions were added by new dependencies, use `composer suggest` to see details.
+Generating autoload files
+15 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+root@02891538d8c9:/var/www/html/webman_v1.3.7#
+root@02891538d8c9:/var/www/html/webman_v1.3.7#
+root@02891538d8c9:/var/www/html/webman_v1.3.7# composer update illuminate/support
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 1 update, 0 removals
+  - Upgrading illuminate/support (v8.83.0 => v8.83.11)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 0 installs, 1 update, 0 removals
+  - Downloading illuminate/support (v8.83.11)
+  - Upgrading illuminate/support (v8.83.0 => v8.83.11): Extracting archive
+> support\Plugin::install
+Generating autoload files
+15 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+root@02891538d8c9:/var/www/html/webman_v1.3.7#
+root@02891538d8c9:/var/www/html/webman_v1.3.7#
+```
+
+在`./vendor/illuminate/support/helpers.php` 文件中有：
+```php
+<?php
+
+use Illuminate\Contracts\Support\DeferringDisplayableValue;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Env;
+use Illuminate\Support\HigherOrderTapProxy;
+use Illuminate\Support\Optional;
+
+// 省略若干
+
+if (! function_exists('env')) {
+    /**
+     * Gets the value of an environment variable.
+     *
+     * @param  string  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function env($key, $default = null)
+    {
+        return Env::get($key, $default);
+    }
+}
+
+// 省略若干
+```
+
+在`./vendor/illuminate/support/Env.php` 文件中有：
+```php
+<?php
+
+namespace Illuminate\Support;
+
+use Dotenv\Repository\Adapter\PutenvAdapter;
+use Dotenv\Repository\RepositoryBuilder;
+use PhpOption\Option;
+
+class Env
+{
+    /**
+     * Indicates if the putenv adapter is enabled.
+     *
+     * @var bool
+     */
+    protected static $putenv = true;
+
+    /**
+     * The environment repository instance.
+     *
+     * @var \Dotenv\Repository\RepositoryInterface|null
+     */
+    protected static $repository;
+
+    /**
+     * Enable the putenv adapter.
+     *
+     * @return void
+     */
+    public static function enablePutenv()
+    {
+        static::$putenv = true;
+        static::$repository = null;
+    }
+
+    /**
+     * Disable the putenv adapter.
+     *
+     * @return void
+     */
+    public static function disablePutenv()
+    {
+        static::$putenv = false;
+        static::$repository = null;
+    }
+
+    /**
+     * Get the environment repository instance.
+     *
+     * @return \Dotenv\Repository\RepositoryInterface
+     */
+    public static function getRepository()
+    {
+        if (static::$repository === null) {
+            $builder = RepositoryBuilder::createWithDefaultAdapters();
+
+            if (static::$putenv) {
+                $builder = $builder->addAdapter(PutenvAdapter::class);
+            }
+
+            static::$repository = $builder->immutable()->make();
+        }
+
+        return static::$repository;
+    }
+
+    /**
+     * Gets the value of an environment variable.
+     *
+     * @param  string  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public static function get($key, $default = null)
+    {
+        return Option::fromValue(static::getRepository()->get($key))
+            ->map(function ($value) {
+                switch (strtolower($value)) {
+                    case 'true':
+                    case '(true)':
+                        return true;
+                    case 'false':
+                    case '(false)':
+                        return false;
+                    case 'empty':
+                    case '(empty)':
+                        return '';
+                    case 'null':
+                    case '(null)':
+                        return;
+                }
+
+                if (preg_match('/\A([\'"])(.*)\1\z/', $value, $matches)) {
+                    return $matches[2];
+                }
+
+                return $value;
+            })
+            ->getOrCall(function () use ($default) {
+                return value($default);
+            });
+    }
+}
+```
+
+在这里看到了类 `Dotenv\Repository\RepositoryBuilder`，这个类是 `vlucas/phpdotenv` 包中的类。
 
 ## 参考资料
 
 webman 安装 <https://www.workerman.net/doc/webman/install.html>
+
+vlucas/phpdotenv <https://packagist.org/packages/vlucas/phpdotenv>
 
 新版webman,取消env的原因是什么?  <https://www.workerman.net/q/7534>
 
