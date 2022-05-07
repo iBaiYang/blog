@@ -3064,6 +3064,33 @@ golang-github-docker-spdystream-devel.noarch : A multiplexed stream library usin
 
   Name and summary matches only, use "search all" for everything.
 [root@localhost ~]#
+[root@localhost ~]# ls -l /etc/yum.repos.d
+total 108
+-rw-r--r--  1 root root 2533 Mar  2 09:33 CentOS-Base.repo
+-rw-r--r--  1 root root 1991 Aug 22  2020 CentOS-Base.repo.bak
+-rw-r--r--  1 root root 1986 Aug 26  2020 CentOS-Base.repo.bak.20220507
+-rw-r--r--  1 root root 2051 Aug 22  2020 CentOS-Base.repo.bak.tsinghua
+-rw-r--r--  1 root root  647 Jun 26  2018 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  647 Aug  3  2015 CentOS-Debuginfo.repo.bak.20220507
+-rw-r--r--  1 root root  289 Jun 26  2018 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  289 Aug  3  2015 CentOS-fasttrack.repo.bak.20220507
+-rw-r--r--  1 root root  630 Jun 26  2018 CentOS-Media.repo
+-rw-r--r--. 1 root root  630 Aug  3  2015 CentOS-Media.repo.bak.20220507
+-rw-r--r--  1 root root 8854 Jun 26  2018 CentOS-Vault.repo
+-rw-r--r--. 1 root root 6259 Aug  3  2015 CentOS-Vault.repo.bak.20220507
+-rw-r--r--  1 root root  712 Mar  2 09:37 epel.repo
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak
+-rw-r--r--  1 root root  957 Aug 26  2020 epel.repo.bak.20220507
+-rw-r--r--  1 root root 1056 Nov  5  2012 epel-testing.repo.bak.20220507
+-rw-r--r--  1 root root  133 Feb 15 02:44 gitlab-ce.repo.bak.20220507
+-rw-r--r--  1 root root  218 Aug 26  2020 mysql-community.repo.bak
+-rw-r--r--  1 root root 1885 Apr 27  2017 mysql-community-source.repo.bak.20220507
+-rw-r--r--  1 root root  111 Aug 20  2020 nginx.repo.bak.20220507
+-rw-r--r--  1 root root  422 Oct  1  2015 puppetlabs-pc1.repo.bak.20220507
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-archive.repo.bak.20220507
+-rw-r--r--  1 root root  865 Aug 22  2020 webtatic.repo.bak.20220507
+-rw-r--r--  1 root root  963 Nov 13  2016 webtatic-testing.repo.bak.20220507
+[root@localhost ~]#
 ```
 
 没实现。
