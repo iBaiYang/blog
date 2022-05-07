@@ -2245,7 +2245,7 @@ docker run -d --name my-php-webserver -p 8080:80 -v /path/to/your/php/files:/var
 ```
 
 这会初始化并启动容器，`-d` 指令使其在后台运行。
-只需运行 `docker stop my php webserver` 或 `docker start my php webserver` 即可停止或启动容器（不需要其他参数）。
+只需运行 `docker stop my-php-webserver` 或 `docker start my-php-webserver` 即可停止或启动容器（不需要其他参数）。
 
 **了解更多关于 Docker 的信息**
 
