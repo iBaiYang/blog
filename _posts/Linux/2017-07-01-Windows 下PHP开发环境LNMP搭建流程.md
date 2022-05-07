@@ -3353,7 +3353,20 @@ d0c44ce8d3d0        php:7.4-fpm         "docker-php-entrypoi   3 minutes ago    
 [root@localhost ~]#
 ```
 
-##### 
+状态 `Exited (127)` , 查看docker容器日志：
+> docker logs 容器ID
+
+```
+[root@localhost ~]# docker logs d0c44ce8d3d0
+FATAL: kernel too old
+FATAL: kernel too old
+FATAL: kernel too old
+[root@localhost ~]#
+```
+
+内核太老，需要升级内核。
+
+
 
 
 
@@ -3388,4 +3401,6 @@ yum安装的repo源地址都有哪些？都保存在什么地方？ <https://new
 docker-io, docker-ce, docker-ee 区别 <https://blog.csdn.net/zsy_1991/article/details/90261419>
 
 CentOs6下如何安装Docker <https://blog.csdn.net/qq_39246334/article/details/109299414>
+
+记录一次docker启动容器后Exited(127)的解决过程 <https://www.likecs.com/show-203509903.html>
 
