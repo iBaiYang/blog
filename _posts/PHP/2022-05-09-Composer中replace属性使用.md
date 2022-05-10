@@ -36,7 +36,7 @@ and not any other version, which would be incorrect.
 
 ![]({{site.baseurl}}/images/20220510/20220510093449.png)
 
-现在。即使您没有直接「告诉」「other/package」 停止使用「original/library」，Composer 也不会再加载「original/library」，
+现在，即使您没有直接「告诉」「other/package」 停止使用「original/library」，Composer 也不会再加载「original/library」，
 因为你告诉他可以将其替换为「yourfork/library」。
 
 
