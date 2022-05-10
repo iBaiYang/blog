@@ -1,17 +1,17 @@
 ---
 layout: post
 categories: PHP
-title: webman redis队列实现分析
-meta: webman redis队列实现分析
+title: webman中Redis队列实现分析
+meta: webman中Redis队列实现分析
 ---
 * content
 {:toc}
 
 ## 正文
 
-webman中redis队列实现用的包是 `webman/redis-queue` ，版本是 `v1.1.0` 。
+webman中Redis队列实现用的包是 `webman/redis-queue` ，版本是 `v1.1.0` 。
 
-redis配置文件自动生成在 `config/plugin/webman/redis-queue/redis.php`，内容类似如下：
+Redis配置文件自动生成在 `config/plugin/webman/redis-queue/redis.php`，内容类似如下：
 ```php
 <?php
 return [
@@ -39,6 +39,14 @@ return [
             'consumer_dir' => app_path() . '/queue/redis'
         ]
     ]
+];
+```
+
+在 `config/plugin/webman/redis-queue/app.php` 写入：
+```php
+<?php
+return [
+    'enable' => true,
 ];
 ```
 
@@ -1569,6 +1577,8 @@ class Config
             if (is_dir($file) || $file->getExtension() != 'php' || \in_array($file->getBaseName('.php'), $exclude_file)) {
                 continue;
             }
+            
+            /* 判断当前配置是否可用 */ 
             $app_config_file = $file->getPath() . '/app.php';
             if (!is_file($app_config_file)) {
                 continue;
@@ -1581,6 +1591,7 @@ class Config
                     continue;
                 }
             }
+            
             $config = include $file;
             foreach ($explode as $section) {
                 $tmp = [];
@@ -1730,6 +1741,12 @@ tcp     root            plugin.webman.redis-queue.consumer    none              
 ------------------------------------------------------------------------------------------------------------------------
 Press Ctrl+C to stop. Start success.
 ```
+
+### Redis 中 failed 队列数据写入MySQL处理
+
+
+
+
 
 ## 参考资料
 
