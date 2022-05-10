@@ -2212,13 +2212,13 @@ linux中() + ?是属于扩展正则表达式，用的不多
 
 字符截取命令：
 
-cut：提取列   字段提取命令  和grep结合使用  行列提取
-
--f  列号       ：      提取第几列
-
--d 分隔符： 指定分隔符   (默认制表符  而不要用空格)
-
-cat /etc/passwd |grep /bin/bash|grep -v root|cut -d ":" -f 1
+    cut：提取列   字段提取命令  和grep结合使用  行列提取
+    
+    -f  列号       ：      提取第几列
+    
+    -d 分隔符： 指定分隔符   (默认制表符  而不要用空格)
+    
+    cat /etc/passwd |grep /bin/bash|grep -v root|cut -d ":" -f 1
 
 命令局限 分隔符不定的时候不好使
 
@@ -2294,77 +2294,77 @@ sed命令：是一种几乎在所有unix平台的轻量级流编辑器，主要�
 
 选项：
 
-sed [选项] '[动作]' 文件名
-
--n 一般sed命令会把所有数据输出到屏幕，如果加入此选项，则只会把经过sed命令处理的行输出到屏幕
-
--e  允许应用多条sed命令编辑 多个动作之间用;分割
-
--i  同时更新源数据
+    sed [选项] '[动作]' 文件名
+    
+    -n 一般sed命令会把所有数据输出到屏幕，如果加入此选项，则只会把经过sed命令处理的行输出到屏幕
+    
+    -e  允许应用多条sed命令编辑 多个动作之间用;分割
+    
+    -i  同时更新源数据
 
 动作：
 
-不加行号表示整个文档
-
-a \: 追加，在当前行后添加一行或多行。添加多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
-
-c \: 行替换，用c后面的字符串替换原数据行，替换多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
-
-i \: 插入，在当期行前插入一行或者多行。插入多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
-
-d: 删除，删除指定行
-
-p: 打印，输出指定的行
-
-s: 字符替换，格式为"行范围s/旧字串/新字串/g" 类似vi中的替换
-
-sed '2p' student.txt
-
-sed -n '2p' student.txt
-
-df -h|sed -n '2p'
-
-sed '2,4d' student.txt
-
-sed '2a hello' student.txt
-
-sed '2i hello \
-
-word' student.txt
-
-sed '2c no such person' student.txt
+    不加行号表示整个文档
+    
+    a \: 追加，在当前行后添加一行或多行。添加多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
+    
+    c \: 行替换，用c后面的字符串替换原数据行，替换多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
+    
+    i \: 插入，在当期行前插入一行或者多行。插入多行时，除最后一行外，每行行尾需要用"\"代表数据未完结。
+    
+    d: 删除，删除指定行
+    
+    p: 打印，输出指定的行
+    
+    s: 字符替换，格式为"行范围s/旧字串/新字串/g" 类似vi中的替换
+    
+    sed '2p' student.txt
+    
+    sed -n '2p' student.txt
+    
+    df -h|sed -n '2p'
+    
+    sed '2,4d' student.txt
+    
+    sed '2a hello' student.txt
+    
+    sed '2i hello \
+    
+    word' student.txt
+    
+    sed '2c no such person' student.txt
 
 字符处理命令：
 
-排序命令sort  可从管道符接收
-
-sort [选项] 文件名
-
--f 忽略大小写
-
--n   以数值型排序，默认使用字符串型排序
-
--r    反序
-
--t 指定分隔符，默认是制表符
-
--k n,[m]   按照指定的字段范围排序。从第n字段开始，m字段结束(默认到行尾)
-
-sort /etc/passwd
-
-sort -r /etc/passwd
-
-sort -t ":" -k 3,3 /etc/passwd
-
-sort -n -t ":" -k 3,3 /etc/passwd
+    排序命令sort  可从管道符接收
+    
+    sort [选项] 文件名
+    
+    -f 忽略大小写
+    
+    -n   以数值型排序，默认使用字符串型排序
+    
+    -r    反序
+    
+    -t 指定分隔符，默认是制表符
+    
+    -k n,[m]   按照指定的字段范围排序。从第n字段开始，m字段结束(默认到行尾)
+    
+    sort /etc/passwd
+    
+    sort -r /etc/passwd
+    
+    sort -t ":" -k 3,3 /etc/passwd
+    
+    sort -n -t ":" -k 3,3 /etc/passwd
 
 统计命令wc   可从管道符接收
 
--l:只统计行数
-
--w:只统计单词数
-
--m：只统计字符数
+    -l:只统计行数
+    
+    -w:只统计单词数
+    
+    -m：只统计字符数
 
 条件判断：
 
@@ -2372,19 +2372,19 @@ sort -n -t ":" -k 3,3 /etc/passwd
 
 LINUX中的七种文件类型
 
-d 目录文件。
-
-l 符号链接(指向另一个文件,类似于瘟下的快捷方式)。
-
-s 套接字文件。
-
-b 块设备文件,二进制文件。
-
-c 字符设备文件。
-
-p 命名管道文件。
-
-- 普通文件，或更准确地说，不属于以上几种类型的文件
+    d 目录文件。
+    
+    l 符号链接(指向另一个文件,类似于瘟下的快捷方式)。
+    
+    s 套接字文件。
+    
+    b 块设备文件,二进制文件。
+    
+    c 字符设备文件。
+    
+    p 命名管道文件。
+    
+    - 普通文件，或更准确地说，不属于以上几种类型的文件
 
 image
 
@@ -2392,11 +2392,11 @@ image
 
 两种判断格式
 
-test -e /root/install.log
+`test -e /root/install.log`
 
-[ -e /root/install.log ] 前后有空格
+`[ -e /root/install.log ]` 前后有空格
 
-echo $?判断命令执行状态  或者  [ -d /root ] && echo "yes" || echo "no"
+`echo $?`判断命令执行状态  或者  `[ -d /root ] && echo "yes" || echo "no"`
 
 按照文件权限进行判断：
 
@@ -2523,21 +2523,21 @@ rmp包安装在默认位置/etc    /etc/rc.d/init.d/
 
 rpm 独立服务的管理：
 
-/etc/init.d/     独立服务的启动脚本     /etc/rc.d/init.d/是一个 链接
+    /etc/init.d/     独立服务的启动脚本     /etc/rc.d/init.d/是一个 链接
+    
+    /etc/sysconfig/ 初始化环境配置文件位置
+    
+    /etc/ 配置文件位置
+    
+    /etc/xinetd.d/ 基于xinetd服务的启动脚本
+    
+    /var/lib/ 服务产生的数据放在这里
+    
+    /var/log 日志
 
-/etc/sysconfig/ 初始化环境配置文件位置
+独立服务的启动 `/etc/init.d/独立服务名 start|stop|status|restart`
 
-/etc/ 配置文件位置
-
-/etc/xinetd.d/ 基于xinetd服务的启动脚本
-
-/var/lib/ 服务产生的数据放在这里
-
-/var/log 日志
-
-独立服务的启动 /etc/init.d/独立服务名 start|stop|status|restart
-
-service 独立服务名 start|stop|status|restart      #红帽专有命令
+`service 独立服务名 start|stop|status|restart      #红帽专有命令`
 
 独立服务自启动3中方法：
 
@@ -2738,13 +2738,13 @@ top恢复到后台还是stop状态  因为这个命令必须和前台交互
 
 vmstat命令监控系统资源
 
-vmstat [刷新延时 刷新次数]
+`vmstat [刷新延时 刷新次数]`
 
 如：vmstat 1 3
 
 dmesg开机时内核检测信息
 
-dmesg | grep CPU
+`dmesg | grep CPU`
 
 free 查看内存使用状态
 
@@ -2834,9 +2834,9 @@ rsyslogd的新特点：
 
 确定服务启动
 
-ps aux|grep rsyslogd
+`ps aux|grep rsyslogd`
 
-chkconfig --list|grep rsyslog
+`chkconfig --list|grep rsyslog`
 
 image
 
