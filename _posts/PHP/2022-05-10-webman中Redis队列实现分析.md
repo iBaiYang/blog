@@ -2012,6 +2012,8 @@ class Client
 
 ### 零碎点
 
+#### str_replace
+
 ```
  str_replace(
     array|string $search,
@@ -2021,9 +2023,103 @@ class Client
 ): string|array
 ```
 
+```php
+<?php
+// Provides: <body text='black'>
+$bodytag = str_replace("%body%", "black", "<body text='%body%'>");
+
+// Provides: Hll Wrld f PHP
+$vowels = array("a", "e", "i", "o", "u", "A", "E", "I", "O", "U");
+$onlyconsonants = str_replace($vowels, "", "Hello World of PHP");
+
+// Provides: You should eat pizza, beer, and ice cream every day
+$phrase  = "You should eat fruits, vegetables, and fiber every day.";
+$healthy = array("fruits", "vegetables", "fiber");
+$yummy   = array("pizza", "beer", "ice cream");
+
+$newphrase = str_replace($healthy, $yummy, $phrase);
+
+// Provides: 2
+$str = str_replace("ll", "", "good golly miss molly!", $count);
+echo $count;
+?>
+```
+
+#### array_replace_recursive
+
 ```
  array_replace_recursive(array $array, array ...$replacements): array
 ```
+
+```
+<?php
+$base = array('citrus' => array( "orange") , 'berries' => array("blackberry", "raspberry"), );
+$replacements = array('citrus' => array('pineapple'), 'berries' => array('blueberry'));
+
+$basket = array_replace_recursive($base, $replacements);
+print_r($basket);
+
+$basket = array_replace($base, $replacements);
+print_r($basket);
+?>
+
+Array
+(
+    [citrus] => Array
+        (
+            [0] => pineapple
+        )
+
+    [berries] => Array
+        (
+            [0] => blueberry
+            [1] => raspberry
+        )
+
+)
+Array
+(
+    [citrus] => Array
+        (
+            [0] => pineapple
+        )
+
+    [berries] => Array
+        (
+            [0] => blueberry
+        )
+
+)
+```
+
+```
+<?php
+$base = array('citrus' => array("orange") , 'berries' => array("blackberry", "raspberry"), 'others' => 'banana' );
+$replacements = array('citrus' => 'pineapple', 'berries' => array('blueberry'), 'others' => array('litchis'));
+$replacements2 = array('citrus' => array('pineapple'), 'berries' => array('blueberry'), 'others' => 'litchis');
+
+$basket = array_replace_recursive($base, $replacements, $replacements2);
+print_r($basket);
+?>
+
+Array
+(
+    [citrus] => Array
+        (
+            [0] => pineapple
+        )
+
+    [berries] => Array
+        (
+            [0] => blueberry
+            [1] => raspberry
+        )
+
+    [others] => litchis
+)
+```
+
+#### include
 
 ```
 $config = include $file;
@@ -2040,4 +2136,9 @@ redis队列插件 <https://www.workerman.net/plugin/12>
 
 workerman/redis-queue <https://www.workerman.net/doc/workerman/components/workerman-redis-queue.html>
 
+walkor/webman <https://github.com/walkor/webman>
+
+str_replace <https://www.php.net/manual/en/function.str-replace.php>
+
+array_replace_recursive <https://www.php.net/manual/en/function.array-replace-recursive.php>
 
