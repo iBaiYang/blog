@@ -407,7 +407,7 @@ class Config
         foreach ($iterator as $file) {
             /** var SplFileInfo $file */
             if (is_dir($file) || $file->getExtension() != 'php' || \in_array($file->getBaseName('.php'), $exclude_file)) {
-                // 是目录、或非.php后缀文件、或在排除的文件，在跳过本次
+                // 是目录、或非.php后缀文件、或在排除的文件中，跳过本次
                 // getBaseName('.php') 返回没有路径信息及.php后缀的文件名称
                 continue;
             }
@@ -2423,6 +2423,47 @@ foreach ($explode as $section) {
     $tmp[$section] = $config;
     $config = $tmp;
 }
+```
+
+示例：
+```
+<?php
+$config = ["a" => 1];
+$relative_path = "plugin/webman/redis-queue/process";
+$explode = array_reverse(explode(DIRECTORY_SEPARATOR, $relative_path));
+print_r($explode);
+
+foreach ($explode as $section) {
+    $tmp = [];
+    $tmp[$section] = $config;
+    $config = $tmp;
+}
+print_r($config);
+?>
+
+Array
+(
+    [0] => process
+    [1] => redis-queue
+    [2] => webman
+    [3] => plugin
+)
+Array
+(
+    [plugin] => Array
+        (
+            [webman] => Array
+                (
+                    [redis-queue] => Array
+                        (
+                            [process] => Array
+                                (
+                                    [a] => 1
+                                )
+                        )
+                )
+        )
+)
 ```
 
 ## 参考资料
