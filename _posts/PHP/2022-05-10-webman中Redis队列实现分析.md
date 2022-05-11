@@ -1448,8 +1448,15 @@ Worker::runAll();
 
 use support\Container;
 use Workerman\Worker;
-
 // 省略若干...
+
+/**
+ * @return bool
+ */
+function is_phar()
+{
+    return class_exists(\Phar::class, false) && Phar::running();
+}
 
 // Phar support.
 if (is_phar()) {
@@ -1460,11 +1467,87 @@ if (is_phar()) {
 define('WEBMAN_VERSION', '1.3.0');
 
 /**
+ * @param $return_phar
+ * @return false|string
+ */
+function base_path($return_phar = true)
+{
+    static $real_path = '';
+    if (!$real_path) {
+        $real_path = is_phar() ? dirname(Phar::running(false)) : BASE_PATH;
+    }
+    return $return_phar ? BASE_PATH : $real_path;
+}
+
+/**
+ * @return string
+ */
+function app_path()
+{
+    return BASE_PATH . DIRECTORY_SEPARATOR . 'app';
+}
+
+/**
+ * @return string
+ */
+function public_path()
+{
+    static $path = '';
+    if (!$path) {
+        $path = config('app.public_path', BASE_PATH . DIRECTORY_SEPARATOR . 'public');
+    }
+    return $path;
+}
+
+/**
  * @return string
  */
 function config_path()
 {
     return BASE_PATH . DIRECTORY_SEPARATOR . 'config';
+}
+
+/**
+ * Phar support.
+ * Compatible with the 'realpath' function in the phar file.
+ *
+ * @return string
+ */
+function runtime_path()
+{
+    static $path = '';
+    if (!$path) {
+        $path = config('app.runtime_path', BASE_PATH . DIRECTORY_SEPARATOR . 'runtime');
+    }
+    return $path;
+}
+
+// 省略若干...
+
+/**
+ * @param $worker
+ * @param $class
+ */
+function worker_bind($worker, $class)
+{
+    $callback_map = [
+        'onConnect',
+        'onMessage',
+        'onClose',
+        'onError',
+        'onBufferFull',
+        'onBufferDrain',
+        'onWorkerStop',
+        'onWebSocketConnect'
+    ];
+    foreach ($callback_map as $name) {
+        if (method_exists($class, $name)) {
+            $worker->$name = [$class, $name];
+        }
+    }
+    if (method_exists($class, 'onWorkerStart')) {
+        call_user_func([$class, 'onWorkerStart'], $worker);
+    }
 }
 
 /**
@@ -1742,7 +1825,7 @@ tcp     root            plugin.webman.redis-queue.consumer    none              
 Press Ctrl+C to stop. Start success.
 ```
 
-### Redis 中 failed 队列数据写入MySQL处理
+### failed 队列数据写入数据库
 
 
 
