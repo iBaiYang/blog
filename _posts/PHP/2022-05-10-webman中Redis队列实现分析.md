@@ -11,6 +11,8 @@ meta: webman中Redis队列实现分析
 
 webman中Redis队列实现用的包是 `webman/redis-queue` ，版本是 `v1.1.0` 。
 
+Composer 安装 `webman/redis-queue` 。
+
 Redis配置文件自动生成在 `config/plugin/webman/redis-queue/redis.php`，内容类似如下：
 ```php
 <?php
@@ -27,7 +29,7 @@ return [
 ];
 ```
 
-消费进程配置文件在 `config/plugin/webman/redis-queue/process.php`：
+消费进程配置文件自动生成在 `config/plugin/webman/redis-queue/process.php`，内容类似如下：
 ```php
 <?php
 return [
@@ -42,13 +44,690 @@ return [
 ];
 ```
 
-在 `config/plugin/webman/redis-queue/app.php` 写入：
+以及自动生成的该插件是否可用配置文件 `config/plugin/webman/redis-queue/app.php` ：
 ```php
 <?php
 return [
     'enable' => true,
 ];
 ```
+
+### 进程配置文件加载分析
+
+在 项目根目录下的 `start.php` 文件中有：
+```php
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Workerman\Worker;
+use Workerman\Protocols\Http;
+use Workerman\Connection\TcpConnection;
+use Webman\App;
+use Webman\Config;
+use Webman\Route;
+use Webman\Middleware;
+use Dotenv\Dotenv;
+use support\Request;
+use support\Log;
+use support\Container;
+
+ini_set('display_errors', 'on');
+error_reporting(E_ALL);
+
+// 加载环境配置文件
+if (class_exists('Dotenv\Dotenv') && file_exists(base_path() . '/.env')) {
+    if (method_exists('Dotenv\Dotenv', 'createUnsafeImmutable')) {
+        Dotenv::createUnsafeImmutable(base_path())->load();
+    } else {
+        Dotenv::createMutable(base_path())->load();
+    }
+}
+
+// 加载应用配置文件，包括 自动加载、容器、数据库、插件进程 等
+Config::load(config_path(), ['route', 'container']);
+
+if ($timezone = config('app.default_timezone')) {
+    date_default_timezone_set($timezone);
+}
+
+$runtime_logs_path = runtime_path() . DIRECTORY_SEPARATOR . 'logs';
+if ( !file_exists($runtime_logs_path) || !is_dir($runtime_logs_path) ) {
+    if (!mkdir($runtime_logs_path,0777,true)) {
+        throw new \RuntimeException("Failed to create runtime logs directory. Please check the permission.");
+    }
+}
+
+$runtime_views_path = runtime_path() . DIRECTORY_SEPARATOR . 'views';
+if ( !file_exists($runtime_views_path) || !is_dir($runtime_views_path) ) {
+    if (!mkdir($runtime_views_path,0777,true)) {
+        throw new \RuntimeException("Failed to create runtime views directory. Please check the permission.");
+    }
+}
+
+Worker::$onMasterReload = function () {
+    if (function_exists('opcache_get_status')) {
+        if ($status = opcache_get_status()) {
+            if (isset($status['scripts']) && $scripts = $status['scripts']) {
+                foreach (array_keys($scripts) as $file) {
+                    opcache_invalidate($file, true);
+                }
+            }
+        }
+    }
+};
+
+$config = config('server');
+Worker::$pidFile = $config['pid_file'];
+Worker::$stdoutFile = $config['stdout_file'];
+Worker::$logFile = $config['log_file'];
+Worker::$eventLoopClass = $config['event_loop'] ?? '';
+TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+if (property_exists(Worker::class, 'statusFile')) {
+    Worker::$statusFile = $config['status_file'] ?? '';
+}
+
+if ($config['listen']) {
+    $worker = new Worker($config['listen'], $config['context']);
+    $property_map = [
+        'name',
+        'count',
+        'user',
+        'group',
+        'reusePort',
+        'transport',
+    ];
+    foreach ($property_map as $property) {
+        if (isset($config[$property])) {
+            $worker->$property = $config[$property];
+        }
+    }
+
+    $worker->onWorkerStart = function ($worker) {
+        require_once base_path() . '/support/bootstrap.php';
+        $app = new App($worker, Container::instance(), Log::channel('default'), app_path(), public_path());
+        Http::requestClass(config('app.request_class', config('server.request_class', Request::class)));
+        $worker->onMessage = [$app, 'onMessage'];
+    };
+}
+
+// 自定义进程
+// Windows does not support custom processes.
+if (\DIRECTORY_SEPARATOR === '/') {
+    // 一级进程
+    foreach (config('process', []) as $process_name => $config) {
+        worker_start($process_name, $config);
+    }
+    // 插件进程
+    foreach (config('plugin', []) as $firm => $projects) {
+        foreach ($projects as $name => $project) {
+            foreach ($project['process'] ?? [] as $process_name => $config) {
+                worker_start("plugin.$firm.$name.$process_name", $config);
+            }
+        }
+    }
+}
+
+Worker::runAll();
+```
+
+加载应用配置文件：`Config::load(config_path(), ['route', 'container']);` 。
+
+`config_path()` 获取配置文件所在目录地址，在 `support/helpers.php` 文件中。
+
+`support/helpers.php` 是一个帮助函数库：
+```php
+<?php
+
+use support\Container;
+use Workerman\Worker;
+// 省略若干...
+
+/**
+ * @return bool
+ */
+function is_phar()
+{
+    return class_exists(\Phar::class, false) && Phar::running();
+}
+
+// Phar support.
+if (is_phar()) {
+    define('BASE_PATH', dirname(__DIR__));
+} else {
+    define('BASE_PATH', realpath(__DIR__ . '/../'));
+}
+define('WEBMAN_VERSION', '1.3.0');
+
+/**
+ * @param $return_phar
+ * @return false|string
+ */
+function base_path($return_phar = true)
+{
+    static $real_path = '';
+    if (!$real_path) {
+        $real_path = is_phar() ? dirname(Phar::running(false)) : BASE_PATH;
+    }
+    return $return_phar ? BASE_PATH : $real_path;
+}
+
+/**
+ * @return string
+ */
+function app_path()
+{
+    return BASE_PATH . DIRECTORY_SEPARATOR . 'app';
+}
+
+/**
+ * @return string
+ */
+function public_path()
+{
+    static $path = '';
+    if (!$path) {
+        $path = config('app.public_path', BASE_PATH . DIRECTORY_SEPARATOR . 'public');
+    }
+    return $path;
+}
+
+/**
+ * 获取配置目录路径
+ * @return string
+ */
+function config_path()
+{
+    return BASE_PATH . DIRECTORY_SEPARATOR . 'config';
+}
+
+/**
+ * Phar support.
+ * Compatible with the 'realpath' function in the phar file.
+ *
+ * @return string
+ */
+function runtime_path()
+{
+    static $path = '';
+    if (!$path) {
+        $path = config('app.runtime_path', BASE_PATH . DIRECTORY_SEPARATOR . 'runtime');
+    }
+    return $path;
+}
+
+// 省略若干...
+
+/**
+ * 获取配置参数值
+ * @param $key
+ * @param null $default
+ * @return mixed
+ */
+function config($key = null, $default = null)
+{
+    return Config::get($key, $default);
+}
+
+// 省略若干...
+
+/**
+ * @param $worker
+ * @param $class
+ */
+function worker_bind($worker, $class)
+{
+    $callback_map = [
+        'onConnect',
+        'onMessage',
+        'onClose',
+        'onError',
+        'onBufferFull',
+        'onBufferDrain',
+        'onWorkerStop',
+        'onWebSocketConnect'
+    ];
+    foreach ($callback_map as $name) {
+        if (method_exists($class, $name)) {
+            $worker->$name = [$class, $name];
+        }
+    }
+    if (method_exists($class, 'onWorkerStart')) {
+        call_user_func([$class, 'onWorkerStart'], $worker);
+    }
+}
+
+/**
+ * @param $process_name
+ * @param $config
+ * @return void
+ */
+function worker_start($process_name, $config)
+{
+    $worker = new Worker($config['listen'] ?? null, $config['context'] ?? []);
+    $property_map = [
+        'count',
+        'user',
+        'group',
+        'reloadable',
+        'reusePort',
+        'transport',
+        'protocol',
+    ];
+    $worker->name = $process_name;
+    foreach ($property_map as $property) {
+        if (isset($config[$property])) {
+            $worker->$property = $config[$property];
+        }
+    }
+
+    $worker->onWorkerStart = function ($worker) use ($config) {
+        require_once base_path() . '/support/bootstrap.php';
+
+        foreach ($config['services'] ?? [] as $server) {
+            if (!class_exists($server['handler'])) {
+                echo "process error: class {$server['handler']} not exists\r\n";
+                continue;
+            }
+            $listen = new Worker($server['listen'] ?? null, $server['context'] ?? []);
+            if (isset($server['listen'])) {
+                echo "listen: {$server['listen']}\n";
+            }
+            $instance = Container::make($server['handler'], $server['constructor'] ?? []);
+            worker_bind($listen, $instance);
+            $listen->listen();
+        }
+
+        if (isset($config['handler'])) {
+            if (!class_exists($config['handler'])) {
+                echo "process error: class {$config['handler']} not exists\r\n";
+                return;
+            }
+
+            $instance = Container::make($config['handler'], $config['constructor'] ?? []);
+            worker_bind($worker, $instance);
+        }
+
+    };
+}
+
+// 省略若干...
+```
+
+`Config::load()` 在 `Webman\Config` 类文件中：
+```php
+<?php
+/**
+ * This file is part of webman.
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the MIT-LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @author    walkor<walkor@workerman.net>
+ * @copyright walkor<walkor@workerman.net>
+ * @link      http://www.workerman.net/
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+
+namespace Webman;
+
+class Config
+{
+
+    /**
+     * @var array
+     */
+    protected static $_config = [];
+
+    /**
+     * @var string
+     */
+    protected static $_configPath = '';
+
+    /**
+     * @var bool
+     */
+    protected static $_loaded = false;
+
+    /**
+     * @param $config_path 配置文件路径
+     * @param array $exclude_file 排除的文件
+     */
+    public static function load($config_path, $exclude_file = [])
+    {
+        static::$_configPath = $config_path;
+        if (!$config_path) {
+            return;
+        }
+        // RecursiveDirectoryIterator 提供了一个用于递归地遍历文件系统目录的接口
+        $dir_iterator = new \RecursiveDirectoryIterator($config_path, \FilesystemIterator::FOLLOW_SYMLINKS);
+        // RecursiveIteratorIterator 可用于遍历递归迭代器
+        $iterator = new \RecursiveIteratorIterator($dir_iterator);
+        foreach ($iterator as $file) {
+            /** var SplFileInfo $file */
+            if (is_dir($file) || $file->getExtension() != 'php' || \in_array($file->getBaseName('.php'), $exclude_file)) {
+                // 是目录、或非.php后缀文件、或在排除的文件，在跳过本次
+                // getBaseName('.php') 返回没有路径信息及.php后缀的文件名称
+                continue;
+            }
+            
+            /* 判断当前配置是否可用 */ 
+            $app_config_file = $file->getPath() . '/app.php';
+            if (!is_file($app_config_file)) {
+                continue;
+            }
+            // 如果配置文件的相对深度大于等于2层，则说明是个插件，查看该插件是否可用
+            $relative_path = str_replace($config_path . DIRECTORY_SEPARATOR, '', substr($file, 0, -4));
+            $explode = array_reverse(explode(DIRECTORY_SEPARATOR, $relative_path));
+            if (count($explode) >= 2) {
+                $app_config = include $app_config_file;
+                if (empty($app_config['enable'])) {
+                    // 如果enable属性未配置、或为空、或false，则说明该插件不可用，跳过本次
+                    continue;
+                }
+            }
+            
+            $config = include $file;
+            foreach ($explode as $section) {
+                $tmp = [];
+                $tmp[$section] = $config;
+                $config = $tmp;
+            }
+            static::$_config = array_replace_recursive(static::$_config, $config);
+        }
+
+        // Merge database config
+        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
+            foreach ($projects as $name => $project) {
+                foreach ($project['database']['connections'] ?? [] as $key => $connection) {
+                    static::$_config['database']['connections']["plugin.$firm.$name.$key"] = $connection;
+                }
+            }
+        }
+        if (!empty(static::$_config['database']['connections'])) {
+            static::$_config['database']['default'] = static::$_config['database']['default'] ?? key(static::$_config['database']['connections']);
+        }
+        
+        // Merge thinkorm config
+        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
+            foreach ($projects as $name => $project) {
+                foreach ($project['thinkorm']['connections'] ?? [] as $key => $connection) {
+                    static::$_config['thinkorm']['connections']["plugin.$firm.$name.$key"] = $connection;
+                }
+            }
+        }
+        if (!empty(static::$_config['thinkorm']['connections'])) {
+            static::$_config['thinkorm']['default'] = static::$_config['thinkorm']['default'] ?? key(static::$_config['thinkorm']['connections']);
+        }
+        
+        // Merge redis config
+        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
+            foreach ($projects as $name => $project) {
+                foreach ($project['redis'] ?? [] as $key => $connection) {
+                    static::$_config['redis']["plugin.$firm.$name.$key"] = $connection;
+                }
+            }
+        }
+
+        static::$_loaded = true;
+    }
+
+    /**
+     * @param null $key
+     * @param null $default
+     * @return array|mixed|null
+     */
+    public static function get($key = null, $default = null)
+    {
+        if ($key === null) {
+            return static::$_config;
+        }
+        $key_array = \explode('.', $key);
+        $value = static::$_config;
+        $finded = true;
+        foreach ($key_array as $index) {
+            if (!isset($value[$index])) {
+                if (static::$_loaded) {
+                    return $default;
+                }
+                $finded = false;
+                break;
+            }
+            $value = $value[$index];
+        }
+        if ($finded) {
+            return $value;
+        }
+        return static::read($key, $default);
+    }
+
+    /**
+     * @param $key
+     * @param $default
+     * @return array|mixed|void|null
+     */
+    protected static function read($key, $default = null)
+    {
+        $path = static::$_configPath;
+        if ($path === '') {
+            return $default;
+        }
+        $keys = $key_array = \explode('.', $key);
+        foreach ($key_array as $index => $section) {
+            unset($keys[$index]);
+            if (is_file($file = "$path/$section.php")) {
+                $config = include $file;
+                return static::find($keys, $config, $default);
+            }
+            if (!is_dir($path = "$path/$section")) {
+                return $default;
+            }
+        }
+        return $default;
+    }
+
+    /**
+     * @param $key_array
+     * @param $stack
+     * @param $default
+     * @return array|mixed
+     */
+    protected static function find($key_array, $stack, $default)
+    {
+        if (!is_array($stack)) {
+            return $default;
+        }
+        $value = $stack;
+        foreach ($key_array as $index) {
+            if (!isset($value[$index])) {
+                return $default;
+            }
+            $value = $value[$index];
+        }
+        return $value;
+    }
+
+
+    /**
+     * @param $config_path
+     * @param array $exclude_file
+     */
+    public static function reload($config_path, $exclude_file = [])
+    {
+        static::$_config = [];
+        static::load($config_path, $exclude_file);
+    }
+
+}
+```
+
+`start.php` 中加载自定义进程：
+```
+if (\DIRECTORY_SEPARATOR === '/') {
+    foreach (config('process', []) as $process_name => $config) {
+        worker_start($process_name, $config);
+    }
+    foreach (config('plugin', []) as $firm => $projects) {
+        foreach ($projects as $name => $project) {
+            foreach ($project['process'] ?? [] as $process_name => $config) {
+                worker_start("plugin.$firm.$name.$process_name", $config);
+            }
+        }
+    }
+}
+```
+
+`config('plugin', [])` 获取插件配置，返回的结果：
+```
+array(1) {
+  ["webman"]=>
+  array(3) {
+    ["console"]=>
+    array(1) {
+      ["app"]=>
+      array(7) {
+        ["enable"]=>
+        bool(true)
+        ["phar_file_output_dir"]=>
+        string(34) "/var/www/html/webman/build"
+        ["phar_filename"]=>
+        string(11) "webman.phar"
+        ["signature_algorithm"]=>
+        int(3)
+        ["private_key_file"]=>
+        string(0) ""
+        ["exclude_pattern"]=>
+        string(228) "#^(?!.*(config/plugin/webman/console/app.php|webman/console/src/Commands/(PharPackCommand.php|ReloadCommand.php)|LICENSE|composer.json|.github|.idea|doc|docs|.git|.setting|runtime|test|test_old|tests|Tests|vendor-bin|.md))(.*)$#"
+        ["exclude_files"]=>
+        array(5) {
+          [0]=>
+          string(4) ".env"
+          [1]=>
+          string(7) "LICENSE"
+          [2]=>
+          string(13) "composer.json"
+          [3]=>
+          string(13) "composer.lock"
+          [4]=>
+          string(9) "start.php"
+        }
+      }
+    }
+    ["push"]=>
+    array(2) {
+      ["app"]=>
+      array(7) {
+        ["enable"]=>
+        bool(true)
+        ["websocket"]=>
+        string(24) "websocket://0.0.0.0:2121"
+        ["api"]=>
+        string(19) "http://0.0.0.0:2222"
+        ["app_key"]=>
+        string(32) "dfa7def75955c62f88e02526691ee155"
+        ["app_secret"]=>
+        string(32) "cd88c5033d8e591dd248408734be233f"
+        ["channel_hook"]=>
+        string(45) "http://127.0.0.1:8787/plugin/webman/push/hook"
+        ["auth"]=>
+        string(24) "/plugin/webman/push/auth"
+      }
+      ["process"]=>
+      array(1) {
+        ["server"]=>
+        array(5) {
+          ["handler"]=>
+          string(18) "Webman\Push\Server"
+          ["listen"]=>
+          string(24) "websocket://0.0.0.0:2121"
+          ["count"]=>
+          int(1)
+          ["reloadable"]=>
+          bool(false)
+          ["constructor"]=>
+          array(2) {
+            ["api_listen"]=>
+            string(19) "http://0.0.0.0:2222"
+            ["app_info"]=>
+            array(1) {
+              ["dfa7def75955c62f88e02526691ee155"]=>
+              array(2) {
+                ["channel_hook"]=>
+                string(45) "http://127.0.0.1:8787/plugin/webman/push/hook"
+                ["app_secret"]=>
+                string(32) "cd88c5033d8e591dd248408734be233f"
+              }
+            }
+          }
+        }
+      }
+    }
+    ["redis-queue"]=>
+    array(3) {
+      ["app"]=>
+      array(1) {
+        ["enable"]=>
+        bool(true)
+      }
+      ["process"]=>
+      array(1) {
+        ["consumer"]=>
+        array(3) {
+          ["handler"]=>
+          string(34) "Webman\RedisQueue\Process\Consumer"
+          ["count"]=>
+          int(6)
+          ["constructor"]=>
+          array(1) {
+            ["consumer_dir"]=>
+            string(44) "/var/www/html/webman/app/queue/redis"
+          }
+        }
+      }
+      ["redis"]=>
+      array(1) {
+        ["default"]=>
+        array(2) {
+          ["host"]=>
+          string(25) "redis://192.168.56.108:6379"
+          ["options"]=>
+          array(4) {
+            ["auth"]=>
+            string(12) "eszEDCrdx341"
+            ["db"]=>
+            string(1) "3"
+            ["max_attempts"]=>
+            int(5)
+            ["retry_seconds"]=>
+            int(5)
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+`worker_start()` 启动进程，调用的 `Workerman\Worker` 类实现。 
+
+从`php start.php start`启动中可以看到加载的进程名：
+```
+root@514444b84e17:/var/www/html/webman# php start.php start
+Workerman[start.php] start in DEBUG mode
+------------------------------------------------------ WORKERMAN -------------------------------------------------------
+Workerman version:4.0.30          PHP version:7.4.28
+------------------------------------------------------- WORKERS --------------------------------------------------------
+proto   user            worker                                listen                      processes    status
+tcp     root            webman                                http://0.0.0.0:8787         8             [OK]
+tcp     root            monitor                               none                        1             [OK]
+tcp     root            plugin.webman.push.server             websocket://0.0.0.0:2121    1             [OK]
+tcp     root            plugin.webman.redis-queue.consumer    none                        6             [OK]
+------------------------------------------------------------------------------------------------------------------------
+Press Ctrl+C to stop. Start success.
+```
+
+### Redis队列实现分析
 
 `Webman\RedisQueue\Process\Consumer` 类文件内容：
 ```php
@@ -1326,510 +2005,34 @@ class Client
 }
 ```
 
-### 消费进程配置文件加载分析
 
-在 项目根目录下的 `start.php` 文件中有：
-```php
-#!/usr/bin/env php
-<?php
-require_once __DIR__ . '/vendor/autoload.php';
-
-use Workerman\Worker;
-use Workerman\Protocols\Http;
-use Workerman\Connection\TcpConnection;
-use Webman\App;
-use Webman\Config;
-use Webman\Route;
-use Webman\Middleware;
-use Dotenv\Dotenv;
-use support\Request;
-use support\Log;
-use support\Container;
-
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
-
-if (class_exists('Dotenv\Dotenv') && file_exists(base_path() . '/.env')) {
-    if (method_exists('Dotenv\Dotenv', 'createUnsafeImmutable')) {
-        Dotenv::createUnsafeImmutable(base_path())->load();
-    } else {
-        Dotenv::createMutable(base_path())->load();
-    }
-}
-
-Config::load(config_path(), ['route', 'container']);
-
-if ($timezone = config('app.default_timezone')) {
-    date_default_timezone_set($timezone);
-}
-
-$runtime_logs_path = runtime_path() . DIRECTORY_SEPARATOR . 'logs';
-if ( !file_exists($runtime_logs_path) || !is_dir($runtime_logs_path) ) {
-    if (!mkdir($runtime_logs_path,0777,true)) {
-        throw new \RuntimeException("Failed to create runtime logs directory. Please check the permission.");
-    }
-}
-
-$runtime_views_path = runtime_path() . DIRECTORY_SEPARATOR . 'views';
-if ( !file_exists($runtime_views_path) || !is_dir($runtime_views_path) ) {
-    if (!mkdir($runtime_views_path,0777,true)) {
-        throw new \RuntimeException("Failed to create runtime views directory. Please check the permission.");
-    }
-}
-
-Worker::$onMasterReload = function () {
-    if (function_exists('opcache_get_status')) {
-        if ($status = opcache_get_status()) {
-            if (isset($status['scripts']) && $scripts = $status['scripts']) {
-                foreach (array_keys($scripts) as $file) {
-                    opcache_invalidate($file, true);
-                }
-            }
-        }
-    }
-};
-
-$config = config('server');
-Worker::$pidFile = $config['pid_file'];
-Worker::$stdoutFile = $config['stdout_file'];
-Worker::$logFile = $config['log_file'];
-Worker::$eventLoopClass = $config['event_loop'] ?? '';
-TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
-if (property_exists(Worker::class, 'statusFile')) {
-    Worker::$statusFile = $config['status_file'] ?? '';
-}
-
-if ($config['listen']) {
-    $worker = new Worker($config['listen'], $config['context']);
-    $property_map = [
-        'name',
-        'count',
-        'user',
-        'group',
-        'reusePort',
-        'transport',
-    ];
-    foreach ($property_map as $property) {
-        if (isset($config[$property])) {
-            $worker->$property = $config[$property];
-        }
-    }
-
-    $worker->onWorkerStart = function ($worker) {
-        require_once base_path() . '/support/bootstrap.php';
-        $app = new App($worker, Container::instance(), Log::channel('default'), app_path(), public_path());
-        Http::requestClass(config('app.request_class', config('server.request_class', Request::class)));
-        $worker->onMessage = [$app, 'onMessage'];
-    };
-}
-
-// Windows does not support custom processes.
-if (\DIRECTORY_SEPARATOR === '/') {
-    foreach (config('process', []) as $process_name => $config) {
-        worker_start($process_name, $config);
-    }
-    foreach (config('plugin', []) as $firm => $projects) {
-        foreach ($projects as $name => $project) {
-            foreach ($project['process'] ?? [] as $process_name => $config) {
-                worker_start("plugin.$firm.$name.$process_name", $config);
-            }
-        }
-    }
-}
-
-Worker::runAll();
-```
-
-`Config::load(config_path(), ['route', 'container']);` 就是加载配置文件。
-
-`config_path()` 在 `support/helpers.php` 文件中：
-```
-<?php
-
-use support\Container;
-use Workerman\Worker;
-// 省略若干...
-
-/**
- * @return bool
- */
-function is_phar()
-{
-    return class_exists(\Phar::class, false) && Phar::running();
-}
-
-// Phar support.
-if (is_phar()) {
-    define('BASE_PATH', dirname(__DIR__));
-} else {
-    define('BASE_PATH', realpath(__DIR__ . '/../'));
-}
-define('WEBMAN_VERSION', '1.3.0');
-
-/**
- * @param $return_phar
- * @return false|string
- */
-function base_path($return_phar = true)
-{
-    static $real_path = '';
-    if (!$real_path) {
-        $real_path = is_phar() ? dirname(Phar::running(false)) : BASE_PATH;
-    }
-    return $return_phar ? BASE_PATH : $real_path;
-}
-
-/**
- * @return string
- */
-function app_path()
-{
-    return BASE_PATH . DIRECTORY_SEPARATOR . 'app';
-}
-
-/**
- * @return string
- */
-function public_path()
-{
-    static $path = '';
-    if (!$path) {
-        $path = config('app.public_path', BASE_PATH . DIRECTORY_SEPARATOR . 'public');
-    }
-    return $path;
-}
-
-/**
- * @return string
- */
-function config_path()
-{
-    return BASE_PATH . DIRECTORY_SEPARATOR . 'config';
-}
-
-/**
- * Phar support.
- * Compatible with the 'realpath' function in the phar file.
- *
- * @return string
- */
-function runtime_path()
-{
-    static $path = '';
-    if (!$path) {
-        $path = config('app.runtime_path', BASE_PATH . DIRECTORY_SEPARATOR . 'runtime');
-    }
-    return $path;
-}
-
-// 省略若干...
-
-/**
- * @param $worker
- * @param $class
- */
-function worker_bind($worker, $class)
-{
-    $callback_map = [
-        'onConnect',
-        'onMessage',
-        'onClose',
-        'onError',
-        'onBufferFull',
-        'onBufferDrain',
-        'onWorkerStop',
-        'onWebSocketConnect'
-    ];
-    foreach ($callback_map as $name) {
-        if (method_exists($class, $name)) {
-            $worker->$name = [$class, $name];
-        }
-    }
-    if (method_exists($class, 'onWorkerStart')) {
-        call_user_func([$class, 'onWorkerStart'], $worker);
-    }
-}
-
-/**
- * @param $process_name
- * @param $config
- * @return void
- */
-function worker_start($process_name, $config)
-{
-    $worker = new Worker($config['listen'] ?? null, $config['context'] ?? []);
-    $property_map = [
-        'count',
-        'user',
-        'group',
-        'reloadable',
-        'reusePort',
-        'transport',
-        'protocol',
-    ];
-    $worker->name = $process_name;
-    foreach ($property_map as $property) {
-        if (isset($config[$property])) {
-            $worker->$property = $config[$property];
-        }
-    }
-
-    $worker->onWorkerStart = function ($worker) use ($config) {
-        require_once base_path() . '/support/bootstrap.php';
-
-        foreach ($config['services'] ?? [] as $server) {
-            if (!class_exists($server['handler'])) {
-                echo "process error: class {$server['handler']} not exists\r\n";
-                continue;
-            }
-            $listen = new Worker($server['listen'] ?? null, $server['context'] ?? []);
-            if (isset($server['listen'])) {
-                echo "listen: {$server['listen']}\n";
-            }
-            $instance = Container::make($server['handler'], $server['constructor'] ?? []);
-            worker_bind($listen, $instance);
-            $listen->listen();
-        }
-
-        if (isset($config['handler'])) {
-            if (!class_exists($config['handler'])) {
-                echo "process error: class {$config['handler']} not exists\r\n";
-                return;
-            }
-
-            $instance = Container::make($config['handler'], $config['constructor'] ?? []);
-            worker_bind($worker, $instance);
-        }
-
-    };
-}
-
-// 省略若干...
-```
-
-`Config::load()` 在 `Webman\Config` 类文件中：
-```php
-<?php
-/**
- * This file is part of webman.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @author    walkor<walkor@workerman.net>
- * @copyright walkor<walkor@workerman.net>
- * @link      http://www.workerman.net/
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
- */
-
-namespace Webman;
-
-class Config
-{
-
-    /**
-     * @var array
-     */
-    protected static $_config = [];
-
-    /**
-     * @var string
-     */
-    protected static $_configPath = '';
-
-    /**
-     * @var bool
-     */
-    protected static $_loaded = false;
-
-    /**
-     * @param $config_path
-     * @param array $exclude_file
-     */
-    public static function load($config_path, $exclude_file = [])
-    {
-        static::$_configPath = $config_path;
-        if (!$config_path) {
-            return;
-        }
-        $dir_iterator = new \RecursiveDirectoryIterator($config_path, \FilesystemIterator::FOLLOW_SYMLINKS);
-        $iterator = new \RecursiveIteratorIterator($dir_iterator);
-        foreach ($iterator as $file) {
-            /** var SplFileInfo $file */
-            if (is_dir($file) || $file->getExtension() != 'php' || \in_array($file->getBaseName('.php'), $exclude_file)) {
-                continue;
-            }
-            
-            /* 判断当前配置是否可用 */ 
-            $app_config_file = $file->getPath() . '/app.php';
-            if (!is_file($app_config_file)) {
-                continue;
-            }
-            $relative_path = str_replace($config_path . DIRECTORY_SEPARATOR, '', substr($file, 0, -4));
-            $explode = array_reverse(explode(DIRECTORY_SEPARATOR, $relative_path));
-            if (count($explode) >= 2) {
-                $app_config = include $app_config_file;
-                if (empty($app_config['enable'])) {
-                    continue;
-                }
-            }
-            
-            $config = include $file;
-            foreach ($explode as $section) {
-                $tmp = [];
-                $tmp[$section] = $config;
-                $config = $tmp;
-            }
-            static::$_config = array_replace_recursive(static::$_config, $config);
-        }
-
-        // Merge database config
-        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
-            foreach ($projects as $name => $project) {
-                foreach ($project['database']['connections'] ?? [] as $key => $connection) {
-                    static::$_config['database']['connections']["plugin.$firm.$name.$key"] = $connection;
-                }
-            }
-        }
-        if (!empty(static::$_config['database']['connections'])) {
-            static::$_config['database']['default'] = static::$_config['database']['default'] ?? key(static::$_config['database']['connections']);
-        }
-        // Merge thinkorm config
-        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
-            foreach ($projects as $name => $project) {
-                foreach ($project['thinkorm']['connections'] ?? [] as $key => $connection) {
-                    static::$_config['thinkorm']['connections']["plugin.$firm.$name.$key"] = $connection;
-                }
-            }
-        }
-        if (!empty(static::$_config['thinkorm']['connections'])) {
-            static::$_config['thinkorm']['default'] = static::$_config['thinkorm']['default'] ?? key(static::$_config['thinkorm']['connections']);
-        }
-        // Merge redis config
-        foreach (static::$_config['plugin'] ?? [] as $firm => $projects) {
-            foreach ($projects as $name => $project) {
-                foreach ($project['redis'] ?? [] as $key => $connection) {
-                    static::$_config['redis']["plugin.$firm.$name.$key"] = $connection;
-                }
-            }
-        }
-
-        static::$_loaded = true;
-    }
-
-    /**
-     * @param null $key
-     * @param null $default
-     * @return array|mixed|null
-     */
-    public static function get($key = null, $default = null)
-    {
-        if ($key === null) {
-            return static::$_config;
-        }
-        $key_array = \explode('.', $key);
-        $value = static::$_config;
-        $finded = true;
-        foreach ($key_array as $index) {
-            if (!isset($value[$index])) {
-                if (static::$_loaded) {
-                    return $default;
-                }
-                $finded = false;
-                break;
-            }
-            $value = $value[$index];
-        }
-        if ($finded) {
-            return $value;
-        }
-        return static::read($key, $default);
-    }
-
-    /**
-     * @param $key
-     * @param $default
-     * @return array|mixed|void|null
-     */
-    protected static function read($key, $default = null)
-    {
-        $path = static::$_configPath;
-        if ($path === '') {
-            return $default;
-        }
-        $keys = $key_array = \explode('.', $key);
-        foreach ($key_array as $index => $section) {
-            unset($keys[$index]);
-            if (is_file($file = "$path/$section.php")) {
-                $config = include $file;
-                return static::find($keys, $config, $default);
-            }
-            if (!is_dir($path = "$path/$section")) {
-                return $default;
-            }
-        }
-        return $default;
-    }
-
-    /**
-     * @param $key_array
-     * @param $stack
-     * @param $default
-     * @return array|mixed
-     */
-    protected static function find($key_array, $stack, $default)
-    {
-        if (!is_array($stack)) {
-            return $default;
-        }
-        $value = $stack;
-        foreach ($key_array as $index) {
-            if (!isset($value[$index])) {
-                return $default;
-            }
-            $value = $value[$index];
-        }
-        return $value;
-    }
-
-
-    /**
-     * @param $config_path
-     * @param array $exclude_file
-     */
-    public static function reload($config_path, $exclude_file = [])
-    {
-        static::$_config = [];
-        static::load($config_path, $exclude_file);
-    }
-
-}
-```
-
-`worker_start()`  
-
-从`php start.php start`启动中可以看到加载的进程名：
-```
-root@514444b84e17:/var/www/html/webman# php start.php start
-Workerman[start.php] start in DEBUG mode
------------------------------------------------------- WORKERMAN -------------------------------------------------------
-Workerman version:4.0.30          PHP version:7.4.28
-------------------------------------------------------- WORKERS --------------------------------------------------------
-proto   user            worker                                listen                      processes    status
-tcp     root            webman                                http://0.0.0.0:8787         8             [OK]
-tcp     root            monitor                               none                        1             [OK]
-tcp     root            plugin.webman.push.server             websocket://0.0.0.0:2121    1             [OK]
-tcp     root            plugin.webman.redis-queue.consumer    none                        6             [OK]
-------------------------------------------------------------------------------------------------------------------------
-Press Ctrl+C to stop. Start success.
-```
 
 ### failed 队列数据写入数据库
 
 
+### 零碎点
 
+```
+ str_replace(
+    array|string $search,
+    array|string $replace,
+    string|array $subject,
+    int &$count = null
+): string|array
+```
 
+```
+ array_replace_recursive(array $array, array ...$replacements): array
+```
+
+```
+$config = include $file;
+foreach ($explode as $section) {
+    $tmp = [];
+    $tmp[$section] = $config;
+    $config = $tmp;
+}
+```
 
 ## 参考资料
 
