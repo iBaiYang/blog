@@ -2009,6 +2009,301 @@ class Client
 
 ### failed 队列数据写入数据库
 
+发现上面把处理不了的队列数据都扔到了 `{redis-queue}-failed`  队列中，我们这里想办法把这个队列中的数据写入到数据库中。
+
+**消费者相关类**
+
+新建`lib/webman/redisQueue/failed/Consumer.php` 文件，内容： 
+```php
+<?php
+
+namespace lib\webman\redisQueue\failed;
+
+use support\Container;
+use Webman\RedisQueue\Process\Consumer as webmanConsumer;
+
+/**
+ * Class Consumer
+ * @package process
+ */
+class Consumer extends webmanConsumer
+{
+    /**
+     * onWorkerStart.
+     */
+    public function onWorkerStart()
+    {
+        if (!is_dir($this->_consumerDir)) {
+            echo "Consumer directory {$this->_consumerDir} not exists\r\n";
+            return;
+        }
+        $dir_iterator = new \RecursiveDirectoryIterator($this->_consumerDir);
+        $iterator = new \RecursiveIteratorIterator($dir_iterator);
+        foreach ($iterator as $file) {
+            if (is_dir($file)) {
+                continue;
+            }
+            $fileinfo = new \SplFileInfo($file);
+            $ext = $fileinfo->getExtension();
+            if ($ext === 'php') {
+                $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));
+                if (is_a($class, 'Webman\RedisQueue\Consumer', true)) {
+                    $consumer = Container::get($class);
+                    $connection_name = $consumer->connection ?? 'default';
+                    $queue = $consumer->queue;
+                    $connection = Client::connection($connection_name);
+                    $connection->subscribe($queue, [$consumer, 'consume']);
+                }
+            }
+        }
+    }
+}
+```
+
+新建`lib/webman/redisQueue/failed/Client.php` 文件，内容： 
+```php
+<?php
+
+namespace lib\webman\redisQueue\failed;
+
+use Webman\RedisQueue\Client as webmanClient;
+
+/**
+ * Class Client
+ * @package lib\webman\redisQueue\failed
+ */
+class Client extends webmanClient
+{
+    /**
+     * @param string $name
+     * @return RedisClient
+     */
+    public static function connection($name = 'default')
+    {
+        if (!isset(static::$_connections[$name])) {
+            $config = config('redis_queue', config('plugin.webman.redis-queue.redis', []));
+            if (!isset($config[$name])) {
+                throw new \RuntimeException("RedisQueue connection $name not found");
+            }
+            $host = $config[$name]['host'];
+            $options = $config[$name]['options'];
+            $client = new RedisClient($host, $options);
+            static::$_connections[$name] = $client;
+        }
+
+        return static::$_connections[$name];
+    }
+}
+```
+
+新建`lib/webman/redisQueue/failed/RedisClient.php` 文件，内容： 
+```php
+<?php
+
+namespace lib\webman\redisQueue\failed;
+
+use Workerman\Lib\Timer;
+use Workerman\RedisQueue\Client;
+use support\Log;
+
+/**
+ * Class RedisClient
+ * @package lib\webman\redisQueue\failed
+ */
+class RedisClient extends Client
+{
+    /**
+     * @param array|string $queue
+     * @param callable $callback
+     */
+    public function subscribe($queue, callable $callback)
+    {
+        $this->_subscribeQueues[$queue] = $callback;
+
+        $this->pull();
+    }
+
+    /**
+     * pull
+     */
+    public function pull()
+    {
+        if (!$this->_subscribeQueues || $this->_redisSubscribe->brPoping) {
+            return;
+        }
+        $cb = function($data) use (&$cb) {
+            if ($data) {
+                $this->_redisSubscribe->brPoping = 0;
+                $redis_key = $data[0];
+                $package_str = $data[1];
+                $package = json_decode($package_str, true);
+                if (!$package) {
+                    $log = Log::channel('default');
+                    $log->error('lib\webman\redisQueue\failed\RedisClient::pull', ["package_str" => $package_str]);
+                } else {
+                    if (!isset($this->_subscribeQueues[$redis_key])) {
+                        // 取消订阅，放回队列
+                        $this->_redisSend->rPush($redis_key, $package_str);
+                    } else {
+                        $callback = $this->_subscribeQueues[$redis_key];
+                        try {
+                            \call_user_func($callback, $package);
+                        } catch (\Throwable $e) {
+                            // 记录异常日志
+                            $package['Throwable'] = (string) $e;
+
+                            $log = Log::channel('default');
+                            $log->error('lib\webman\redisQueue\failed\RedisClient::pull', $package);
+                        }
+                    }
+                }
+            }
+            if ($this->_subscribeQueues) {
+                $this->_redisSubscribe->brPoping = 1;
+                Timer::add(0.000001, [$this->_redisSubscribe, 'brPop'], [\array_keys($this->_subscribeQueues), 1, $cb] ,false);
+            }
+        };
+        $this->_redisSubscribe->brPoping = 1;
+        $this->_redisSubscribe->brPop(\array_keys($this->_subscribeQueues), 1, $cb);
+    }
+}
+```
+
+**指定消费者**
+
+把数据表建好：
+```
+CREATE TABLE `redis_queue_failed_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` text COLLATE utf8mb4_unicode_ci COMMENT '数据',
+  `status` tinyint(4) NOT NULL DEFAULT '10' COMMENT '状态，10：待处理，20：处理成功，30：处理失败',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='redis队列错误记录';
+```
+
+model模型类也建好，`app/model/RedisQueueFailedRecord.php` 文件内容：
+```php
+<?php
+
+namespace app\model;
+
+use support\Model;
+
+/**
+ * redis队列错误记录
+ */
+class RedisQueueFailedRecord extends Model
+{
+    /**
+     * 模型的连接名称
+     *
+     * @var string
+     */
+    protected $connection = 'mysql';
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'redis_queue_failed_record';
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * Indicates if the model should be timestamped.
+     * 建议true；自动管理created_at(开始时间)，updated_at(更新时间)
+     *
+     * @var bool
+     */
+    public $timestamps = true;
+    
+    /**
+     * 可以适用create方法直接创建的属性 
+     */
+    protected $fillable = [
+        "data",
+        "status",
+    ];
+
+    /**
+     * 类型转换
+     */
+    protected $casts = [
+        "data" => "json",
+    ];
+
+    const STATUS_UNDEAL = 10;  // 待处理
+    const STATUS_DEALED_SUCC = 20;  // 处理成功
+    const STATUS_DEALED_FAIL = 30;  // 处理失败
+}
+```
+
+新建 `app/queue/redisFailed/RedisQueueFailed.php` 文件，内容： 
+```php
+<?php
+namespace app\queue\redisFailed;
+
+use Webman\RedisQueue\Consumer;
+use app\model\RedisQueueFailedRecord;
+
+/**
+ * redis队列错误
+ * Class fddContractFiling
+ * @package app\queue\redis
+ */
+class RedisQueueFailed implements Consumer
+{
+    public $queue = \Workerman\RedisQueue\Client::QUEUE_FAILD;
+
+    public $connection = 'default';
+
+    public function consume($data)
+    {
+        $model = new RedisQueueFailedRecord();
+        $model->data = $data;
+        $model->status = RedisQueueFailedRecord::STATUS_UNDEAL;
+
+        if (!$model->save()) {
+            throw new \RuntimeException("redis_queue_failed_record data save failed");
+        }
+    }
+}
+```
+
+**消费者配置**
+
+`config/plugin/webman/redis-queue/process.php` 配置文件中，新增 `consumerFailed` 配置：
+```php
+<?php
+return [
+    'consumer'  => [
+        'handler'     => Webman\RedisQueue\Process\Consumer::class,
+        'count'       => 8, // 可以设置多进程同时消费
+        'constructor' => [
+            // 消费者类目录
+            'consumer_dir' => app_path() . '/queue/redis'
+        ]
+    ],
+    'consumerFailed'  => [
+        'handler'     => lib\webman\redisQueue\failed\Consumer::class,
+        'count'       => 1, // 可以设置多进程同时消费
+        'constructor' => [
+            // 消费者类目录
+            'consumer_dir' => app_path() . '/queue/redisFailed'
+        ]
+    ]
+];
+```
+
+服务停止，然后重启，查看效果。
 
 ### 零碎点
 
