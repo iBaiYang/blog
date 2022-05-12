@@ -12,9 +12,10 @@ meta: PHP Stream实现服务器客户端
 PHP 官方文档对流的解释如下：
 
 流的作用是提供统一的公共函数来处理文件、网络和数据压缩等操作。简单而言，流是具有流式行为的资源对象，
-也就是说，流可以线性读写，并且可以通过 fseek() 之类的函数定位到流中的任何位置。
+也就是说，流可以线性读写，并且可以通过 `fseek()` 之类的函数定位到流中的任何位置。
 
-简化一下，流的作用是在出发地和目的地之间传输数据。出发地和目的地可以是文件、命令行进程、网络连接、ZIP 或 TAR 压缩文件、临时内存、标准输入或输出，
+简化一下，流的作用是在出发地和目的地之间传输数据。出发地和目的地可以是文件、命令行进程、
+网络连接、ZIP 或 TAR 压缩文件、临时内存、标准输入或输出，
 或者是通过 PHP 流封装协议实现的任何其他资源。
 
 PHP中对流的描述如下：
@@ -56,9 +57,9 @@ fclose($file);
 $file2 = fopen("file:///home/www/bin/count.sh", "r") or exit("无法打开文件!");
 while (!feof($file2)) {
     echo fgetc($file2); 
-    // #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
 }
 fclose($file2);
+// #!/bin/bash for ((COUNT = 1; COUNT <= 10; COUNT++)); do echo $COUNT sleep 1 done
 ```
 
 PHP 内置的包装器：
@@ -120,7 +121,7 @@ var_dump(stream_get_filters());
 //  11 => string 'dechunk' (length=7)
 ```
 
-#### 流封装协议
+### 流封装协议
 
 流式数据的种类各异，每种类型需要独特的协议，以便读写数据，我们称这些协议为流封装协议。例如，我们可以读写文件系统，
 可以通过 HTTP、HTTPS 或 SSH 与远程 Web 服务器通信，还可以打开并读写 ZIP、RAR 或 PHAR 压缩文件。这些通信方式都包含下述相同的过程：
@@ -135,7 +136,7 @@ var_dump(stream_get_filters());
 每个流都有一个协议和一个目标。指定协议和目标的方法是使用流标识符：`<scheme>://<target>`，
 其中 `<scheme>` 是流的封装协议，`<target>` 是流的数据源。
 
-##### http://流封装协议
+#### http://流封装协议
 
 下面使用 HTTP 流封装协议创建了一个与 Flicker API 通信的 PHP 流：
 ```
@@ -145,16 +146,16 @@ $json = file_get_contents(
 );
 ```
 
-不要以为这是普通的网页 URL，file_get_contents() 函数的字符串参数其实是一个流标识符。http 协议会让 PHP 使用 HTTP 流封装协议，
+不要以为这是普通的网页 URL，`file_get_contents()` 函数的字符串参数其实是一个流标识符。http 协议会让 PHP 使用 HTTP 流封装协议，
 在这个参数中，http 之后是流的目标。
 
 注：很多 PHP 开发者可能并不知道普通的 URL 其实是 PHP 流封装协议标识符的伪装。
 
-##### file://流封装协议
+#### file://流封装协议
 
-我们通常使用 file_get_contents()、fopen()、fwrite() 和 fclose() 等函数读写文件系统，
-因为 PHP 默认使用的流封装协议是 file://，所以我们很少认为这些函数使用的是 PHP 流。
-下面的示例演示了使用 file:// 流封装协议创建一个读写 /etc/hosts 文件的流：
+我们通常使用 `file_get_contents()`、`fopen()`、`fwrite()` 和 `fclose()` 等函数读写文件系统，
+因为 PHP 默认使用的流封装协议是 `file://`，所以我们很少认为这些函数使用的是 PHP 流。
+下面的示例演示了使用 `file://` 流封装协议创建一个读写 `/etc/hosts` 文件的流：
 ```
 $handle = fopen('file:///etc/hosts', 'rb');
 while (feof($handle) !== TRUE) {
@@ -163,29 +164,31 @@ while (feof($handle) !== TRUE) {
 fclose($handle);
 ```
 
-我们通常会省略掉 file:// 协议，因为这是 PHP 使用的默认值。
+我们通常会省略掉 `file://` 协议，因为这是 PHP 使用的默认值。
 
-##### php://流封装协议
+#### php://流封装协议
 
-编写命令行脚本的 PHP 开发会用到 php:// 流封装协议，这个流封装协议的作用是与 PHP 脚本的标准输入、标准输出和标准错误文件描述符通信。
+编写命令行脚本的 PHP 开发会用到 `php://` 流封装协议，这个流封装协议的作用是与 PHP 脚本的标准输入、标准输出和标准错误文件描述符通信。
 我们可以使用 PHP 提供的文件系统函数打开、读取或写入下面四个流：
 
-1. php://stdin：这是个只读 PHP 流，其中的数据来自标准输入。PHP 脚本可以使用这个流接收命令行传入脚本的信息；
-2. php://stdout：把数据写入当前的输出缓冲区，这个流只能写，无法读或寻址；
-3. php://memory：从系统内存中读取数据，或者把数据写入系统内存。缺点是系统内存有限，所有使用 php://temp 更安全；
-4. php://temp：和 php://memory 类似，不过，没有可用内存时，PHP 会把数据写入这个临时文件。
+1. `php://stdin`：这是个只读 PHP 流，其中的数据来自标准输入。PHP 脚本可以使用这个流接收命令行传入脚本的信息；
+2. `php://stdout`：把数据写入当前的输出缓冲区，这个流只能写，无法读或寻址；
+3. `php://memory`：从系统内存中读取数据，或者把数据写入系统内存。缺点是系统内存有限，所有使用 `php://temp` 更安全；
+4. `php://temp`：和 `php://memory` 类似，不过，没有可用内存时，PHP 会把数据写入这个临时文件。
 
-PHP有基本的php://stdin，php://stdout，php://stderr包装器对应默认的I/O资源。还有一个php://input流，它是一个只读的流，
-流内容是post请求的数据。当我们将数据放在一个post请求的body体内用来请求一个远程服务的时候，这个流特别好用。
+PHP有基本的`php://stdin`，`php://stdout`，`php://stderr`包装器对应默认的I/O资源。
+还有一个`php://input`流，它是一个只读的流，流内容是post请求的数据。
+当我们将数据放在一个post请求的body体内用来请求一个远程服务的时候，这个流特别好用。
 
-因为php://input是最常用到的流，所以这里列出一些知识点：
-1. php://input 可以读取没有处理过的POST数据。相较于$HTTP_RAW_POST_DATA而言，它给内存带来的压力较小，
-并且不需要特殊的php.ini设置。php://input不能用于enctype=multipart/form-data。
-2. 仅当Content-Type为application/x-www-form-urlencoded且提交方法是POST方法时，
-$_POST数据与php://input数据才是”一致”(打上引号，表示它们格式不一致，内容一致)的。其它情况，它们都不一致
-3. php://input读取不到GET数据。是因为$_GET数据作为query_path写在http请求头部(header)的PATH字段，而不是写在http请求的body部分。
+因为`php://input`是最常用到的流，所以这里列出一些知识点：
+1. `php://input` 可以读取没有处理过的 POST 数据。相较于`$HTTP_RAW_POST_DATA`而言，它给内存带来的压力较小，
+并且不需要特殊的`php.ini`设置。`php://input`不能用于`enctype=multipart/form-data`。
+2. 仅当Content-Type为`application/x-www-form-urlencoded`且提交方法是 POST 方法时，
+`$_POST`数据与`php://input`数据才是“一致”(打上引号，表示它们格式不一致，内容一致)的。其它情况，它们都不一致
+3. `php://input`读取不到 GET 数据。是因为`$_GET`数据作为query_path写在http请求头部(header)的PATH字段，
+而不是写在http请求的body部分。
 
-##### 其他流封装协议
+#### 其他流封装协议
 
 ```
 file:// — 访问本地文件系统
@@ -202,12 +205,12 @@ ogg:// — 音频流
 expect:// — 处理交互式的流
 ```
 
-#### 流上下文
+### 流上下文
 
 有些 PHP 流能够接受一系列可选的参数，这些参数叫流上下文，用于定制流的行为。不同的流封装协议使用的流上下文有所不同，
-流上下文使用 stream_context_create() 函数创建，这个函数返回的上下文对象可以传入大多数文件系统函数。
+流上下文使用 `stream_context_create()` 函数创建，这个函数返回的上下文对象可以传入大多数文件系统函数。
 
-例如，我们可以使用 file_get_contents() 发送 HTTP POST 请求，使用一个流上下文对象即可实现：
+例如，我们可以使用 `file_get_contents()` 发送 HTTP POST 请求，使用一个流上下文对象即可实现：
 ```
 $requestBody = '{"username":"nonfu"}';
 $context = stream_context_create([
@@ -220,12 +223,14 @@ $context = stream_context_create([
 $response = file_get_contents('https://my-api.com/users', false, $context);
 ```
 
-##### 流过滤器
+#### 流过滤器
 
-目前为止我们讨论了如何打开流，读取流中的数据，以及把数据写入流。不过，PHP 流真正强大的地方在于过滤、转换、添加或删除流中传输的数据，
+目前为止我们讨论了如何打开流，读取流中的数据，以及把数据写入流。
+不过，PHP 流真正强大的地方在于过滤、转换、添加或删除流中传输的数据，
 例如，我们可以打开一个流处理 Markdown 文件，在把文件内容读入内存的过程中自动将其转化为 HTML。
 
-若想把过滤器附加到现有的流上，要使用 stream_filter_append() 函数，下面我们以 `string.toupper` 过滤器演示如何把文件中的内容转换成大写字母：
+若想把过滤器附加到现有的流上，要使用 `stream_filter_append()` 函数，
+下面我们以 `string.toupper` 过滤器演示如何把文件中的内容转换成大写字母：
 ```
 $handle = fopen('test.txt', 'rb');
 stream_filter_append($handle, 'string.toupper');
@@ -243,7 +248,7 @@ HELLO LARAVELACADEMY!
 
 PHP 所有可用流过滤器请参考官方文档：<http://php.net/manual/zh/filters.php>。
 
-我们还可以使用 php://filter 流封装协议把过滤器附加到流上，不过，使用这种方式之前必须先打开 PHP 流：
+我们还可以使用 `php://filter` 流封装协议把过滤器附加到流上，不过，使用这种方式之前必须先打开 PHP 流：
 ```
 $handle = fopen('php://filter/read=string.toupper/resource=test.txt', 'rb');
 while (feof($handle) !== true) {
@@ -252,19 +257,19 @@ while (feof($handle) !== true) {
 fclose($handle);
 ```
 
-这个方式实现效果和 stream_filter_append() 函数一样，但是相比之下更为繁琐。
-不过，PHP 的某些文件系统函数在调用后无法附加过滤器，例如 file() 和 fpassthru()，
-使用这些函数时只能使用 php://filter 流封装协议附加流过滤器。
+这个方式实现效果和 `stream_filter_append()` 函数一样，但是相比之下更为繁琐。
+不过，PHP 的某些文件系统函数在调用后无法附加过滤器，例如 `file()` 和 `fpassthru()`，
+使用这些函数时只能使用 `php://filter` 流封装协议附加流过滤器。
 
-###### 自定义流过滤器
+##### 自定义流过滤器
 
 我们还可以编写自定义的流过滤器。其实，大多数情况下都要使用自定义的流过滤器，自定义的流过滤器是个 PHP 类，
-继承内置的 php_user_filter 类（http://php.net/manual/zh/class.php-user-filter.php），
-且必须实现 filter()、onCreate() 和 onClose() 方法，最后，必须使用 stream_filter_register() 函数注册自定义的流过滤器。
+继承内置的 `php_user_filter` 类（<http://php.net/manual/zh/class.php-user-filter.php>），
+且必须实现 `filter()`、`onCreate()` 和 `onClose()` 方法，最后，必须使用 `stream_filter_register()` 函数注册自定义的流过滤器。
 
 注：PHP 流会把数据分成按次序排列的桶，一个桶中盛放的流数据是固定的（如 4096 字节），如果还用管道比喻，
 就是把水放在一个个水桶中，顺着管道从出发地漂流到目的地，在漂流过程中会经过过滤器，过滤器一次可以接收并处理一个或多个桶，
-一定时间内过滤器接收到的桶叫做桶队列。桶队列中的每个桶对象都有两个公共属性：data 和 datalen，分别表示桶的内容和长度。
+一定时间内过滤器接收到的桶叫做桶队列。桶队列中的每个桶对象都有两个公共属性：`data` 和 `datalen`，分别表示桶的内容和长度。
 
 下面我们自定义一个流过滤器 DirtyWordsFilter，把流数据读入内存时审查其中的脏字：
 ```
@@ -305,7 +310,7 @@ class DirtyWordsFilter extends php_user_filter
 }
 ```
 
-然后，我们必须使用 stream_filter_register() 函数注册这个自定义的 DirtyWordsFilter 流过滤器：
+然后，我们必须使用 `stream_filter_register()` 函数注册这个自定义的 DirtyWordsFilter 流过滤器：
 ```
 stream_filter_register('dirty_words_filter', 'DirtyWordsFilter');
 ```
@@ -336,12 +341,12 @@ Hello LaravelAcademy!
 I hate ****y things!
 ```
 
-#### Stream实现服务器客户端
+### Stream实现服务器客户端
 
 php中除了用Swoole拓展实现服务器客户端，其实用php原生的Stream拓展也可以实现服务器/客户端。
 
-server.php的代码：
-```php
+server.php 的代码：
+```
 //设置不超时
 set_time_limit(0);
 
@@ -505,7 +510,7 @@ SERVER-5|| data： client: 2:test 0  client: 2:test 1  client: 2:test 2
 CLIENT-3|| client：time->[07:01:58] ; reponse-> client: 2:test 0  client: 2:test 1  client: 2:test 2 ; msg->2:test
 ```
 
-#### stream系列函数
+### stream系列函数
 
 ![]({{site.baseurl}}/images/20200514/20200514160924.png)
 
@@ -583,7 +588,7 @@ stream_wrapper_unregister函数：注销一个URL地址包
 
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 PHP 手册 函数参考 其它基本扩展 Streams <https://www.php.net/manual/zh/book.stream.php>
 
