@@ -7,7 +7,7 @@ meta: ZENG msgbox 信息提示
 * content
 {:toc}
 
-### 正文
+## 正文
 
 ZENG msgbox 是腾讯UED 提示信息组件，可以设定显示时间。用起来顺手，也比较美观。
 
@@ -38,9 +38,9 @@ ZENG msgbox 是腾讯UED 提示信息组件，可以设定显示时间。用起�
 </script>
 ```
 
-#### 再次定制
+### 再次定制
 
-##### loading图片定制
+#### loading图片定制
 
 如果你在页面中直接使用，当是类型6，loading时，loading图片会加载不出来，我们需要定制。
 
@@ -301,7 +301,7 @@ msgbox.css 文件内容：
 .zeng_msgbox_layer .gtl_ico_loading{ width:16px;height:16px;border:0;background-image:url('loading.gif');float:left;margin:19px 10px 0 5px}
 ```
 
-##### 背景色定制
+#### 背景色定制
 
 默认背景色是白色的：
 ```css
@@ -315,7 +315,7 @@ msgbox.css 文件内容：
 
 记得把`gb_tip_layer_ie6.png` 、 `gb_tip_layer.png` 这两张矢量图从黑色背景文件夹移动到这里。
 
-##### 默认显示时长定制
+#### 默认显示时长定制
 
 现在默认显示的时间是5s，我们也可以扩大为50s，修改 msgbox.js 文件内容:
 ```javascript
@@ -327,7 +327,7 @@ timeout = timeout || 50000;
 ```
 
 <br/><br/><br/><br/><br/>
-### 参考资料 
+## 参考资料 
 
 ZENG-msgbox <https://github.com/scepterscythe/ZENG-msgbox>
 
