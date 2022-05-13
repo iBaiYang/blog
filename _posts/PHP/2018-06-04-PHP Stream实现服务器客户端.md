@@ -384,7 +384,7 @@ new SocketServer(1212);
 ```
 
 client.php的代码：
-```php
+```
 if (isset($argv[1])) {
     $msg = $argv[1];
     file_put_contents('log.txt', 'CLIENT-1|| msg：' . $msg . "\r\n", FILE_APPEND);
