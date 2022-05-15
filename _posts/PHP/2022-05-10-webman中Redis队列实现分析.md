@@ -181,6 +181,7 @@ Worker::runAll();
 
 use support\Container;
 use Workerman\Worker;
+use Webman\Config;
 // 省略若干...
 
 /**
