@@ -2497,4 +2497,4 @@ str_replace <https://www.php.net/manual/en/function.str-replace.php>
 
 array_replace_recursive <https://www.php.net/manual/en/function.array-replace-recursive.php>
 
-
+strtr <https://www.php.net/manual/en/function.strtr.php>
