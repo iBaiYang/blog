@@ -2341,6 +2341,24 @@ echo $count;
 ?>
 ```
 
+#### strtr
+
+```
+// 三个参数
+ strtr(string $string, string $from, string $to): string
+// 两个参数
+ strtr(string $string, array $replace_pairs): string
+```
+
+```php
+<?php
+echo strtr("Hilla Warld","ia","eo");  // Hello World
+
+$arr = array("Hello" => "Hi", "world" => "earth");
+echo strtr("Hello world",$arr);  // Hi earth
+?>
+```
+
 #### array_replace_recursive
 
 ```
