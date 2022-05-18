@@ -719,6 +719,8 @@ public static function test() {
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
+PHP 手册 语言参考 类与对象 后期静态绑定 <https://www.php.net/manual/zh/language.oop5.late-static-bindings.php>
+
 php类中的$this，static，const，self这几个关键字使用方法 <https://www.cnblogs.com/freelyflying/p/7008072.html>
 
 PHP 中 self、static、$this 的区别 & 后期静态绑定详解 <https://blog.csdn.net/lamp_yang_3533/article/details/79912453>
