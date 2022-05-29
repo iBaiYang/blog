@@ -164,3 +164,9 @@ Configuration file: /home/bai/www/blog/_config.yml
 deepin15.11使用RVM安装ruby <https://www.cnblogs.com/Zlcode/p/11490724.html>
 
 Jekyll基本用法 <http://jekyllcn.com/docs/usage/>
+
+Jekyll 官网 <http://jekyllcn.com/>
+
+GitHub Pages 官网 <https://pages.github.com/>
+
+GitHub Pages 文档 <https://docs.github.com/cn/pages>
