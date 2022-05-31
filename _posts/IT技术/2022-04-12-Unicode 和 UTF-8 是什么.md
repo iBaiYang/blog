@@ -46,7 +46,7 @@ ci 是 case insensitive, 即 "大小写不敏感", a 和 A 会在字符判断中
 * 性能
 1. utf8mb4_general_ci在比较和排序的时候更快
 2. utf8mb4_unicode_ci在特殊情况下，Unicode排序规则为了能够处理特殊字符的情况，实现了略微复杂的排序算法。
-3. 但是在绝大多数情况下发，不会发生此类复杂比较。相比选择哪一种collation，使用者更应该关心字符集与排序规则在db里需要统一。
+3. 但是在绝大多数情况下，不会发生此类复杂比较。相比选择哪一种collation，使用者更应该关心字符集与排序规则在db里需要统一。
 
 总而言之，utf8mb4_general_ci 和 utf8mb4_unicode_ci 是我们最常使用的排序规则。
 utf8mb4_general_ci 校对速度快，但准确度稍差。
