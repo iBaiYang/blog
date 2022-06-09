@@ -198,6 +198,77 @@ server {
 
 视图渲染
 
+### 注入js文件
+
+页面原生js中注入js文件的方法
+
+```
+function zhuruJs(url) { 
+    let temp = document.createElement('script'); 
+    temp.setAttribute('type', 'text/javascript'); 
+    temp.src = url; 
+    document.head.appendChild(temp); 
+}
+```
+
+使用方法：
+```
+zhuruJs( location.origin+'/assets/js/xlsx.full.min.js')
+```
+
+### 权限管理树形结构jsTree详细解读
+
+菜单规则 和 角色组 中，用到了 树形结构，使用 jsTree 实现的。
+
+示例：
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jsTree test</title>
+  <!-- 2 包含主题模板CSS文件 -->
+  <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+</head>
+<body>
+  <!-- 3 设置容器元素 -->
+  <div id="jstree">
+    <!-- 在本例中，树是从内联HTML填充的 -->
+    <ul>
+      <li>根节点 1
+        <ul>
+          <li id="child_node_1">子节点1</li>
+          <li>子节点2</li>
+        </ul>
+      </li>
+      <li>根节点 2</li>
+    </ul>
+  </div>
+  <button>演示按钮</button>
+
+  <!-- 4 包含jQuery库 -->
+  <script src="dist/libs/jquery.js"></script>
+  <!-- 5 包括缩小的jstree源文件 -->
+  <script src="dist/jstree.min.js"></script>
+  <script>
+  $(function () {
+    // 6 当DOM准备好时创建一个实例
+    $('#jstree').jstree();
+    // 7 绑定到树上触发的事件
+    $('#jstree').on("changed.jstree", function (e, data) {
+      console.log(data.selected);
+    });
+    // 8 与树交互-任何一种方式都可以
+    $('button').on('click', function () {
+      $('#jstree').jstree(true).select_node('child_node_1');
+      $('#jstree').jstree('select_node', 'child_node_1');
+      $.jstree.reference('#jstree').select_node('child_node_1');
+    });
+  });
+  </script>
+</body>
+</html>
+```
 
 
 
@@ -215,5 +286,7 @@ FastAdmin开发者文档 <https://doc.fastadmin.net/developer/55.html>
 
 一张图解析FastAdmin中的表格列表的功能 <https://ask.fastadmin.net/article/323.html>
 
+fastadmin后台前端页面原生js注入js文件的方法 <https://blog.csdn.net/qq978165754/article/details/114726297>
 
+jsTree 中文网 <http://www.jstree.com.cn/>
 
