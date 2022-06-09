@@ -186,6 +186,8 @@ server {
 
 以特殊字符结尾的规则
 
+生成后，页面修改重点修改的是页面的js文件，具体操作细节看下 [一张图解析FastAdmin中的表格列表的功能](https://ask.fastadmin.net/article/323.html)
+
 ### 控制器 
 
 权限控制
@@ -198,7 +200,57 @@ server {
 
 视图渲染
 
-### 注入js文件
+### fastadmin系列教程:小白学习之路
+
+这是 写代码的猫叔 的一个 fastadmin系列视频教程，目录：
+```
+P1(0): 学习前的准备 软件 链接整理
+    02:56
+P2(1): phpstudy 用安装包的方式去安装框架
+    04:48
+P3(2): 整体框架的简单分析
+    02:54
+P4(3): 数据库 字段类型
+    10:34
+P5(4): 数据库 特殊字段
+    05:34
+P6(5): 数据库 以特殊字符结尾的规则
+    07:52
+P7(6): 控制器 修改add方法 解除email限制
+    08:56
+P8(7): 控制器 登录鉴权权限管理 数据限制
+    07:16
+P9(8): 控制器 一对一关联查询 根据用户id查询用户名 关联搜索
+    07:56
+P10(9): 控制器 数据校验和视图渲染 弹窗提醒
+    15:31
+P11(10): api 方法类分析解读
+    09:35
+P12(11): api 自动注册登录
+    12:05
+P13(12): api 注册后自动退出
+    04:02
+P14(13): api 登录后token的使用方法和简单分析
+    07:20
+P15(14): 前端 table表格讲解
+    10:21
+P16(15): 前端 form表单讲解
+    07:29
+P17(16): selectpage组件（动态下拉菜单列表）讲解
+    07:24
+P18(17): $this->success 网址携带参数跳转 页面读取参数
+    08:07
+P19(18): 随意引入自己写的js或外部js 非require.js
+    07:11
+P20(19): 权限管理树形结构jsTree详细解读
+    13:50
+```
+
+#### selectpage组件
+
+可以看下文档中的 [动态下拉(SelectPage) ](https://doc.fastadmin.net/doc/178.html)
+
+#### 注入js文件
 
 页面原生js中注入js文件的方法
 
@@ -216,7 +268,7 @@ function zhuruJs(url) {
 zhuruJs( location.origin+'/assets/js/xlsx.full.min.js')
 ```
 
-### 权限管理树形结构jsTree详细解读
+#### 权限管理树形结构jsTree详细解读
 
 菜单规则 和 角色组 中，用到了 树形结构，使用 jsTree 实现的。
 
@@ -278,7 +330,7 @@ FastAdmin 官方文档 <https://doc.fastadmin.net/doc>
 
 写代码的猫叔：fastadmin系列教程:小白学习之路 <https://www.bilibili.com/video/BV1Ji4y1V7ZV>
 
-写代码的猫叔 fastadmin笔记 <https://www.yuque.com/siri/fastadmin/sacpb8>
+写代码的猫叔 fastadmin笔记 <https://www.yuque.com/siri/fastadmin>
 
 FastAdmin开发系列之视频教程 <https://www.fastadmin.net/video.html>
 
