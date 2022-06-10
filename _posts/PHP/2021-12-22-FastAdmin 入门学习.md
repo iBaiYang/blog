@@ -226,57 +226,6 @@ P19(18): 随意引入自己写的js或外部js 非require.js    07:11
 P20(19): 权限管理树形结构jsTree详细解读    13:50
 ```
 
-#### 开始前的准备
-
-文档链接
-1. fastadmin的文档 https://doc.fastadmin.net/docs
-2. thinkphp的文档 https://www.kancloud.cn/manual/thinkphp5_1/353947
-3. bootstrap-table中文文档 https://www.bootstrap-table.com.cn/doc/getting-started/introduction/
-4. bootstrap中文文档 https://www.bootcss.com/
-5. selectPage 中文文档 https://terryz.gitee.io/selectpage/docs.html
-
-**必读帖子链接**
-
-首先是必读的帖子，是fa的作者整理出的，可以说没有一句废话，所以每句都仔细看下，不然会漏掉一些知识点。
-
-1.关于表格（bootstrap-table）的问题
-
-一张图解析FastAdmin中的表格列表的功能
-
-https://ask.fastadmin.net/article/323.html
-
-2.所有关于弹出窗口的问题，在下面链接里找答案
-
-一张图解析FastAdmin中的弹出窗口的功能
-
-https://ask.fastadmin.net/article/2527.html
-
-3.关于表单生成器
-
-一张图解析FastAdmin中的FormBuilder表单生成器
-
-https://ask.fastadmin.net/article/5567.html
-
-4.官方常见问题必看
-
-https://doc.fastadmin.net/docs/faq.html#toc-0
-
-5.列表用echats渲染，瞬间高大上
-
-使用表格的templateView实现一个图表渲染的功能
-
-https://ask.fastadmin.net/article/117.html
-
-6.如何移除图片上传后预览中的删除按钮
-
-https://ask.fastadmin.net/article/1204.html
-
-7.数据库创建说明文档
-
-https://doc.fastadmin.net/doc/database.html
-
-
-
 
 
 #### selectpage组件
