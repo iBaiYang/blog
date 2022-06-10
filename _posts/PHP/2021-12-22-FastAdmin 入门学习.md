@@ -200,7 +200,17 @@ server {
 
 视图渲染
 
-### fastadmin系列教程:小白学习之路
+### 前端
+
+视图页，使用 if 条件：
+```
+<select  id="c-status" data-rule="required" class="form-control selectpicker" name="row[status]">
+    <option value="10" {if condition="$row.status == 10"}selected{/if}>关闭</option>
+    <option value="20" {if condition="$row.status == 20"}selected{/if}>正常</option>
+</select>
+```
+
+## fastadmin系列教程:小白学习之路
 
 这是 写代码的猫叔 的一个 fastadmin系列视频教程，目录：
 ```
@@ -228,11 +238,11 @@ P20(19): 权限管理树形结构jsTree详细解读    13:50
 
 
 
-#### selectpage组件
+### selectpage组件
 
 可以看下文档中的 [动态下拉(SelectPage) ](https://doc.fastadmin.net/doc/178.html)
 
-#### 注入js文件
+### 注入js文件
 
 页面原生js中注入js文件的方法
 
@@ -250,7 +260,7 @@ function zhuruJs(url) {
 zhuruJs( location.origin+'/assets/js/xlsx.full.min.js')
 ```
 
-#### 权限管理树形结构jsTree详细解读
+### 权限管理树形结构jsTree详细解读
 
 菜单规则 和 角色组 中，用到了 树形结构，使用 jsTree 实现的。
 
