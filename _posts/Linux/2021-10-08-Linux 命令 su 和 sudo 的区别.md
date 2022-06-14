@@ -90,7 +90,7 @@ root@VM-0-14-ubuntu:/home/ubuntu#
 
 我们的确是切换到 root 用户了，但是 shell 环境中的变量并没有改变，还是用之前 ubuntu 用户的环境变量。
 
-接着我们从 ubuntu 用户以 login-shell 的方式切换到 root 用户，同样比较两种用户转台下环境变量中 PWD 的值：
+接着我们从 ubuntu 用户以 login-shell 的方式切换到 root 用户，同样比较两种用户状态下环境变量中 PWD 的值：
 ```
 ubuntu@VM-0-14-ubuntu:~$ env | grep ubuntu
 USER=ubuntu
