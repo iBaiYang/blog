@@ -188,7 +188,7 @@ mysql> select * from f;
 
 整体看一个十进制数转化为二进制，如 78.6875：
 
-![]({{site.baseurl}}/images/20220617/20220617163702.png)
+![]({{site.baseurl}}/images/20220617/20220617163706.png)
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
