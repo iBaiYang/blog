@@ -51,7 +51,7 @@ ci 是 case insensitive, 即 "大小写不敏感", a 和 A 会在字符判断中
 总而言之，utf8mb4_general_ci 和 utf8mb4_unicode_ci 是我们最常使用的排序规则。
 utf8mb4_general_ci 校对速度快，但准确度稍差。
 utf8mb4_unicode_ci 准确度高，但校对速度稍慢，两者都不区分大小写。
-这两个选哪个视自己情况而定，还是那句话尽可能保持db中的字符集和排序规则的统计。
+这两个选哪个视自己情况而定，还是那句话尽可能保持db中的字符集和排序规则的统一。
 
 
 
