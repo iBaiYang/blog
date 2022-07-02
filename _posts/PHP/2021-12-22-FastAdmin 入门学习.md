@@ -1187,6 +1187,8 @@ class Backend extends Controller
 
 <https://blog.csdn.net/weixin_46043704/article/details/110079225>
 
+[Bootstrap table教程](https://zhuanlan.zhihu.com/p/46609913)
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
