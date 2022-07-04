@@ -83,6 +83,8 @@ Java 测验 <https://www.runoob.com/quiz/java-quiz.html>
 
 廖雪峰Java教程 <https://www.liaoxuefeng.com/wiki/1252599548343744>
 
+重学Java设计模式 <https://blog.51cto.com/u_14943622/2838632>
+
 北京尚学堂-百战程序员-Java 视频教程全集-80 小时从入门到精通 <https://www.bilibili.com/video/BV1Jt411g7g4>
 
 马士兵教育-价值11980的Java零基础入门全套视频 <https://www.bilibili.com/video/BV1RK4y1g7A5>
