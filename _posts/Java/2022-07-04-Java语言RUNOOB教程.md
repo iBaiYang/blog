@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: Golang
+categories: Java
 title: Java语言RUNOOB教程
 meta: Java语言RUNOOB教程
 ---
