@@ -263,14 +263,151 @@ switch(expression){
 
 ### Number & Math 类
 
+**Number 类**
+
+在实际开发过程中，我们经常会遇到需要使用对象，而不是内置数据类型的情形。
+为了解决这个问题，Java 语言为每一个内置数据类型提供了对应的包装类。 
+
+    包装类     基本数据类型
+    Boolean     boolean
+    Byte     byte
+    Short     short
+    Integer     int
+    Long     long
+    Character     char
+    Float     float
+    Double     double
+
+![]({{site.baseurl}}/images/20220720/20220720112456.png)
+
+这种由编译器特别支持的包装称为装箱，所以当内置数据类型被当作对象使用的时候，编译器会把内置类型装箱为包装类。
+相似的，编译器也可以把一个对象拆箱为内置类型。Number 类属于 java.lang 包。 
+
+Java 中 int 和 Integer 的区别：
+
+1、 int 是基本数据类型，int 变量存储的是数值。Integer 是引用类型，实际是一个对象，Integer 存储的是引用对象的地址。
+
+2、因为 new 生成的是两个对象，其内存地址不同。
+```
+Integer i = new Integer(100);
+Integer j = new Integer(100);
+System.out.print(i == j);  // false
+```
+
+3、int 和 Integer 所占内存比较：
+
+Integer 对象会占用更多的内存。Integer 是一个对象，需要存储对象的元数据。但是 int 是一个原始类型的数据，所以占用的空间更少。
+
+4、非 new 生成的 Integer 变量与 new Integer() 生成的变量比较，结果为 false。
+```
+/**
+ * 比较非new生成的Integer变量与new生成的Integer变量
+ */
+public class Test {
+    public static void main(String[] args) {
+        Integer i= new Integer(200);
+        Integer j = 200;
+        System.out.print(i == j);
+        //输出：false
+    }
+}
+```
+
+因为非 new 生成的 Integer 变量指向的是 java 常量池中的对象，
+而 new Integer() 生成的变量指向堆中新建的对象，两者在内存中的地址不同。所以输出为 false。
+
+5、两个非 new 生成的 Integer 对象进行比较，如果两个变量的值在区间 `[-128,127]` 之间，比较结果为 true；否则，结果为 false。
+```
+/**
+ * 比较两个非new生成的Integer变量
+ */
+public class Test {
+    public static void main(String[] args) {
+        Integer i1 = 127;
+        Integer ji = 127;
+        System.out.println(i1 == ji);//输出：true
+        Integer i2 = 128;
+        Integer j2 = 128;
+        System.out.println(i2 == j2);//输出：false
+    }
+}
+```
+
+java 在编译 `Integer i1 = 127` 时，会翻译成 `Integer i1 = Integer.valueOf(127)`。
+
+6、Integer 变量(无论是否是 new 生成的)与 int 变量比较，只要两个变量的值是相等的，结果都为 true。
+```
+/**
+ * 比较Integer变量与int变量
+ */
+public class Test {
+    public static void main(String[] args) {
+        Integer i1 = 200;
+        Integer i2 = new Integer(200);
+        int j = 200;
+        System.out.println(i1 == j);//输出：true
+        System.out.println(i2 == j);//输出：true
+    }
+}
+```
+
+包装类 Integer 变量在与基本数据类型 int 变量比较时，Integer 会自动拆包装为 int，然后进行比较，
+实际上就是两个 int 变量进行比较，值相等，所以为 true。
+
+
+**Math 类**
+
+Java 的 Math 包含了用于执行基本数学运算的属性和方法，如初等指数、对数、平方根和三角函数。
+
+Math 的方法都被定义为 static 形式，通过 Math 类可以在主函数中直接调用。
+
 ### Character 类
 
+Character 类用于对单个字符进行操作。
+
+Character 类在对象中包装一个基本类型 char 的值
 
 ### String 类
 
+字符串广泛应用 在 Java 编程中，在 Java 中字符串属于对象，Java 提供了 String 类来创建和操作字符串。 
+
+**创建字符串**
+
+String 创建的字符串存储在公共池中，而 new 创建的字符串对象在堆上：
+```
+String s1 = "Runoob";              // String 直接创建
+String s2 = "Runoob";              // String 直接创建
+String s3 = s1;                    // 相同引用
+String s4 = new String("Runoob");   // String 对象创建
+String s5 = new String("Runoob");   // String 对象创建
+```
+
+![]({{site.baseurl}}/images/20220720/20220720113955.png)
+
+**String、StringBuffer 和 StringBuilder 的区别**
+
+String：字符串常量，字符串长度不可变。Java中String 是immutable（不可变）的。
+用于存放字符的数组被声明为final的，因此只能赋值一次，不可再更改。
+
+StringBuffer：字符串变量（Synchronized，即线程安全）。如果要频繁对字符串内容进行修改，
+出于效率考虑最好使用 StringBuffer，如果想转成 String 类型，可以调用 StringBuffer 的 toString() 方法。
+Java.lang.StringBuffer 线程安全的可变字符序列。在任意时间点上它都包含某种特定的字符序列，
+但通过某些方法调用可以改变该序列的长度和内容。可将字符串缓冲区安全地用于多个线程。
+
+StringBuilder：字符串变量（非线程安全）。在内部 StringBuilder 对象被当作是一个包含字符序列的变长数组。
+
+基本原则：
+* 如果要操作少量的数据用 String ；
+* 单线程操作大量数据用StringBuilder ；
+* 多线程操作大量数据，用StringBuffer。
 
 ### StringBuffer
 
+当对字符串进行修改的时候，需要使用 StringBuffer 和 StringBuilder 类。
+
+和 String 类不同的是，StringBuffer 和 StringBuilder 类的对象能够被多次的修改，并且不产生新的未使用对象。 
+
+![]({{site.baseurl}}/images/20220720/20220720114820.png)
 
 ### 数组
 
