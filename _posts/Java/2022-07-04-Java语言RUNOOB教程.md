@@ -507,52 +507,507 @@ Java.io 包中的流支持很多种格式，比如：基本类型、对象、本
 
 Java 为 I/O 提供了强大的而灵活的支持，使其更广泛地应用到文件传输和网络编程中。 
 
+**读取控制台输入**
+
 Java 的控制台输入由 System.in 完成。 
 
 为了获得一个绑定到控制台的字符流，你可以把 System.in 包装在一个 BufferedReader 对象中来创建一个字符流。 
 
-控制台的输出由 print() 和 println() 完成。这些方法都由类 PrintStream 定义，System.out 是该类对象的一个引用。
+```
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+```
 
-PrintStream 继承了 OutputStream类，并且实现了方法 write()。
+BufferedReader 对象创建后，我们便可以使用 read() 方法从控制台读取一个字符，或者用 readLine() 方法读取一个字符串。 
+
+```
+//使用 BufferedReader 在控制台读取字符
+ 
+import java.io.*;
+ 
+public class BRRead {
+    public static void main(String[] args) throws IOException {
+        char c;
+        // 使用 System.in 创建 BufferedReader
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("输入字符, 按下 'q' 键退出。");
+        // 读取字符
+        do {
+            c = (char) br.read();
+            System.out.println(c);
+        } while (c != 'q');
+    }
+}
+```
+
+```
+//使用 BufferedReader 在控制台读取字符
+import java.io.*;
+ 
+public class BRReadLines {
+    public static void main(String[] args) throws IOException {
+        // 使用 System.in 创建 BufferedReader
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        System.out.println("Enter lines of text.");
+        System.out.println("Enter 'end' to quit.");
+        do {
+            str = br.readLine();
+            System.out.println(str);
+        } while (!str.equals("end"));
+    }
+}
+```
+
+**控制台输出**
+
+控制台的输出由 print() 和 println() 完成。这些方法都由类 PrintStream 定义，System.out 是该类对象的一个引用。
+PrintStream 继承了 OutputStream类，并且实现了方法 write()。这样，write() 也可以用来往控制台写操作。 
+
+```
+import java.io.*;
+ 
+//演示 System.out.write().
+public class WriteDemo {
+    public static void main(String[] args) {
+        int b;
+        b = 'A';
+        System.out.write(b);
+        System.out.write('\n');
+    }
+}
+```
 
 注意：write() 方法不经常使用，因为 print() 和 println() 方法用起来更为方便。 
 
 **读写文件**
 
+下图是一个描述输入流和输出流的类层次图。
+
+![]({{site.baseurl}}/images/20220720/20220720115120.png)
+
 FileInputStream
+
+该流用于从文件读取数据，它的对象可以用关键字 new 来创建。
+有多种构造方法可用来创建对象。
+可以使用字符串类型的文件名来创建一个输入流对象来读取文件：
+```
+InputStream f = new FileInputStream("C:/java/hello");
+```
+
+也可以使用一个文件对象来创建一个输入流对象来读取文件。我们首先得使用 File() 方法来创建一个文件对象： 
+```
+File f = new File("C:/java/hello");
+InputStream in = new FileInputStream(f);
+```
+
+创建了InputStream对象，就可以使用下面的方法来读取流或者进行其他的流操作。
+
+    序号     方法及描述
+    1     public void close() throws IOException{}
+          关闭此文件输入流并释放与此流有关的所有系统资源。抛出IOException异常。
+    2     protected void finalize()throws IOException {}
+          这个方法清除与该文件的连接。确保在不再引用文件输入流时调用其 close 方法。抛出IOException异常。
+    3     public int read(int r)throws IOException{}
+          这个方法从 InputStream 对象读取指定字节的数据。返回为整数值。返回下一字节数据，如果已经到结尾则返回-1。
+    4     public int read(byte[] r) throws IOException{}
+          这个方法从输入流读取r.length长度的字节。返回读取的字节数。如果是文件结尾则返回-1。
+    5     public int available() throws IOException{}
+          返回下一次对此输入流调用的方法可以不受阻塞地从此输入流读取的字节数。返回一个整数值。
 
 FileOutputStream
 
-mkdir( )方法创建一个文件夹，成功则返回true，失败则返回false。失败表明File对象指定的路径已经存在，
-或者由于整个路径还不存在，该文件夹不能被创建。
+该类用来创建一个文件并向文件中写数据。
+如果该流在打开文件进行输出前，目标文件不存在，那么该流会创建该文件。
+有两个构造方法可以用来创建 FileOutputStream 对象。
 
-mkdirs()方法创建一个文件夹和它的所有父文件夹。
+使用字符串类型的文件名来创建一个输出流对象：
+```
+OutputStream f = new FileOutputStream("C:/java/hello")
+```
+
+也可以使用一个文件对象来创建一个输出流来写文件。我们首先得使用File()方法来创建一个文件对象： 
+```
+File f = new File("C:/java/hello");
+OutputStream fOut = new FileOutputStream(f);
+```
+
+创建OutputStream 对象完成后，就可以使用下面的方法来写入流或者进行其他的流操作。 
+
+    序号     方法及描述
+    1     public void close() throws IOException{}
+          关闭此文件输入流并释放与此流有关的所有系统资源。抛出IOException异常。
+    2     protected void finalize()throws IOException {}
+          这个方法清除与该文件的连接。确保在不再引用文件输入流时调用其 close 方法。抛出IOException异常。
+    3     public void write(int w)throws IOException{}
+          这个方法把指定的字节写到输出流中。
+    4     public void write(byte[] w)
+          把指定数组中w.length长度的字节写到OutputStream中。
+
+下面是一个演示 InputStream 和 OutputStream 用法的例子： 
+```
+import java.io.*;
+ 
+public class fileStreamTest {
+    public static void main(String[] args) {
+        try {
+            byte bWrite[] = { 11, 21, 3, 40, 5 };
+            OutputStream os = new FileOutputStream("test.txt");
+            for (int x = 0; x < bWrite.length; x++) {
+                os.write(bWrite[x]); // writes the bytes
+            }
+            os.close();
+ 
+            InputStream is = new FileInputStream("test.txt");
+            int size = is.available();
+ 
+            for (int i = 0; i < size; i++) {
+                System.out.print((char) is.read() + "  ");
+            }
+            is.close();
+        } catch (IOException e) {
+            System.out.print("Exception");
+        }
+    }
+}
+```
+
+**文件和I/O**
+
+还有一些关于文件和I/O的类，我们也需要知道：
+
+    File Class(类)
+    FileReader Class(类)
+    FileWriter Class(类)
+
+**Java中的目录**
+
+创建目录
+
+File类中有两个方法可以用来创建文件夹：
+* mkdir( )方法创建一个文件夹，成功则返回true，失败则返回false。失败表明File对象指定的路径已经存在，
+或者由于整个路径还不存在，该文件夹不能被创建。
+* mkdirs()方法创建一个文件夹和它的所有父文件夹。
+
+读取目录
+
+删除目录或文件
 
 删除文件可以使用 java.io.File.delete() 方法。
+
 
 
 ### Scanner 类
 
 java.util.Scanner 是 Java5 的新特征，我们可以通过 Scanner 类来获取用户的输入。 
 
+下面是创建 Scanner 对象的基本语法：
+```
+Scanner s = new Scanner(System.in);
+```
+
 通过 Scanner 类的 next() 与 nextLine() 方法获取输入的字符串，
 在读取前我们一般需要 使用 hasNext 与 hasNextLine 判断是否还有输入的数据。
+
+```
+import java.util.Scanner;
+ 
+public class ScannerDemo {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        // 从键盘接收数据
+ 
+        // nextLine方式接收字符串
+        System.out.println("nextLine方式接收：");
+        // 判断是否还有输入
+        if (scan.hasNextLine()) {
+            String str2 = scan.nextLine();
+            System.out.println("输入的数据为：" + str2);
+        }
+        scan.close();
+    }
+}
+```
+
+**next() 与 nextLine() 区别**
+
+next():
+1. 一定要读取到有效字符后才可以结束输入。
+2. 对输入有效字符之前遇到的空白，next() 方法会自动将其去掉。
+3. 只有输入有效字符后才将其后面输入的空白作为分隔符或者结束符。
+4. next() 不能得到带有空格的字符串。
+
+nextLine()：
+1. 以Enter为结束符,也就是说 nextLine()方法返回的是输入回车之前的所有字符。
+2. 可以获得空白。
+
+如果要输入 int 或 float 类型的数据，在 Scanner 类中也有支持，
+但是在输入之前最好先使用 hasNextXxx() 方法进行验证，再使用 nextXxx() 来读取：
+```
+import java.util.Scanner;
+ 
+public class ScannerDemo {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        // 从键盘接收数据
+        int i = 0;
+        float f = 0.0f;
+        System.out.print("输入整数：");
+        if (scan.hasNextInt()) {
+            // 判断输入的是否是整数
+            i = scan.nextInt();
+            // 接收整数
+            System.out.println("整数数据：" + i);
+        } else {
+            // 输入错误的信息
+            System.out.println("输入的不是整数！");
+        }
+        System.out.print("输入小数：");
+        if (scan.hasNextFloat()) {
+            // 判断输入的是否是小数
+            f = scan.nextFloat();
+            // 接收小数
+            System.out.println("小数数据：" + f);
+        } else {
+            // 输入错误的信息
+            System.out.println("输入的不是小数！");
+        }
+        scan.close();
+    }
+}
+```
+
+处理接受整理和小数的逻辑时，需要在 else 的分支逻辑里把非整数的输入接收走，否则会影响后续 hasNextFloat 判断和接受小数的逻辑。
+```
+Scanner scan = new Scanner(System.in);
+// 从键盘接收数据
+int i = 0;
+float f = 0.0f;
+System.out.print("输入整数：");
+if (scan.hasNextInt()) {
+    // 判断输入的是否是整数
+    i = scan.nextInt();
+    // 接收整数
+    System.out.println("整数数据：" + i);
+} else {
+    scan.nextLine();  // 没接收到整数，把其他类型收掉，否则会影响到后边接受小数的逻辑
+    // 输入错误的信息
+    System.out.println("输入的不是整数！");
+}
+```
+
+Scanner 不仅能从输入流中读取，也能从文件中读取：
+```
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Fileio {
+    public static void main(String[] args) throws FileNotFoundException {
+        int[] arr=new int[10];
+        int i=0;
+        Scanner sc=new Scanner(new File("test.txt"));
+        while(sc.hasNextInt()) {
+            arr[i]=sc.nextInt();
+            i++;
+        }
+        sc.close();
+        System.out.printf("读取了 %d 个数\n",i);
+        for(int j=0;j<i;j++) {
+            System.out.println(arr[j]);
+        }
+    }
+}
+```
 
 ### 异常处理
 
 异常发生的原因有很多，通常包含以下几大类：
-
 * 用户输入了非法数据。
 * 要打开的文件不存在。
 * 网络通信时连接中断，或者JVM内存溢出。
 
-这些异常有的是因为用户错误引起，有的是程序错误引起的，还有其它一些是因为物理错误引起的。-
+这些异常有的是因为用户错误引起，有的是程序错误引起的，还有其它一些是因为物理错误引起的。
 
 要理解Java异常处理是如何工作的，你需要掌握以下三种类型的异常：
-
-* 检查性异常：最具代表的检查性异常是用户错误或问题引起的异常，这是程序员无法预见的。例如要打开一个不存在文件时，一个异常就发生了，这些异常在编译时不能被简单地忽略。
+* 检查性异常：最具代表的检查性异常是用户错误或问题引起的异常，这是程序员无法预见的。
+例如要打开一个不存在文件时，一个异常就发生了，这些异常在编译时不能被简单地忽略。
 * 运行时异常： 运行时异常是可能被程序员避免的异常。与检查性异常相反，运行时异常可以在编译时被忽略。
-* 错误： 错误不是异常，而是脱离程序员控制的问题。错误在代码中通常被忽略。例如，当栈溢出时，一个错误就发生了，它们在编译也检查不到的。
+* 错误： 错误不是异常，而是脱离程序员控制的问题。错误在代码中通常被忽略。
+例如，当栈溢出时，一个错误就发生了，它们在编译也检查不到的。
+
+**Exception 类的层次**
+
+![]({{site.baseurl}}/images/20220720/20220720115120.png)
+
+所有的异常类是从 java.lang.Exception 类继承的子类。 
+
+![]({{site.baseurl}}/images/20220720/20220720115126.png)
+
+**Java 内置异常类**
+
+
+**异常方法**
+
+下面的列表是 Throwable 类的主要方法:
+
+    序号     方法及说明
+    1     public String getMessage()
+          返回关于发生的异常的详细信息。这个消息在Throwable 类的构造函数中初始化了。
+    2     public Throwable getCause()
+          返回一个 Throwable 对象代表异常原因。
+    3     public String toString()
+          返回此 Throwable 的简短描述。
+    4     public void printStackTrace()
+          将此 Throwable 及其回溯打印到标准错误流。。
+    5     public StackTraceElement [] getStackTrace()
+          返回一个包含堆栈层次的数组。下标为0的元素代表栈顶，最后一个元素代表方法调用堆栈的栈底。
+    6     public Throwable fillInStackTrace()
+          用当前的调用栈层次填充Throwable 对象栈层次，添加到栈层次任何先前信息中。
+
+**捕获异常**
+
+使用 try 和 catch 、finally 关键字可以捕获异常。
+
+**throws/throw 关键字**
+
+如果一个方法没有捕获到一个检查性异常，那么该方法必须使用 throws 关键字来声明。throws 关键字放在方法签名的尾部。
+也可以使用 throw 关键字抛出一个异常，无论它是新实例化的还是刚捕获到的。
+
+下面方法的声明抛出一个 RemoteException 异常：
+```
+import java.io.*;
+
+public class className
+{
+  public void deposit(double amount) throws RemoteException
+  {
+    // Method implementation
+    throw new RemoteException();
+  }
+  //Remainder of class definition
+}
+```
+
+一个方法可以声明抛出多个异常，多个异常之间用逗号隔开。
+
+例如，下面的方法声明抛出 RemoteException 和 InsufficientFundsException： 
+```
+import java.io.*;
+
+public class className
+{
+   public void withdraw(double amount) throws RemoteException, InsufficientFundsException
+   {
+       // Method implementation
+   }
+   //Remainder of class definition
+}
+```
+
+**try-with-resources**
+
+JDK7 之后，Java 新增的 try-with-resource 语法糖来打开资源，并且可以在语句执行完毕后确保每个资源都被自动关闭 。
+
+JDK7 之前所有被打开的系统资源，比如流、文件或者 Socket 连接等，都需要被开发者手动关闭，否则将会造成资源泄露。
+
+```
+try (resource declaration) {
+  // 使用的资源
+} catch (ExceptionType e1) {
+  // 异常块
+}
+```
+
+以上的语法中 try 用于声明和实例化资源，catch 用于处理关闭资源时可能引发的所有异常。
+
+注意：try-with-resources 语句关闭所有实现 AutoCloseable 接口的资源。
+
+```
+import java.io.*;
+
+public class RunoobTest {
+    public static void main(String[] args) {
+        String line;
+        try(BufferedReader br = new BufferedReader(new FileReader("test.txt"))) {
+            while ((line = br.readLine()) != null) {
+                System.out.println("Line =>"+line);
+            }
+        } catch (IOException e) {
+            System.out.println("IOException in try block =>" + e.getMessage());
+        }
+    }
+}
+```
+
+在 try-with-resources 语句中声明和实例化 BufferedReader 可确语句执行完毕后实例资源，
+不需要考虑 try 语句是正常执行还是抛出异常。如果发生异常，可以使用 catch 来处理异常。
+
+再看下不使用 try-with-resources 而改成 finally 来关闭资源，整体代码量多了很多，而且更复杂繁琐了：
+```
+import java.io.*;
+
+class RunoobTest {
+    public static void main(String[] args) {
+        BufferedReader br = null;
+        String line;
+
+        try {
+            System.out.println("Entering try block");
+            br = new BufferedReader(new FileReader("test.txt"));
+            while ((line = br.readLine()) != null) {
+            System.out.println("Line =>"+line);
+            }
+        } catch (IOException e) {
+            System.out.println("IOException in try block =>" + e.getMessage());
+        } finally {
+            System.out.println("Entering finally block");
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                System.out.println("IOException in finally block =>"+e.getMessage());
+            }
+        }
+    }
+}
+```
+
+**try-with-resources 处理多个资源**
+
+try-with-resources 语句中可以声明多个资源，方法是使用分号 ; 分隔各个资源：
+```
+import java.io.*;
+import java.util.*;
+
+class RunoobTest {
+    public static void main(String[] args) throws IOException{
+        try (Scanner scanner = new Scanner(new File("testRead.txt"));
+            PrintWriter writer = new PrintWriter(new File("testWrite.txt"))) {
+            while (scanner.hasNext()) {
+                writer.print(scanner.nextLine());
+            }
+        }
+    }
+}
+```
+
+以上实例使用 Scanner 对象从 testRead.txt 文件中读取一行并将其写入新的 testWrite.txt 文件中。
+多个声明资源时，try-with-resources 语句以相反的顺序关闭这些资源。 在本例中，PrintWriter 对象先关闭，然后 Scanner 对象关闭。
+
+**声明自定义异常**
+
+在 Java 中你可以自定义异常。编写自己的异常类时需要记住下面的几点。
+* 所有异常都必须是 Throwable 的子类。
+* 如果希望写一个检查性异常类，则需要继承 Exception 类。
+* 如果你想写一个运行时异常类，那么需要继承 RuntimeException 类。
+
+**通用异常**
+
+在Java中定义了两种类型的异常和错误。
+* JVM(Java虚拟机) 异常：由 JVM 抛出的异常或错误。
+例如：NullPointerException 类，ArrayIndexOutOfBoundsException 类，ClassCastException 类。
+* 程序级异常：由程序或者API程序抛出的异常。例如 IllegalArgumentException 类，IllegalStateException 类。
 
 
 ## Java 面向对象课程 
