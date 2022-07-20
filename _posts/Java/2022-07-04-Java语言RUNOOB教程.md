@@ -1047,7 +1047,7 @@ class RunoobTest {
 
 ## 其他
 
-流程：Spring    SpringMVC    MyBatis       SpringBoot      SpringCloud   
+学习流程：Spring  ->  SpringMVC  ->  MyBatis    ->   SpringBoot   ->   SpringCloud   
 
 【尚硅谷】SpringMVC教程 <https://www.bilibili.com/video/BV1Ry4y1574R>
 
