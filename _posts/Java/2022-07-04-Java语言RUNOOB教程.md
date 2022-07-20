@@ -837,11 +837,11 @@ public class Fileio {
 
 **Exception 类的层次**
 
-![]({{site.baseurl}}/images/20220720/20220720115120.png)
+![]({{site.baseurl}}/images/20220720/20220720115220.png)
 
 所有的异常类是从 java.lang.Exception 类继承的子类。 
 
-![]({{site.baseurl}}/images/20220720/20220720115126.png)
+![]({{site.baseurl}}/images/20220720/20220720115226.png)
 
 **Java 内置异常类**
 
