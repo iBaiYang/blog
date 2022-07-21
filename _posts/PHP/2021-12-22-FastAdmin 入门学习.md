@@ -485,7 +485,7 @@ class Candy extends Backend
 
 也可以翻阅下 [fastAdmin 文件上传 文档](https://doc.fastadmin.net/doc/177.html)
 
-### 动态下拉列表搜索功能
+### 表单动态下拉列表搜索功能
 
 如我们要在一个form表单中加入一个动态下拉列表搜索框：通过名称搜索公司。这里使用到了selectpage组件。
 
@@ -1189,6 +1189,42 @@ class Backend extends Controller
 
 [Bootstrap table教程](https://zhuanlan.zhihu.com/p/46609913)
 
+### 列表动态下拉搜索
+
+有两种方法。
+
+**方法一**
+
+在js的`table.bootstrapTable`的columns中直接写：
+```
+{field: 'enterprise_id', title: "企业名称", operate: '=', addclass:'selectpage', extend:'data-source="yq/enterprise/enterpriseLists" data-field="name" data-primaryKey="id"'},
+```
+
+**方法二**
+
+找到对应文件的js文件，修改如下
+```
+{field: 'enterprise_id', title: "企业名称", operate: '='},
+```
+
+然后在js文件中添加如下代码，必须添加在`var table = $("#table");`之后：
+```
+table.on('post-common-search.bs.table', function (event, table) {
+    var form = $("form", table.$commonsearch);
+    $("input[name='enterprise_id']", form).addClass("selectpage").data("source", "yq/enterprise/enterpriseLists").data("primaryKey", "id").data("field", "name").data("orderBy", "id desc");
+    Form.events.cxselect(form);
+    Form.events.selectpage(form);
+});
+```
+
+`primaryKey` 是 列表搜索中渲染的键值，也就是列表搜索时提交的 enterprise_id 值；field 是 selectPage 中搜索的字段名。
+
+这块可以参考下： 
+
+<https://blog.csdn.net/qq_36303853/article/details/123558843>
+
+<https://blog.csdn.net/weixin_46043704/article/details/110079225>
+
 ### 搜索条件定制
 
 开发中碰到一个需求，需要查 已结单 的订单，包含 待评价、已评价 的订单，怎么实现呢？
@@ -1519,4 +1555,7 @@ fastadmin后台前端页面原生js注入js文件的方法 <https://blog.csdn.ne
 jsTree 中文网 <http://www.jstree.com.cn/>
 
 获取$where 修改$where条件 在 buildparams 之前 <https://zhuanlan.zhihu.com/p/501150222>
+
+fast-admin 开发教程 视频 <https://v-wb.youku.com/v_show/id_XMzk3MjA4NjE0MA==.html>
+
 
