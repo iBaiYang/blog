@@ -1200,6 +1200,8 @@ class Backend extends Controller
 {field: 'enterprise_id', title: "企业名称", operate: '=', addclass:'selectpage', extend:'data-source="yq/enterprise/enterpriseLists" data-field="name" data-primaryKey="id"'},
 ```
 
+注意：这里的 `enterprise_id` 需要在控制器中替换成 企业名称，页面就不会显示 企业ID 了。搜索时是指定用这个名称搜索的，改不了。
+
 **方法二**
 
 找到对应文件的js文件，修改如下
