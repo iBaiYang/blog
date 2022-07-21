@@ -1197,7 +1197,7 @@ class Backend extends Controller
 
 在js的`table.bootstrapTable`的columns中直接写：
 ```
-{field: 'enterprise_id', title: "企业名称", operate: '=', addclass:'selectpage', extend:'data-source="yq/enterprise/enterpriseLists" data-field="name" data-primaryKey="id"'},
+{field: 'enterprise_id', title: "企业名称", operate: '=', addclass:'selectpage', extend:'data-source="enterprise/enterpriseLists" data-field="name" data-primaryKey="id"'},
 ```
 
 注意：这里的 `enterprise_id` 需要在控制器中替换成 企业名称，页面就不会显示 企业ID 了。搜索时是指定用这个名称搜索的，改不了。
@@ -1213,7 +1213,7 @@ class Backend extends Controller
 ```
 table.on('post-common-search.bs.table', function (event, table) {
     var form = $("form", table.$commonsearch);
-    $("input[name='enterprise_id']", form).addClass("selectpage").data("source", "yq/enterprise/enterpriseLists").data("primaryKey", "id").data("field", "name").data("orderBy", "id desc");
+    $("input[name='enterprise_id']", form).addClass("selectpage").data("source", "enterprise/enterpriseLists").data("primaryKey", "id").data("field", "name").data("orderBy", "id desc");
     Form.events.cxselect(form);
     Form.events.selectpage(form);
 });
