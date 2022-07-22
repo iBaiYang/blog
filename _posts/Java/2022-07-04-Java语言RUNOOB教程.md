@@ -411,17 +411,205 @@ StringBuilder：字符串变量（非线程安全）。在内部 StringBuilder �
 
 ### 数组
 
-声明数组变量
+**声明数组变量**
 
 建议使用 `dataType[] arrayRefVar` 的声明风格声明数组变量。
 
-创建数组
+**创建数组**
 
 Java语言使用new操作符来创建数组，语法如下：`arrayRefVar = new dataType[arraySize];`
 
-处理数组
+上面的语法语句做了两件事：
+1. 使用 `dataType[arraySize]` 创建了一个数组。
+2. 把新创建的数组的引用赋值给变量 `arrayRefVar`。
+
+数组变量的声明，和创建数组可以用一条语句完成，如下所示：
+```
+dataType[] arrayRefVar = new dataType[arraySize];
+```
+
+还可以使用如下的方式创建数组：
+```
+dataType[] arrayRefVar = {value0, value1, ..., valuek};
+```
+
+数组的元素是通过索引访问的。数组索引从 0 开始，所以索引值从 0 到 `arrayRefVar.length - 1`。
+
+**处理数组**
 
 数组的元素类型和数组的大小都是确定的，所以当处理数组元素时候，我们通常使用基本循环或者 For-Each 循环。
+
+基本循环：
+```
+public class TestArray {
+   public static void main(String[] args) {
+      double[] myList = {1.9, 2.9, 3.4, 3.5};
+ 
+      // 打印所有数组元素
+      for (int i = 0; i < myList.length; i++) {
+         System.out.println(myList[i] + " ");
+      }
+      
+      // 计算所有元素的总和
+      double total = 0;
+      for (int i = 0; i < myList.length; i++) {
+         total += myList[i];
+      }
+      System.out.println("Total is " + total);
+      
+      // 查找最大元素
+      double max = myList[0];
+      for (int i = 1; i < myList.length; i++) {
+         if (myList[i] > max) max = myList[i];
+      }
+      System.out.println("Max is " + max);
+   }
+}
+```
+
+For-Each 循环：
+```
+public class TestArray {
+   public static void main(String[] args) {
+      double[] myList = {1.9, 2.9, 3.4, 3.5};
+ 
+      // 打印所有数组元素
+      for (double element: myList) {
+         System.out.println(element);
+      }
+   }
+}
+```
+
+**数组作为函数的参数**
+
+**数组作为函数的返回值**
+
+```
+public static int[] reverse(int[] list) {
+  int[] result = new int[list.length];
+ 
+  for (int i = 0, j = result.length - 1; i < list.length; i++, j--) {
+    result[j] = list[i];
+  }
+  return result;
+}
+```
+
+#### 多维数组
+
+多维数组可以看成是数组的数组，比如二维数组就是一个特殊的一维数组，其每一个元素都是一个一维数组。
+
+**多维数组的动态初始化（以二维数组为例）**
+
+1、直接为每一维分配空间，格式如下： 
+```
+type[][] typeName = new type[typeLength1][typeLength2];
+```
+
+type 可以为基本数据类型和复合数据类型，typeLength1 和 typeLength2 必须为正整数，typeLength1 为行数，typeLength2 为列数。
+
+如，一个两行三列的数组：
+```
+int[][] a = new int[2][3];
+```
+
+2、从最高维开始，分别为每一维分配空间，例如： 
+```
+String[][] s = new String[2][];
+s[0] = new String[2];
+s[1] = new String[3];
+s[0][0] = new String("Good");
+s[0][1] = new String("Luck");
+s[1][0] = new String("to");
+s[1][1] = new String("you");
+s[1][2] = new String("!");
+```
+
+`s[0]=new String[2]` 和 `s[1]=new String[3]` 是为最高维分配引用空间，
+也就是为最高维限制其能保存数据的最长的长度，然后再为其每个数组元素单独分配空间。
+
+#### Arrays 类
+
+java.util.Arrays 类能方便地操作数组，它提供的所有方法都是静态的。
+
+具有以下功能：
+* 给数组赋值：通过 fill 方法。
+* 对数组排序：通过 sort 方法,按升序。
+* 比较数组：通过 equals 方法比较数组中元素值是否相等。
+* 查找数组元素：通过 binarySearch 方法能对排序好的数组进行二分查找法操作。
+
+```
+import java.util.Arrays;
+
+public class TestArrays {
+    public static void output(int[] array) {
+        if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                System.out.print(array[i] + " ");
+            }
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        int[] array = new int[5];
+        // 填充数组
+        Arrays.fill(array, 5);
+        System.out.println("填充数组：Arrays.fill(array, 5)：");
+        TestArrays.output(array);
+        
+        // 将数组的第2和第3个元素赋值为8
+        Arrays.fill(array, 2, 4, 8);
+        System.out.println("将数组的第2和第3个元素赋值为8：Arrays.fill(array, 2, 4, 8)：");
+        TestArrays.output(array);
+        
+        int[] array1 = { 7, 8, 3, 2, 12, 6, 3, 5, 4 };
+        // 对数组的第2个到第6个进行排序进行排序
+        Arrays.sort(array1, 2, 7);
+        System.out.println("对数组的第2个到第6个元素进行排序进行排序：Arrays.sort(array,2,7)：");
+        TestArrays.output(array1);
+        
+        // 对整个数组进行排序
+        Arrays.sort(array1);
+        System.out.println("对整个数组进行排序：Arrays.sort(array1)：");
+        TestArrays.output(array1);
+        
+        // 比较数组元素是否相等
+        System.out.println("比较数组元素是否相等:Arrays.equals(array, array1):" + "\n" + Arrays.equals(array, array1));
+        int[] array2 = array1.clone();
+        System.out.println("克隆后数组元素是否相等:Arrays.equals(array1, array2):" + "\n" + Arrays.equals(array1, array2));
+        
+        // 使用二分搜索算法查找指定元素所在的下标（必须是排序好的，否则结果不正确）
+        Arrays.sort(array1);
+        System.out.println("元素3在array1中的位置：Arrays.binarySearch(array1, 3)：" + "\n" + Arrays.binarySearch(array1, 3));
+        
+        // 如果不存在就返回负数
+        System.out.println("元素9在array1中的位置：Arrays.binarySearch(array1, 9)：" + "\n" + Arrays.binarySearch(array1, 9));
+    }
+}
+```
+
+输出结果：
+```
+填充数组：Arrays.fill(array, 5)：
+5 5 5 5 5 
+将数组的第2和第3个元素赋值为8：Arrays.fill(array, 2, 4, 8)：
+5 5 8 8 5 
+对数组的第2个到第6个元素进行排序进行排序：Arrays.sort(array,2,7)：
+7 8 2 3 3 6 12 5 4 
+对整个数组进行排序：Arrays.sort(array1)：
+2 3 3 4 5 6 7 8 12 
+比较数组元素是否相等:Arrays.equals(array, array1):
+false
+克隆后数组元素是否相等:Arrays.equals(array1, array2):
+true
+元素3在array1中的位置：Arrays.binarySearch(array1, 3)：
+1
+元素9在array1中的位置：Arrays.binarySearch(array1, 9)：
+-9
+```
+
 
 ### 日期时间
 
