@@ -619,12 +619,59 @@ java.util 包提供了 Date 类来封装当前的日期和时间。 Date 类提�
 
 第二个构造函数接收一个参数，该参数是从 1970 年 1 月 1 日起的毫秒数。 `Date(long millisec)`
 
+SimpleDateFormat 是一个以语言环境敏感的方式来格式化和分析日期的类。
+SimpleDateFormat 允许你选择任何用户自定义日期时间格式来运行。
+SimpleDateFormat 类有一些附加的方法，特别是parse()，它试图按照给定的SimpleDateFormat 对象的格式化存储来解析字符串。
+
+printf 方法可以很轻松地格式化时间和日期。
+
 Java 休眠(sleep)
 
 sleep()使当前线程进入停滞状态（阻塞当前线程），让出CPU的使用、目的是不让当前线程独自霸占该进程所获的CPU资源，
 以留一定时间给其他线程执行的机会。
 
-Calendar类
+#### Calendar类
+
+Calendar类是一个抽象类，在实际使用时实现特定的子类的对象，创建对象的过程对程序员来说是透明的，只需要使用getInstance方法创建即可。
+
+Calendar类实现了公历日历，GregorianCalendar是Calendar类的一个具体实现。 
+
+```
+import java.util.*;
+  
+public class GregorianCalendarDemo {
+ 
+   public static void main(String[] args) {
+      String months[] = {
+      "Jan", "Feb", "Mar", "Apr",
+      "May", "Jun", "Jul", "Aug",
+      "Sep", "Oct", "Nov", "Dec"};
+      
+      int year;
+      // 初始化 Gregorian 日历
+      // 使用当前时间和日期
+      // 默认为本地时间和时区
+      GregorianCalendar gcalendar = new GregorianCalendar();
+      // 显示当前时间和日期的信息
+      System.out.print("Date: ");
+      System.out.print(months[gcalendar.get(Calendar.MONTH)]);
+      System.out.print(" " + gcalendar.get(Calendar.DATE) + " ");
+      System.out.println(year = gcalendar.get(Calendar.YEAR));
+      System.out.print("Time: ");
+      System.out.print(gcalendar.get(Calendar.HOUR) + ":");
+      System.out.print(gcalendar.get(Calendar.MINUTE) + ":");
+      System.out.println(gcalendar.get(Calendar.SECOND));
+      
+      // 测试当前年份是否为闰年
+      if(gcalendar.isLeapYear(year)) {
+         System.out.println("当前年份是闰年");
+      }
+      else {
+         System.out.println("当前年份不是闰年");
+      }
+   }
+}
+```
 
 ### 正则表达式
 
@@ -664,6 +711,8 @@ Java方法是语句的集合，它们在一起执行一个功能。
     1.方法的名字的第一个单词应以小写字母作为开头，后面的单词则用大写字母开头写，不使用连接符。例如：addPerson。
     2.下划线可能出现在 JUnit 测试方法名称中用以分隔名称的逻辑组件。一个典型的模式是：test<MethodUnderTest>_<state>，例如 testPop_emptyStack。 
     
+#### 方法的定义
+    
 一般情况下，定义一个方法包含以下语法：
 ```
 修饰符 返回值类型 方法名(参数类型 参数名){
@@ -682,7 +731,146 @@ Java方法是语句的集合，它们在一起执行一个功能。
     参数类型：参数像是一个占位符。当方法被调用时，传递值给参数。这个值被称为实参或变量。参数列表是指方法的参数类型、顺序和参数的个数。参数是可选的，方法可以不包含任何参数。
     方法体：方法体包含具体的语句，定义该方法的功能。
 
+   
+#### 方法的重载 
+
+一个类的两个方法拥有相同的名字，但是有不同的参数列表。
+
+Java编译器根据方法签名判断哪个方法应该被调用。
+
+方法重载可以让程序更清晰易读。执行密切相关任务的方法应该使用相同的名字。
+
+重载的方法必须拥有不同的参数列表。你不能仅仅依据修饰符或者返回类型的不同来重载方法。 
+
+#### 变量作用域
+
+变量的范围是程序中该变量可以被引用的部分。
+
+方法内定义的变量被称为局部变量。
+
+局部变量的作用范围从声明开始，直到包含它的块结束。
+
+局部变量必须声明才可以使用。
+
+方法的参数范围涵盖整个方法。参数实际上是一个局部变量。
+
+for循环的初始化部分声明的变量，其作用范围在整个循环。
+
+但循环体内声明的变量其适用范围是从它声明到循环体结束。
+
+你可以在一个方法里，不同的非嵌套块中多次声明一个具有相同的名称局部变量，但你不能在嵌套块内两次声明局部变量。 
+
+**命令行参数的使用**
+
+#### 构造方法
+
+当一个对象被创建时候，构造方法用来初始化该对象。构造方法和它所在类的名字相同，但构造方法没有返回值。
+
+通常会使用构造方法给一个类的实例变量赋初值，或者执行其它必要的步骤来创建一个完整的对象。
+
+不管你是否自定义构造方法，所有的类都有构造方法，因为 Java 自动提供了一个默认构造方法，
+默认构造方法的访问修饰符和类的访问修饰符相同(类为 public，构造函数也为 public；类改为 protected，构造函数也改为 protected)。
+
+一旦你定义了自己的构造方法，默认构造方法就会失效。 
+
+**可变参数**
+
+方法的可变参数的声明如下所示：
+```
+typeName... parameterName
+```
+
+一个方法中只能指定一个可变参数，它必须是方法的最后一个参数。任何普通的参数必须在它之前声明。 
+
+```
+public class VarargsDemo {
+    public static void main(String[] args) {
+        // 调用可变参数的方法
+        printMax(34, 3, 3, 2, 56.5);
+        printMax(new double[]{1, 2, 3});
+    }
+ 
+    public static void printMax(double... numbers) {
+        if (numbers.length == 0) {
+            System.out.println("No argument passed");
+            return;
+        }
+ 
+        double result = numbers[0];
+ 
+        for (int i = 1; i <  numbers.length; i++){
+            if (numbers[i] >  result) {
+                result = numbers[i];
+            }
+        }
+        System.out.println("The max value is " + result);
+    }
+}
+```
+
+以上实例编译运行结果如下：
+```
+The max value is 56.5
+The max value is 3.0
+```
+
+#### finalize() 方法
+
+Java 允许定义这样的方法，它在对象被垃圾收集器析构(回收)之前调用，这个方法叫做 finalize( )，它用来清除回收对象。
+
+例如，你可以使用 finalize() 来确保一个对象打开的文件被关闭了。
+
+在 finalize() 方法里，你必须指定在对象销毁时候要执行的操作。 
+
+finalize() 一般格式是：
+```
+protected void finalize()
+{
+   // 在这里终结代码
+}
+```
+
+关键字 protected 是一个限定符，它确保 `finalize()` 方法不会被该类以外的代码调用。
+
+当然，Java 的内存回收可以由 JVM 来自动完成。如果你手动使用，则可以使用上面的方法。 
+
+```
+public class FinalizationDemo {  
+  public static void main(String[] args) {  
+    Cake c1 = new Cake(1);  
+    Cake c2 = new Cake(2);  
+    Cake c3 = new Cake(3);  
+      
+    c2 = c3 = null;  
+    System.gc(); //调用Java垃圾收集器
+  }  
+}  
+ 
+class Cake extends Object {  
+  private int id;  
+  public Cake(int id) {  
+    this.id = id;  
+    System.out.println("Cake Object " + id + "is created");  
+  }  
     
+  protected void finalize() throws java.lang.Throwable {  
+    super.finalize();  
+    System.out.println("Cake Object " + id + "is disposed");  
+  }  
+}
+```
+
+运行以上代码，输出结果如下：
+```
+$ javac FinalizationDemo.java 
+$ java FinalizationDemo
+Cake Object 1is created
+Cake Object 2is created
+Cake Object 3is created
+Cake Object 3is disposed
+Cake Object 2is disposed
+```
+   
 ### Stream、File、IO
 
 流(Stream)、文件(File)和IO
