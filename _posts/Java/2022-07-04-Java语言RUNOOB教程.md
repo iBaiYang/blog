@@ -1179,7 +1179,7 @@ public class ScannerDemo {
 }
 ```
 
-处理接受整理和小数的逻辑时，需要在 else 的分支逻辑里把非整数的输入接收走，否则会影响后续 hasNextFloat 判断和接受小数的逻辑。
+处理接受整数和小数的逻辑时，需要在 else 的分支逻辑里把非整数的输入接收走，否则会影响后续 hasNextFloat 判断和接受小数的逻辑。
 ```
 Scanner scan = new Scanner(System.in);
 // 从键盘接收数据
