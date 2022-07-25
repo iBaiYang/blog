@@ -922,10 +922,10 @@ BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 BufferedReader 对象创建后，我们便可以使用 read() 方法从控制台读取一个字符，或者用 readLine() 方法读取一个字符串。 
 
 ```
-//使用 BufferedReader 在控制台读取字符
- 
+// 使用 BufferedReader 在控制台读取字符
+
 import java.io.*;
- 
+
 public class BRRead {
     public static void main(String[] args) throws IOException {
         char c;
@@ -942,9 +942,10 @@ public class BRRead {
 ```
 
 ```
-//使用 BufferedReader 在控制台读取字符
+// 使用 BufferedReader 在控制台读取字符
+
 import java.io.*;
- 
+
 public class BRReadLines {
     public static void main(String[] args) throws IOException {
         // 使用 System.in 创建 BufferedReader
@@ -968,7 +969,7 @@ PrintStream 继承了 OutputStream类，并且实现了方法 write()。这样�
 ```
 import java.io.*;
  
-//演示 System.out.write().
+// 演示 System.out.write().
 public class WriteDemo {
     public static void main(String[] args) {
         int b;
