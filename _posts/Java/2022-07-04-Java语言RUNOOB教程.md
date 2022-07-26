@@ -1343,7 +1343,7 @@ public class RunoobTest {
 }
 ```
 
-在 try-with-resources 语句中声明和实例化 BufferedReader 可确语句执行完毕后实例资源，
+在 try-with-resources 语句中声明和实例化 BufferedReader 可确保语句执行完毕后释放资源，
 不需要考虑 try 语句是正常执行还是抛出异常。如果发生异常，可以使用 catch 来处理异常。
 
 再看下不使用 try-with-resources 而改成 finally 来关闭资源，整体代码量多了很多，而且更复杂繁琐了：
