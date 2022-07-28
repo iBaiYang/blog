@@ -496,8 +496,6 @@ php高性能框架Hyperf 视频学习地址 [https://www.bilibili.com/video/BV1W
 
 ### 加速php
 
-参阅文章 <https://mp.weixin.qq.com/s/I4Uiadg-LJK4JEhh_6jd1A>
-
 **PHP-CGI 的黑历史**
 
 对于 PHP 处理网络请求，大家基本上也都是再用 CGI 的方式来做的。那么，什么是 CGI 呢。
@@ -534,7 +532,7 @@ FastCGI，全称 FastCommonGatewayInterface，中文译作“快速公共网管�
 php-fpm 也是 FastCGI 的一种实现。通常我们是将 Nginx 的 PHP 处理部分代理到 php-fpm 的端口上，交给 php-fpm 来处理。
 而 php-fpm 同样是通过预先加载配置，然后给到子进程的方式的，它会对进程做一些管理。
 
-Nginx和PHP之间是如何协同工作的？可以参阅 <https://mp.weixin.qq.com/s/REMD9WEaBxv3NIwf7sVIPw>
+Nginx和PHP之间是如何协同工作的？
 
 Nginx是一个高性能的 HTTP 和 反向代理 服务器。也是一个IMAP/POP3/SMTP代理服务器。
 因它的稳定性、丰富的功能集、示例配置文件和低系统资源的消耗而闻名。
@@ -707,3 +705,6 @@ Hyperf框架学习 <https://hyperf.wiki/2.1/#/>
 
 为什么 Phper 要使用 Swoole？ <https://mp.weixin.qq.com/s/JyRGyN0r1DsUvh99d760fQ>
 
+为什么Swoole可以加速php <https://mp.weixin.qq.com/s/I4Uiadg-LJK4JEhh_6jd1A>
+
+Nginx和PHP之间是如何协同工作的？ <https://mp.weixin.qq.com/s/REMD9WEaBxv3NIwf7sVIPw>
