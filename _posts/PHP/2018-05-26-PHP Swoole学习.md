@@ -639,7 +639,16 @@ $serv->start();
 
 参阅文章 <https://mp.weixin.qq.com/s/ycGkvfYjcJhKiQC_9OYcPQ>
 
+什么是静态化API？
 
+静态化API可以理解成把一些接口的数据存储在服务器本地。常用的是存成json文件，也可以是放在swoole的table中，
+总之是用户不从数据库直接读取数据，而是从本地加载的方式来大幅提高性能，因为很多系统的性能瓶颈是在数据库的位置。
+
+解决方案
+* 方案1 easySwoole + crontab
+* 方案2 easySwoole定时器
+* 方案3 Swoole table
+* 方案4 Redis
 
 
 <br/><br/><br/><br/><br/>
