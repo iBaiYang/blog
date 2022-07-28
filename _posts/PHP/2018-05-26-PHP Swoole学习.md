@@ -7,22 +7,74 @@ meta: 想用php实现一个聊天功能，怎么做呢？js定时每秒获取一
 * content
 {:toc}
 
-### 正文
+## 引言
 
 Swoole 是一个使用 C++ 语言编写的基于异步事件驱动和协程的并行网络通信引擎，为 PHP 提供协程、高性能网络编程支持。
 提供了多种通信协议的网络服务器和客户端模块，
 可以方便快速的实现 **TCP/UDP服务**、**高性能Web**、**WebSocket服务**、**物联网**、**实时通讯**、**游戏**、**微服务**等，
 使 PHP 不再局限于传统的 **Web 领域**。
 
-#### Swoole 进程模型
+那为什么要使用 Swoole？有以下几点：
+* 常驻内存，避免重复加载带来的性能损耗，提升海量性能
+* 协程异步，提高对 I/O 密集型场景并发处理能力（如：微信开发、支付、登录等）
+* 方便地开发 Http、WebSocket、TCP、UDP 等应用，可以与硬件通信
+
+### Swoole 使 PHP 高性能微服务架构成为现实
+
+**常驻内存**
+
+目前传统 PHP框架，在处理每个请求之前，都要做一遍加载框架文件、配置的操作。
+这可能已经成为性能问题的一大原因，而使用 Swoole 则没有这个问题，一次加载多次使用。
+
+**协程**
+
+说到协程，就得先简单说说进程和线程，众所周知进程是很占用资源的，为了处理请求大量创建进程肯定是得不偿失的。
+而多线程应用就比较多了，在 CPU 层面有几个核心就会执行几个任务，线程一旦创建的多了，就会有线程调度的损耗。
+
+协程是在单线程基础上实现的，它可以最大限度利用 CPU 资源，而不会在等待 I/O 时白白浪费。
+
+当然，协程数越多占用的内存也就越多，不过这个是可以接受的，相比进程和线程，占用的资源是相对较少的。
+
+使用协程时，遇到读写文件、请求接口等场景，会自动挂起协程，把 CPU 让给其它协程执行任务，
+这样可以提升单线程的 CPU 资源利用率，减少浪费，从而提高性能。
+
+协程代码示例：
+```
+<?php
+use Swoole\Coroutine as co;
+
+// 协程
+$time = microtime(true);
+// 创建10个协程
+for ($i = 1; $i < 10; $i++) {
+    go(function() use ($i){
+        co.sleep(1.0);  // 模拟请求接口、读写文件等I/O
+        echo $i, PHP_EOL;
+    });
+}
+seoole_event_wait();
+echo 'co time:', microtime(true) - $time, ' s', PHP_EOL;
+
+// 同步
+$time = microtime(true);
+for ($i = 1; $i < 10; $i++) {
+    sleep(1);  // 模拟请求接口、读写文件等I/O
+    echo $i, PHP_EOL;
+}
+echo 'sync time:', microtime(true) - $time, ' s', PHP_EOL;
+```
+
+## 正文
+
+### Swoole 进程模型
 
 ![]({{site.baseurl}}/images/20200330/20200330191533.jpeg)
 
-#### Swoole 类图
+### Swoole 类图
 
 ![]({{site.baseurl}}/images/20210316/20210316110034.png)
 
-#### 基于swoole的echo服务器
+### 基于swoole的echo服务器
 
 先举一个 基于swoole的echo服务器 示例：
 
@@ -109,7 +161,7 @@ $client->connect();
 
 ![]({{site.baseurl}}/images/20200330/20200330191534.jpeg)
 
-#### Swoole的异步任务Task
+### Swoole的异步任务Task
 
 swoole_task_server.php 文件内容：
 
@@ -243,7 +295,7 @@ $cli->connect();
 
 ![]({{site.baseurl}}/images/20200330/20200330191535.jpeg)
 
-#### 服务模式
+### 服务模式
 
 ![]({{site.baseurl}}/images/20190816/20190816115205.png)
 
@@ -254,7 +306,7 @@ $cli->connect();
 
 其实这个就是负载均衡。
 
-#### 实例分析
+### 实例分析
 
 看一个实例：工单服务器 推送数据到 队列服务器，队列消费者 通过stream_socket_client连接把信息推送到 swoole服务器，
 swoole主进程 通过监听message消息事件异步调用 Task进程，Task进程 再把信息推送到 proxy代理服务器，
@@ -432,14 +484,14 @@ Task进程根据数据包中的url运行相应处理逻辑器并把数据包也�
 
 大致流程就是这样，理解下。
 
-#### Hyperf
+### Hyperf
 
 [Hyperf](https://hyperf.wiki/2.1/#/) 是一个Swoole框架，学习它可以更好的理解Swoole及使用。
 
 php高性能框架Hyperf 视频学习地址 [https://www.bilibili.com/video/BV1WZ4y1x7Hw](https://www.bilibili.com/video/BV1WZ4y1x7Hw)
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 <https://www.swoole.com/>
 
@@ -498,3 +550,6 @@ WebSocket 技术探究 <https://ibaiyang.github.io/blog/html/2018/05/25/WebSocke
 socket，tcp，http三者之间的区别和原理 <https://www.jianshu.com/p/a24ba459e306>
 
 Hyperf框架学习 <https://hyperf.wiki/2.1/#/>
+
+为什么 Phper 要使用 Swoole？ <https://mp.weixin.qq.com/s/JyRGyN0r1DsUvh99d760fQ>
+
