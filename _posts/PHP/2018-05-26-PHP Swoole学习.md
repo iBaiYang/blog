@@ -717,3 +717,6 @@ Hyperf框架学习 <https://hyperf.wiki/2.1/#/>
 为什么Swoole可以加速php <https://mp.weixin.qq.com/s/I4Uiadg-LJK4JEhh_6jd1A>
 
 Nginx和PHP之间是如何协同工作的？ <https://mp.weixin.qq.com/s/REMD9WEaBxv3NIwf7sVIPw>
+
+静态化API是什么？用Swoole如何去实现呢？ <https://mp.weixin.qq.com/s/ycGkvfYjcJhKiQC_9OYcPQ>
+
