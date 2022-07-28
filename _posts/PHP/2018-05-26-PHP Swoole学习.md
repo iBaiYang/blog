@@ -650,6 +650,10 @@ $serv->start();
 * 方案3 Swoole table
 * 方案4 Redis
 
+### Swoft
+
+参阅文章 <https://mp.weixin.qq.com/s/C4002Pm0OTE1VVX1p92tKw>
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
@@ -720,3 +724,6 @@ Nginx和PHP之间是如何协同工作的？ <https://mp.weixin.qq.com/s/REMD9WE
 
 静态化API是什么？用Swoole如何去实现呢？ <https://mp.weixin.qq.com/s/ycGkvfYjcJhKiQC_9OYcPQ>
 
+Swoole 和 Swoft 的那些事 (Http/Rpc服务篇) <https://mp.weixin.qq.com/s/C4002Pm0OTE1VVX1p92tKw>
+ 
+ 
