@@ -3219,6 +3219,47 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 queue/run 命令支持 [File]、[Db]、[Redis]、[Beanstalk]、[Gearman]驱动。有关其他选项，请参阅驱动程序指南。
 
 #### 服务层
+
+- 配置
+- 调用
+
+##### 配置
+
+如果需要新服务层调用方法 请在 `services\Application` 中的 `childService` 添加，例如：
+
+```
+/**
+ * @var array
+ */
+public $childService = [
+    'example' => [
+        'class' => 'services\example\ExampleService',
+        // 子服务
+        'childService' => [
+            'rule' => [
+                'class' => 'services\example\rule\RuleService',
+            ],
+        ],
+    ],
+];
+```
+
+以上例子代表了添加了一个 example 服务及 example 的子服务 rule
+
+##### 调用
+
+```
+// 调用 example 服务里面的 index() 方法
+$service = Yii::$app->services->example->index();
+
+// 调用 example 的子服务 rule 里面的 index() 方法
+$childService = Yii::$app->services->example->rule->index();
+```
+
+> 实际上系统内调用基本上没有用到子服务，自己可以按需使用
+
+扩展说明：[跳转地址](http://www.fancyecommerce.com/2016/07/27/yii2-给yii-添加一个变量，并像组件component那样可以添加单例/)
+
 #### WebSocket
 #### 公用服务
 #### RESTful Api
