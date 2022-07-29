@@ -84,7 +84,7 @@ curl.cainfo = /path/to/downloaded/cacert.pem
 - Composer (用于管理第三方扩展包)
 - 安装CA证书 (windows开发环境下)
 
-> 必须先看[环境搭建文档](start-environment.md)，安装完毕后务必配置站点和对应的[伪静态](start-rewrite.md)还有[常见问题文档](start-issue.md)
+> 必须先看[环境搭建文档](#环境搭建)，安装完毕后务必配置站点和对应的[伪静态](./#伪静态)还有[常见问题文档](.#常见问题文档)
 
 ##### 安装
 
