@@ -6286,7 +6286,150 @@ $data = ExcelHelper::import($filePath, $startRow);
 ### 附录
 
 #### 安全防范
+
+- XSS攻击防范
+- CSRF攻击防范
+- SQL注入
+- Nginx指定目录禁止运行PHP
+
+##### XSS攻击
+
+直接显示的数据加上，防止XSS攻击
+
+```
+// 页面直接输出
+\common\helpers\Html::encode($title) // 纯文本
+\common\helpers\HtmlPurifier::process($content) // html显示的文本 HtmlPurifier帮助类的处理过程较为费时，建议增加缓存
+
+// json输出
+\yii\helpers\Json::htmlEncode($content);
+```
+##### CSRF攻击防范
+
+如果不用Yii2自带的表单组件可在form表单加入这个开启csrf防范
+```
+\common\helpers\Html::csrfMetaTags()
+```
+
+##### SQL注入
+
+请用Yii2自带的AR或者DB操作类来防范SQL注入
+
+##### Nginx指定目录禁止运行PHP
+
+这段配置文件一定要放在匹配 `.php` 的规则前面才可以生效，防止上传可执行文件攻击
+
+```
+// 单个目录
+location ~* ^/attachment/.*\.(php|php5)$ 
+{
+    deny all;
+}
+
+// 多个目录
+location ~* ^/(attachment|uploads)/.*\.(php|php5)$ 
+{
+    deny all; 
+}
+```
+
+其他
+
+```
+# deny accessing php files for the /assets directory
+location ~ ^/assets/.*\.php$ {
+    deny all;
+}
+```
+
 #### SearchModel
+
+- 示例一
+- 示例二
+- 示例三
+
+> 该模型方便用户查询，不再每次都要单独的 SearchModel
+
+```
+use common\models\base\SearchModel;
+```
+
+**示例一**
+
+```
+$searchModel = new SearchModel([
+   'model' => Topic::class,
+   'scenario' => 'default',
+]);
+
+$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+return $this->render('index', [
+   'dataProvider' => $dataProvider,
+   'searchModel' => $searchModel,
+]);
+```
+   
+**示例二**
+
+
+```
+$searchModel = new SearchModel([
+   'defaultOrder' => ['id' => SORT_DESC],
+   'model' => Topic::class,
+   'scenario' => 'default',
+   'relations' => ['comment' => []], // 关联表（可以是Model里面的关联）
+   'partialMatchAttributes' => ['title'], // 模糊查询
+   'pageSize' => 15
+]);
+
+$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+$dataProvider->query->andWhere([Topic::tableName() . '.user_id' => 23, Comment::tableName() . '.status' => 1]);
+
+return $this->render('index', [
+   'dataProvider' => $dataProvider,
+   'searchModel' => $searchModel,
+]);
+  ```
+  
+**示例三**
+  
+> 关联多表查询
+  
+```
+$searchModel = new SearchModel([
+     'defaultOrder' => ['id' => SORT_DESC],
+     'model' => Topic::class,
+     'scenario' => 'default',
+     'relations' => ['member' => ['nickname']], // 关联 member 表的 nickname 字段
+     'partialMatchAttributes' => ['code', 'member.nickname'], // 模糊查询，注意 member_nickname 为关联表的别名 表名_字段
+     'pageSize' => 15
+]);
+
+$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+$dataProvider->query->andWhere([Topic::tableName() . '.user_id' => 23, Comment::tableName() . '.status' => 1]);
+
+return $this->render('index', [
+     'dataProvider' => $dataProvider,
+     'searchModel' => $searchModel,
+]);
+```
+
+GridView 片段
+
+```
+[
+    'attribute' => 'member.nickname',
+    'label'=> '昵称',
+    'filter' => Html::activeTextInput($searchModel, 'member.nickname', [
+            'class' => 'form-control'
+        ]
+    ),
+],
+```
+
+来源：https://getyii.com/topic/364
+
 #### 应用配置独立域名
 #### 代码模板
 #### 线上性能优化
