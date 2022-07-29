@@ -3445,6 +3445,7 @@ $member = Yii::$app->services->member->get($tokenModel['member_id']);
 
 ##### rf_api_access_token
 ###### api_授权秘钥表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 无
@@ -3460,6 +3461,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_backend_member
 ###### 系统_后台管理员表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3491,6 +3493,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_backend_notify
 ###### 系统_消息公告表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | bigint(20) | 否 | | 主键
@@ -3511,6 +3514,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_backend_notify_member
 ###### 系统_消息查看时间记录表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 无
@@ -3524,6 +3528,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_backend_notify_pull_time
 ###### 系统_消息拉取表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3534,6 +3539,7 @@ last_time | int(10) | 是 | | 最后拉取时间
 
 ##### rf_backend_notify_subscription_config
 ###### 系统_消息配置表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 member_id | int(10) unsigned | 否 | | 用户id
@@ -3541,6 +3547,7 @@ action | json | 是 | | 订阅事件
 
 ##### rf_common_action_behavior
 ###### 系统_行为表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3561,6 +3568,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_action_log
 ###### 系统_行为表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3589,6 +3597,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_addons
 ###### 公用_插件表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 主键
@@ -3615,6 +3624,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_addons_binding
 ###### 公用_插件菜单表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 主键
@@ -3628,6 +3638,7 @@ params | json | 是 | | 参数
 
 ##### rf_common_addons_config
 ###### 公用_插件配置值表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 主键
@@ -3637,6 +3648,7 @@ data | json | 是 | | 配置
 
 ##### rf_common_attachment
 ###### 公用_文件管理
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3662,6 +3674,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_auth_assignment
 ###### 公用_会员授权角色表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 role_id | int(11) | 否 | | 无
@@ -3670,6 +3683,7 @@ app_id | varchar(20) | 是 | | 类型
 
 ##### rf_common_auth_item
 ###### 公用_权限表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3689,6 +3703,7 @@ updated_at | int(11) | 是 | 0 | 无
 
 ##### rf_common_auth_item_child
 ###### 公用_授权角色权限表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 role_id | int(11) unsigned | 否 | 0 | 角色id
@@ -3701,6 +3716,7 @@ is_addon | tinyint(1) unsigned | 是 | 0 | 是否插件
 
 ##### rf_common_auth_role
 ###### 公用_角色表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3717,6 +3733,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_config
 ###### 公用_配置表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 主键
@@ -3736,6 +3753,7 @@ updated_at | int(10) unsigned | 否 | 0 | 修改时间
 
 ##### rf_common_config_cate
 ###### 公用_配置分类表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3751,6 +3769,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_config_value
 ###### 公用_配置值表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 主键
@@ -3760,6 +3779,7 @@ data | text | 是 | | 配置内
 
 ##### rf_common_ip_blacklist
 ###### 公用_ip黑名单
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 无
@@ -3772,6 +3792,7 @@ updated_at | int(10) unsigned | 是 | | 修改时间
 
 ##### rf_common_log
 ###### 公用_日志
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3802,6 +3823,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_menu
 ###### 系统_菜单导航表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -3824,6 +3846,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_menu_cate
 ###### 系统_菜单分类表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3844,6 +3867,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_common_pay_log
 ###### 公用_支付日志
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3880,6 +3904,7 @@ updated_at | int(10) | 是 | 0 | 修改时间
 
 ##### rf_common_provinces
 ###### 公用_省市区记录表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | ID
@@ -3918,6 +3943,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member
 ###### 用户_会员表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 主键
@@ -3951,6 +3977,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_account
 ###### 会员_账户统计表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 无
@@ -3971,6 +3998,7 @@ status | tinyint(4) | 是 | 1 | 状态[-1:删除;0:禁用;1启用]
 
 ##### rf_member_address
 ###### 用户_收货地址表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 主键
@@ -3992,6 +4020,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_auth
 ###### 用户_第三方登录
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 主键
@@ -4013,6 +4042,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_balance_withdraw
 ###### 会员_余额提现记录表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -4041,6 +4071,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_bank_account
 ###### 会员提现账号
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -4059,6 +4090,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_credits_log
 ###### 会员_积分等变动表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) | 否 | | 无
@@ -4080,7 +4112,8 @@ created_at | int(10) unsigned | 是 | 0 | 创建时间
 updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_invoice
-######
+###### 会员_发票信息
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) unsigned | 否 | | 无
@@ -4096,6 +4129,7 @@ updated_at | int(10) unsigned | 是 | | 修改时间
 
 ##### rf_member_level
 ###### 会员等级表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 主键
@@ -4115,6 +4149,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_member_recharge_config
 ###### 会员_充值配置
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 无
@@ -4127,7 +4162,8 @@ created_at | int(10) unsigned | 否 | 0 | 创建时间
 updated_at | int(10) unsigned | 否 | 0 | 更新时间
 
 ##### rf_merchant
-######
+###### 商户
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 无
@@ -4146,6 +4182,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_merchant_member
 ###### 系统_后台管理员表
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) | 否 | | 无
@@ -4178,6 +4215,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_oauth2_access_token
 ###### oauth2_授权令牌
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(10) unsigned | 否 | | 无
@@ -4194,6 +4232,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_oauth2_authorization_code
 ###### oauth2_授权回调code
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 authorization_code | varchar(100) | 否 | | 无
@@ -4209,6 +4248,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_oauth2_client
 ###### oauth2_授权客户端
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 id | int(11) unsigned | 否 | | 无
@@ -4225,6 +4265,7 @@ updated_at | int(10) unsigned | 是 | 0 | 修改时间
 
 ##### rf_oauth2_refresh_token
 ###### oauth2_授权令牌
+
 字段 | 类型 | 允许为空 | 默认值 | 字段说明
 ---|---|---|---|---
 refresh_token | varchar(80) | 否 | | 无
