@@ -2285,7 +2285,263 @@ Yii::$app->glide->createSignedUrl(['glide/index', 'path' => 'images/2018-12/27/i
 配套文档：http://glide.thephpleague.com/
 
 #### 系统JS
+
+目录
+
+- 弹出框
+- 内页打开新标签页面
+- 关闭当前标签页
+- Ajax 更新数据
+- Js 模板引擎 Demo
+- 用 Iframe 进行表单提交
+- Bootstrap-table 支持
+
+##### 弹出框
+
+```
+/**
+* 错误提示
+* 
+* @param string title 标题
+* @param string text 副标题
+*/
+rfError(title,text);
+
+// 警告提示
+rfWarning(title,text)
+
+// 普通提示
+rfAffirm(title,text)
+
+// 信息提示
+rfInfo(title,text)
+
+// 成功提示
+rfSuccess(title,text)
+
+// 消息提示，layer风格
+rfMsg(title)
+```
+
+删除二次确认
+
+```
+<a href="<?= Url::to(['delete','id' => $model['id']])?>"  onclick="rfDelete(this);return false;">
+    <span class="btn btn-warning btn-sm">删除</span>
+</a>
+```
+
+##### 内页打开新标签页面
+
+达到此效果只需要给此元素一个class为openContab，指定新窗口的链接地址为href   
+> 注：并不仅限于a元素，任意元素只要给class为openContab， href 属性皆可打开新tab
+
+```
+ <a class="openContab" href="<?= Url::to(['test/index'])?>">测试标签</a>
+```
+
+##### 关闭当前标签页
+
+达到此效果只需要给此元素一个 class 为 closeCurrentConTab
+
+```
+<span class="closeCurrentConTab">关闭当前标签页</span>
+```
+
+##### Ajax 更新数据
+
+> 注意tr上面的id为model主键
+
+```
+<tr id = "<?= $model['id']?>">
+    <td>
+         <?= \common\helpers\Html::sort($model['sort']); ?>
+    </td>
+    <td>
+        <?= \common\helpers\Html::status($model['status']); ?>
+    </td>
+</tr>
+```
+
+##### Js 模板引擎 Demo
+
+页面模板
+
+```
+<script type="text/html" id="listModel">
+    {{each data as value i}}
+    <tr id = "{{value.id}}">
+        <td>
+            <h4>{{value.title}}</h4>
+        </td>
+    </tr>
+    {{/each}}
+</script>
+```
+
+获取数据并渲染
+
+```
+$.ajax({
+    type:"get",
+    url:"",
+    dataType: "json",
+    success: function(data){
+        if (data.code == 200) {
+            var html = template('listModel', data);
+            // 渲染添加数据
+            $('#listAddons').append(html);
+        } else {
+            rfAffirm(data.message);
+        }
+    }
+});
+```
+
+相关文档：https://github.com/aui/art-template/wiki/syntax:simple
+
+##### 用 Iframe 进行表单提交
+
+```
+// class带上 openIframe 即可，提交表单默认id为w0，具体案例看 功能案例->Curd Grid
+<?= Html::create(['edit'], '创建', [
+        'class' => 'btn btn-primary btn-xs openIframe',
+]); ?>
+```
+
+##### Bootstrap-table 支持
+
+GridView 可以自行加入这几行代码
+
+```
+'tableOptions' => [
+    'class' => 'table table-hover rf-table',
+    'fixedNumber' => 3, // 固定前几列
+    'fixedRightNumber' => 1, // 固定最后几列
+],
+```
+
+普通的 table 视图
+
+```
+<table class="table table-hover rf-table" fixedNumber="3" fixedRightNumber="1"></table>
+```
+
 #### Gii
+
+目录
+
+- Model
+- CURD
+
+使用条件
+
+- 开发模式
+- rageframe 版本号 >= 2.3.94
+- backend/gii
+
+CURD 使用条件
+
+- 表自增长字段为 `id`
+- 表必须带有 `status` 字段
+- 控制器必须继承  `backend\controllers\BaseController`
+
+##### Model
+
+- 表字段已经备注
+- Code Template 选择 rageframe
+
+那么你选择一个表进行生成 Model 你会发现 attributeLabels 全部替换成为字段备注，不用再重新修改
+
+```
+<?php
+
+namespace app\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "{{%addon_article_adv}}".
+ *
+ * @property int $id 序号
+ * @property string $merchant_id 商户id
+ * @property string $title 标题
+ * @property string $cover 图片
+ * @property int $location_id 广告位ID
+ * @property string $silder_text 图片描述
+ * @property int $start_time 开始时间
+ * @property int $end_time 结束时间
+ * @property string $jump_link 跳转链接
+ * @property int $jump_type 跳转方式[1:新标签; 2:当前页]
+ * @property int $sort 优先级
+ * @property int $status 状态
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ */
+class AddonArticleAdv extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return '{{%addon_article_adv}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['merchant_id', 'location_id', 'start_time', 'end_time', 'jump_type', 'sort', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['title'], 'string', 'max' => 30],
+            [['cover'], 'string', 'max' => 100],
+            [['silder_text', 'jump_link'], 'string', 'max' => 150],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => '序号',
+            'merchant_id' => '商户id',
+            'title' => '标题',
+            'cover' => '图片',
+            'location_id' => '广告位ID',
+            'silder_text' => '图片描述',
+            'start_time' => '开始时间',
+            'end_time' => '结束时间',
+            'jump_link' => '跳转链接',
+            'jump_type' => '跳转方式[1:新标签; 2:当前页]',
+            'sort' => '优先级',
+            'status' => '状态',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
+        ];
+    }
+}
+```
+
+##### CURD
+
+1、设置好模型路径(注意是已经创建好的Model)，选择生成控制器命名空间和视图文件路径，选择模板为 rageframe 即可进行生成预览
+
+![image](images/gii-curd.jpg)
+
+2、 勾选你首页需要显示的字段和编辑页面需要显示的字段和控件类型即可直接生成一个定制化的 CURD
+
+![image](images/gii-curd-view.jpg)
+
+3、选择后点击 `Preview` 预览，没有问题了可直接点击 `Generate` 创建进行生成
+
+![image](images/gii-curd-view-files.jpg)
+
+4、访问对应的路径进行查看，这样子关于页面显示、查询、编辑就完成了，就那么简单
+
 #### 权限控制
 #### 公用支付
 #### 消息队列
