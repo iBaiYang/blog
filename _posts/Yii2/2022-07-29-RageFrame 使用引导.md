@@ -6908,6 +6908,10 @@ abstract class StandardExample
 
 #### Yii2核心框架代码风格
 
+
+
+#### 扩展依赖安装使用
+
 ##### MongoDB
 
 安装
@@ -6971,10 +6975,22 @@ $config['modules']['debug'] = [
 ];
 ```
 
-#### 扩展依赖安装使用
+
+
+
 #### 网址收录
 
-
+- Window
+  - [PHP版本下载](http://windows.php.net/download/)
+  - [PHP相关扩展下载](https://pecl.php.net/package-stats.php)
+- Linux
+  - [Swoole](https://www.swoole.com/)
+- 系统通用
+  - [Redis](https://redis.io/)
+- 其他
+  - [MongoDB中文社区](http://www.mongoing.com)
+  - [FFmpeg](http://ffmpeg.org/)
+ 
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
