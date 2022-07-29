@@ -1243,8 +1243,1047 @@ updated 2018.5.20
 - 数据查询 (Repository)
 
 #### 控制台
+
+目录
+
+- 自带默认任务
+- 数据迁移
+- 定时任务
+
+##### 自带默认任务
+
+```
+// 定时拉取钉钉提醒
+yii pull-remind/ding-talk
+
+// 定时拉取系统提醒
+yii pull-remind/sys
+
+// 定时清理微信历史消息(需安装微信插件)
+yii wechat/msg-history/index
+
+// 定时群发微信消息(需安装微信插件)
+yii wechat/send-message/index
+```
+
+##### 数据迁移
+
+备份表
+
+```
+ # 备份全部表
+php ./yii migrate/backup all
+ 
+php ./yii migrate/backup table1,table2,table3... # 备份多张表
+php ./yii migrate/backup table1 #备份一张表
+```
+
+恢复全部表
+
+```
+php ./yii migrate/up
+```
+
+##### 定时任务
+
+> 注意需要在Linux环境下运行，且让PHP的system函数取消禁用  
+> 表达式帮助：[cron表达式生成器](http://cron.qqe2.com/)
+
+表达式:
+
+```
+Linux
+*    *    *    *    *    *
+-    -    -    -    -    -
+|    |    |    |    |    |
+|    |    |    |    |    + year [optional]
+|    |    |    |    +----- day of week (0 - 7) (Sunday=0 or 7)
+|    |    |    +---------- month (1 - 12)
+|    |    +--------------- day of month (1 - 31)
+|    +-------------------- hour (0 - 23)
++------------------------- min (0 - 59)
+```
+
+1、需要先设置cron ，让 ./yii schedule/run --scheduleFile=@console/config/schedule.php 可以每分钟运行。
+
+例如:
+
+```
+// 每分钟执行一次定时任务
+* * * * * /path-to-your-project/yii schedule/run --scheduleFile=@console/config/schedule.php 1>> /tmp/rageframeConsoleLog.text 2>&1
+```
+
+2、在 console/config/schedule.php 中加入新的定时任务：
+
+```
+/**
+ * 清理过期的微信历史消息记录
+ *
+ * 每天凌晨执行一次
+ */
+$schedule->command('test/index')->cron('0 0 * * *');
+
+/**
+ * 定时群发微信消息
+ *
+ * 每分钟执行一次
+ */
+$schedule->command('test/index')->cron('* * * * *');
+```
+
+4、具体例子
+
+查看控制器 `console\controllers\MsgHistoryController`
+
+更多使用文档：https://github.com/omnilight/yii2-scheduling
+
 #### 表单控件
+
+目录
+
+- 颜色选择器
+- 日期控件
+- 时间控件
+- 日期时间控件
+- 日期区间控件
+- 图片上传控件
+- 多图上传控件
+- 文件上传控件
+- 多文件上传控件
+- 图片裁剪上传
+- 多 Input 框控件
+- 地图经纬度选择
+- Select2
+- 省市区控件
+- 省市区控件(复选框)
+- 百度编辑器
+- Markdown 编辑器
+- 表情包选择
+- 递归多级联动选择器
+- TreeGrid
+
+##### 颜色选择器
+
+```
+<?= $form->field($model, 'color')->widget(kartik\color\ColorInput::class, [
+    'options' => ['placeholder' => '请选择颜色'],
+]);?>
+```
+
+##### 日期控件
+
+```
+<?= $form->field($model, 'date')->widget(kartik\date\DatePicker::class, [
+    'language' => 'zh-CN',
+    'layout'=>'{picker}{input}',
+    'pluginOptions' => [
+        'format' => 'yyyy-mm-dd',
+        'todayHighlight' => true, // 今日高亮
+        'autoclose' => true, // 选择后自动关闭
+        'todayBtn' => true, // 今日按钮显示
+    ],
+    'options'=>[
+        'class' => 'form-control no_bor',
+    ]
+]);?>
+```
+
+##### 时间控件
+
+```
+<?= $form->field($model, 'time')->widget(kartik\time\TimePicker::class, [
+    'language' => 'zh-CN',
+    'pluginOptions' => [
+        'showSeconds' => true
+    ]
+]);?>
+```
+
+##### 日期时间控件
+
+```
+<?= $form->field($model, 'start_time')->widget(kartik\datetime\DateTimePicker::class, [
+    'language' => 'zh-CN',
+    'options' => [
+        'value' => $model->isNewRecord ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s',$model->start_time),
+    ],
+    'pluginOptions' => [
+        'format' => 'yyyy-mm-dd hh:ii',
+        'todayHighlight' => true, // 今日高亮
+        'autoclose' => true, // 选择后自动关闭
+        'todayBtn' => true, // 今日按钮显示
+    ]
+]);?>
+```
+
+##### 日期区间控件
+
+```
+use kartik\daterange\DateRangePicker;
+```
+
+```
+$addon = <<< HTML
+<span class="input-group-addon">
+    <i class="glyphicon glyphicon-calendar"></i>
+</span>
+HTML;
+```
+
+```
+<?= DateRangePicker::widget([
+    'name' => 'queryDate',
+    'value' => date('Y-m-d') . '-' . date('Y-m-d'),
+    'readonly' => 'readonly',
+    'useWithAddon' => true,
+    'convertFormat' => true,
+    'startAttribute' => 'from_date',
+    'endAttribute' => 'to_date',
+    'startInputOptions' => ['value' => date('Y-m-d')],
+    'endInputOptions' => ['value' => date('Y-m-d')],
+    'pluginOptions' => [
+        'locale' => ['format' => 'Y-m-d'],
+    ]
+]) . $addon;?>
+```
+
+具体参考：http://demos.krajee.com/date-range
+
+##### 图片上传控件
+
+> 配置部分在 `common\config\params.php` 文件，可用自行在里面切换全局上传配置  
+> 注意OSS/七牛暂不支持切片和缩略图操作，以下是完整案例
+
+```
+<?= $form->field($model, 'cover')->widget('common\widgets\webuploader\Files', [
+        'config' => [
+              // 可设置自己的上传地址, 不设置则默认地址
+              // 'server' => '',
+             'pick' => [
+                 'multiple' => false,
+             ],
+             'formData' => [
+                 // 不配置则不生成缩略图
+                 'thumb' => [
+                     [
+                         'width' => 100,
+                         'height' => 100,
+                     ],
+                     [
+                         'width' => 200,
+                         'height' => 200,
+                     ],
+                 ],
+                 'drive' => 'local',// 默认本地 支持 qiniu/oss/cos 上传
+             ],
+             'chunked' => false,// 开启分片上传
+             'chunkSize' => 512 * 1024,// 分片大小
+             'independentUrl' => false, // 独立上传地址, 如果设置了true则不受全局上传地址控制 
+         ],
+]);?>
+```
+获取缩略图路径查看 [字符串辅助类](helper-string.md) 的 `获取缩略图地址`  
+config 更多参考 http://fex.baidu.com/webuploader/doc/
+
+##### 多图上传控件
+
+> 配置部分在 `common\config\params.php` 文件，可用自行在里面切换全局上传配置  
+> 注意传入的value值为数组,例如: array('img1.jpg', 'img2.jpg')
+
+```
+<?= $form->field($model, 'covers')->widget('common\widgets\webuploader\Files', [
+        'config' => [ // 配置同图片上传
+             // 'server' => '',
+             'pick' => [
+                 'multiple' => true,
+             ],
+             'formData' => [
+                 // 不配置则不生成缩略图
+                 // 'thumb' => [
+                 //     [
+                 //         'width' => 100,
+                 //         'height' => 100,
+                 //     ],
+                 // ]
+             ],
+        ]
+]);?>
+
+config 更多参考 http://fex.baidu.com/webuploader/doc/
+```
+
+##### 文件上传控件
+
+> 配置部分在 `common\config\params.php` 文件，可用自行在里面切换全局上传配置  
+> 注意文件上传不支持缩略图配置
+
+```
+<?= $form->field($model, 'file')->widget('common\widgets\webuploader\Files', [
+     'type' => 'files',
+     'config' => [ // 配置同图片上传
+         // 'server' => \yii\helpers\Url::to(['file/files']), // 默认files 支持videos/voices/images方法验证
+         'pick' => [
+             'multiple' => false,
+         ]
+     ]
+]);?>
+```
+
+##### 多文件上传控件
+
+> 配置部分在 `common\config\params.php` 文件，可用自行在里面切换全局上传配置  
+> 注意多文件上传不支持缩略图配置  
+> 注意传入的value值为数组,例如: array('img1.jpg', 'img2.jpg')
+
+```
+<?= $form->field($model, 'files')->widget('common\widgets\webuploader\Files', [
+     'type' => 'files',
+     'config' => [ // 配置同图片上传
+          // 'server' => '',
+         'pick' => [
+             'multiple' => true,
+         ]
+     ]
+]);?>
+```
+
+##### 图片裁剪上传
+
+```
+<?= $form->field($model, 'head_portrait')->widget(\common\widgets\cropper\Cropper::class, [
+        'config' => [
+              // 可设置自己的上传地址, 不设置则默认地址
+              // 'server' => '',
+         ],
+        'formData' => [
+            'drive' => 'local',// 默认本地 支持 qiniu/oss/cos 上传
+        ],
+]); ?>
+```
+
+##### 多Input框控件
+
+```
+<?= $form->field($model, 'schedule')->widget(unclead\multipleinput\MultipleInput::class, [
+    'max' => 4,
+    'columns' => [
+        [
+            'name'  => 'user_id',
+            'type'  => 'dropDownList',
+            'title' => 'User',
+            'defaultValue' => 1,
+            'items' => [
+                1 => 'User 1',
+                2 => 'User 2'
+            ]
+        ],
+        [
+            'name'  => 'day',
+            'type'  => \kartik\date\DatePicker::class,
+            'title' => 'Day',
+            'value' => function($data) {
+                return $data['day'];
+            },
+            'items' => [
+                '0' => 'Saturday',
+                '1' => 'Monday'
+            ],
+            'options' => [
+                'pluginOptions' => [
+                    'format' => 'dd.mm.yyyy',
+                    'todayHighlight' => true
+                ]
+            ]
+        ],
+        [
+            'name'  => 'priority',
+            'title' => 'Priority',
+            'enableError' => true,
+            'options' => [
+                'class' => 'input-priority'
+            ]
+        ]
+    ]
+ ]);
+?>
+```
+更多参考：https://github.com/unclead/yii2-multiple-input
+
+##### 地图经纬度选择
+
+```
+// 注意提前申请好对应地图的key
+<?= $form->field($model, 'address')->widget(\common\widgets\selectmap\Map::class, [
+    'type' => 'amap', // amap高德;tencent:腾讯;baidu:百度
+]); ?>
+```
+
+##### Select2
+
+```
+<?= $form->field($model, 'tag')->widget(kartik\select2\Select2::class, [
+    'data' => [
+        1 => "First", 2 => "Second", 3 => "Third",
+        4 => "Fourth", 5 => "Fifth"
+    ],
+    'options' => ['placeholder' => '请选择'],
+    'pluginOptions' => [
+        'allowClear' => true
+    ],
+]);?>
+```
+
+更多参考：http://demos.krajee.com/widget-details/select2
+
+##### 省市区控件
+
+```
+<?= \common\widgets\provinces\Provinces::widget([
+    'form' => $form,
+    'model' => $model,
+    'provincesName' => 'province_id',// 省字段名
+    'cityName' => 'city_id',// 市字段名
+    'areaName' => 'area_id',// 区字段名
+    // 'template' => 'short' //合并为一行显示
+]); ?>
+```
+
+##### 省市区控件(复选框)
+
+> 注意：目前一个页面仅支持调用一次本控件
+
+触发按钮
+
+```
+ <a class="js-select-city btn btn-primary btn-sm" data-toggle="modal" data-target="#ajaxModalLgForExpress">指定地区城市</a>
+```
+
+会把选择的省中文显示在此处(可选)
+
+```
+<span class="js-region-info region-info"></span>
+```
+
+调用
+
+```
+<?= \common\widgets\area\Area::widget([
+    'form' => $form,
+    'model' => $model,
+    'provincesName' => 'province_ids',// 省字段名
+    'cityName' => 'city_ids',// 市字段名
+    'areaName' => 'area_ids',// 区字段名
+    'notChooseProvinceIds' => [], // 不可选省id数组
+    'notChooseCityIds' => [], // 不可选市id数组
+    'notChooseAreaIds' => [], // 不可选区id数组
+    'level' => 3 // 可以只选省/省市/省市区对应为1/2/3
+]); ?>
+```
+
+##### 百度编辑器
+
+视图
+
+```
+<?= $form->field($model, 'content')->widget(\common\widgets\ueditor\UEditor::class) ?>
+
+// 自定义配置参数用法
+<?= $form->field($model, 'content')->widget(\common\widgets\ueditor\UEditor::class, [
+     'config' => [
+
+      ],
+    'formData' => [
+        'drive' => 'local', // 默认本地 支持qiniu/oss/cos 上传
+        'poster' => false, // 上传视频时返回视频封面图，开启此选项需要安装 ffmpeg 命令
+        'thumb' => [ // 图片缩略图
+            [
+                'width' => 100,
+                'height' => 100,
+            ],
+        ]
+    ],
+]) ?>
+```
+
+更多文档：http://fex.baidu.com/ueditor/#start-start
+
+##### Markdown 编辑器
+
+
+```
+<?= $form->field($model, 'content')->widget(\common\widgets\markdown\Markdown::class, [
+        // 'server' => '', // 图片上传路径 + 驱动
+]); ?>
+```
+
+解析
+
+```
+<?= \common\helpers\MarkdownHelper::toHtml($content); ?>
+```
+
+更多文档：https://pandao.github.io/editor.md/examples/index.html
+
+##### 表情包选择
+
+引入
+
+```
+<?= \common\widgets\emoji\Emoji::widget([
+    'name' => 'emoji',
+    'theme' => 'default', // 可选择微信的表情包主题: wechat
+    'options' => [],
+    'bind_id' => '', // 绑定的文本域 id，如果填写会自动追加表情到文本域
+]); ?>
+```
+
+解析文本内的表情包
+
+```
+var text = $('.emoji').html();
+html = qqWechatEmotionParser(text);
+$('.emoji').html(html)
+```
+
+表情包提供回调触发事件提供用户自由发挥
+
+```
+// 表情回调 回调名称为 emoji-select-[初始化时候填写的 name]
+$(document).on('emoji-select-emoji', function (e, emoji) {
+    // 自由发挥，例如追加到 message 的光标文本域
+    $('#message').insertAtCaret(emoji);
+});
+```
+
+##### 递归多级联动选择器
+
+使用
+
+> 注意 ajax 这边会传递 pid 过来，只需要根据 pid 返回所有数据即可
+
+```
+<?= $form->field($model, 'cate_id')->widget(\common\widgets\selectlinkage\Linkage::class, [
+    'url' => Url::to(['cate/select']), // ajax数据 要求返回数据必须是带 id 和 title 的 二维数组 json 格式
+    'level' => 3, // 联动级别
+    'item' => $cate, // 当前数据
+    'allItem' => $cates, // 所有的数据
+]); ?>
+```
+
+ajax 返回数据案例
+
+```
+{
+  "code": "200",
+  "message": "获取成功",
+  "data": [
+    {
+      "id": "430",
+      "title": "电子词典"
+    },
+    {
+      "id": "431",
+      "title": "电纸书"
+    },
+  ]
+}
+```
+
+##### TreeGrid
+
+控制器
+
+```
+use yii\web\Controller;
+use Yii;
+use yii\data\ActiveDataProvider;
+
+class TreeController extends Controller
+{
+
+    /**
+     * Lists all Tree models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $query = Tree::find();
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => false
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider
+        ]);
+    }
+```
+
+视图
+
+
+```
+use jianyan\treegrid\TreeGrid;
+  
+<?= TreeGrid::widget([
+    'dataProvider' => $dataProvider,
+    'keyColumnName' => 'id',
+    'parentColumnName' => 'pid',
+    'parentRootValue' => '0', //first parentId value
+    'pluginOptions' => [
+        'initialState' => 'collapsed',
+    ],
+    'options' => ['class' => 'table table-hover'],
+    'columns' => [
+        [
+            'attribute' => 'title',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $column){
+                return $model->title . Html::a(' <i class="icon ion-android-add-circle"></i>', ['ajax-edit', 'pid' => $model['id']], [
+                        'data-toggle' => 'modal',
+                        'data-target' => '#ajaxModal',
+                    ]);
+            }
+        ],
+        [
+            'attribute' => 'sort',
+            'format' => 'raw',
+            'headerOptions' => ['class' => 'col-md-1'],
+            'value' => function ($model, $key, $index, $column){
+                return  Html::sort($model->sort);
+            }
+        ],
+        [
+            'header' => "操作",
+            'class' => 'yii\grid\ActionColumn',
+            'template'=> '{edit} {status} {delete}',
+            'buttons' => [
+                'edit' => function ($url, $model, $key) {
+                    return Html::edit(['ajax-edit','id' => $model->id], '编辑', [
+                        'data-toggle' => 'modal',
+                        'data-target' => '#ajaxModal',
+                    ]);
+                },
+                'status' => function ($url, $model, $key) {
+                    return Html::status($model->status);
+                },
+                'delete' => function ($url, $model, $key) {
+                    return Html::delete(['delete','id' => $model->id]);
+                },
+            ],
+        ],
+    ]
+]); ?>
+```
+
+更多文档：https://github.com/jianyan74/yii2-treegrid
+
 #### 系统组件
+
+目录
+
+- 基本组件
+  - 获取单个配置信息
+  - 获取全部配置信息
+  - 打印调试
+  - 行为日志记录
+  - 微信接口验证及报错获取
+  - 解析 model 报错
+- 文件上传
+- 生成二维码
+- IP地址转地区
+- 快递查询
+- 小票打印
+  - 易联云
+- Curl
+- 中文转拼音
+- 爬虫
+- Glide
+
+##### 基本组件
+
+读取后台的配置
+
+```
+// 后台配置
+Yii::$app->debris->backendConfig($fildName);
+
+// 强制不从缓存读取配置
+Yii::$app->debris->backendConfig($fildName, true);
+
+// 强制不从缓存读取所有配置
+Yii::$app->debris->backendConfigAll(true);
+```
+
+读取商户端的配置
+
+```
+// 商户端配置
+Yii::$app->debris->merchantConfig($fildName);
+
+// 强制不从缓存读取配置
+Yii::$app->debris->merchantConfig($fildName, true);
+
+// 强制不从缓存读取所有配置
+Yii::$app->debris->merchantConfigAll(true);
+```
+
+自动读取对应配置信息
+
+> 不了解其机制的话请谨慎使用  
+> 规则：如果有 merchant_id 的话，则直接读取后台配置，没有的话会去读取商户端配置
+
+```
+// 注意$fildName 为你的配置标识,默认从缓存读取
+Yii::$app->debris->config($fildName);
+
+// 强制不从缓存读取
+Yii::$app->debris->config($fildName, true);
+
+// 从缓存中强制读取商户 ID 为 1 配置(注意: 1 为总后台的 ID)
+Yii::$app->debris->config($fildName, false);
+```
+
+###### 获取全部配置信息
+
+```
+// 注意默认从缓存读取
+Yii::$app->debris->configAll();
+
+// 强制不从缓存读取
+Yii::$app->debris->configAll(true);
+
+// 从缓存中强制读取商户 ID 为 1 全部配置(注意: 1 为总后台的 ID)
+Yii::$app->debris->configAll(false, 1);
+```
+
+读取某一端的配置
+
+```
+// 商户端配置
+Yii::$app->debris->merchantConfigAll();
+```
+
+###### 打印调试
+
+```
+Yii::$app->debris->p();
+```
+
+###### 行为日志记录
+
+```
+/**
+ * 行为日志
+ *
+ * @param string $behavior 行为标识
+ * @param string $remark 备注 注意长度为255
+ * @param bool $noRecordData 是否记录 post 数据 [true||false]
+ * @throws \yii\base\InvalidConfigException
+ */
+Yii::$app->services->actionLog->create($behavior, $remark, $noRecordData)
+```
+
+###### 微信接口验证及报错
+
+```
+// 默认直接报错
+Yii::$app->debris->getWechatError($message);
+
+// 如果想不直接报错并返回报错信息
+$error = Yii::$app->debris->getWechatError($message, false);
+```
+
+###### 解析 model 报错
+
+```
+// 注意 $firstErrors 为 $model->getFirstErrors();
+Yii::$app->debris->analyErr($firstErrors);
+```
+
+##### 文件上传
+
+获取组件全部实现 `League\Flysystem\Filesystem` 接口
+
+```
+// 支持 oss/cos/qiniu/local, 配置不传默认使用总后台
+$entity = Yii::$app->uploadDrive->local($config)->entity()；
+```
+
+使用案例
+
+```
+$entity = Yii::$app->uploadDrive->local()->entity()；
+$stream = fopen('文件绝对路径', 'r+');
+$result = $entity->writeStream('存储相对路径', $stream);
+
+// 直接写入base64数据
+$entity->write('存储相对路径', $base64Data);
+```
+
+更多说明：新增驱动请放入 `common\components\uploaddrive` 目录, 并在 `common\components\UploadDrive` 类内实现可实例化的方法
+
+##### 生成二维码
+
+```
+$qr = Yii::$app->get('qr');
+Yii::$app->response->format = Response::FORMAT_RAW;
+Yii::$app->response->headers->add('Content-Type', $qr->getContentType());
+
+return $qr->setText('www.rageframe.com')
+    ->setLabel('2amigos consulting group llc')
+    ->setSize(150)
+    ->setMargin(7)
+    ->writeString();
+```
+or
+
+```
+use Da\QrCode\QrCode;
+
+$qrCode = (new QrCode('This is my text'))
+    ->setSize(250)
+    ->setMargin(5)
+    ->useForegroundColor(51, 153, 255);
+
+// 把图片保存到文件中:
+$qrCode->writeFile(Yii::getAlias('@attachment') . '/code.png'); // 没有指定的时候默认为png格式
+
+// 直接显示在浏览器 
+header('Content-Type: '.$qrCode->getContentType());
+echo $qrCode->writeString();
+```
+
+[二维码文档](http://qrcode-library.readthedocs.io/en/latest/)
+
+##### IP地址转地区
+
+```
+use Zhuzhichao\IpLocationZh\Ip;
+
+var_dump(Ip::find('171.12.10.156'));
+```
+
+输出结果
+
+```
+array (size=4)
+  0 => string '中国' (length=6)
+  1 => string '河南' (length=6)
+  2 => string '郑州' (length=6)
+  3 => string '' (length=0)
+  4 => string '410100' (length=6)
+```
+
+##### 快递查询
+
+```
+// 查询所有的可用快递公司
+$companies = Yii::$app->logistics->companies('aliyun');
+
+/**
+ * 支持 aliyun(阿里云)、juhe(聚合)、kdniao(快递鸟)、kd100(快递100)
+ *
+ * @param string $no 快递单号
+ * @param null $company 快递公司
+ * @param bool $isCache 是否缓存读取默认缓存1小时
+ * @return OrderInterface
+ */
+$order = Yii::$app->logistics->aliyun($no, $company, $isCache);
+```
+
+##### 小票打印
+
+###### 易联云
+
+
+用法1
+
+```
+$orderSn = rand(1, 9);
+
+$content = "<FS2><center>**#1 美团**</center></FS2>";
+$content .= str_repeat('.', 32);
+$content .= "<FS2><center>--在线支付--</center></FS2>";
+$content .= "<FS><center>张周兄弟烧烤</center></FS>";
+$content .= "订单时间:". date("Y-m-d H:i") . "\n";
+$content .= "订单编号:40807050607030\n";
+$content .= str_repeat('*', 14) . "商品" . str_repeat("*", 14);
+$content .= "<table>";
+$content .= "<tr><td>烤土豆(超级辣)</td><td>x3</td><td>5.96</td></tr>";
+$content .= "<tr><td>烤豆干(超级辣)</td><td>x2</td><td>3.88</td></tr>";
+$content .= "<tr><td>烤鸡翅(超级辣)</td><td>x3</td><td>17.96</td></tr>";
+$content .= "<tr><td>烤排骨(香辣)</td><td>x3</td><td>12.44</td></tr>";
+$content .= "<tr><td>烤韭菜(超级辣)</td><td>x3</td><td>8.96</td></tr>";
+$content .= "</table>";
+$content .= str_repeat('.', 32);
+$content .= "<QR>这是二维码内容</QR>";
+$content .= "小计:￥82\n";
+$content .= "折扣:￥４ \n";
+$content .= str_repeat('*', 32);
+$content .= "订单总价:￥78 \n";
+$content .= "<FS2><center>**#1 完**</center></FS2>";
+
+/**
+ * 打印文字
+ * 
+ * @param string $data 打印内容 具体看文档
+ * @param string $orderSn 订单号 不超过 32位
+ */
+Yii::$app->services->printerYiLianYun->text($content, $orderSn);
+```
+
+用法2
+
+```
+$orderSn = rand(1, 9);
+$data = [
+    'title' => '美团', // 商城名称
+    'merchantTitle' => '张周兄弟烧烤', // 门店名称
+    'orderTime' => time(), // 下单时间
+    'orderSn' => $orderSn, // 下单编号
+    'orderMoney' => 100, // 订单总价
+    'orderMarketingMoney' => 80, // 折扣金额
+    'payMoney' => 20, // 小计金额
+    'products' => [ // 产品列表
+        [
+            'title' => '烤土豆(超级辣)', // 商品名称
+            'num' => 2, // 商品数量
+            'price' => 1.88, // 商品金额
+        ],
+        [
+            'title' => '烤鸡翅',
+            'num' => 5,
+            'price' => 9.88,
+        ],
+    ],
+    'qr' => '', // 二维码内容
+];
+
+Yii::$app->services->printerYiLianYun->text($data, $orderSn);
+```
+
+更多文档：http://doc2.10ss.net/331992
+
+更多操作
+
+```
+ $order->getCode(); // 状态码
+ $order->getMsg(); // 状态信息
+ $order->getCompany(); // 物流公司简称
+ $order->getNo(); // 物流单号
+ $order->getStatus(); // 当前物流单状态
+ 
+ 注：物流状态可能不一定准确
+ 
+ $order->getDisplayStatus(); // 当前物流单状态展示名
+ $order->getAbstractStatus(); // 当前抽象物流单状态
+ $order->getCourier(); // 快递员姓名
+ $order->getCourierPhone(); // 快递员手机号
+ $order->getList(); // 物流单状态详情
+ $order->getOriginal(); // 获取接口原始返回信息
+```
+
+##### Curl
+
+```
+use linslin\yii2\curl;
+$curl = new curl\Curl();
+
+//get http://example.com/
+$response = $curl->get('http://example.com/');
+
+if ($curl->errorCode === null) {
+   echo $response;
+} else {
+     // List of curl error codes here https://curl.haxx.se/libcurl/c/libcurl-errors.html
+    switch ($curl->errorCode) {
+    
+        case 6:
+            //host unknown example
+            break;
+    }
+} 
+```
+
+文档地址：https://github.com/linslin/Yii2-Curl
+
+##### 中文转拼音
+
+```
+use Overtrue\Pinyin\Pinyin;
+
+// 小内存型
+$pinyin = new Pinyin(); // 默认
+// 内存型
+// $pinyin = new Pinyin('Overtrue\Pinyin\MemoryFileDictLoader');
+// I/O型
+// $pinyin = new Pinyin('Overtrue\Pinyin\GeneratorFileDictLoader');
+
+$pinyin->convert('带着希望去旅行，比到达终点更美好');
+// ["dai", "zhe", "xi", "wang", "qu", "lyu", "xing", "bi", "dao", "da", "zhong", "dian", "geng", "mei", "hao"]
+
+$pinyin->convert('带着希望去旅行，比到达终点更美好', PINYIN_TONE);
+// ["dài","zhe","xī","wàng","qù","lǚ","xíng","bǐ","dào","dá","zhōng","diǎn","gèng","měi","hǎo"]
+
+$pinyin->convert('带着希望去旅行，比到达终点更美好', PINYIN_ASCII_TONE);
+//["dai4","zhe","xi1","wang4","qu4","lyu3","xing2","bi3","dao4","da2","zhong1","dian3","geng4","mei3","hao3"]
+```
+
+更多文档：https://github.com/overtrue/pinyin
+
+##### 爬虫
+
+```
+use QL\QueryList;
+
+$data = QueryList::get('https://www.baidu.com/s?wd=QueryList')
+  // 设置采集规则
+  ->rules([ 
+      'title'=>array('h3','text'),
+      'link'=>array('h3>a','href')
+  ])
+  ->queryData();
+
+print_r($data);
+```
+
+更多文档：http://www.querylist.cc/docs/guide/v4/
+
+##### Glide
+
+> Glide是一个用PHP编写的非常简单的按需图像处理库  
+> 注意：系统默认只能在storage下使用，已经基础配置完毕，但是系统内未安装，如果需要使用请先安装
+
+```
+php composer.phar require --prefer-dist trntv/yii2-glide
+```
+
+**用法：**
+
+直接输出一个图像
+
+```
+Yii::$app->glide->outputImage('new-upload.jpg', ['w' => 100, 'fit' => 'crop'])
+```
+
+创建一个图像
+
+```
+Yii::$app->glide->makeImage('new-upload.jpg', ['w' => 100, 'fit' => 'crop'])
+```
+
+创建一个带签名才能访问的图像
+
+```
+Yii::$app->glide->createSignedUrl(['glide/index', 'path' => 'images/2018-12/27/image_154588883551485657.jpg', 'w' => 175]);
+```
+
+> 注意开启设置 `storage/config/main.php` 内的 glide 组件的signKey，否则无效
+
+来源：https://github.com/trntv/yii2-glide  
+配套文档：http://glide.thephpleague.com/
+
 #### 系统JS
 #### Gii
 #### 权限控制
