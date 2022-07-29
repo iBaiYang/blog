@@ -2651,15 +2651,15 @@ class AddonArticleAdv extends \yii\db\ActiveRecord
 
 1、设置好模型路径(注意是已经创建好的Model)，选择生成控制器命名空间和视图文件路径，选择模板为 rageframe 即可进行生成预览
 
-![image](images/gii-curd.jpg)
+![]({{site.baseurl}}/images/RageFrame2/gii-curd.jpg)
 
 2、 勾选你首页需要显示的字段和编辑页面需要显示的字段和控件类型即可直接生成一个定制化的 CURD
 
-![image](images/gii-curd-view.jpg)
+![]({{site.baseurl}}/images/RageFrame2/gii-curd-view.jpg)
 
 3、选择后点击 `Preview` 预览，没有问题了可直接点击 `Generate` 创建进行生成
 
-![image](images/gii-curd-view-files.jpg)
+![]({{site.baseurl}}/images/RageFrame2/gii-curd-view-files.jpg)
 
 4、访问对应的路径进行查看，这样子关于页面显示、查询、编辑就完成了，就那么简单
 
