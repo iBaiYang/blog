@@ -6908,7 +6908,7 @@ abstract class StandardExample
 
 #### Yii2核心框架代码风格
 
-
+参阅 <https://ibaiyang.github.io/blog/yii2/2022/07/29/Yii2-核心框架代码风格.html>
 
 #### 扩展依赖安装使用
 
