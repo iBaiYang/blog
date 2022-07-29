@@ -400,7 +400,7 @@ header: {
 
 ##### Windows环境打开后台微信报错
 
-注意查看[环境搭建](start-environment.md)的Windows微信环境配置
+注意查看[环境搭建](#环境搭建)的Windows微信环境配置
 
 ##### 如何配置权限管理的路由和菜单绑定
 
