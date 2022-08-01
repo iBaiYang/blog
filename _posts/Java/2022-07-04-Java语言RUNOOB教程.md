@@ -2346,6 +2346,83 @@ Elements in vector:
 
 当你从栈中取元素的时候，就从栈顶取一个元素。换句话说，最后进栈的元素最先被取出。
 
+栈是Vector的一个子类，它实现了一个标准的后进先出的栈。
+
+堆栈只定义了默认构造函数，用来创建一个空栈。 堆栈除了包括由Vector定义的所有方法，也定义了自己的一些方法。
+
+```
+Stack()
+```
+
+除了由Vector定义的所有方法，自己也定义了一些方法： 
+```
+序号 	方法描述
+1 	boolean empty() 
+测试堆栈是否为空。
+2 	Object peek( )
+查看堆栈顶部的对象，但不从堆栈中移除它。
+3 	Object pop( )
+移除堆栈顶部的对象，并作为此函数的值返回该对象。
+4 	Object push(Object element)
+把项压入堆栈顶部。
+5 	int search(Object element)
+返回对象在堆栈中的位置，以 1 为基数。
+```
+
+下面的程序说明这个集合所支持的几种方法：
+```
+mport java.util.*;
+ 
+public class StackDemo {
+ 
+    static void showpush(Stack<Integer> st, int a) {
+        st.push(new Integer(a));
+        System.out.println("push(" + a + ")");
+        System.out.println("stack: " + st);
+    }
+ 
+    static void showpop(Stack<Integer> st) {
+        System.out.print("pop -> ");
+        Integer a = (Integer) st.pop();
+        System.out.println(a);
+        System.out.println("stack: " + st);
+    }
+ 
+    public static void main(String args[]) {
+        Stack<Integer> st = new Stack<Integer>();
+        System.out.println("stack: " + st);
+        showpush(st, 42);
+        showpush(st, 66);
+        showpush(st, 99);
+        showpop(st);
+        showpop(st);
+        showpop(st);
+        try {
+            showpop(st);
+        } catch (EmptyStackException e) {
+            System.out.println("empty stack");
+        }
+    }
+}
+```
+
+以上实例编译运行结果如下： 
+```
+stack: [ ]
+push(42)
+stack: [42]
+push(66)
+stack: [42, 66]
+push(99)
+stack: [42, 66, 99]
+pop -> 99
+stack: [42, 66]
+pop -> 66
+stack: [42]
+pop -> 42
+stack: [ ]
+pop -> empty stack
+```
 
 #### 字典（Dictionary）
 
@@ -2355,6 +2432,31 @@ Elements in vector:
 
 由于Dictionary类是抽象类，所以它只提供了键映射到值的数据结构，而没有提供特定的实现。
 
+Dictionary 类是一个抽象类，用来存储键/值对，作用和Map类相似。
+
+给出键和值，你就可以将值存储在Dictionary对象中。一旦该值被存储，就可以通过它的键来获取它。
+所以和Map一样， Dictionary 也可以作为一个键/值对列表。
+
+Dictionary定义的抽象方法如下表所示：
+
+    序号 	方法描述
+    1 	Enumeration elements( )
+    返回此 dictionary 中值的枚举。
+    2 	Object get(Object key)
+    返回此 dictionary 中该键所映射到的值。
+    3 	boolean isEmpty( )
+    测试此 dictionary 是否不存在从键到值的映射。
+    4 	Enumeration keys( )
+    返回此 dictionary 中的键的枚举。
+    5 	Object put(Object key, Object value)
+    将指定 key 映射到此 dictionary 中指定 value。
+    6 	Object remove(Object key)
+    从此 dictionary 中移除 key （及其相应的 value）。
+    7 	int size( )
+    返回此 dictionary 中条目（不同键）的数量。
+    
+Dictionary类已经过时了。在实际开发中，你可以实现 Map接口 来获取键/值的存储功能。
+
 #### 哈希表（Hashtable）
 
 Hashtable类提供了一种在用户定义键结构的基础上来组织数据的手段。
@@ -2363,17 +2465,279 @@ Hashtable类提供了一种在用户定义键结构的基础上来组织数据�
 
 哈希表键的具体含义完全取决于哈希表的使用情景和它包含的数据。
 
+Hashtable是原始的java.util的一部分， 是一个Dictionary具体的实现 。
+
+然而，Java 2 重构的Hashtable实现了Map接口，因此，Hashtable现在集成到了集合框架中。它和HashMap类很相似，但是它支持同步。
+
+像HashMap一样，Hashtable在哈希表中存储键/值对。当使用一个哈希表，要指定用作键的对象，以及要链接到该键的值。
+
+然后，该键经过哈希处理，所得到的散列码被用作存储在该表中值的索引。
+
+Hashtable定义了四个构造方法。第一个是默认构造方法：
+```
+Hashtable()
+```
+
+第二个构造函数创建指定大小的哈希表：
+```
+Hashtable(int size)
+```
+
+第三个构造方法创建了一个指定大小的哈希表，并且通过fillRatio指定填充比例。
+
+填充比例必须介于0.0和1.0之间，它决定了哈希表在重新调整大小之前的充满程度：
+```
+Hashtable(int size,float fillRatio)
+```
+
+第四个构造方法创建了一个以M中元素为初始化元素的哈希表。
+
+哈希表的容量被设置为M的两倍。
+```
+Hashtable(Map m)
+```
+
+Hashtable中除了从Map接口中定义的方法外，还定义了以下方法： 
+
+    序号 	方法描述
+    1 	void clear( )
+     将此哈希表清空，使其不包含任何键。
+    2 	Object clone( )
+    创建此哈希表的浅表副本。
+    3 	boolean contains(Object value)
+     测试此映射表中是否存在与指定值关联的键。
+    4 	boolean containsKey(Object key)
+    测试指定对象是否为此哈希表中的键。
+    5 	boolean containsValue(Object value)
+    如果此 Hashtable 将一个或多个键映射到此值，则返回 true。
+    6 	Enumeration elements( )
+    返回此哈希表中的值的枚举。
+    7 	Object get(Object key)
+     返回指定键所映射到的值，如果此映射不包含此键的映射，则返回 null. 更确切地讲，如果此映射包含满足 (key.equals(k)) 的从键 k 到值 v 的映射，则此方法返回 v；否则，返回 null。
+    8 	boolean isEmpty( )
+    测试此哈希表是否没有键映射到值。
+    9 	Enumeration keys( )
+     返回此哈希表中的键的枚举。
+    10 	Object put(Object key, Object value)
+    将指定 key 映射到此哈希表中的指定 value。
+    11 	void rehash( )
+    增加此哈希表的容量并在内部对其进行重组，以便更有效地容纳和访问其元素。
+    12 	Object remove(Object key)
+    从哈希表中移除该键及其相应的值。
+    13 	int size( )
+     返回此哈希表中的键的数量。
+    14 	String toString( )
+    返回此 Hashtable 对象的字符串表示形式，其形式为 ASCII 字符 ", " （逗号加空格）分隔开的、括在括号中的一组条目。
+
+下面的程序说明这个数据结构支持的几个方法：
+```
+import java.util.*;
+
+public class HashTableDemo {
+
+   public static void main(String args[]) {
+      // Create a hash map
+      Hashtable balance = new Hashtable();
+      Enumeration names;
+      String str;
+      double bal;
+
+      balance.put("Zara", new Double(3434.34));
+      balance.put("Mahnaz", new Double(123.22));
+      balance.put("Ayan", new Double(1378.00));
+      balance.put("Daisy", new Double(99.22));
+      balance.put("Qadir", new Double(-19.08));
+
+      // Show all balances in hash table.
+      names = balance.keys();
+      while(names.hasMoreElements()) {
+         str = (String) names.nextElement();
+         System.out.println(str + ": " +
+         balance.get(str));
+      }
+      System.out.println();
+      // Deposit 1,000 into Zara's account
+      bal = ((Double)balance.get("Zara")).doubleValue();
+      balance.put("Zara", new Double(bal+1000));
+      System.out.println("Zara's new balance: " +
+      balance.get("Zara"));
+   }
+}
+```
+
+以上实例编译运行结果如下： 
+```
+Qadir: -19.08
+Zara: 3434.34
+Mahnaz: 123.22
+Daisy: 99.22
+Ayan: 1378.0
+
+Zara's new balance: 4434.34
+```
+
+
 #### 属性（Properties）
 
 Properties 继承于 Hashtable.Properties 类表示了一个持久的属性集.属性列表中每个键及其对应值都是一个字符串。
 
 Properties 类被许多Java类使用。例如，在获取环境变量时它就作为System.getProperties()方法的返回值。
 
+Properties 继承于 Hashtable。表示一个持久的属性集.属性列表中每个键及其对应值都是一个字符串。
+
+Properties 类被许多 Java 类使用。例如，在获取环境变量时它就作为 System.getProperties() 方法的返回值。
+
+Properties 定义如下实例变量.这个变量持有一个 Properties 对象相关的默认属性列表。
+```
+Properties defaults;
+```
+
+Properties类定义了两个构造方法. 第一个构造方法没有默认值。
+```
+Properties()
+```
+
+第二个构造方法使用propDefault 作为默认值。两种情况下，属性列表都为空：
+```
+Properties(Properties propDefault)
+```
+
+除了从 Hashtable 中所定义的方法，Properties 还定义了以下方法： 
+
+    序号 	方法描述
+    1 	String getProperty(String key)
+     用指定的键在此属性列表中搜索属性。
+    2 	String getProperty(String key, String defaultProperty)
+    用指定的键在属性列表中搜索属性。
+    3 	void list(PrintStream streamOut)
+     将属性列表输出到指定的输出流。
+    4 	void list(PrintWriter streamOut)
+    将属性列表输出到指定的输出流。
+    5 	void load(InputStream streamIn) throws IOException
+     从输入流中读取属性列表（键和元素对）。
+    6 	Enumeration propertyNames( )
+    按简单的面向行的格式从输入字符流中读取属性列表（键和元素对）。
+    7 	Object setProperty(String key, String value)
+     调用 Hashtable 的方法 put。
+    8 	void store(OutputStream streamOut, String description)
+     以适合使用  load(InputStream)方法加载到 Properties 表中的格式，将此 Properties 表中的属性列表（键和元素对）写入输出流。
+
+下面的程序说明这个数据结构支持的几个方法： 
+```
+import java.util.*;
+ 
+public class PropDemo {
+ 
+   public static void main(String args[]) {
+      Properties capitals = new Properties();
+      Set states;
+      String str;
+      
+      capitals.put("Illinois", "Springfield");
+      capitals.put("Missouri", "Jefferson City");
+      capitals.put("Washington", "Olympia");
+      capitals.put("California", "Sacramento");
+      capitals.put("Indiana", "Indianapolis");
+ 
+      // Show all states and capitals in hashtable.
+      states = capitals.keySet(); // get set-view of keys
+      Iterator itr = states.iterator();
+      while(itr.hasNext()) {
+         str = (String) itr.next();
+         System.out.println("The capital of " +
+            str + " is " + capitals.getProperty(str) + ".");
+      }
+      System.out.println();
+ 
+      // look for state not in list -- specify default
+      str = capitals.getProperty("Florida", "Not Found");
+      System.out.println("The capital of Florida is "
+          + str + ".");
+   }
+}
+```
+
+以上实例编译运行结果如下：
+```
+The capital of Missouri is Jefferson City.
+The capital of Illinois is Springfield.
+The capital of Indiana is Indianapolis.
+The capital of California is Sacramento.
+The capital of Washington is Olympia.
+
+The capital of Florida is Not Found.
+```
 
 ### 集合框架
 ### ArrayList
 ### LinkedList
 ### HashSet
+
+### Map 接口
+
+Map 接口中键和值一一映射. 可以通过键来获取值。
+* 给定一个键和一个值，你可以将该值存储在一个 Map 对象。之后，你可以通过键来访问对应的值。
+* 当访问的值不存在的时候，方法就会抛出一个 NoSuchElementException 异常。
+* 当对象的类型和 Map 里元素类型不兼容的时候，就会抛出一个 ClassCastException 异常。
+* 当在不允许使用 Null 对象的 Map 中使用 Null 对象，会抛出一个 NullPointerException 异常。
+* 当尝试修改一个只读的 Map 时，会抛出一个 UnsupportedOperationException 异常。
+
+
+    序号 	方法描述
+    1 	void clear( )
+     从此映射中移除所有映射关系（可选操作）。
+    2 	boolean containsKey(Object k)
+    如果此映射包含指定键的映射关系，则返回 true。
+    3 	boolean containsValue(Object v)
+    如果此映射将一个或多个键映射到指定值，则返回 true。
+    4 	Set entrySet( )
+    返回此映射中包含的映射关系的 Set 视图。
+    5 	boolean equals(Object obj)
+    比较指定的对象与此映射是否相等。
+    6 	Object get(Object k)
+    返回指定键所映射的值；如果此映射不包含该键的映射关系，则返回 null。
+    7 	int hashCode( )
+    返回此映射的哈希码值。
+    8 	boolean isEmpty( )
+    如果此映射未包含键-值映射关系，则返回 true。
+    9 	Set keySet( )
+    返回此映射中包含的键的 Set 视图。
+    10 	Object put(Object k, Object v)
+    将指定的值与此映射中的指定键关联（可选操作）。
+    11 	void putAll(Map m)
+    从指定映射中将所有映射关系复制到此映射中（可选操作）。
+    12 	Object remove(Object k)
+    如果存在一个键的映射关系，则将其从此映射中移除（可选操作）。
+    13 	int size( )
+    返回此映射中的键-值映射关系数。
+    14 	Collection values( )
+    返回此映射中包含的值的 Collection 视图。
+    
+下面的例子来解释Map的功能
+```
+import java.util.*;
+
+public class CollectionsDemo {
+
+   public static void main(String[] args) {
+      Map m1 = new HashMap(); 
+      m1.put("Zara", "8");
+      m1.put("Mahnaz", "31");
+      m1.put("Ayan", "12");
+      m1.put("Daisy", "14");
+      System.out.println();
+      System.out.println(" Map Elements");
+      System.out.print("\t" + m1);
+   }
+}
+```
+
+以上实例编译运行结果如下： 
+```
+Map Elements
+        {Mahnaz=31, Ayan=12, Daisy=14, Zara=8}
+```
+
 ### HashMap
 ### Iterator
 ### Object
