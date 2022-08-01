@@ -1946,16 +1946,16 @@ import package1[.package2…].(classname|*);
 #### 设置 CLASSPATH 系统变量
 
 用下面的命令显示当前的CLASSPATH变量：
-* Windows 平台（DOS 命令行下）：C:\> set CLASSPATH
-* UNIX 平台（Bourne shell 下）：# echo $CLASSPATH
+* Windows 平台（DOS 命令行下）：`C:\> set CLASSPATH`
+* UNIX 平台（Bourne shell 下）：`# echo $CLASSPATH`
 
 删除当前CLASSPATH变量内容：
-* Windows 平台（DOS 命令行下）：C:\> set CLASSPATH=
-* UNIX 平台（Bourne shell 下）：# unset CLASSPATH; export CLASSPATH
+* Windows 平台（DOS 命令行下）：`C:\> set CLASSPATH=`
+* UNIX 平台（Bourne shell 下）：`# unset CLASSPATH; export CLASSPATH`
 
 设置CLASSPATH变量:
-* Windows 平台（DOS 命令行下）： C:\> set CLASSPATH=C:\users\jack\java\classes
-* UNIX 平台（Bourne shell 下）：# CLASSPATH=/home/jack/java/classes; export CLASSPATH
+* Windows 平台（DOS 命令行下）： `C:\> set CLASSPATH=C:\users\jack\java\classes`
+* UNIX 平台（Bourne shell 下）：`# CLASSPATH=/home/jack/java/classes; export CLASSPATH`
 
 
 ## Java 高级课程 
