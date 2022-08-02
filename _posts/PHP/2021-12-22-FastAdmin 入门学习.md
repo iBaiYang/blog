@@ -1537,6 +1537,32 @@ protected function buildparams($searchfields = null, $relationSearch = null)
 }
 ```
 
+### 表格长度限制，鼠标移动显示
+
+有种需求场景，如 表格中简介部分不能太长，鼠标移动上去后页面弹出具体详情，示例代码：
+```
+{field: 'profile', title: "简介", operate: false,
+    formatter: function(value){
+        var span = document.createElement("span");
+        span.setAttribute("title", value);
+        span.innerHTML = value;
+        return span.outerHTML;
+    },
+    cellStyle: function(value, row, index) {
+        return {
+            css: {
+                "white-space": "nowrap",
+                "text-overflow": "ellipsis",
+                "overflow": "hidden",
+                "min-width": "100px",
+                "max-width": "200px"
+            }
+        }
+    },
+},
+```
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
