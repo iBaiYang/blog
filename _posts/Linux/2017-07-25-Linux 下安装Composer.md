@@ -105,7 +105,7 @@ Composer version 2.0.8 2020-12-03 17:20:38
 设置包源：
 > composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
-这个包源虽然是中国区的，但服务可能不稳定，可以换成阿里云的：
+这个包源虽然是中国区的，但服务可能不稳定，可以换成阿里云的（但不支持Composer2）：
 > composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 查看当前源地址：
@@ -140,7 +140,6 @@ extension=phar.so
 然后就可以了。
 
 
-## fxp/composer-asset-plugin
 
 
 
