@@ -7,7 +7,7 @@ meta: 记录一下 Linux 下安装安装Composer流程
 * content
 {:toc}
 
-### 正文
+## 正文
 
 按照下面的参考地址一步一步安装就好，顺便附一下自己安装的流程图：
 
@@ -27,7 +27,11 @@ meta: 记录一下 Linux 下安装安装Composer流程
 > php -r "unlink('composer-setup.php');" 
 ```
 
-（捎带一提：php -r 意思是  Run PHP code without using script tags，<?...?> 也就是不必使用前后闭合标签）
+捎带一提：`php -r` 意思是  Run PHP code without using script tags，<?...?> 也就是不必使用前后闭合标签
+
+安装指定版本composer `php composer-setup.php --version=1.6.5`
+
+过程图：
 
 ![]({{site.baseurl}}/images/20191114/20191114105445.jpeg)
 
@@ -108,7 +112,7 @@ Composer version 2.0.8 2020-12-03 17:20:38
 > composer config -g -l repo.packagist
 
 
-#### 其他问题
+### 其他问题
 
 在安装过程中，可能会碰到这个错误提示：
 
@@ -135,8 +139,35 @@ extension=phar.so
 
 然后就可以了。
 
+
+## fxp/composer-asset-plugin
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
+
+Composer 官网 <https://www.phpcomposer.com/>
+
+Composer 文档 <https://docs.phpcomposer.com/>
+
+镜像官网 <https://packagist.org/>
+
+中国镜像官网 <https://pkg.phpcomposer.com/>
+
+中国全量镜像 <https://pkg.xyz/>
+
+fxp/composer-asset-plugin <https://github.com/fxpio/composer-asset-plugin>
+
+Asset Packagist 官网 <https://asset-packagist.org/>
+
+Asset Packagist 中文站 <https://asset-packagist.cn/>
 
 <https://getcomposer.org/download/>
 
@@ -145,10 +176,6 @@ extension=phar.so
 <http://jingyan.baidu.com/article/a65957f4d23de824e77f9b70.html>
 
 <http://blog.csdn.net/yangbbenyang/article/details/52457666>
-
-<https://pkg.phpcomposer.com/>
-
-<https://pkg.phpcomposer.com/>
 
 Composer简介 <https://docs.phpcomposer.com/00-intro.html>
 
