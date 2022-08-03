@@ -972,24 +972,15 @@ php ./yii migrate --migrationPath=@addons/TinyShop/console/migrations
 
 ### 更新历史
 
-更新历史 详见 <>
+内容 详见 <https://ibaiyang.github.io/blog/yii2/2022/07/29/RageFrame-文档-更新历史.html>
 
 ## 系统开发
 
-
+内容 详见 <>
 
 ## 微信开发
 
-### 微信扩展
-### 公众号绑定
-### 用户信息获取
-### JSSDK
-### 微信支付
-### 模版消息
-### 微信红包
-### 关键字回复
-### 消息概述和响应
-### Access Token
+内容 详见 <>
 
 ## 插件模块开发
 
