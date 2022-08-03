@@ -1957,6 +1957,9 @@ import package1[.package2…].(classname|*);
 * Windows 平台（DOS 命令行下）： `C:\> set CLASSPATH=C:\users\jack\java\classes`
 * UNIX 平台（Bourne shell 下）：`# CLASSPATH=/home/jack/java/classes; export CLASSPATH`
 
+## Java 高级教程
+
+内容 详见 <https://ibaiyang.github.io/blog/java/2022/07/09/Java语言-高级教程.html>
 
 ## 其他
 
