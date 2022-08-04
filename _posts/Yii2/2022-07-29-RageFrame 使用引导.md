@@ -1413,6 +1413,8 @@ password; HQG3mOK09Z
 root@02891538d8c9:/var/www/html/rageframe2#
 ```
 
+这是登录 Backend 项目的账号和密码，注意保存下。
+
 ### Nginx配置
 
 复习下 Nginx 的配置：
