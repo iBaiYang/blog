@@ -684,7 +684,7 @@ php composer.phar update
 
 9、Linux 下文件缓存权限授权
 
-Linux 环境下如果是文件缓存去  `backend/runtime`  目录执行一下 `chmod -R 777 cache`，不执行可能会造成修改了网站设置缓存不生效的情况
+Linux 环境下如果是文件缓存去 `backend/runtime`  目录执行一下 `chmod -R 777 cache`，不执行可能会造成修改了网站设置缓存不生效的情况
 
 #### 站点配置
 
