@@ -9,7 +9,15 @@ meta: RageFrame 使用引导
 
 ## 正文
 
+### 克隆
+
+> git clone https://github.com/jianyan74/rageframe2.git
+
 ### 安装依赖
+
+> cd rageframe2
+> 
+> composer install
 
 ```
 root@02891538d8c9:/var/www/html/rageframe2# composer install
@@ -1000,6 +1008,8 @@ root@02891538d8c9:/var/www/html/rageframe2#
 
 ### 初始化项目
 
+> php init
+
 ```
 root@02891538d8c9:/var/www/html/rageframe2# php init
 Yii Application Initialization Tool v1.0
@@ -1101,6 +1111,8 @@ root@02891538d8c9:/var/www/html/rageframe2#
 
 ### 配置数据库信息
 
+找到 `common/config/main-local.php` 并配置相应的信息：
+
 ```php
 <?php
 return [
@@ -1155,6 +1167,8 @@ return [
 
 ### 安装数据库
 
+> php ./yii migrate/up
+
 ```
 root@02891538d8c9:/var/www/html/rageframe2# php ./yii migrate/up
 Yii Migration Tool (based on Yii v2.0.38)
@@ -1203,7 +1217,7 @@ Stack trace:
 root@02891538d8c9:/var/www/html/rageframe2#
 ```
 
-新建数据库 rageframe ，然后再执行：
+没有库会报错。新建数据库 `rageframe` ，然后再执行：
 ```
 root@02891538d8c9:/var/www/html/rageframe2# php ./yii migrate/up
 Yii Migration Tool (based on Yii v2.0.38)
@@ -1389,6 +1403,8 @@ root@02891538d8c9:/var/www/html/rageframe2#
 ```
 
 ### 初始化账号密码
+
+> php ./yii password/init
 
 ```
 root@02891538d8c9:/var/www/html/rageframe2# php ./yii password/init
