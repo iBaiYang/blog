@@ -1399,18 +1399,135 @@ root@02891538d8c9:/var/www/html/rageframe2#
 
 ### Nginx配置
 
-编辑 `C:\Windows\System32\drivers\etc\hosts`，加入一条：
+复习下 Nginx 的配置：
+`/etc/nginx/nginx.conf` 内容：
+```
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    #include /etc/nginx/conf.d/*.conf;
+    #修改为下面内容
+    include /usr/share/nginx/html/vhost/virtualbox/docker/*.conf;
+}
+```
+
+编辑 `C:\Windows\System32\drivers\etc\hosts`，加入：
 ```
 192.168.56.108      rageframe2.test
+192.168.56.108      backend.rageframe2.test
 ```
 
+配置首页：
+```
+server {
+    listen       80;
+    server_name rageframe2.test;
 
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
 
+    location / {
+        root   /usr/share/nginx/html/rageframe2/web;
+        index  index.php;
+        if (!-e $request_filename) {
+               rewrite  ^(.*)$  /index.php?s=/$1  last;
+               break;
+         }
+    }
 
+    location ~* ^/attachment/.*\.(php|php5)$ 
+    {
+         deny all;
+    }
 
+    #error_page  404              /404.html;
 
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
 
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root   /var/www/html/rageframe2/web;
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
 
+配置Backend：
+```
+server {
+    listen       80;
+    server_name backend.rageframe2.test;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html/rageframe2/web/backend;
+        index  index.php;
+        if (!-e $request_filename) {
+               rewrite  ^(.*)$  /index.php?s=/$1  last;
+               break;
+         }
+    }
+
+    location ~* ^/attachment/.*\.(php|php5)$ 
+    {
+         deny all;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root   /var/www/html/rageframe2/web/backend;
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
 
 
 
