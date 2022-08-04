@@ -9,6 +9,8 @@ meta: RageFrame 使用引导
 
 ## 正文
 
+### 安装依赖
+
 ```
 root@02891538d8c9:/var/www/html/rageframe2# composer install
 Installing dependencies from lock file (including require-dev)
@@ -994,6 +996,424 @@ Use the `composer fund` command to find out more!
 root@02891538d8c9:/var/www/html/rageframe2#
 root@02891538d8c9:/var/www/html/rageframe2#
 ```
+
+
+### 初始化项目
+
+```
+root@02891538d8c9:/var/www/html/rageframe2# php init
+Yii Application Initialization Tool v1.0
+
+Which environment do you want the application to be initialized in?
+
+  [0] Development
+  [1] Production
+
+  Your choice [0-1, or "q" to quit] 0
+
+  Initialize the application under 'Development' environment? [yes|no] yes
+
+  Start initialization ...
+
+   generate api/config/main-local.php
+   generate api/config/params-local.php
+   generate api/config/test-local.php
+   generate backend/config/main-local.php
+   generate backend/config/params-local.php
+   generate backend/config/test-local.php
+   generate common/config/main-local.php
+   generate common/config/params-local.php
+   generate common/config/test-local.php
+   generate console/config/main-local.php
+   generate console/config/params-local.php
+   generate console/config/test-local.php
+   generate frontend/config/main-local.php
+   generate frontend/config/params-local.php
+   generate frontend/config/test-local.php
+   generate html5/config/main-local.php
+   generate html5/config/params-local.php
+   generate html5/config/test-local.php
+   generate merapi/config/main-local.php
+   generate merapi/config/params-local.php
+   generate merapi/config/test-local.php
+   generate merchant/config/main-local.php
+   generate merchant/config/params-local.php
+   generate merchant/config/test-local.php
+   generate oauth2/config/main-local.php
+   generate oauth2/config/params-local.php
+   generate oauth2/config/test-local.php
+   generate storage/web/index.php
+   generate storage/web/robots.txt
+   generate web/api/index-test.php
+   generate web/api/index.php
+   generate web/api/robots.txt
+   generate web/backend/index-test.php
+   generate web/backend/index.php
+   generate web/backend/robots.txt
+   generate web/html5/index-test.php
+   generate web/html5/index.php
+   generate web/html5/robots.txt
+   generate web/index-test.php
+   generate web/index.php
+   generate web/merapi/index-test.php
+   generate web/merapi/index.php
+   generate web/merapi/robots.txt
+   generate web/merchant/index-test.php
+   generate web/merchant/index.php
+   generate web/merchant/robots.txt
+   generate web/oauth2/index-test.php
+   generate web/oauth2/index.php
+   generate web/oauth2/robots.txt
+   generate web/robots.txt
+   generate yii
+   generate yii_test
+   generate yii_test.bat
+   generate cookie validation key in backend/config/main-local.php
+   generate cookie validation key in frontend/config/main-local.php
+   generate cookie validation key in html5/config/main-local.php
+   generate cookie validation key in api/config/main-local.php
+   generate cookie validation key in oauth2/config/main-local.php
+   generate cookie validation key in merchant/config/main-local.php
+   generate cookie validation key in merapi/config/main-local.php
+      chmod 0777 backend/runtime
+      chmod 0777 frontend/runtime
+      chmod 0777 html5/runtime
+      chmod 0777 api/runtime
+      chmod 0777 oauth2/runtime
+      chmod 0777 merchant/runtime
+      chmod 0777 merapi/runtime
+      chmod 0777 /web/assets
+      chmod 0777 /web/backend/assets
+      chmod 0777 /web/html5/assets
+      chmod 0777 /web/api/assets
+      chmod 0777 /web/oauth2/assets
+      chmod 0777 /web/merchant/assets
+      chmod 0777 /web/merapi/assets
+      chmod 0777 web/attachment
+      chmod 0777 addons
+      chmod 0755 yii
+      chmod 0755 yii_test
+
+  ... initialization completed.
+
+root@02891538d8c9:/var/www/html/rageframe2#
+```
+
+### 配置数据库信息
+
+```php
+<?php
+return [
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=192.168.56.108;dbname=rageframe',
+            'username' => 'root',
+            'password' => '123456',
+            'charset' => 'utf8mb4',
+            'tablePrefix' => 'rf_',
+            'attributes' => [
+                // PDO::ATTR_STRINGIFY_FETCHES => false, // 提取的时候将数值转换为字符串
+                // PDO::ATTR_EMULATE_PREPARES => false, // 启用或禁用预处理语句的模拟
+            ],
+            // 'enableSchemaCache' => true, // 是否开启缓存, 请了解其中机制在开启，不了解谨慎
+            // 'schemaCacheDuration' => 3600, // 缓存时间
+            // 'schemaCache' => 'cache', // 缓存名称
+            // 断线重连，主要用于 websocket
+            // 'commandMap' => [
+            //     'mysql' => 'common\replaces\Command'
+            // ],
+        ],
+        /**
+        // redis缓存
+        // 注意：系统默认开启了file缓存的保存路径，如果开启redis或者其他缓存请去main里面删除
+         * 'cache' => [
+            'class' => 'yii\redis\Cache',
+        ],
+        // session写入缓存配置
+        'session' => [
+            'class' => 'yii\redis\Session',
+            'redis' => [
+                'class' => 'yii\redis\Connection',
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+        */
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => true,
+        ],
+    ],
+];
+```
+
+### 安装数据库
+
+```
+root@02891538d8c9:/var/www/html/rageframe2# php ./yii migrate/up
+Yii Migration Tool (based on Yii v2.0.38)
+
+Exception 'yii\db\Exception' with message 'SQLSTATE[HY000] [1049] Unknown database 'rageframe''
+
+in /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php:642
+
+Error Info:
+Array
+(
+    [0] => HY000
+    [1] => 1049
+    [2] => Unknown database 'rageframe'
+)
+
+Caused by: Exception 'PDOException' with message 'SQLSTATE[HY000] [1049] Unknown database 'rageframe''
+
+in /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php:710
+
+Stack trace:
+#0 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php(710): PDO->__construct('mysql:host=192....', 'root', '123456', Array)
+#1 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php(631): yii\db\Connection->createPdoInstance()
+#2 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php(1030): yii\db\Connection->open()
+#3 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Connection.php(1017): yii\db\Connection->getMasterPdo()
+#4 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Command.php(255): yii\db\Connection->getSlavePdo()
+#5 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Command.php(1154): yii\db\Command->prepare(true)
+#6 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Command.php(401): yii\db\Command->queryInternal('fetchAll', NULL)
+#7 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/mysql/Schema.php(319): yii\db\Command->queryAll()
+#8 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/mysql/Schema.php(125): yii\db\mysql\Schema->findColumns(Object(yii\db\TableSchema))
+#9 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Schema.php(757): yii\db\mysql\Schema->loadTableSchema('rf_migration')
+#10 /var/www/html/rageframe2/vendor/yiisoft/yii2/db/Schema.php(193): yii\db\Schema->getTableMetadata('{{%migration}}', 'schema', true)
+#11 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/controllers/MigrateController.php(211): yii\db\Schema->getTableSchema('{{%migration}}', true)
+#12 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(877): yii\console\controllers\MigrateController->getMigrationHistory(NULL)
+#13 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/controllers/BaseMigrateController.php(169): yii\console\controllers\BaseMigrateController->getNewMigrations()
+#14 [internal function]: yii\console\controllers\BaseMigrateController->actionUp(0)
+#15 /var/www/html/rageframe2/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#16 /var/www/html/rageframe2/vendor/yiisoft/yii2/base/Controller.php(180): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/Controller.php(179): yii\base\Controller->runAction('up', Array)
+#18 /var/www/html/rageframe2/vendor/yiisoft/yii2/base/Module.php(528): yii\console\Controller->runAction('up', Array)
+#19 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/Application.php(180): yii\base\Module->runAction('migrate/up', Array)
+#20 /var/www/html/rageframe2/vendor/yiisoft/yii2/console/Application.php(147): yii\console\Application->runAction('migrate/up', Array)
+#21 /var/www/html/rageframe2/vendor/yiisoft/yii2/base/Application.php(386): yii\console\Application->handleRequest(Object(yii\console\Request))
+#22 /var/www/html/rageframe2/yii(26): yii\base\Application->run()
+#23 {main}
+root@02891538d8c9:/var/www/html/rageframe2#
+```
+
+新建数据库 rageframe ，然后再执行：
+```
+root@02891538d8c9:/var/www/html/rageframe2# php ./yii migrate/up
+Yii Migration Tool (based on Yii v2.0.38)
+
+Creating migration history table "rf_migration"...Done.
+Total 56 new migrations to be applied:
+        m200529_152443_api_access_token
+        m200529_152443_backend_member_auth
+        m200529_152443_backend_notify
+        m200529_152443_backend_notify_member
+        m200529_152443_backend_notify_pull_time
+        m200529_152443_backend_notify_subscription_config
+        m200529_152443_common_action_behavior
+        m200529_152443_common_action_log
+        m200529_152443_common_addons
+        m200529_152443_common_addons_binding
+        m200529_152443_common_addons_config
+        m200529_152443_common_attachment
+        m200529_152444_common_config_value
+        m200529_152444_common_ip_blacklist
+        m200529_152444_common_log
+        m200529_152444_common_menu_cate
+        m200529_152444_common_pay_log
+        m200529_152445_common_provinces
+        m200529_152445_common_report_log
+        m200529_152445_common_sms_log
+        m200529_152445_member
+        m200529_152445_member_account
+        m200529_152445_member_address
+        m200529_152445_member_auth
+        m200529_152445_member_balance_withdraw
+        m200529_152445_member_bank_account
+        m200529_152445_member_credits_log
+        m200529_152445_member_invoice
+        m200529_152445_member_level
+        m200529_152445_member_recharge_config
+        m200529_152446_merapi_access_token
+        m200529_152446_merchant
+        m200529_152446_merchant_account
+        m200529_152446_merchant_auth
+        m200529_152446_merchant_bank_account
+        m200529_152446_merchant_base_config
+        m200529_152446_merchant_cate
+        m200529_152446_merchant_commission_withdraw
+        m200529_152446_merchant_credits_log
+        m200529_152446_merchant_member
+        m200529_152446_merchant_member_auth
+        m200529_152446_oauth2_access_token
+        m200529_152446_oauth2_authorization_code
+        m200529_152447_oauth2_client
+        m200529_152447_oauth2_refresh_token
+        m200529_152447_rbac_auth_assignment
+        m200529_152447_rbac_auth_item
+        m200529_152447_rbac_auth_item_child
+        m200529_152447_rbac_auth_role
+        m200529_155245_backend_member
+        m200529_155245_common_menu
+        m200711_160132_common_config
+        m200711_160402_common_config_cate
+        m200806_080040_common_pay_refund
+        m200906_133303_common_bank_number
+        m200906_133303_common_commission_withdraw_log
+
+Apply the above migrations? (yes|no) [no]:yes
+*** applying m200529_152443_api_access_token
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.001s)
+    > create table {{%api_access_token}} ... done (time: 0.293s)
+    > create unique index access_token on {{%api_access_token}} (access_token) ... done (time: 0.167s)
+    > create unique index refresh_token on {{%api_access_token}} (refresh_token) ... done (time: 0.119s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152443_api_access_token (time: 0.653s)
+
+*** applying m200529_152443_backend_member_auth
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.019s)
+    > create table {{%backend_member_auth}} ... done (time: 0.132s)
+    > create index oauth_client on {{%backend_member_auth}} (oauth_client, oauth_client_user_id) ... done (time: 0.125s)
+    > create index member_id on {{%backend_member_auth}} (member_id) ... done (time: 0.150s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.005s)
+*** applied m200529_152443_backend_member_auth (time: 0.487s)
+
+*** applying m200529_152443_backend_notify
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%backend_notify}} ... done (time: 0.146s)
+    > create index created_at on {{%backend_notify}} (type, created_at) ... done (time: 0.123s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_backend_notify (time: 0.329s)
+
+*** applying m200529_152443_backend_notify_member
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.007s)
+    > create table {{%backend_notify_member}} ... done (time: 0.156s)
+    > create index member_id on {{%backend_notify_member}} (member_id) ... done (time: 0.115s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_backend_notify_member (time: 0.318s)
+
+*** applying m200529_152443_backend_notify_pull_time
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.001s)
+    > create table {{%backend_notify_pull_time}} ... done (time: 0.171s)
+    > create index member_id on {{%backend_notify_pull_time}} (member_id, type, alert_type) ... done (time: 0.114s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_backend_notify_pull_time (time: 0.325s)
+
+*** applying m200529_152443_backend_notify_subscription_config
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%backend_notify_subscription_config}} ... done (time: 0.152s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_backend_notify_subscription_config (time: 0.197s)
+
+*** applying m200529_152443_common_action_behavior
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%common_action_behavior}} ... done (time: 0.146s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_common_action_behavior (time: 0.187s)
+
+*** applying m200529_152443_common_action_log
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%common_action_log}} ... done (time: 0.143s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200529_152443_common_action_log (time: 0.179s)
+
+*** applying m200529_152443_common_addons
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%common_addons}} ... done (time: 0.177s)
+    > create index name on {{%common_addons}} (name) ... done (time: 0.129s)
+    > create index update on {{%common_addons}} (updated_at) ... done (time: 0.168s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152443_common_addons (time: 0.520s)
+
+*** applying m200529_152443_common_addons_binding
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.003s)
+    > create table {{%common_addons_binding}} ... done (time: 0.158s)
+    > create index addons_name on {{%common_addons_binding}} (addons_name) ... done (time: 0.153s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152443_common_addons_binding (time: 0.369s)
+
+*** applying m200529_152443_common_addons_config
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.003s)
+    > create table {{%common_addons_config}} ... done (time: 0.138s)
+    > create index addons_name on {{%common_addons_config}} (addons_name) ... done (time: 0.129s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152443_common_addons_config (time: 0.310s)
+
+*** applying m200529_152443_common_attachment
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.002s)
+    > create table {{%common_attachment}} ... done (time: 0.195s)
+    > create index md5 on {{%common_attachment}} (md5) ... done (time: 0.179s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152443_common_attachment (time: 0.421s)
+
+*** applying m200529_152444_common_config_value
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.023s)
+    > create table {{%common_config_value}} ... done (time: 0.129s)
+    > create index config_id on {{%common_config_value}} (config_id) ... done (time: 0.141s)
+    > insert into {{%common_config_value}} ... done (time: 0.028s)
+    > insert into {{%common_config_value}} ... done (time: 0.042s)
+    > insert into {{%common_config_value}} ... done (time: 0.035s)
+    > insert into {{%common_config_value}} ... done (time: 0.025s)
+    > insert into {{%common_config_value}} ... done (time: 0.030s)
+    > insert into {{%common_config_value}} ... done (time: 0.024s)
+    > insert into {{%common_config_value}} ... done (time: 0.023s)
+    > insert into {{%common_config_value}} ... done (time: 0.035s)
+    > insert into {{%common_config_value}} ... done (time: 0.032s)
+    > insert into {{%common_config_value}} ... done (time: 0.023s)
+    > insert into {{%common_config_value}} ... done (time: 0.028s)
+    > insert into {{%common_config_value}} ... done (time: 0.034s)
+    > insert into {{%common_config_value}} ... done (time: 0.025s)
+    > insert into {{%common_config_value}} ... done (time: 0.030s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.002s)
+*** applied m200529_152444_common_config_value (time: 0.789s)
+
+# 省略若干
+
+*** applying m200906_133303_common_commission_withdraw_log
+    > execute SQL: SET foreign_key_checks = 0 ... done (time: 0.003s)
+    > create table {{%common_commission_withdraw_log}} ... done (time: 0.152s)
+    > execute SQL: SET foreign_key_checks = 1; ... done (time: 0.001s)
+*** applied m200906_133303_common_commission_withdraw_log (time: 0.213s)
+
+
+56 migrations were applied.
+
+Migrated up successfully.
+root@02891538d8c9:/var/www/html/rageframe2#
+```
+
+### 初始化账号密码
+
+```
+root@02891538d8c9:/var/www/html/rageframe2# php ./yii password/init
+username; F3Kr8
+password; HQG3mOK09Z
+root@02891538d8c9:/var/www/html/rageframe2#
+```
+
+### Nginx配置
+
+编辑 `C:\Windows\System32\drivers\etc\hosts`，加入一条：
+```
+192.168.56.108      rageframe2.test
+```
+
+
+
+
+
+
+
+
+
+
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
