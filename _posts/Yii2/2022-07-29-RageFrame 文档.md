@@ -1010,3 +1010,5 @@ RageFrame 官网 <http://www.rageframe.com/>
 
 官方在线文档 <https://github.com/jianyan74/rageframe2/blob/master/docs/guide-zh-CN/README.md>
 
+微商城插件 <https://github.com/jianyan74/TinyShop>
+
