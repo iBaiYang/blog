@@ -986,10 +986,6 @@ php ./yii migrate --migrationPath=@addons/TinyShop/console/migrations
 
 内容 详见 <https://ibaiyang.github.io/blog/yii2/2022/08/01/RageFrame-文档-插件模块开发.html>
 
-## 模块介绍
-
-内容 详见 <https://ibaiyang.github.io/blog/yii2/2022/08/02/RageFrame-文档-模块介绍.html>
-
 ## Api
 
 内容 详见 <https://ibaiyang.github.io/blog/yii2/2022/08/03/RageFrame-文档-Api.html>
