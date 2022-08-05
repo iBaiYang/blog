@@ -275,9 +275,9 @@ Yii::$app->params['addon'];
 Yii::$app->params['addonBinding'];
 ```
 
-####  辅助方法
+#### 辅助方法
 
-[模块辅助类](helper-addon.md)
+[模块辅助类](https://ibaiyang.github.io/blog/yii2/2022/08/05/RageFrame-文档-助手类.html#addonhelper---插件辅助类)
 
 ### 钩子
 
