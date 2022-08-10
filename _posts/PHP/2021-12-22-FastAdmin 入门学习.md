@@ -1562,11 +1562,15 @@ protected function buildparams($searchfields = null, $relationSearch = null)
 },
 ```
 
+### 在线支付实现
+
+FastAdmin 框架中在线支付可以使用 微信支付宝整合epay插件 <https://www.fastadmin.net/store/epay.html>
+
+支持在线安装，和离线安装。
+
 ### 支付退款实现
 
-FastAdmin 框架中可以使用 微信支付宝整合epay插件 <https://www.fastadmin.net/store/epay.html>
-
-不过缺少退款这块，需要自己在 `addons/epayyq/library/Service.php` 文件中补充：
+上面 微信支付宝整合epay插件 实现了支付，不过缺少退款这块，需要自己在 `addons/epayyq/library/Service.php` 文件中补充：
 ```
 /**
  * 提交退款
@@ -1641,6 +1645,46 @@ public static function submitRefund($amount = null, $refund_money, $orderid, $re
     return $result;
 }
 ```
+### 多个支付主体实现
+
+开发中碰到一个问题，在同一个项目中，会有多个微信小程序主体，会用这多个小程序进行支付。
+
+跨小程序支付会报错：`ERROR_GATEWAY: ERROR_BUSINESS: Wechat Business Error: PARAM_ERROR - appid和openid不匹配`
+
+也就是说 一个用户在多个小程序中会有各自的 openid , 付款时 用户的 openid 要与 小程序 appid 匹配才可以支付。
+
+我们安装的 微信支付宝整合epay插件 只能配置一个微信小程序，怎么才能使用第二个小程序支付呢。
+
+**重新打包一个插件** 
+
+我们用 微信支付宝整合epay插件 为基础，重新打包一个支付插件，然后离线安装，配置后就可以使用了。
+
+说下过程：
+
+1、在FastAdmin插件市场搜索 [微信支付宝整合插件](https://www.fastadmin.net/store/epay.html)，下载插件包。
+
+2、解压后，编辑项目
+
+* 把 `library` 文件夹中的 `Yansongda`文件夹 改名为 `YansongdaYq`，全局替换 `Yansongda` 为 `YansongdaYq`。
+
+* 把 `Epay.php`  改名为 `Epayyq.php`，在把 `application/admin/controller/` 文件夹中的 `Epay.php`文件 改名为 `Epayyq.php`，
+全局替换 `Epay` 为 `Epayyq`。
+
+* 全局替换 `epay` 为 `epayyq`。
+这里误改了两个地方 `prepayyq_id`、`prepayyqid`，我们再替换回来`prepay_id`、`prepayid`。
+
+* 在这个插件项目根目录下，选中这些文件，打包为 `epayyq.zip` 压缩包，移动到指定位置。
+
+* 安装时会进行是否允许未知来源的插件压缩包的配置判断，修改 `application/config.php` 中 `unknownsources` 为 `true`。
+
+* 安装时会进行压缩包验证、版本依赖判断，绕过判断，直接安装，需要注释代码。
+把项目 `vendor/karsonzhang/fastadmin-addons/src/addons/Service.php` 文件中 `Service::valid($params);` 这行代码注释掉。
+
+* 打开项目的插件管理页面，点击 离线安装，选中上面的压缩包，等待安装完成。
+
+* 进行插件参数配置。
+
+接下来对这个插件进行使用就可以了。
 
 
 <br/><br/><br/><br/><br/>
@@ -1665,5 +1709,21 @@ jsTree 中文网 <http://www.jstree.com.cn/>
 获取$where 修改$where条件 在 buildparams 之前 <https://zhuanlan.zhihu.com/p/501150222>
 
 fast-admin 开发教程 视频 <https://v-wb.youku.com/v_show/id_XMzk3MjA4NjE0MA==.html>
+
+FastAdmin 插件-手动打包-离线安装 <https://www.jianshu.com/p/8bde6fac9fa7>
+
+Fastadmin插件开发流程简要记录 <https://blog.csdn.net/muyibu/article/details/115915254>
+
+微信支付错误: PARAM_ERROR 原因:appid和openid不匹配 <https://developers.weixin.qq.com/community/pay/doc/00040e24064440aaba1acaa8156800>
+
+fastadmin踩坑日记-1.初识插件开发 <https://blog.csdn.net/xzy565143480/article/details/104173888>
+
+
+
+
+
+
+
+
 
 
