@@ -1562,6 +1562,86 @@ protected function buildparams($searchfields = null, $relationSearch = null)
 },
 ```
 
+### 支付退款实现
+
+FastAdmin 框架中可以使用 微信支付宝整合epay插件 <https://www.fastadmin.net/store/epay.html>
+
+不过缺少退款这块，需要自己在 `addons/epayyq/library/Service.php` 文件中补充：
+```
+/**
+ * 提交退款
+ * @param null $amount  订单金额
+ * @param $refund_money   退款金额
+ * @param $orderid   订单号
+ * @param $refund_sn    退款订单号
+ * @param $type    支付类型，alipay,wechat
+ * @param null $remark   退款原因
+ * @param null $notifyurl   通知url
+ * @param null $returnurl   跳转url
+ * @param string $method    支付方法
+ * @return null|\Yansongda\Supports\Collection|static
+ */
+public static function submitRefund($amount = null, $refund_money, $orderid, $refund_sn, $type, $remark = null, $notifyurl = null, $returnurl = null, $method = 'app')
+{
+    if (!is_array($amount)) {
+        $params = [
+            'amount' => $amount,
+            'type' => $type,
+            'notifyurl' => $notifyurl,
+            'returnurl' => $returnurl,
+            'method' => $method
+        ];
+    } else {
+        $params = $amount;
+    }
+
+    $type = isset($params['type']) && in_array($params['type'], ['alipay', 'wechat']) ? $params['type'] : 'wechat';
+    $request = request();
+    $notifyurl = isset($params['notifyurl']) ? $params['notifyurl'] : $request->root(true) . '/addons/epay/index/' . $type . 'notify';
+    $returnurl = isset($params['returnurl']) ? $params['returnurl'] : $request->root(true) . '/addons/epay/index/' . $type . 'return/out_trade_no/' . $orderid;
+
+    $config = Service::getConfig($type);
+    $config['notify_url'] = $notifyurl;
+    $config['return_url'] = $returnurl;
+    $result = null;
+
+    $order_data = [
+        'out_trade_no' => $orderid
+    ];
+
+    if ($type == 'wechat') {
+        $pay = Pay::wechat($config);
+        $total_fee = $amount * 100;
+        $refund_fee = $refund_money * 100;
+        $order_data = array_merge($order_data, [
+            'out_refund_no' => $refund_sn,
+            'total_fee' => $total_fee,
+            'refund_fee' => $refund_fee,
+            'refund_desc' => $remark,
+            'type' => $method,
+        ]);
+    } else {
+        $pay = Pay::alipay($config);
+        $order_data = array_merge($order_data, [
+            'out_request_no' => $refund_sn,
+            'refund_amount' => $refund_money,
+        ]);
+    }
+
+    $result = $pay->refund($order_data);
+
+    if ($result instanceof \Symfony\Component\HttpFoundation\RedirectResponse) {
+        $result = RedirectResponse::create($result->getTargetUrl());
+    } elseif ($result instanceof \Symfony\Component\HttpFoundation\Response) {
+        $result = Response::create($result->getContent());
+    } elseif ($result instanceof \Yansongda\Supports\Collection) {
+        $result = Collection::make($result->all());
+    }
+
+    return $result;
+}
+```
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
