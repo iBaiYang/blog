@@ -1686,6 +1686,68 @@ public static function submitRefund($amount = null, $refund_money, $orderid, $re
 
 接下来对这个插件进行使用就可以了。
 
+### 新建一个后台模块
+
+有时会碰到需求，需要在项目中新增一个模块，如给企业使用，怎么实现呢，下面记录一下。
+
+1、修改项目根目录下的 `build.php` 文件内容，增加 enterprise 模块定义：
+```php
+<?php
+
+return [
+    // 生成应用公共文件
+    '__file__' => ['hello.php', 'test.php'],
+    // 定义demo模块的自动生成 （按照实际定义的文件名生成）
+    'demo' => [
+        '__file__'   => ['common.php'],
+        '__dir__'    => ['behavior', 'controller', 'model', 'view'],
+        'controller' => ['Index', 'Test', 'UserType'],
+        'model'      => ['User', 'UserType'],
+        'view'       => ['index/index'],
+    ],
+    // 其他更多的模块定义
+    'enterprise' => [
+        '__file__'   => ['common.php'],
+        '__dir__'    => ['controller', 'model', 'view'],
+        'controller' => ['Index'],
+        'model'      => [],
+        'view'       => ['index/index'],
+    ],
+];
+```
+
+2、在项目根目录下执行命令：
+> php think build --config build.php
+
+然后浏览器访问 `域名/enterprise` 就可以看到模块页面内容了。
+
+3、类文件的复制，注意把文件名修改为 `Enterprise`、命名空间名称 修改为 `Enterprise`。
+
+把 `application/common/controller` 文件夹下的 `Backend.php` 复制一份为 `Enterprise.php` ，
+修改该文件内容 `use \app\admin\library\traits\Enterprise;` 为 `use \app\enterprise\library\traits\Enterprise;`、
+修改 `'jsname'         => 'admin/' . str_replace('.', '/', $controllername),` 
+为 `'jsname'         => 'enterprise/' . str_replace('.', '/', $controllername),` ，这里修改的是js自动加载的文件夹路径。
+
+把 `application/admin` 文件夹下的 `library` 文件夹 复制到 `application/enterprise` 文件夹下；
+
+把 `application/admin/controller` 文件夹下的 `Ajax.php`、`Dashboard.php` 、`Index.php` 文件 也复制过去。
+
+4、视图文件的复制。
+
+把 `application/admin/view` 文件夹下的 `common`、`dashboard`、`index`、`layout` 文件夹 也复制到 `application/enterprise/view` 文件夹下去。
+
+修改 `application/enterprise/view/common/script.html` 的 `require-backend` 为 `require-enterprise`，把引用的js修改掉。
+
+5、Js文件的复制。
+
+把 `public/assets/js` 文件夹下的 `backend.js`、`backend-init.js`、`require-backend.js`、`require-backend.min.js` 复制为 
+`enterprise.js`、`enterprise-init.js`、`require-enterprise.js`、`require-enterprise.min.js` ，
+把这几个文件中的 `backend` 修改为 `enterprise`、`Backend` 修改为 `Bnterprise`。
+
+在 `public/assets/js` 文件夹下新建 `enterprise` 文件夹，以后控制器相关的js都放在该文件夹下。
+
+
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
@@ -1718,8 +1780,11 @@ Fastadmin插件开发流程简要记录 <https://blog.csdn.net/muyibu/article/de
 
 fastadmin踩坑日记-1.初识插件开发 <https://blog.csdn.net/xzy565143480/article/details/104173888>
 
+fastadmin 手动建一个新模块流程 <https://www.likecs.com/show-876138.html>
 
+thinkPHP5 添加新模块 <https://www.cnblogs.com/flyphper/p/8693120.html>
 
+ThinkPHP5使用build类实现模块自动化搭建 <https://blog.csdn.net/sqz635262108/article/details/78571122>
 
 
 
