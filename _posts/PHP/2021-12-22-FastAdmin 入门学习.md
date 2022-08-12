@@ -1719,6 +1719,8 @@ return [
 2、在项目根目录下执行命令：
 > php think build --config build.php
 
+执行后比较简单，只生成了上面写的那几个文件，并没有对其他文件进行修改。
+
 然后浏览器访问 `域名/enterprise` 就可以看到模块页面内容了。
 
 3、类文件的复制，注意把文件名修改为 `Enterprise`、命名空间名称 修改为 `Enterprise`。
