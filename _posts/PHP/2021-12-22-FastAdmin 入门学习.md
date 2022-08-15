@@ -1758,7 +1758,9 @@ css 部分可以和 admin 模块的共用，可过也可以复制转移下。
 
 把 `public/assets/css` 文件夹下的 `backend.css` 复制为 `enterprise.css` ，视图文件中改下引入。
 
+8、语言包文件的复制。
 
+把 `application/admin` 文件夹下的 `lang` 文件夹 复制到 `application/enterprise` 文件夹下；
 
 
 
