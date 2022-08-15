@@ -1734,19 +1734,42 @@ return [
 
 把 `application/admin/controller` 文件夹下的 `Ajax.php`、`Dashboard.php` 、`Index.php` 文件 也复制过去。
 
-4、视图文件的复制。
+4、函数文件的复制。
+
+把 `application/admin` 文件夹下的 `common.php` 文件 复制到 `application/enterprise` 文件夹下；
+
+5、视图文件的复制。
 
 把 `application/admin/view` 文件夹下的 `common`、`dashboard`、`index`、`layout` 文件夹 也复制到 `application/enterprise/view` 文件夹下去。
 
 修改 `application/enterprise/view/common/script.html` 的 `require-backend` 为 `require-enterprise`，把引用的js修改掉。
 
-5、Js文件的复制。
+6、Js文件的复制。
 
 把 `public/assets/js` 文件夹下的 `backend.js`、`backend-init.js`、`require-backend.js`、`require-backend.min.js` 复制为 
 `enterprise.js`、`enterprise-init.js`、`require-enterprise.js`、`require-enterprise.min.js` ，
 把这几个文件中的 `backend` 修改为 `enterprise`、`Backend` 修改为 `Bnterprise`。
 
 在 `public/assets/js` 文件夹下新建 `enterprise` 文件夹，以后控制器相关的js都放在该文件夹下。
+
+7、Css文件的复制。
+
+css 部分可以和 admin 模块的共用，可过也可以复制转移下。
+
+把 `public/assets/css` 文件夹下的 `backend.css` 复制为 `enterprise.css` ，视图文件中改下引入。
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
