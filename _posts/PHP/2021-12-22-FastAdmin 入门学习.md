@@ -1750,7 +1750,7 @@ return [
 
 把 `public/assets/js` 文件夹下的 `backend.js`、`backend-init.js`、`require-backend.js`、`require-backend.min.js` 复制为 
 `enterprise.js`、`enterprise-init.js`、`require-enterprise.js`、`require-enterprise.min.js` ，
-把这几个文件中的 `backend` 修改为 `enterprise`、`Backend` 修改为 `Bnterprise`。
+把这几个文件中的 `backend` 修改为 `enterprise`、`Backend` 修改为 `Enterprise`。
 
 在 `public/assets/js` 文件夹下新建 `enterprise` 文件夹，以后控制器相关的js都放在该文件夹下。
 
