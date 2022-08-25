@@ -95,12 +95,13 @@ cmake --build . --target install
 
 成功。
 
-后面安装amqp时会到/rabbitmq-c-0.9.0/lib下找搜索依赖库，然而我们这里是lib64，所以我们需要建立链接：
+后面安装amqp时会到`/rabbitmq-c-0.9.0/lib`下找搜索依赖库，然而我们这里是`lib64`，所以我们需要建立链接：
 
+```
 > cd /usr/local/src/rabbitmq-c-0.9.0/
-
+> 
 > ln -s lib64 lib
-
+```
 
 ##### 安装amqp
 
@@ -125,7 +126,7 @@ cmake --build . --target install
 
 > cd amqp-1.9.3
 
-用find / -name phpize查找命令路径：
+用`find / -name phpize`查找命令路径：
 
 > find / -name phpize
 
@@ -153,7 +154,7 @@ phpize化：
 
 > vi /etc/php.ini
 
-添加 extension=amqp.so：
+添加 `extension=amqp.so`：
 
 > extension=amqp.so
 
