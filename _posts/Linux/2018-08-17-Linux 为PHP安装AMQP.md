@@ -79,7 +79,9 @@ cd到软件资源目录下：
 
 在当前目录下生成安装库：
 
+```
 > cmake -DCMAKE_INSTALL_PREFIX=/usr/local/src/rabbitmq-c-0.9.0/ ..
+```
 
 cmake编译：
 
