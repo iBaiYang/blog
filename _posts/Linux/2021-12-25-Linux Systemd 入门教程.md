@@ -45,6 +45,13 @@ $ systemctl --version
 
 上面的命令查看 Systemd 的版本。
 
+```
+[root@localhost ~]# systemctl --version
+systemd 219
++PAM +AUDIT +SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 -SECCOMP +BLKID +ELFUTILS +KMOD +IDN
+[root@localhost ~]#
+```
+
 Systemd 的优点是功能强大，使用方便，缺点是体系庞大，非常复杂。事实上，现在还有很多人反对使用 Systemd，理由就是它过于复杂，
 与操作系统的其他部分强耦合，违反"keep simple, keep stupid"的Unix 哲学。
 
@@ -101,6 +108,129 @@ $ systemd-analyze critical-chain
 $ systemd-analyze critical-chain atd.service
 ```
 
+输出：
+```
+[root@localhost ~]# systemd-analyze
+Startup finished in 2.005s (kernel) + 8.531s (initrd) + 26.392s (userspace) = 36.929s
+[root@localhost ~]#
+[root@localhost ~]# systemd-analyze blame
+         22.517s vboxadd.service
+          8.223s kdump.service
+          5.485s docker.service
+          4.582s tuned.service
+          4.363s dracut-initqueue.service
+          3.288s postfix.service
+          2.225s sysroot.mount
+          1.889s initrd-switch-root.service
+          1.506s dev-mapper-centos\x2droot.device
+          1.495s lvm2-monitor.service
+          1.428s lvm2-pvscan@8:2.service
+          1.414s network.service
+          1.172s NetworkManager-wait-online.service
+           740ms dracut-pre-pivot.service
+           719ms NetworkManager.service
+           594ms polkit.service
+           527ms sshd.service
+           424ms docker-storage-setup.service
+           393ms dracut-cmdline.service
+           378ms systemd-vconsole-setup.service
+           344ms auditd.service
+           341ms rsyslog.service
+           322ms chronyd.service
+           234ms docker-cleanup.service
+           197ms rhel-dmesg.service
+           166ms rhel-readonly.service
+           158ms systemd-tmpfiles-setup-dev.service
+           155ms systemd-udevd.service
+           128ms dracut-pre-udev.service
+           128ms boot.mount
+           123ms systemd-fsck-root.service
+           119ms initrd-parse-etc.service
+           107ms systemd-logind.service
+           106ms systemd-udev-trigger.service
+           106ms systemd-user-sessions.service
+           104ms vboxadd-service.service
+           102ms systemd-journald.service
+           101ms rhsmcertd.service
+            99ms plymouth-quit-wait.service
+            94ms plymouth-start.service
+            89ms rhel-domainname.service
+            80ms systemd-sysctl.service
+            76ms plymouth-quit.service
+            71ms systemd-journal-flush.service
+            64ms sys-kernel-debug.mount
+            61ms plymouth-read-write.service
+            60ms rhel-import-state.service
+            60ms plymouth-switch-root.service
+            42ms initrd-cleanup.service
+            38ms dev-mqueue.mount
+            37ms dev-hugepages.mount
+            35ms kmod-static-nodes.service
+            35ms systemd-remount-fs.service
+            34ms systemd-random-seed.service
+            27ms systemd-update-utmp.service
+            24ms systemd-tmpfiles-clean.service
+            24ms dev-mapper-centos\x2dswap.swap
+            15ms systemd-tmpfiles-setup.service
+            10ms systemd-update-utmp-runlevel.service
+             8ms initrd-udevadm-cleanup-db.service
+             7ms sys-kernel-config.mount
+
+[root@localhost ~]#
+[root@localhost ~]# systemd-analyze critical-chain
+The time after the unit is active or started is printed after the "@" character.
+The time the unit takes to start is printed after the "+" character.
+
+multi-user.target @26.378s
+└─vboxadd-service.service @26.270s +104ms
+  └─vboxadd.service @3.750s +22.517s
+    └─basic.target @3.748s
+      └─sockets.target @3.748s
+        └─dbus.socket @3.748s
+          └─sysinit.target @3.747s
+            └─systemd-update-utmp.service @3.719s +27ms
+              └─auditd.service @3.372s +344ms
+                └─systemd-tmpfiles-setup.service @3.355s +15ms
+                  └─rhel-import-state.service @3.290s +60ms
+                    └─local-fs.target @3.284s
+                      └─boot.mount @3.155s +128ms
+                        └─local-fs-pre.target @3.154s
+                          └─lvm2-monitor.service @1.658s +1.495s
+                            └─lvm2-lvmetad.service @1.962s
+                              └─lvm2-lvmetad.socket @1.645s
+                                └─-.slice
+[root@localhost ~]#
+[root@localhost ~]# systemctl start docker
+[root@localhost ~]#
+[root@localhost ~]# systemd-analyze critical-chain docker.service
+The time after the unit is active or started is printed after the "@" character.
+The time the unit takes to start is printed after the "+" character.
+
+docker.service +5.485s
+└─network.target @7.334s
+  └─network.service @5.919s +1.414s
+    └─NetworkManager-wait-online.service @4.746s +1.172s
+      └─NetworkManager.service @4.023s +719ms
+        └─dbus.service @3.756s
+          └─basic.target @3.748s
+            └─sockets.target @3.748s
+              └─dbus.socket @3.748s
+                └─sysinit.target @3.747s
+                  └─systemd-update-utmp.service @3.719s +27ms
+                    └─auditd.service @3.372s +344ms
+                      └─systemd-tmpfiles-setup.service @3.355s +15ms
+                        └─rhel-import-state.service @3.290s +60ms
+                          └─local-fs.target @3.284s
+                            └─boot.mount @3.155s +128ms
+                              └─local-fs-pre.target @3.154s
+                                └─lvm2-monitor.service @1.658s +1.495s
+                                  └─lvm2-lvmetad.service @1.962s
+                                    └─lvm2-lvmetad.socket @1.645s
+                                      └─-.slice
+
+[root@localhost ~]#
+```
+
 3.3 hostnamectl
 
 hostnamectl命令用于查看当前主机的信息。
@@ -111,6 +241,22 @@ $ hostnamectl
 
 # 设置主机名。
 $ sudo hostnamectl set-hostname rhel7
+```
+
+输出：
+```
+[root@localhost ~]# hostnamectl
+   Static hostname: localhost.localdomain
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: 7ef27eb68c24e54abed189878a925531
+           Boot ID: 64fab1434b4447b8ac14b2e1e6ed123c
+    Virtualization: kvm
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-1160.53.1.el7.x86_64
+      Architecture: x86-64
+[root@localhost ~]#
 ```
 
 3.4 localectl
@@ -124,6 +270,15 @@ $ localectl
 # 设置本地化参数。
 $ sudo localectl set-locale LANG=en_GB.utf8
 $ sudo localectl set-keymap en_GB
+```
+
+输出：
+```
+[root@localhost ~]# localectl
+   System Locale: LANG=zh_CN.UTF-8
+       VC Keymap: cn
+      X11 Layout: cn
+[root@localhost ~]#
 ```
 
 3.5 timedatectl
@@ -143,6 +298,20 @@ $ sudo timedatectl set-time YYYY-MM-DD
 $ sudo timedatectl set-time HH:MM:SS
 ```
 
+输出：
+```
+[root@localhost ~]# timedatectl
+      Local time: 二 2022-08-30 11:55:58 CST
+  Universal time: 二 2022-08-30 03:55:58 UTC
+        RTC time: 二 2022-08-30 03:54:56
+       Time zone: Asia/Shanghai (CST, +0800)
+     NTP enabled: yes
+NTP synchronized: yes
+ RTC in local TZ: no
+      DST active: n/a
+[root@localhost ~]#
+```
+
 3.6 loginctl
 
 loginctl命令用于查看当前登录的用户。
@@ -156,6 +325,38 @@ $ loginctl list-users
 
 # 列出显示指定用户的信息
 $ loginctl show-user ruanyf
+```
+
+输出：
+```
+[root@localhost ~]# loginctl list-sessions
+   SESSION        UID USER             SEAT
+         3          0 root
+
+1 sessions listed.
+[root@localhost ~]#
+[root@localhost ~]# loginctl list-users
+       UID USER
+         0 root
+
+1 users listed.
+[root@localhost ~]#
+[root@localhost ~]# loginctl show-user root
+UID=0
+GID=0
+Name=root
+Timestamp=二 2022-08-30 11:09:02 CST
+TimestampMonotonic=6315323373
+RuntimePath=/run/user/0
+Slice=user-0.slice
+Display=3
+State=active
+Sessions=3
+IdleHint=no
+IdleSinceHint=0
+IdleSinceHintMonotonic=0
+Linger=no
+[root@localhost ~]#
 ```
 
 #### 四、Unit
