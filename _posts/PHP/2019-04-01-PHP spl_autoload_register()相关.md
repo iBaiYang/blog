@@ -80,8 +80,8 @@ printit.class.php：
 class PRINTIT 
 {
     function doPrint() {
-    echo 'hello world';
- }
+        echo 'hello world';
+    }
 }
 ?>
 ```
