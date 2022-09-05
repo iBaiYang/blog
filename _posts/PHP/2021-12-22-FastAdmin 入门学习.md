@@ -1764,11 +1764,114 @@ css 部分可以和 admin 模块的共用，可过也可以复制转移下。
 
 把 `application/admin` 文件夹下的 `lang` 文件夹 复制到 `application/enterprise` 文件夹下；
 
+### 独立表单页
 
+开发中碰到一个情况，企业要开通自己的店铺，并在该页面更新信息，如何实现。
 
+折腾了半天，发现这页的Js并没有列表页的多和复杂。
 
+看下html页文件代码：
+```
+<div class="box box-success">
+    <div class="panel-heading">店铺资料</div>
+    <div class="panel-body">
+        <form id="update-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+            <input type="hidden" name="row[id]" value="{$row.id ?? 0}" />
 
+            <div class="form-group">
+                <label class="control-label col-xs-8 col-sm-2">店铺Logo:</label>
+                <div class="col-xs-6">
+                    <div class="input-group">
+                        <input id="c-logo" class="form-control" size="50" name="row[logo]" type="text" {if isset($row.logo)} value="{$row.logo|htmlentities}" {else} value="" {/if}>
+                        <div class="input-group-addon no-border no-padding">
+                            <span><button type="button" id="faupload-logo" class="btn btn-danger faupload" data-url="yq2b/candy/upload" data-input-id="c-logo" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-logo"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                        </div>
+                        <span class="msg-box n-right" for="c-logo"></span>
+                    </div>
+                    <ul class="row list-inline faupload-preview" id="p-logo"></ul>
+                </div>
+                <label class="control-label col-xs-4 col-sm-2" style=" text-align: left;">{:__('建议尺寸240*240')}</label>
+            </div>
 
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-2">店铺名称:</label>
+                <div class="col-xs-12 col-sm-8">
+                    <input id="shop_name" class="form-control" name="row[name]" type="text" {if isset($row.name)} value="{$row.name|htmlentities}" {else} value="" {/if}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-2">店铺简介:</label>
+                <div class="col-xs-12 col-sm-8">
+                    <textarea id="profile" class="form-control" rows="5" name="row[profile]" cols="50">{if isset($row.profile)}{$row.profile|htmlentities}{/if}</textarea>
+                </div>
+            </div>
+
+            {if isset($row.id)}
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-2">审核状态:</label>
+                <div class="col-xs-12 col-sm-8">
+                    {:Form::selectpicker('row[audit_status]', ['10' => '待审核', '20' => '审核通过'], '10', ['data-rule' => 'required', 'disabled' => 'disabled'])}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-2">审核内容:</label>
+                <div class="col-xs-12 col-sm-8">{$row.audit_content|htmlentities}</div>
+            </div>
+            {/if}
+
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-sm-2"></label>
+                <div class="col-xs-12 col-sm-8">
+                    {if isset($row.audit_status)}
+                    <button type="submit" class="btn btn-success">更新</button>
+                    {else}
+                    <button type="submit" class="btn btn-success">开通</button>
+                    {/if}
+                    <button type="reset" class="btn btn-default">{:__('Reset')}</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+```
+
+看下js文件代码：
+```
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function ($, undefined, Backend, Table, Form, Upload) {
+    var Controller = {
+        index: function () {
+            // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    "index_url": "shop/index",
+                    "add_url": "",
+                    "edit_url": "",
+                    "del_url": "",
+                    "multi_url": "",
+                }
+            });
+
+            // 文件上传按钮绑定
+            Upload.api.custom.customUploadSuccess = function(data, ret) {
+                data.url = data.fullurl;
+            };
+            Controller.api.bindevent();
+
+        },
+
+        api: {
+            bindevent: function () {
+                Form.api.bindevent($("form[role=form]"));
+            }
+        }
+    };
+    return Controller;
+});
+```
+
+表单组件，可以参考 <https://blog.csdn.net/wangshifan116/article/details/114639557>
 
 
 
