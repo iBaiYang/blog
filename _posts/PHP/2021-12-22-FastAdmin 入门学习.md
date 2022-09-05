@@ -1784,7 +1784,7 @@ css 部分可以和 admin 模块的共用，可过也可以复制转移下。
                     <div class="input-group">
                         <input id="c-logo" class="form-control" size="50" name="row[logo]" type="text" {if isset($row.logo)} value="{$row.logo|htmlentities}" {else} value="" {/if}>
                         <div class="input-group-addon no-border no-padding">
-                            <span><button type="button" id="faupload-logo" class="btn btn-danger faupload" data-url="yq2b/candy/upload" data-input-id="c-logo" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-logo"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                            <span><button type="button" id="faupload-logo" class="btn btn-danger faupload" data-url="candy/upload" data-input-id="c-logo" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-logo"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
                         </div>
                         <span class="msg-box n-right" for="c-logo"></span>
                     </div>
