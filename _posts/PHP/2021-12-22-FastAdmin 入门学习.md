@@ -1811,7 +1811,7 @@ css 部分可以和 admin 模块的共用，可过也可以复制转移下。
             <div class="form-group">
                 <label class="control-label col-xs-12 col-sm-2">审核状态:</label>
                 <div class="col-xs-12 col-sm-8">
-                    {:Form::selectpicker('row[audit_status]', ['10' => '待审核', '20' => '审核通过'], '10', ['data-rule' => 'required', 'disabled' => 'disabled'])}
+                    {:Form::selectpicker('row[audit_status]', ['10' => '待审核', '20' => '审核通过'], $row.audit_status, ['data-rule' => 'required', 'disabled' => 'disabled'])}
                 </div>
             </div>
             <div class="form-group">
