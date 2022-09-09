@@ -149,6 +149,21 @@ write pos 到 check point 之间的部分是 redo log 空着的部分，
 
 同时， undo log 也是 MVCC(多版本并发控制)实现的关键。
 
+## 图解MySQL为什么需要binlog、redo log和undo log
+
+全文建立在MySQL的存储引擎为InnoDB的基础上
+
+先看一条SQL如何入库的：
+
+![]({{site.baseurl}}/images/20220909/20220909105451.gif)
+
+
+
+
+
+
+
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
@@ -156,4 +171,7 @@ write pos 到 check point 之间的部分是 redo log 空着的部分，
 一文聊透binlog、redo log、undo log，深度好文 <https://mp.weixin.qq.com/s/1zMTlmzoJ9zi3lhrBCj7ew>
 
 必须了解的mysql三大日志-binlog、redo log和undo log  <https://juejin.cn/post/6860252224930070536>
+
+3000帧动画图解MySQL为什么需要binlog、redo log和undo log <https://zhuanlan.zhihu.com/p/532295368>
+
 
