@@ -25,7 +25,7 @@ meta: RequireJS使用
 
 模块系统主要解决模块的定义、依赖和导出，先来看看已经存在的模块系统。
 
-#### <script>标签
+#### script标签
 
 ```
 <script src="module1.js"></script>
