@@ -612,6 +612,8 @@ Webpack 中文指南 <http://shouce.jb51.net/webpack/>
 
 脚本之家 <http://shouce.jb51.net/>
 
+30个在线学习设计与开发的站点 <https://www.runoob.com/w3cnote/30-best-websites-to-learn.html>
+
 RequireJS 官网 <https://requirejs.org/>
 
 JS模块化工具requirejs教程(一)：初识requirejs <https://www.runoob.com/w3cnote/requirejs-tutorial-1.html>
