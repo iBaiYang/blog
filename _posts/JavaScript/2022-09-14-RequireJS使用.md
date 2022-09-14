@@ -620,5 +620,5 @@ JS模块化工具requirejs教程(一)：初识requirejs <https://www.runoob.com/
 
 JS模块化工具requirejs教程(二)：基本知识 <https://www.runoob.com/w3cnote/requirejs-tutorial-2.html>
 
-
+博客园 requirejs学习 <https://www.cnblogs.com/goodjobluo/p/8781410.html>
 
