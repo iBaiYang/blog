@@ -298,7 +298,7 @@ Webpack 就是在这样的需求中应运而生。
 
 同时，为了能利用已经存在的各种框架、库和已经写好的文件，我们还需要一个模块加载的兼容策略，来避免重写所有的模块。
 
-### RequireJS
+## RequireJS
 
 随着网站功能逐渐丰富，网页中的js也变得越来越复杂和臃肿，
 原有通过script标签来导入一个个的js文件这种方式已经不能满足现在互联网开发模式，
@@ -412,7 +412,7 @@ define(function(){
 <script type="text/javascript" src="j.js"></script>
 ```
 
-**基本API**
+### 基本API
 
 require会定义三个变量：define,require,requirejs，其中require === requirejs，一般使用require更简短
 
@@ -443,7 +443,7 @@ require(["js/a"], function(){
 })
 ```
 
-**加载文件**
+### 加载文件
 
 之前的例子中加载模块都是本地js，但是大部分情况下网页需要加载的JS可能来自本地服务器、其他网站或CDN，
 这样就不能通过这种方式来加载了，我们以加载一个jquery库为例：
@@ -506,7 +506,7 @@ require(["jquery","underscore"],function($, _){
 
 如果某个模块不输出变量值，则没有，所以尽量将输出的模块写在前面，防止位置错乱引发误解
 
-**全局配置**
+### 全局配置
 
 上面的例子中重复出现了`require.config`配置，如果每个页面中都加入配置，必然显得十分不雅，
 requirejs提供了一种叫"主数据"的功能，我们首先创建一个main.js：
@@ -537,7 +537,7 @@ require.config({
 })
 ```
 
-**第三方模块**
+### 第三方模块
 
 通过require加载的模块一般都需要符合AMD规范即使用define来申明模块，但是部分时候需要加载非AMD规范的js，
 这时候就需要用到另一个功能：shim，shim解释起来也比较难理解，shim直接翻译为"垫"，
