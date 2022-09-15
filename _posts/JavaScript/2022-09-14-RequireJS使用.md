@@ -1385,7 +1385,7 @@ define(['jquery', 'bootstrap', 'upload', 'validator', 'validator-lang'], functio
 
 
 
-
+具体使用，参见 [FastAdmin 前端文档](https://doc.fastadmin.net/doc/frontend.html)
 
 
 
