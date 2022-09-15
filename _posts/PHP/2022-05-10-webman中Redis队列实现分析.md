@@ -1922,7 +1922,7 @@ return [
 
 ### 源码
 
-#### support/helpers.php
+#### support/helpers.php 文件
 
 `support/helpers.php` 是一个帮助函数库：
 ```php
@@ -2104,7 +2104,7 @@ function worker_start($process_name, $config)
 // 省略若干...
 ```
 
-#### Webman\Config
+#### Webman\Config 类
 
 ```php
 <?php
