@@ -1410,3 +1410,7 @@ JS模块化工具requirejs教程(二)：基本知识 <https://www.runoob.com/w3c
 
 博客园 requirejs学习 <https://www.cnblogs.com/goodjobluo/p/8781410.html>
 
+1分钟带你入门RequireJs并了解FastAdmin中JS是如何调用的 <https://ask.fastadmin.net/index.php/article/6505.html>
+
+
+
