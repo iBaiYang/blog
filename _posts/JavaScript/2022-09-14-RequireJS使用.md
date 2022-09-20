@@ -840,6 +840,46 @@ selectpicker 主要用于select下拉选择。
 
 此外还有selectpage、cxselect、citypicker、datetimepicker、plupload、faselect、fieldlist，此外可以自己定制。
 
+实验下来，上面 `bindevent: function () { }`中 写 `$(document).on` 是错误的，应该如下：
+```
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+
+    var Controller = {
+        index: function () {
+            // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    ...
+                }
+            });
+    
+            ...
+    
+            // 为表格绑定事件
+            Table.api.bindevent(table);
+    
+            $(document).on("change", "#c-type", function () {
+                  $("#c-pid option[data-type='all']").prop("selected", true);
+                  $("#c-pid option").removeClass("hide");
+                  $("#c-pid option[data-type!='" + $(this).val() + "'][data-type!='all']").addClass("hide");
+                  $("#c-pid").selectpicker("refresh");
+             });   
+        },
+        ...
+        add: function () {
+            Controller.api.bindevent();
+        },
+        ...
+        api: {
+            bindevent: function () {
+                Form.api.bindevent($("form[role=form]"));
+            }
+        }
+    };
+    return Controller;
+});
+```
+
 `./public/assets/js/require-form.js`文件内容：
 ```
 define(['jquery', 'bootstrap', 'upload', 'validator', 'validator-lang'], function ($, undefined, Upload, Validator, undefined) {
