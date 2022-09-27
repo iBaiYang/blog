@@ -1543,7 +1543,7 @@ server {
 }
 ```
 
-重启服务容器。
+重启 Nginx服务容器。
 
 在 server配置 这里折腾了好长时间，因为是用虚拟机中docker安装的 nginx 和 php，所以 web项目的根目录不一样，
 nginx 中为：`/usr/share/nginx/html/`，php 中为：`/var/www/html/`，不好处理，想着要不就每个模块分开配置吧，
