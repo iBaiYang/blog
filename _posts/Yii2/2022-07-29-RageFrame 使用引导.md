@@ -1461,50 +1461,93 @@ http {
 192.168.56.108      backend.rageframe2.test
 ```
 
-配置首页：
+server配置：
 ```
 server {
     listen       80;
     server_name rageframe2.test;
 
-    #charset koi8-r;
-    #access_log  /var/log/nginx/host.access.log  main;
+    index index.php index.html index.htm default.php default.htm default.html;
+    root /usr/share/nginx/html/rageframe2/web;
 
-    location / {
-        root   /usr/share/nginx/html/rageframe2/web;
-        index  index.php;
-        if (!-e $request_filename) {
-               rewrite  ^(.*)$  /index.php?s=/$1  last;
-               break;
-         }
-    }
+    #ERROR-PAGE-START  错误页配置，可以注释、删除或修改
+    #error_page 404 /404.html;
+    #error_page 502 /502.html;
+    #ERROR-PAGE-END
 
-    location ~* ^/attachment/.*\.(php|php5)$ 
-    {
-         deny all;
-    }
+    #PHP-INFO-START  PHP引用配置，可以注释或修改
+    #include enable-php-72.conf;
+    #PHP-INFO-END
 
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
     location ~ \.php$ {
         root   /var/www/html/rageframe2/web;
         fastcgi_pass   php:9000;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
     }
+
+    #伪静态
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+    location /backend {
+        try_files $uri $uri/ /backend/index.php$is_args$args;
+    }
+    location /api {
+        try_files $uri $uri/ /api/index.php$is_args$args;
+    }
+    location /merchant {
+        try_files $uri $uri/ /merchant/index.php$is_args$args;
+    }
+    location /merapi {
+        try_files $uri $uri/ /merapi/index.php$is_args$args;
+    }
+    location /html5 {
+        try_files $uri $uri/ /html5/index.php$is_args$args;
+    }
+    location /oauth2 {
+        try_files $uri $uri/ /oauth2/index.php$is_args$args;
+    }
+    
+    location ~* ^/attachment/.*\.(php|php5)$ 
+    {
+        deny all;
+    }
+
+    #REWRITE-START URL重写规则引用,修改后将导致设置的伪静态规则失效
+    #include /www/server/panel/vhost/rewrite/rageframe2.test.conf;
+    #REWRITE-END
+
+    #禁止访问的文件或目录
+    location ~ ^/(\.user.ini|\.htaccess|\.git|\.svn|\.project|LICENSE|README.md)
+    {
+        return 404;
+    }
+
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+    {
+        #expires      30d;
+        error_log /dev/null;
+        access_log /dev/null;
+    }
+    
+    location ~ .*\.(js|css)?$
+    {
+        #expires      12h;
+        error_log /dev/null;
+        access_log /dev/null; 
+    }
+
+    #access_log  /www/wwwlogs/rageframe2.test.log;
+    #error_log  /www/wwwlogs/rageframe2.test.error.log;
 }
 ```
 
-配置Backend：
+重启服务容器。
+
+在 server配置 这里折腾了好长时间，因为是用虚拟机中docker安装的 nginx 和 php，所以 web项目的根目录不一样，
+nginx 中为：`/usr/share/nginx/html/`，php 中为：`/var/www/html/`，不好处理，想着要不就每个模块分开配置吧，
+如 backend 模块：
 ```
 server {
     listen       80;
@@ -1547,7 +1590,9 @@ server {
 }
 ```
 
-重启服务容器。
+也是在不懈的折腾下，弄好了上面的配置，现在不用通过各个域名来分别访问各自模块了，如：`backend.rageframe2.test`，
+而只需要 `rageframe2.test/backend` 就可以了，方便了不少。
+重点是提前在`server`块中配置了 `root`，又在`location`块中配置了 `root`，仔细想一下。
 
 ### Linux 下文件缓存权限授权
 
