@@ -20,13 +20,75 @@ webbench依赖于ctags，在shell中只需输入ctags即知有没有安装，如
 安装比较简单：
 > sudo apt-get install ctags  
 
+```
+[root@localhost ~]# yum install ctags
+已加载插件：fastestmirror, product-id, search-disabled-repos, subscription-manager
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Determining fastest mirrors
+epel/x86_64/metalink                                     | 5.8 kB     00:00
+ * base: mirrors.aliyun.com
+ * epel: mirrors.tuna.tsinghua.edu.cn
+ * extras: mirrors.aliyun.com
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+base                                                     | 3.6 kB     00:00
+epel                                                     | 4.7 kB     00:00
+extras                                                   | 2.9 kB     00:00
+nginx-stable                                             | 2.9 kB     00:00
+remi-safe                                                | 3.0 kB     00:00
+updates                                                  | 2.9 kB     00:00
+(1/7): epel/x86_64/updateinfo                              | 1.0 MB   00:00
+(2/7): epel/x86_64/primary_db                              | 7.0 MB   00:01
+(3/7): nginx-stable/7/x86_64/primary_db                    |  76 kB   00:01
+(4/7): epel/x86_64/group_gz                                |  97 kB   00:02
+(5/7): updates/7/x86_64/primary_db                         |  17 MB   00:01
+(6/7): remi-safe/primary_db                                | 2.3 MB   00:01
+(7/7): extras/7/x86_64/primary_db                          | 249 kB   00:03
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 ctags.x86_64.0.5.8-13.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package          架构              版本                  源               大小
+================================================================================
+正在安装:
+ ctags            x86_64            5.8-13.el7            base            155 k
+
+事务概要
+================================================================================
+安装  1 软件包
+
+总下载量：155 k
+安装大小：351 k
+Is this ok [y/d/N]: y
+Downloading packages:
+ctags-5.8-13.el7.x86_64.rpm                                | 155 kB   00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : ctags-5.8-13.el7.x86_64                                     1/1
+  验证中      : ctags-5.8-13.el7.x86_64                                     1/1
+
+已安装:
+  ctags.x86_64 0:5.8-13.el7
+
+完毕！
+[root@localhost ~]#
+```
+
 #### webbench安装
 
 进入到用户主目录下：
 > cd ~
 
 下载压缩包：
-> wget http://www.ha97.com/code/webbench-1.5.tar.gz
+> wget http://home.tiscali.cz/~cz210552/distfiles/webbench-1.5.tar.gz
 
 解压缩：
 > tar zxvf webbench-1.5.tar.gz
@@ -94,7 +156,6 @@ webbench.o:	webbench.c socket.c Makefile
 ```
 > webbench -help
 ```
-
 
 输出：
 
