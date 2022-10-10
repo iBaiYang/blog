@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: IT技术
+categories: Git
 title: gitignore 使用说明
 meta: .gitignore 使用说明
 ---
