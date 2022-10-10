@@ -7,9 +7,11 @@ meta: docker之Dockerfile实践
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### Docker的网络配置
+![]({{site.baseurl}}/images/20221010/20221010215527.png)
+
+### Docker的网络配置
 
 在生成自己的镜像前，需要先把docker的网络配置好，不然到时yum等网络操作不可用。
 
@@ -71,7 +73,7 @@ Docker在启动时会开启一个虚拟网桥设备docker0，默认的地址为1
 
 
 
-#### nginx镜像生成
+### nginx镜像生成
 
 在一个个人文件夹下新建Dockerfile文件：
 
@@ -166,7 +168,7 @@ docker run --name=test_nginx --privileged=true -p 81:80 -d centos7_nginx:1.18.0
 curl 127.0.0.1:81 命令，能看到  Welcome to nginx  等英文提示，即说明一切OK。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 docker之Dockerfile实践 <https://www.cnblogs.com/jsonhc/p/7767669.html>
 
