@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: Linux
+categories: Docker
 title: docker之Dockerfile实践
 meta: docker之Dockerfile实践
 ---
