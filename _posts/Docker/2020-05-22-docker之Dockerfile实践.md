@@ -170,6 +170,7 @@ curl 127.0.0.1:81 命令，能看到  Welcome to nginx  等英文提示，即说
 ### 集合一
 
 更多 Dockerfile 实例，参见 <https://github.com/jianyan74/dockerfiles> ，看一下这里面相关Dockerfile的使用。
+里面的涉及到的应用有：Elasticsearch、filebeat、Kafka、Kibana、Logstash、metricbeat、mongo、Mysql、Nginx、PHP、RabbitMQ、Redis、zabbix 等。
 另外这里面的各个应用的说明文档也整理的挺好。
 
 #### Nginx
