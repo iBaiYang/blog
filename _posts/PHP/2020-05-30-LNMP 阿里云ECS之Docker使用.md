@@ -1,8 +1,8 @@
 ---
 layout: post
-categories: Linux
-title: 阿里云ECS之Docker使用
-meta: 阿里云ECS之Docker使用
+categories: PHP
+title: LNMP 阿里云ECS之Docker使用
+meta: LNMP 阿里云ECS之Docker使用
 ---
 * content
 {:toc}
