@@ -7,7 +7,7 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 * content
 {:toc}
 
-### 正文
+## 正文
 
 ![]({{site.baseurl}}/images/20221010/20221010215527.png)
 
@@ -26,7 +26,7 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 
 ![]({{site.baseurl}}/images/20200703/20200703111105.png)
 
-#### Docker信息查看
+### Docker信息查看
 
 我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
 
@@ -81,7 +81,7 @@ REPOSITORY                              TAG                 IMAGE ID            
 hub.c.163.com/liuchao110119163/ubuntu   tcpip               396485da9bdd        21 months ago       345MB
 ```
 
-#### 安装Docker引擎
+### 安装Docker引擎
 
 Docker 的旧版本被称为 docker，docker.io 或 docker-engine 。如果已安装，请卸载它们:
 > sudo apt-get remove docker docker-engine docker.io containerd runc
@@ -306,7 +306,7 @@ Docker引擎已安装并运行。docker组已创建，但未添加任何用户�
 
 原则上一个容器只提供一种服务，这样可以方便以后服务的维护。所以我们mysql独立一个容器、nginx独立一个容器、php-fpm独立一个容器。
 
-#### centos安装
+### centos安装
 
 我们可以在自己的机子上再装一个linux虚拟环境，可以用docker实现。
 
@@ -322,7 +322,7 @@ Docker引擎已安装并运行。docker组已创建，但未添加任何用户�
 
 用`docker ps`可以看到centos的容器正在UP运行中。
 
-#### mysql安装
+### mysql安装
 
 下载mysql镜像：
 
@@ -362,7 +362,7 @@ docker run --name mysql_server -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql
 -e 内置环境变量 这里是给ROOT 帐号设置密码
 ```
 
-#### nginx安装
+### nginx安装
 
 > docker pull nginx
 
@@ -385,7 +385,7 @@ docker run --privileged=true -p 81:80  -d nginx
 
 现在我们通过浏览器访问一下127.0.0.1:81，就可以看到nginx的欢迎界面了。
 
-#### php-fpm安装
+### php-fpm安装
 
 > docker pull php:7.1.30-fpm
 
@@ -455,9 +455,9 @@ docker run --name server-nginx --privileged=true -p 80:80 -v /var/www/docker/ngi
 
 访问：127.0.0.1，可以看到效果，展示了phpinfo()详情。
 
-#### 容器自动停止问题
+### 容器自动停止问题
 
-以 docker run -d 运行之后，还是会自动停止，docker ps 看不到运行的容器， docker ps -a 后看到容器状态为 Exited。
+以 `docker run -d` 运行之后，还是会自动停止，`docker ps` 看不到运行的容器， docker ps -a 后看到容器状态为 Exited。
 
 可能原因1，容器中发生了错误，所以容器 Exited 了，我们可以用 docker logs CONTAINER 查看下日志，如：
 
@@ -471,7 +471,7 @@ nginx: [emerg] socket() 0.0.0.0:80 failed (13: Permission denied)
 
 可以看出是容器中执行命令权限不够，被拒绝执行了。
 
-我们可以在生成容器时加上privileged=true，如：
+我们可以在生成容器时加上`privileged=true`，如：
 ```
 docker run --privileged=true -p 80:80  -d nginx
 ```
@@ -481,8 +481,8 @@ docker run --privileged=true -p 80:80  -d nginx
 大约在0.6版，privileged被引入docker。使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限。
 privileged启动的容器，可以看到很多host上的设备，并且可以执行mount。甚至允许你在docker容器中启动docker容器。
 
-可能原因2，这是因为 基于的centos dockerfile 具有默认命令 bash ，这意味着当在后台运行（-d）时，shell会立即退出。
--d 选项有问题。 您的容器立即停止，除非命令不在前台运行。
+可能原因2，这是因为 基于的centos dockerfile 具有默认命令 bash ，这意味着当在后台运行（`-d`）时，shell会立即退出。
+`-d` 选项有问题。 您的容器立即停止，除非命令不在前台运行。
 Docker要求您的命令在前台继续运行。否则，它会认为您的应用程序停止并关闭该容器。
 问题是某些应用程序不会在前台运行。在这种情况下，您可以将 `tail -f /dev/null` 添加到您的命令。
 通过这样做，即使您的主命令在后台运行，您的容器也不会停止，因为tail在前台继续运行。
@@ -490,7 +490,7 @@ Docker要求您的命令在前台继续运行。否则，它会认为您的应�
 
 >  docker run -d centos tail -f /dev/null 
 
-#### Dockerfile
+### Dockerfile
 
 Dockerfile是用来构建Docker镜像的文件，是由一系列命令和参数构成的脚本。
 
@@ -513,9 +513,9 @@ Docker每一层镜像的json文件，都扮演着一个非常重要的角色，�
 
 Docker镜像的json文件可以认为是镜像的元数据信息。
 
-#### 示例配置
+### 示例配置
 
-##### phpfpm镜像build脚本
+#### php-fpm镜像build脚本
 
 Dockerfile 文件:
 ```
@@ -595,7 +595,7 @@ yum install make -y
 yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
 ```
 
-##### 项目镜像build脚本
+#### 项目镜像build脚本
 
 ```
 # 生成docker-php-entrypoint文件
@@ -691,7 +691,7 @@ Successfully tagged crm:test
 
 配置文件`./crm.json`，压缩包文件`./dist/crm.tar.gz`，我们需要在当前目录下准备好。
 
-#### 原环境php清空
+### 原环境php清空
 
 个人使用的是Linux环境做个人主机，也是因为对Linux不熟悉，各种摸索和折腾，光PHP就安装了好多个版本，而且里面的版本还升过版本，
 导致服务环境非常乱，给PHP安装个拓展总是报错：拓展编码的phpize版本和PHP的版本不一致，导致拓展使用不了，折腾了好长时间无法解决。
@@ -735,7 +735,7 @@ find / -name 'php7*'|xargs rm -rf
 或者现在有一种解决方案，就是用docker，一个container中运行一个服务、一个版本，这样以后想尝试多版本也有办法了。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 Docker仓库 <https://hub.docker.com/>
 
