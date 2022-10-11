@@ -167,6 +167,188 @@ docker run --name=test_nginx --privileged=true -p 81:80 -d centos7_nginx:1.18.0
 
 curl 127.0.0.1:81 命令，能看到  Welcome to nginx  等英文提示，即说明一切OK。
 
+### 集合一
+
+更多 Dockerfile 实例，参见 <https://github.com/jianyan74/dockerfiles> ，看一下这里面相关Dockerfile的使用。
+另外这里面的各个应用的说明文档也整理的挺好。
+
+#### Nginx
+
+Dockerfile 文件内容：
+```
+ARG NGINX_VER
+
+FROM nginx:${NGINX_VER}
+
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Ubuntu软件源选择中国的服务器
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
+# 更新安装依赖包
+RUN apt-get update && apt-get install -y \
+        vim \
+        wget
+
+# 安装模块
+
+# unzip nginx-upstream-fair-master.zip #解压
+# mv nginx-upstream-fair-master nginx-upstream-fair #重命名
+
+#配置
+#./configure \
+#--prefix=/usr/sbin/nginx \
+#--with-http_ssl_module \
+#--add-module=/root/nginx-upstream-fair
+#编译安装
+#make && make install
+```
+
+docker-compose.yml 文件内容：
+```
+version: '3.0'
+services:
+  nginx: # 相关文档 https://hub.docker.com/_/nginx
+    container_name: nginx
+    build:
+      context: .
+      args:
+        - NGINX_VER=1.17
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - ../../app/php:/data/www:rw
+      - ../../logs/nginx:/var/log/nginx
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./certs/:/etc/nginx/certs
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: always
+    command: nginx -g 'daemon off;'
+```
+
+#### PHP
+
+Dockerfile 文件内容：
+```
+ARG PHP_VER
+
+# 镜像包
+FROM php:${PHP_VER}
+
+ARG SWOOLE_VER
+ARG COMPOSER_URL
+
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Ubuntu软件源选择中国的服务器
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
+# 更新安装依赖包
+RUN apt-get update && apt-get install -y \
+        git \
+        vim \
+        curl \
+        wget \
+        openssl \
+        imagemagick \
+        libmagickwand-dev \
+        libmagickcore-dev \
+        libzip-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libxml2-dev \
+		libssl-dev \
+		librabbitmq-dev
+
+# 安装PHP核心拓展
+RUN docker-php-ext-install \
+        pdo_mysql \
+        opcache \
+        mysqli \
+        intl \
+        exif \
+        zip \
+        bcmath \
+	&& docker-php-ext-configure gd \
+        --with-freetype-dir=/usr/include/ \
+        --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && rm -r /var/lib/apt/lists/*
+
+# pecl安装amqp、mongodb、redis扩展
+RUN pecl install -o -f mongodb amqp redis imagick  \
+    && rm -rf /tmp/pear
+
+# 加入php扩展
+RUN docker-php-ext-enable mongodb amqp redis imagick
+
+# php swoole扩展
+RUN cd /usr/src \
+    && pecl download swoole-${SWOOLE_VER} \
+    && tar -zxvf swoole-${SWOOLE_VER}.tgz \
+    && cd swoole-${SWOOLE_VER} \
+    && phpize \
+    && ./configure --with-php-config=/usr/local/bin/php-config --enable-openssl \
+    && make \
+    && make install \
+    && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
+    && rm -rf swoole-${SWOOLE_VER}.tgz \
+    && rm -rf swoole-${SWOOLE_VER}
+
+# 安装 Composer
+ENV COMPOSER_HOME /root/composer
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
+
+RUN composer config -g repo.packagist composer ${COMPOSER_URL}
+
+RUN composer global require "fxp/composer-asset-plugin:^1.4.0"
+
+WORKDIR /data
+
+# 写权限
+RUN usermod -u 1000 www-data
+
+EXPOSE 9000
+```
+
+docker-compose.yml 文件内容：
+```
+version: '3.0'
+services:
+  php-fpm: # 相关文档 https://hub.docker.com/_/php
+    container_name: php-fpm
+    build:
+      context: .
+      args:
+        - PHP_VER=7.3-fpm # php版本
+        - SWOOLE_VER=4.4.5 # swoole版本
+        - COMPOSER_URL=https://mirrors.aliyun.com/composer/ # composer源url
+    ports:
+      - "9000:9000"
+    volumes:
+      - ../../app/php:/data/www:rw
+      - ../../logs/php:/var/log/php:rw
+      - ./php.ini:/usr/local/etc/php/php.ini:ro # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
+      - ./php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+    restart: always
+    command: php-fpm
+```
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
@@ -181,7 +363,6 @@ Docker的网络配置 <https://blog.csdn.net/hetoto/article/details/99892743>
 docker容器无法访问外网 <https://www.wencst.com/archives/626>
 
 Docker创建容器无法访问外网问题 <https://www.jianshu.com/p/49f63dcf3813>
-
 
 docker桥接网络
 
