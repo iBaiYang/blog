@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: IT技术
+categories: Git
 title: Github Pages中Jekyll升级导致项目构建失败
 meta: Github Pages中Jekyll升级导致项目构建失败
 ---
