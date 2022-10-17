@@ -52,6 +52,39 @@ return [
 ];
 ```
 
+### 配置并启动
+
+在 `app_path() . '/queue/redis'` 目录下写消费者文件，如 `ProductEdit.php` 文件：
+```php
+<?php
+namespace app\queue\redis;
+
+use Webman\RedisQueue\Consumer;
+
+/**
+ * Class ProductEdit
+ * @package app\queue\redis\yq
+ */
+class ProductEdit implements Consumer
+{
+    public $queue = 'product_edit';
+
+    public $connection = 'default';
+
+    public function consume($data)
+    {
+        if (empty($data["product_id"])) {
+            return;
+        }
+
+        /* 处理逻辑 */
+    }
+}
+```
+
+启动进程：
+> php start.php start -d
+
 ### 进程配置文件加载分析
 
 在 项目根目录下的 `start.php` 文件中有：
