@@ -203,7 +203,7 @@ MySQL 中使用浮点数和定点数来表示小数。
 M 和 D 在 FLOAT 和DOUBLE 中是可选的，FLOAT 和 DOUBLE 类型将被保存为硬件所支持的最大精度（M、D 只是读取时使用，显⽰M位长度，其中D位为⼩数）。
 DECIMAL 的默认 M 值为 10、D 值为 0。
 
-DECIMAL 类型不同于 FLOAT 和 DOUBLE。DOUBLE 实际上是以字符串的形式存放的，
+DECIMAL 类型不同于 FLOAT 和 DOUBLE。DECIMAL 实际上是以字符串的形式存放的，
 DECIMAL 可能的最大取值范围与 DOUBLE 相同，但是有效的取值范围由 M 和 D 决定。
 如果改变 M 而固定 D，则取值范围将随 M 的变大而变大。
 
