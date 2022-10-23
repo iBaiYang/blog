@@ -18,7 +18,7 @@ meta: Elasticsearch 节点重启
 #### 禁止分片分配
 
 ```
-# curl -XPUT -H "Content-Type: application/json" 15.192.0.6:9200/_cluster/settings -d '{ "transient" : {"cluster.routing.allocation.enable" : "none"}}'
+# curl -XPUT -H "Content-Type: application/json" 109.101.0.6:9200/_cluster/settings -d '{ "transient" : {"cluster.routing.allocation.enable" : "none"}}'
 ```
 
 transient：临时
@@ -43,7 +43,7 @@ elastic+ 24358     1 43  2019 ?        147-11:03:13 /usr/local/jdk1.8/bin/java -
 # su - elasticsearch
 $ cd /usr/local/elasticsearch/bin/
 $ ./elasticsearch -d
-# curl '12.12.0.6:9200/_cat/nodes?v'
+# curl '120.102.0.6:9200/_cat/nodes?v'
 ```
 
 #### 重启分片分配
@@ -51,8 +51,8 @@ $ ./elasticsearch -d
 重启分片分配并观察集群状态直到状态变为green
 
 ```
-# curl -XPUT -H "Content-Type: application/json" 12.12.0.6:9200/_cluster/settings -d '{ "transient" : {"cluster.routing.allocation.enable" : "all"}}'
-# curl '12.12.0.6:9200/_cat/health?v'
+# curl -XPUT -H "Content-Type: application/json" 120.102.0.6:9200/_cluster/settings -d '{ "transient" : {"cluster.routing.allocation.enable" : "all"}}'
+# curl '120.102.0.6:9200/_cat/health?v'
 ```
 
 重复以上步骤重启其它节点。
