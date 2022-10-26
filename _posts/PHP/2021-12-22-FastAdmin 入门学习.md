@@ -19,15 +19,12 @@ meta: FastAdmin 入门学习
 
 #### 相关文档
 
-1.fastadmin的文档 <https://doc.fastadmin.net/docs>
-
-2.thinkphp的文档 <https://www.kancloud.cn/manual/thinkphp5_1/353947>
-
-3.bootstrap-table中文文档 <https://www.bootstrap-table.com.cn/doc/getting-started/introduction/>
-
-4.bootstrap中文文档 <https://www.bootcss.com/>
-
-5.selectPage 中文文档 <https://terryz.gitee.io/selectpage/docs.html>
+1. fastadmin的文档 <https://doc.fastadmin.net/docs>
+2. thinkphp的文档 <https://www.kancloud.cn/manual/thinkphp5_1/353947>
+3. bootstrap-table中文文档 <https://www.bootstrap-table.com.cn/doc/getting-started/introduction/>
+4. bootstrap中文文档 <https://www.bootcss.com/>
+5. selectPage 中文文档 <https://terryz.gitee.io/selectpage/docs.html>
+6. AdminLTE 官网地址 <https://adminlte.io/>
 
 #### 必读帖子
 
@@ -60,6 +57,14 @@ meta: FastAdmin 入门学习
 7.数据库创建说明文档
 
 <https://doc.fastadmin.net/doc/database.html>
+
+### 参考帖子
+
+表单组件，可以参考 <https://blog.csdn.net/wangshifan116/article/details/114639557>
+
+FastAdmin 系统配置的使用，可以参考 <https://blog.csdn.net/BoYou233/article/details/122205184> 
+
+
 
 ### 完整包安装
 
@@ -1870,10 +1875,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function (
     return Controller;
 });
 ```
-
-表单组件，可以参考 <https://blog.csdn.net/wangshifan116/article/details/114639557>
-
-
 
 
 
