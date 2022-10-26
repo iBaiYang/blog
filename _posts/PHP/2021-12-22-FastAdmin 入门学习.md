@@ -25,6 +25,7 @@ meta: FastAdmin 入门学习
 4. bootstrap中文文档 <https://www.bootcss.com/>
 5. selectPage 中文文档 <https://terryz.gitee.io/selectpage/docs.html>
 6. AdminLTE 官网地址 <https://adminlte.io/>
+7. AdminLTE 中文文档 <https://www.rsqdz.net:9907/ziyuan/AdminLTE-3.2.0/dochtml/index.html>
 
 #### 必读帖子
 
