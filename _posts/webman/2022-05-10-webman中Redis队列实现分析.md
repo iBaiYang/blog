@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: PHP
+categories: webman
 title: webman中Redis队列实现分析
 meta: webman中Redis队列实现分析
 ---
