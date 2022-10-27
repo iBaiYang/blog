@@ -486,6 +486,7 @@ class Client
     
 
     /**
+     * 用redis队列插件中的配置文件中的配置信息连接redis服务
      * @param string $name
      * @return RedisClient
      */
