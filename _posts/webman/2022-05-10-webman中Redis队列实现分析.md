@@ -2525,6 +2525,156 @@ Array
 )
 ```
 
+
+## 实例
+
+### 实例一
+
+有一种使用场景，在其他项目中调用webman项目推送队列数据。
+
+在webman项目的 `app/candy/controller` 目录下新建文件 `Inqueue.php` ：
+```php
+<?php
+
+namespace app\candy\controller;
+
+use support\Request;
+use Webman\RedisQueue\Client;
+
+/**
+ * 入队
+ * Class Inqueue
+ * @package app\candy\controller
+ */
+class Inqueue
+{
+    /**
+     * @param Request $request
+     * @return \support\Response
+     */
+    public function send(Request $request)
+    {
+        if (empty($request->data['queue_name'])) {
+            return json(failResult("queue_name为空"));
+        }
+        $queue_name = $request->data['queue_name'];
+
+        $queue_data = !empty($request->data['queue_data']) ? $request->data['queue_data'] : [];
+        $queue_delaytime = !empty($request->data['queue_delaytime']) ? (int)$request->data['queue_delaytime'] : 0;
+
+        try {
+            Client::send($queue_name, $queue_data, $queue_delaytime);
+        } catch (\Throwable $e) {
+            return json(failResult($e->getMessage()));
+        }
+
+        return json(successResult());
+    }
+}
+```
+
+其他项目请求`domain_name/app/inqueue/send`发送请求数据，如：
+```
+[
+    'data' => ["queue_name" => "order_end", "queue_data" => ["order_id" => 101], "queue_delaytime" => 60], 
+    'project_id' => 'web_test', 
+    'time' => time(), 
+    'sign' => $sign
+]
+```
+
+`$sign` 是 上面数据的签名。
+
+权限使用洋葱模型中间件进行过滤，在项目的 `config/middleware.php` 文件中写入：
+```php
+<?php
+return [
+    //全局中间件
+    'candy' => [
+        app\middleware\CandyAuthCheck::class,
+    ],
+];
+``` 
+
+这里使用到了多应用，可以参考 <https://www.workerman.net/doc/webman/multiapp.html>
+
+在 `app/middleware/CandyAuthCheck.php` 文件中写入：
+```php
+<?php
+namespace app\middleware;
+
+use Webman\MiddlewareInterface;
+use Webman\Http\Response;
+use Webman\Http\Request;
+
+class CandyAuthCheck implements MiddlewareInterface
+{
+    public function process(Request $request, callable $next) : Response
+    {
+        try {
+            // 数据准备
+            $params = getParams($request, ['project_id', 'data', 'time', 'sign']);
+
+            $project_id = $params['project_id'];
+            if (empty($project_id)) {
+                return json(failResult('project_id is empty'));
+            }
+
+            $data = $params['data'];
+            if (empty($data)) {
+                return json(failResult('data is empty'));
+            }
+
+            $time = (int)$params['time'];
+            if (empty($time)) {
+                return json(failResult('time is empty'));
+            }
+
+            $sign = $params['sign'];
+            if (empty($sign)) {
+                return json(failResult('sign is empty'));
+            }
+
+            // 验签
+            $hash_config = config('candy.' .$project_id); // 获取candy应用下其他项目的hash配置，如 $config['candy.web_test']['key'] = 'n5b2abe17cd9f24cf62ah66bad623d5a'
+            if (empty($hash_config)) {
+                return json(failResult('project config is not found'));
+            }
+
+            $arr = [
+                'data' => $data,
+                'project_id' => $project_id,
+                'time' => $time,
+            ];
+            $sign_hash = hash_hmac('sha256', json_encode($arr), $hash_config['key']);
+            if ($sign_hash != $sign) {
+                return json(failResult('BaseService验签失败'));
+            }
+
+            // 数据处理
+            $request->data = json_decode($data, true);
+        } catch (\Throwable $e) {
+            return json(failResult($e->getMessage()));
+        }
+
+        return $next($request);
+    }
+}
+```
+
+接下来`Client::send()` 入队处理，就是队列相关的内容了。
+
+
+
+
+
+
+
+
+
+
+
+
 ## 参考资料
 
 redis队列插件 <https://www.workerman.net/plugin/12>
