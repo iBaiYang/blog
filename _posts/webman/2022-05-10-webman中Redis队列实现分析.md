@@ -2528,7 +2528,7 @@ Array
 
 ## 实例
 
-### 实例一
+### 其他项目对接
 
 有一种使用场景，在其他项目中调用webman项目推送队列数据。
 
@@ -2674,7 +2674,7 @@ class CandyAuthCheck implements MiddlewareInterface
 
 
 
-
+<br/><br/><br/><br/><br/>
 ## 参考资料
 
 redis队列插件 <https://www.workerman.net/plugin/12>
