@@ -42,7 +42,7 @@ kerberos认证，HTTP上传，代理服务器， cookies，用户名/密码认�
 
 socket <https://ibaiyang.github.io/blog/php/2019/08/27/PHP-socket编程.html>
 
-stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream实现服务器客户端.html>
+stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream实现服务端.html>
 
 curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL详解.html>
 

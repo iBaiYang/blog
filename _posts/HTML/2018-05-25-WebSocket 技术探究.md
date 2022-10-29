@@ -237,7 +237,7 @@ WebSocket-技术探究 <https://ibaiyang.github.io/blog/html/2018/05/25/WebSocke
 
 Swoole学习 <https://ibaiyang.github.io/blog/php/2018/05/26/PHP-Swoole%E5%AD%A6%E4%B9%A0.html>
 
-PHP Stream实现服务器客户端 <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%A2%E6%88%B7%E7%AB%AF.html>
+PHP Stream实现服务端 <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream实现服务端.html>
 
 WebSocket 前世今生 <https://www.ibm.com/developerworks/cn/java/j-lo-WebSocket/>
 
