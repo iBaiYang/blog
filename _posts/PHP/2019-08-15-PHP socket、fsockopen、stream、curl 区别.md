@@ -7,7 +7,7 @@ meta: socket 水泥、沙子，底层的东西；fsockopen 、 stream 水泥预�
 * content
 {:toc}
 
-### 正文
+## 正文
 
 socket 水泥、沙子，底层的东西
 
@@ -46,7 +46,7 @@ stream <https://ibaiyang.github.io/blog/php/2018/06/04/PHP-Stream实现服务器
 
 curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL详解.html>
 
-#### Sockets
+### Sockets
 
 在PHP中，通过官方自带的Sockets扩展库，Stream 函数扩展库可以创建多种协议的服务器和客户端。Stream 函数扩展库是封装好了的Sockets扩展库，更容易使用。
 
@@ -64,7 +64,7 @@ curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL详解.html>
   *    @socket_close
 ```
 
-##### TCP协议
+#### TCP协议
 
 TCP服务端：
 ```php
@@ -144,7 +144,7 @@ function tcp_client($port, $ip, $in)
 }
 ```
 
-##### UDP协议
+#### UDP协议
 
 UDP服务端：
 ```php
@@ -191,7 +191,7 @@ UDP客户端：
 
 ```
 
-#### Stream
+### Stream
 
 通信过程:
 ```
@@ -295,7 +295,7 @@ function udp_client($port, $ip, $sendMsg)
 }
 ```
 
-#### fsockopen
+### fsockopen
 
 ```php
 $fp = fsockopen("www.example.com", 80, $errno, $errstr, 30);
@@ -325,7 +325,7 @@ if (!$fp) {
 }
 ```
 
-#### cUrl
+### cUrl
 
 ```php
 <?php
@@ -368,7 +368,7 @@ function Post($url, $postData = array())
 }
 ```
 
-#### file_get_contents
+### file_get_contents
 
 那么file_get_contents呢？
 
@@ -404,7 +404,7 @@ PS：file_get_contents()函数获取https链接内容的时候，需要php 中mo
 
 结论就是，curl 效率及稳定都比 file_get_contents() 要好，fsockopen 也很强大，但是比较偏底层。
 
-#### HTTP功能工厂方法类
+### HTTP功能工厂方法类
 
 兼容 Curl/Socket/Stream 的 HTTP 客户端操作类：
 
@@ -1299,9 +1299,10 @@ class Http_Stream
 }
 ```
 
-#### 函数原型
+### 函数原型
 
-stream_socket_client():
+#### stream系列
+
 ```
 /**
  * Open Internet or Unix domain socket connection
@@ -1344,7 +1345,131 @@ stream_socket_client():
  * feof), false on failure.
  */
 function stream_socket_client ($remote_socket, &$errno = null, &$errstr = null, $timeout = null, $flags = null, $context = null) {}
+
+/**
+ * Create an Internet or Unix domain server socket
+ * @link https://php.net/manual/en/function.stream-socket-server.php
+ * @param string $local_socket <p>
+ * The type of socket created is determined by the transport specified
+ * using standard URL formatting: transport://target.
+ * </p>
+ * <p>
+ * For Internet Domain sockets (AF_INET) such as TCP and UDP, the
+ * target portion of the
+ * remote_socket parameter should consist of a
+ * hostname or IP address followed by a colon and a port number. For
+ * Unix domain sockets, the target portion should
+ * point to the socket file on the filesystem.
+ * </p>
+ * <p>
+ * Depending on the environment, Unix domain sockets may not be available.
+ * A list of available transports can be retrieved using
+ * stream_get_transports. See
+ * for a list of bulitin transports.
+ * </p>
+ * @param int $errno [optional] <p>
+ * If the optional errno and errstr
+ * arguments are present they will be set to indicate the actual system
+ * level error that occurred in the system-level socket(),
+ * bind(), and listen() calls. If
+ * the value returned in errno is
+ * 0 and the function returned false, it is an
+ * indication that the error occurred before the bind()
+ * call. This is most likely due to a problem initializing the socket.
+ * Note that the errno and
+ * errstr arguments will always be passed by reference.
+ * </p>
+ * @param string $errstr [optional] <p>
+ * See errno description.
+ * </p>
+ * @param int $flags [optional] <p>
+ * A bitmask field which may be set to any combination of socket creation
+ * flags.
+ * </p>
+ * <p>
+ * For UDP sockets, you must use STREAM_SERVER_BIND as
+ * the flags parameter.
+ * </p>
+ * @param resource $context [optional] <p>
+ * </p>
+ * @return resource|false the created stream, or false on error.
+ */
+function stream_socket_server ($local_socket, &$errno = null, &$errstr = null, $flags = null, $context = null) {}
+
+/**
+ * Accept a connection on a socket created by <function>stream_socket_server</function>
+ * @link https://php.net/manual/en/function.stream-socket-accept.php
+ * @param resource $server_socket
+ * @param float $timeout [optional] <p>
+ * Override the default socket accept timeout. Time should be given in
+ * seconds.
+ * </p>
+ * @param string $peername [optional] <p>
+ * Will be set to the name (address) of the client which connected, if
+ * included and available from the selected transport.
+ * </p>
+ * <p>
+ * Can also be determined later using
+ * stream_socket_get_name.
+ * </p>
+ * @return resource|false Returns a stream to the accepted socket connection or FALSE on failure.
+ */
+function stream_socket_accept ($server_socket, $timeout = null, &$peername = null) {}
+
+/**
+ * Sends a message to a socket, whether it is connected or not
+ * @link https://php.net/manual/en/function.stream-socket-sendto.php
+ * @param resource $socket <p>
+ * The socket to send data to.
+ * </p>
+ * @param string $data <p>
+ * The data to be sent.
+ * </p>
+ * @param int $flags [optional] <p>
+ * The value of flags can be any combination
+ * of the following:
+ * <table>
+ * possible values for flags
+ * <tr valign="top">
+ * <td>STREAM_OOB</td>
+ * <td>
+ * Process OOB (out-of-band) data.
+ * </td>
+ * </tr>
+ * </table>
+ * </p>
+ * @param string $address [optional] <p>
+ * The address specified when the socket stream was created will be used
+ * unless an alternate address is specified in address.
+ * </p>
+ * <p>
+ * If specified, it must be in dotted quad (or [ipv6]) format.
+ * </p>
+ * @return int|false a result code, as an integer.
+ */
+function stream_socket_sendto ($socket, $data, $flags = null, $address = null) {}
+
+/**
+ * Shutdown a full-duplex connection
+ * @link https://php.net/manual/en/function.stream-socket-shutdown.php
+ * @param resource $stream <p>
+ * An open stream (opened with stream_socket_client,
+ * for example)
+ * </p>
+ * @param int $how <p>
+ * One of the following constants: STREAM_SHUT_RD
+ * (disable further receptions), STREAM_SHUT_WR
+ * (disable further transmissions) or
+ * STREAM_SHUT_RDWR (disable further receptions and
+ * transmissions).
+ * </p>
+ * @return bool true on success or false on failure.
+ * @since 5.2.1
+ */
+function stream_socket_shutdown ($stream, $how) {}
 ```
+
+#### file系列
 
 fsockopen():
 ```
@@ -1608,175 +1733,11 @@ fopen():
 function fopen ($filename, $mode, $use_include_path = false, $context = null) {}
 ```
 
-```
-/**
- * Open Internet or Unix domain socket connection
- * @link https://php.net/manual/en/function.stream-socket-client.php
- * @param string $remote_socket <p>
- * Address to the socket to connect to.
- * </p>
- * @param int $errno [optional] <p>
- * Will be set to the system level error number if connection fails.
- * </p>
- * @param string $errstr [optional] <p>
- * Will be set to the system level error message if the connection fails.
- * </p>
- * @param float|null $timeout [optional] <p>
- * Number of seconds until the connect() system call
- * should timeout.
- * This parameter only applies when not making asynchronous
- * connection attempts.
- * <p>
- * To set a timeout for reading/writing data over the socket, use the
- * stream_set_timeout, as the
- * timeout only applies while making connecting
- * the socket.
- * </p>
- * </p>
- * @param int $flags [optional] <p>
- * Bitmask field which may be set to any combination of connection flags.
- * Currently the select of connection flags is limited to
- * STREAM_CLIENT_CONNECT (default),
- * STREAM_CLIENT_ASYNC_CONNECT and
- * STREAM_CLIENT_PERSISTENT.
- * </p>
- * @param resource $context [optional] <p>
- * A valid context resource created with stream_context_create.
- * </p>
- * @return resource|false On success a stream resource is returned which may
- * be used together with the other file functions (such as
- * fgets, fgetss,
- * fwrite, fclose, and
- * feof), false on failure.
- */
-function stream_socket_client ($remote_socket, &$errno = null, &$errstr = null, $timeout = null, $flags = null, $context = null) {}
 
-/**
- * Create an Internet or Unix domain server socket
- * @link https://php.net/manual/en/function.stream-socket-server.php
- * @param string $local_socket <p>
- * The type of socket created is determined by the transport specified
- * using standard URL formatting: transport://target.
- * </p>
- * <p>
- * For Internet Domain sockets (AF_INET) such as TCP and UDP, the
- * target portion of the
- * remote_socket parameter should consist of a
- * hostname or IP address followed by a colon and a port number. For
- * Unix domain sockets, the target portion should
- * point to the socket file on the filesystem.
- * </p>
- * <p>
- * Depending on the environment, Unix domain sockets may not be available.
- * A list of available transports can be retrieved using
- * stream_get_transports. See
- * for a list of bulitin transports.
- * </p>
- * @param int $errno [optional] <p>
- * If the optional errno and errstr
- * arguments are present they will be set to indicate the actual system
- * level error that occurred in the system-level socket(),
- * bind(), and listen() calls. If
- * the value returned in errno is
- * 0 and the function returned false, it is an
- * indication that the error occurred before the bind()
- * call. This is most likely due to a problem initializing the socket.
- * Note that the errno and
- * errstr arguments will always be passed by reference.
- * </p>
- * @param string $errstr [optional] <p>
- * See errno description.
- * </p>
- * @param int $flags [optional] <p>
- * A bitmask field which may be set to any combination of socket creation
- * flags.
- * </p>
- * <p>
- * For UDP sockets, you must use STREAM_SERVER_BIND as
- * the flags parameter.
- * </p>
- * @param resource $context [optional] <p>
- * </p>
- * @return resource|false the created stream, or false on error.
- */
-function stream_socket_server ($local_socket, &$errno = null, &$errstr = null, $flags = null, $context = null) {}
-
-/**
- * Accept a connection on a socket created by <function>stream_socket_server</function>
- * @link https://php.net/manual/en/function.stream-socket-accept.php
- * @param resource $server_socket
- * @param float $timeout [optional] <p>
- * Override the default socket accept timeout. Time should be given in
- * seconds.
- * </p>
- * @param string $peername [optional] <p>
- * Will be set to the name (address) of the client which connected, if
- * included and available from the selected transport.
- * </p>
- * <p>
- * Can also be determined later using
- * stream_socket_get_name.
- * </p>
- * @return resource|false Returns a stream to the accepted socket connection or FALSE on failure.
- */
-function stream_socket_accept ($server_socket, $timeout = null, &$peername = null) {}
-
-/**
- * Sends a message to a socket, whether it is connected or not
- * @link https://php.net/manual/en/function.stream-socket-sendto.php
- * @param resource $socket <p>
- * The socket to send data to.
- * </p>
- * @param string $data <p>
- * The data to be sent.
- * </p>
- * @param int $flags [optional] <p>
- * The value of flags can be any combination
- * of the following:
- * <table>
- * possible values for flags
- * <tr valign="top">
- * <td>STREAM_OOB</td>
- * <td>
- * Process OOB (out-of-band) data.
- * </td>
- * </tr>
- * </table>
- * </p>
- * @param string $address [optional] <p>
- * The address specified when the socket stream was created will be used
- * unless an alternate address is specified in address.
- * </p>
- * <p>
- * If specified, it must be in dotted quad (or [ipv6]) format.
- * </p>
- * @return int|false a result code, as an integer.
- */
-function stream_socket_sendto ($socket, $data, $flags = null, $address = null) {}
-
-/**
- * Shutdown a full-duplex connection
- * @link https://php.net/manual/en/function.stream-socket-shutdown.php
- * @param resource $stream <p>
- * An open stream (opened with stream_socket_client,
- * for example)
- * </p>
- * @param int $how <p>
- * One of the following constants: STREAM_SHUT_RD
- * (disable further receptions), STREAM_SHUT_WR
- * (disable further transmissions) or
- * STREAM_SHUT_RDWR (disable further receptions and
- * transmissions).
- * </p>
- * @return bool true on success or false on failure.
- * @since 5.2.1
- */
-function stream_socket_shutdown ($stream, $how) {}
-```
 
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 深入浅出讲解：php的socket通信 <https://www.cnblogs.com/aipiaoborensheng/p/6708963.html>
 
