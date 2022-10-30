@@ -341,7 +341,7 @@ Hello LaravelAcademy!
 I hate ****y things!
 ```
 
-### Stream实现服务端
+### Stream实现服务端/客户端
 
 php中除了用Swoole拓展实现服务器客户端，其实用php原生的Stream拓展也可以实现服务器/客户端。
 
