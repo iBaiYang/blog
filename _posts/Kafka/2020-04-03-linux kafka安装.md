@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: Linux
+categories: Kafka
 title: linux kafka安装
 meta: linux kafka安装
 ---
