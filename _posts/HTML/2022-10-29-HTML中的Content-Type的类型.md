@@ -12,7 +12,7 @@ meta: HTML中的Content-Type的类型
 Content-Type 内容类型，是消息中非常重要的内容，表示文档属于什么MIME类型。
 用于定义网络文件的类型和网页的编码，决定文件接收方将以什么形式、什么编码读取这个文件。
 格式为 `Content-Type: [type]/[subtype]; parameter`。
-例如最常见的就是`text/html`，它的意思是说内容是文本类型，这个文本又是HTML格式的。
+例如最常见的就是`Content-Type: text/html; charset=UTF-8`，它的意思是说返回内容是文本类型，这个文本又是HTML格式的。
 
 ### 常见的媒体格式类型如下：
 
@@ -54,7 +54,7 @@ multipart/form-data ： 需要在表单中进行文件上传时，就需要使�
 enctype 规定了form表单在发送到服务器时候编码方式，有如下的三个值：
 
 application/x-www-form-urlencoded 不是不能上传文件，是只能上传`文本格式`的文件。
-用文本的传输 MP3 等大型文件的时候，使用这种编码就显得效率低下。
+用文本的形式传输 MP3 等大型文件的时候，使用这种编码就显得效率低下。
 
 multipart/form-data 是指表单数据中由多部分构成，既有文本数据，又有文件等二进制数据。
 multipart/form-data 是将文件以二进制的形式上传，这样可以实现`多种类型`的文件上传。
