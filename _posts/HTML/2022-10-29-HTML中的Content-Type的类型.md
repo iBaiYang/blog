@@ -67,7 +67,40 @@ text/plain：纯文本的传输。空格转换为"+"号，但不对特殊字符�
 有 HTTP Content-type、HTML转义字符、RGB颜色参考、ASCII对照表、HTTP状态码详解、
 运算符优先级、TCP/UDP常见端口参考、网页字体参考 等内容。
 
+## 实例
 
+### xml请求
+
+在一次项目开发中，碰到一种情况，微信公众号中配置回调地址，但这个地址已经配置为B项目了，
+A项目也需要这个回调进行相应后续处理，怎么解决呢？
+
+有两种解决办法：一是在B项目中把A项目的这块业务代码写过去，这样会导致代码耦合，不利于以后项目修改迭代；
+二是B项目接收到请求后把请求体原样转发给A项目，这是最理想的解决办法。
+
+不过查阅微信开发文档又发现微信回调使用的是xml格式，怎么进行请求体的获取和转发呢。
+下面写个实例：
+```php
+<?php
+// 获取请求体
+$xml_data = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : file_get_contents("php://input");
+
+// 请求地址
+$url = 'http://www.b.com';
+
+$header = "Content-type: text/xml";  //定义content-type为xml
+$ch = curl_init();   //初始化curl
+curl_setopt($ch, CURLOPT_URL, $url);  //设置链接
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  //设置是否返回信息
+curl_setopt($ch, CURLOPT_HTTPHEADER, $header);  //设置HTTP头
+curl_setopt($ch, CURLOPT_POST, 1);  //设置为POST方式
+curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_data);  //POST数据
+$response = curl_exec($ch);  //接收返回信息
+if(curl_errno($ch)){  //出错则显示错误信息
+    echo curl_error($ch);
+}
+curl_close($ch);   //关闭curl链接
+echo $response;  //显示返回信息
+```
 
 
 <br/><br/><br/><br/><br/>
