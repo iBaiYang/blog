@@ -109,3 +109,5 @@ echo $response;  //显示返回信息
 HTML中的Content-Type的类型 <https://blog.csdn.net/qq_24147051/article/details/90477756>
 
 常用对照表 <https://tool.oschina.net/commons/>
+
+
