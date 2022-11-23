@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: PHP
+categories: Composer
 title: Composer中replace属性使用
 meta: Composer中replace属性使用
 ---

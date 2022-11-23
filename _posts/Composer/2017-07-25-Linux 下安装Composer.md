@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: Linux
+categories: Composer
 title: Linux 下安装Composer
 meta: 记录一下 Linux 下安装安装Composer流程
 ---
