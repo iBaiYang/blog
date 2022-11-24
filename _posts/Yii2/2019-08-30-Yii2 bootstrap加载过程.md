@@ -14,6 +14,7 @@ meta: bootstrap加载过程
 'bootstrap' => ['log'],
 'components' => [
     'log' => [
+        'class' => 'yii\log\Dispatcher',
         'targets' => [
             'kafka' =>
                 [
