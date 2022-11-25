@@ -1240,7 +1240,7 @@ yield receive : 100
 
 总结一句话，就是不要在foreach中使用生成器的send方法。
 
-然而，我在国内的一些有关php yield的文章中，都没有看到有人提及这个bug，我坑我自己是淌过了，你们是没必要再淌了。
+然而，我在国内的一些有关php yield的文章中，都没有看到有人提及这个bug，这坑我自己是淌过了，你们是没必要再淌了。
 
 
 #### 18 填坑之PHP的yield和协程在一起的日子里
@@ -1254,6 +1254,54 @@ yield receive : 100
 PS：那篇文章中在最后我犯了一个错误，误下了一个结论：foreach中不能使用send并猜测这是PHP的bug，实际上并不是，
 真实的原因粗暴简单的理解就是send会让生成器继续执行一次导致。这件事情告诉我们：
 除了装逼之外，甩锅也是有打脸风险的
+
+```php
+<?php 
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+		echo "start : " . $start . PHP_EOL;
+        $ret = yield $start;
+        $start++;
+        echo "yield receive : " . $ret . PHP_EOL;
+    }
+}
+
+$generator = yield_range(1, 10);
+foreach ($generator as $item) {
+	echo "current : " . $generator->current() . PHP_EOL;
+    $generator->send($generator->current() * 10);
+}
+```
+
+输出：
+```
+start : 1
+current : 1
+yield receive : 10
+start : 2
+yield receive : 
+start : 3
+current : 3
+yield receive : 30
+start : 4
+yield receive : 
+start : 5
+current : 5
+yield receive : 50
+start : 6
+yield receive : 
+start : 7
+current : 7
+yield receive : 70
+start : 8
+yield receive : 
+start : 9
+current : 9
+yield receive : 90
+start : 10
+yield receive : 
+```
 
 那篇坑里，内容和你能在百毒上搜索到的大多数文章都是差不多的，不过我那篇坑标题起得好：《yield是个什么玩意（上）》，
 也就是暗示大家还有下篇，所以起标题也是需要一定技术含量的。
