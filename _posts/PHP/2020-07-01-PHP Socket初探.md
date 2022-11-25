@@ -32,14 +32,13 @@ socket赋予了我们操控传输层和网络层的能力，从而得到更强�
 $host = '0.0.0.0';
 $port = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind( $listen_socket, $host, $port );
+socket_bind($listen_socket, $host, $port);
 // 开始监听socket
-socket_listen( $listen_socket );
+socket_listen($listen_socket);
 // 进入while循环，不用担心死循环死机，因为程序将会阻塞在下面的socket_accept()函数上
-while( true )
-{
+while (true) {
     // 此处将会阻塞住，一直到有客户端来连接服务器。阻塞状态的进程是不会占据CPU的
     /*
     之所以不会占据CPU,因为CPU运算的时候,类似有个指挥官的家伙会调度,进程切换,简称调度,它只会指挥准备开始打战和正在打战的人,
@@ -47,13 +46,13 @@ while( true )
     你也可以看到下图,调度只在运行和就绪之间的,所以cpu不会傻傻等正在休息的士兵起来了,再指挥
     */
     // 所以你不用担心while循环会将机器拖垮，不会的 
-    $connection_socket = socket_accept( $listen_socket );
+    $connection_socket = socket_accept($listen_socket);
     // 向客户端发送一个helloworld
     $msg = "helloworld\r\n";
-    socket_write( $connection_socket, $msg, strlen( $msg ) );
-    socket_close( $connection_socket );
+    socket_write($connection_socket, $msg, strlen($msg));
+    socket_close($connection_socket);
 }
-socket_close( $listen_socket );
+socket_close($listen_socket);
 ```
 
 ![](/blog/images/20200921/20200921002101.jpeg)
@@ -80,32 +79,31 @@ socket_close( $listen_socket );
 $host = '0.0.0.0';
 $port = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind( $listen_socket, $host, $port );
+socket_bind($listen_socket, $host, $port);
 // 开始监听socket
-socket_listen( $listen_socket );
+socket_listen($listen_socket);
 // 进入while循环，不用担心死循环死机，因为程序将会阻塞在下面的socket_accept()函数上
-while( true )
-{
+while (true) {
     // 此处将会阻塞住，一直到有客户端来连接服务器。阻塞状态的进程是不会占据CPU的
     // 所以你不用担心while循环会将机器拖垮，不会的 
-    $connection_socket = socket_accept( $listen_socket );
+    $connection_socket = socket_accept($listen_socket);
     // 当accept了新的客户端连接后，就fork出一个子进程专门处理
     $pid = pcntl_fork();
     // 在子进程中处理当前连接的请求业务
-    if ( 0 == $pid ) {
+    if (0 == $pid) {
         // 向客户端发送一个helloworld
         $msg = "helloworld\r\n";
-        socket_write( $connection_socket, $msg, strlen( $msg ) );
+        socket_write($connection_socket, $msg, strlen($msg));
         // 休眠5秒钟，可以用来观察时候可以同时为多个客户端提供服务
-        echo time().' : a new client'.PHP_EOL;
-        sleep( 5 );
-        socket_close( $connection_socket );
+        echo time() . ' : a new client' . PHP_EOL;
+        sleep(5);
+        socket_close($connection_socket);
         exit;
     }
 }
-socket_close( $listen_socket );
+socket_close($listen_socket);
 ```
 
 将代码保存为server.php，然后执行php server.php，客户端依然使用telnet 127.0.0.1 9999，只不过这次我们开启两个终端来执行telnet。
@@ -127,32 +125,32 @@ socket_close( $listen_socket );
 $host = '0.0.0.0';
 $port = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind( $listen_socket, $host, $port );
+socket_bind($listen_socket, $host, $port);
 // 开始监听socket
-socket_listen( $listen_socket );
+socket_listen($listen_socket);
 // 给主进程换个名字
-cli_set_process_title( 'phpserver master process' );
+cli_set_process_title('phpserver master process');
 // 按照数量fork出固定个数子进程
-for( $i = 1; $i <= 10; $i++ ){
+for ($i = 1; $i <= 10; $i++) {
     $pid = pcntl_fork();
-    if( 0 == $pid ){
-        cli_set_process_title( 'phpserver worker process' );
-        while( true ){
-            $conn_socket = socket_accept( $listen_socket );
+    if (0 == $pid) {
+        cli_set_process_title('phpserver worker process');
+        while (true) {
+            $conn_socket = socket_accept($listen_socket);
             $msg = "helloworld\r\n";
-            socket_write( $conn_socket, $msg, strlen( $msg ) );
-            socket_close( $conn_socket );
+            socket_write($conn_socket, $msg, strlen($msg));
+            socket_close($conn_socket);
         }
     }
 }
 // 主进程不可以退出，代码演示比较粗暴，为了保证不退出直接走while循环，休眠一秒钟
 // 实际上，主进程真正该做的应该是收集子进程pid，监控各个子进程的状态等等
-while( true ){
-    sleep( 1 );
+while (true) {
+    sleep(1);
 }
-socket_close( $listen_socket );
+socket_close($listen_socket);
 ```
 
 将文件保存为server.php后php server.php执行，然后再用 `ps -ef | grep phpserver | grep -v grep` 来看下服务器进程状态：
@@ -256,64 +254,68 @@ socket初探 --- 先从一个简单的socket服务器开始，依次讲解了三
 也就是说去遍历fd的时候，未理会的fd依然是可读可写等状态，一直到调用方理会。
 
 上面都是我个人的理解和汇总，有错误可以指出，希望不会误人子弟。下面通过php代码实例来操作一波儿select系统调用。
-在php中，你可以通过stream_select或者socket_select来操作select系统调用，下面演示socket_select进行代码演示：
+在php中，你可以通过stream_select或者socket_select来操作select系统调用，
+下面用 socket_select 代码演示一个客户端进行群聊的例子：
 ```php
 <?php
 // BEGIN 创建一个tcp socket服务器
 $host = '0.0.0.0';
 $port = 9999;
-$listen_socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $listen_socket, $host, $port );
-socket_listen( $listen_socket );
+$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($listen_socket, $host, $port);
+socket_listen($listen_socket);
 // END 创建服务器完毕 
 
 // $client用来保存连接的客户端，也将监听socket放入到read fd set中去，因为select也要监听listen_socket上发生事件
-$client = [ $listen_socket ];
+$client = [$listen_socket];
+
 // 先暂时只引入读事件，避免有同学晕头
 $write = [];
 $exp = [];
 
 // 开始进入循环
-while( true )
-{
+while (true) {
     // $read读取的客户端为连接的客户端
     $read = $client;
-    // 当select监听到了fd变化，注意第四个参数为null
-    // 如果写成大于0的整数那么表示将在规定时间内超时
-    // 如果写成等于0的整数那么表示不断调用select，执行后立马返回，然后继续
-    // 如果写成null，那么表示select会阻塞一直到监听发生变化
+    
+    /*
+    当select监听到了fd变化，注意第四个参数为null；如果写成大于0的整数那么表示将在规定时间内超时；
+    如果写成等于0的整数那么表示不断调用select，执行后立马返回，然后继续；
+    如果写成null，那么表示select会阻塞一直到监听发生变化。
+    */
     /*
     第一个参数必须是数组,数组里面含有待检测的套接字,而且第四个参数写成null阻塞就是代表程序就一直停在socket_select这个函数上,
     什么都不干,等你有连接或者有数据发送,我才继续执行,所以你使用var_dump后,再进行telnet 才会有返回值,否则没有任何输出的
     */
-    if ( socket_select( $read, $write, $exp, null ) > 0 ) {
+    if (socket_select($read, $write, $exp, null) > 0) {
         // 判断listen_socket有没有发生变化，如果有就是有客户端发生连接操作了。刚开始把$listen_socket放入了$client，$client又放入了$read
-        if (in_array( $listen_socket, $read )) {
+        if (in_array($listen_socket, $read)) {
             // 将客户端socket加入到客户端连接client数组中
             // socket_accept创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
-            $client_socket = socket_accept( $listen_socket );
+            $client_socket = socket_accept($listen_socket);
+            
             //下面这句很有用,避免了  unset( $read[ $key ] )后,在while时,客户端进来再次用  $client赋值给$read
             $client[] = $client_socket;
+            
             // 然后将listen_socket从read中去除掉
-            $key = array_search( $listen_socket, $read );
-            unset( $read[ $key ] );
+            $key = array_search($listen_socket, $read);
+            unset($read[$key]);
         }
-        // 查看去除listen_socket中是否还有client_socket
-        // 已经进行telnet连接后,会直接走这一步,不会进去上面代码的in_array。第一个客户端连接第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接
-        // 或者其他后续的客户端连接发生了连接，会执行到这里
-        if ( count( $read ) > 0 ) {
-            $msg = 'hello world';
+        
+        // 查看去除listen_socket中是否还有client_socket。
+        // 已经进行telnet连接后，会直接走这一步，不会进去上面代码的in_array。
+        // 第一个客户端连接，第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接，
+        // 或者其他后续的客户端连接发生了连接，会执行到这里。
+        if (count($read) > 0) {
             // 循环监听的所有客户端连接
-            foreach( $read as $socket_item )
-            {
+            foreach ($read as $socket_item) {
                 // 从可读取的客户端连接fd中读取出来数据内容，然后发送给其他客户端
-                $content = socket_read( $socket_item, 2048 );
+                $content = socket_read($socket_item, 2048);
                 // 循环client数组，将内容发送给其余所有客户端
-                foreach ( $client as $client_socket )
-                {
+                foreach ($client as $client_socket) {
                     // 因为client数组中包含了 listen_socket 以及当前发送者自己socket，$client_socket != $socket_item 再次排除自已,所以需要排除二者
-                    if( $client_socket != $listen_socket && $client_socket != $socket_item ){
-                        socket_write( $client_socket, $content, strlen( $content ) );
+                    if ($client_socket != $listen_socket && $client_socket != $socket_item) {
+                        socket_write($client_socket, $content, strlen($content));
                     }
                 }
             }
@@ -325,7 +327,7 @@ while( true )
 }
 ```
 
-将文件保存为server.php，然后执行php server.php运行服务，同时再打开三个终端，执行telnet 127.0.0.1 9999，
+将文件保存为 server.php ，然后执行`php server.php`运行服务，同时再打开三个终端，执行`telnet 127.0.0.1 9999`，
 然后在任何一个telnet终端中输入"I am xiaoming!"，再看其他两个telnet窗口，是不是感觉很屌？
 
 不完全截图图下：
@@ -337,7 +339,7 @@ while( true )
 
 最后，我们重点解析一下 socket_select 函数，我们看下这个函数的[原型](https://www.php.net/socket_select)：
 
-```php
+```
 int socket_select ( array &$read , array &$write , array &$except , int $tv_sec [, int $tv_usec = 0 ] )
 ```
 
