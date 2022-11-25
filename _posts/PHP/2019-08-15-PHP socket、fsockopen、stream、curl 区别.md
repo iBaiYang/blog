@@ -68,6 +68,7 @@ curl <https://ibaiyang.github.io/blog/php/2016/09/08/PHP-cURL详解.html>
 
 TCP服务端：
 ```php
+<?php
 //确保在连接客户端时不会超时
 set_time_limit(0);
 
@@ -110,6 +111,7 @@ socket_close($sock);
 
 TCP客户端：
 ```php
+<?php
 function tcp_client($port, $ip, $in)
 {
     set_time_limit(0);
@@ -148,6 +150,7 @@ function tcp_client($port, $ip, $in)
 
 UDP服务端：
 ```php
+<?php
 //Reduce errors
 error_reporting(~E_WARNING);
 
@@ -215,6 +218,7 @@ fclose
 
 TCP服务端：
 ```php
+<?php
 //设置不超时
 set_time_limit(0);
 
@@ -253,6 +257,7 @@ new SocketServer(1212);
 
 TCP客户端：
 ```php
+<?php
 if (isset($argv[1])) {
     $msg = $argv[1];
     file_put_contents('log.txt', 'CLIENT-1|| msg：' . $msg . "\r\n", FILE_APPEND);
@@ -281,6 +286,7 @@ if (isset($argv[1])) {
 
 UDP客户端：
 ```php
+<?php
 function udp_client($port, $ip, $sendMsg)
 {
     set_time_limit(0);
@@ -290,7 +296,9 @@ function udp_client($port, $ip, $sendMsg)
     }
     fwrite($handle, $sendMsg);
     $result = fread($handle, 1024);
+    
     fclose($handle);
+    
     return $result;
 }
 ```
@@ -298,29 +306,35 @@ function udp_client($port, $ip, $sendMsg)
 ### fsockopen
 
 ```php
+<?php
 $fp = fsockopen("www.example.com", 80, $errno, $errstr, 30);
 if (!$fp) {
     echo "$errstr ($errno)<br />\n";
 } else {
-      $out = "GET / HTTP/1.1\r\n";
-      $out .= "Host: www.example.com\r\n";
-      $out .= "Connection: Close\r\n\r\n";
-  fwrite($fp, $out);
-while (!feof($fp)) {
-    echo fgets($fp, 128);
-}
-fclose($fp);
+    $out = "GET / HTTP/1.1\r\n";
+    $out .= "Host: www.example.com\r\n";
+    $out .= "Connection: Close\r\n\r\n";
+    fwrite($fp, $out);
+    
+    while (!feof($fp)) {
+        echo fgets($fp, 128);
+    }
+    
+    fclose($fp);
 }
 ```
 
 使用UDP连接:
 ```php
+<?php
 $fp = fsockopen("udp://127.0.0.1", 13, $errno, $errstr);
 if (!$fp) {
     echo "ERROR: $errno - $errstr<br />\n";
 } else {
     fwrite($fp, "\n");
+    
     echo fread($fp, 26);
+    
     fclose($fp);
 }
 ```
@@ -392,19 +406,15 @@ file_get_contents 更多的时候只是去拉取数据。效率比较高也比�
 只讨论 curl 与file_get_contents 的话，有这么一些结论：
 
 1. fopen /file_get_contents 每次请求都会重新做DNS查询，并不对DNS信息进行缓存。但是cURL会自动对DNS信息进行缓存。
-   对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以cURL的性能比fopen /file_get_contents 好很多。
-
+对同一域名下的网页或者图片的请求只需要一次DNS查询。这大大减少了DNS查询的次数。所以cURL的性能比fopen /file_get_contents 好很多。
 2. fopen /file_get_contents在请求HTTP时，使用的是http_fopen_wrapper，不会keeplive。而curl却可以。这样在多次请求多个链接时，curl效率会好一些。
-
 3. fopen / file_get_contents函数会受到php.ini文件中allow_url_open选项配置的影响。如果该配置关闭了，则该函数也就失效了。而curl不受该配置的影响。
-
 4. curl可以模拟多种请求，例如：POST数据，表单提交等，用户可以按照自己的需求来定制请求。而fopen / file_get_contents只能使用get方式获取数据。
-
 PS：file_get_contents()函数获取https链接内容的时候，需要php 中mod_ssl的支持(或安装opensll)。
 
 结论就是，curl 效率及稳定都比 file_get_contents() 要好，fsockopen 也很强大，但是比较偏底层。
 
-### HTTP功能工厂方法类
+### HTTP工厂方法类
 
 兼容 Curl/Socket/Stream 的 HTTP 客户端操作类：
 
@@ -510,6 +520,7 @@ class Http
 
 Http_Curl类：
 ```php
+<?php
 /**  
 * 使用cURL 作为核心操作的HTTP访问类  
 *  
@@ -757,6 +768,7 @@ class Http_Curl
 
 Http_Sock类：
 ```php
+<?php
 /**  
  * 使用 Socket操作( fsockopen()函数实现 ) 作为核心操作的HTTP访问接口  
  *  
@@ -890,7 +902,6 @@ class Http_Sock
             $this->uri = $url;
         }
     }
-
 
     /**
      * 发送HTTP GET请求
@@ -1042,6 +1053,7 @@ class Http_Sock
 
 Http_Stream类：
 ```php
+<?php
 /**  
  * 使用文件流操作函数为核心操作的HTTP访问接口 （stream_context_creat()函数实现）  
  *  
