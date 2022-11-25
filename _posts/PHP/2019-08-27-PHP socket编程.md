@@ -7,9 +7,7 @@ meta: socket编程
 * content
 {:toc}
 
-### 正文
-
-#### 什么是TCP/IP
+## 什么是TCP/IP
 
 TCP/IP（Transmission Control Protocol/Internet Protocol）即传输控制协议/网间协议，是一个工业标准的协议集，它是为广域网（WANs）设计的。
 
@@ -19,7 +17,7 @@ UDP（User Data Protocol，用户数据报协议）是与TCP相对应的协议�
 
 TCP/IP协议族包括运输层、网络层、链路层。
 
-#### 什么是Socket
+## 什么是Socket
 
 我们没有看到Socket的影子，那么它到底在哪里呢？
 
@@ -31,7 +29,7 @@ Socket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一�
 它把复杂的TCP /IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。
 Socket使网络间的通信编程简单了许多。
 
-#### 什么是HTTP
+## 什么是HTTP
 
 你可能会好奇HTTP，HTTP是什么？
 
@@ -54,7 +52,7 @@ HTTP协议永远都是客户端发起请求，服务器回送响应。无法实�
 
 HTTP协议是一个无状态的协议，同一个客户端的这次请求和上次请求没有对应关系。
 
-#### Socket编程的工作原理
+## Socket编程的工作原理
 
 Socket模型：
 
@@ -64,7 +62,7 @@ Socket模型：
 在这时如果有个客户端初始化一个Socket，然后连接服务器(connect)，如果连接成功，这时客户端与服务器端的连接就建立了。客户端发送数据请求，
 服务器端接收请求并处理请求，然后把回应数据发送给客户端，客户端读取数据，最后关闭连接，一次交互结束。
 
-#### socket相关函数
+## socket相关函数
 
 |        |         | 
 | --------   | :-----  |
@@ -105,9 +103,10 @@ Socket模型：
 | socket_writev() | 写数据到分散/聚合数组 |
 
 
-#### socket编程案例
+## socket编程案例
 
-服务器端：
+### 服务器端
+
 ```php
 <?php
 /*
@@ -182,7 +181,8 @@ socket_close($sock);
 
 此时端口已经处于LISTENING状态了。接下来我们只要运行客户端程序即可连接上。
 
-客户端：
+### 客户端
+
 ```php
 <?php
 /*
@@ -244,9 +244,10 @@ echo "关闭OK\n";
 
 ![]({{site.baseurl}}/images/20190827/20190827152354.png)
 
-#### 过程代码详解
+## 过程代码详解
 
-服务端：
+### 服务端
+
 ```php
 <?php
 // 设置一些基本的变量
@@ -379,19 +380,19 @@ $result = socket_listen($socket, 3) or die("Could not set up socket listener\n")
 $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
 ```
 
-这个子socket现在就可以被随后的客户端–服务器通信所用了.
+这个子socket现在就可以被随后的客户端–服务器通信所用了。
 
-7.当一个连接被建立后,服务器就会等待客户端发送一些输入信息,这写信息可以由socket_read()函数来获得,并把它赋值给PHP的$input变量.
+7.当一个连接被建立后，服务器就会等待客户端发送一些输入信息，这些信息可以由socket_read()函数来获得，并把它赋值给PHP的$input变量。
 ```
 // 读取客户端输入
 $input = socket_read($spawn, 1024) or die("Could not read input\n");
 ```
 
-socker_read的第二个参数用以指定读入的字节数,你可以通过它来限制从客户端获取数据的大小.
+socker_read的第二个参数用以指定读入的字节数，你可以通过它来限制从客户端获取数据的大小。
 
-注意:socket_read函数会一直读取客户端数据,直到遇见\n,\t或者\0字符.PHP脚本把这写字符看做是输入的结束符.
+注意:socket_read函数会一直读取客户端数据，直到遇见\n,\t或者\0字符.PHP脚本把这写字符看做是输入的结束符。
 
-8.现在服务器必须处理这些由客户端发来是数据(在这个例子中的处理仅仅包含数据的输入和回传到客户端).
+8.现在服务器必须处理这些由客户端发来是数据(在这个例子中的处理仅仅包含数据的输入和回传到客户端)。
 这部分可以由socket_write()函数来完成(使得由通信socket发回一个数据流到客户端成为可能)
 ```
 // 处理客户端输入并返回数据
@@ -399,14 +400,15 @@ $output = strrev($input) . "\n";
 socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
 ```
 
-9.一旦输出被返回到客户端,父/子socket都应通过socket_close()函数来终止
+9.一旦输出被返回到客户端，父/子socket都应通过socket_close()函数来终止
 ```
 // 关闭 sockets
 socket_close($spawn);
+
 socket_close($socket);
 ```
 
-##### 客户端socket
+### 客户端socket
 
 ```php
 <?php
@@ -520,7 +522,7 @@ socket_close($socket);
 
 其实就是类似于打开浏览器访问www.baidu.com一样的整个流程
 
-##### 服务端socket
+### 服务端socket
 
 1.创建一个服务端master socket
 ```
@@ -710,7 +712,7 @@ while (true) {
             $input = socket_read($client_socks[$i], 1024);//读取数据
 
             if ($input == null) {
-                //如果输入为空 那么意味着客户端失去连接 关闭客户端并移除
+                //如果输入为空 那么意味着客户端失去连接，关闭客户端并移除
                 unset($client_socks[$i]);
                 socket_close($client_socks[$i]);
             }
@@ -737,7 +739,7 @@ while (true) {
 * 》4. 接受数据
 * 》5. 读取数据/发送数据
 
-关于 socket_select 部分内容可以看[这里](https://ibaiyang.github.io/blog/php/2020/07/01/PHP-Socket%E5%88%9D%E6%8E%A2.html)
+关于 socket_select 部分内容可以看 <https://ibaiyang.github.io/blog/php/2020/07/01/PHP-Socket初探.html#11-select系统调用>
 
 epoll实现的IO多路复用。php的event扩展支持epoll。安装好后看一下用法：
 ```php
@@ -789,12 +791,13 @@ $event = new Event($event_base, $fd, Event::READ | Event::PERSIST, function ($fd
         $event_arr[intval($conn)] = $event;
     }
 }, $fd);
+
 $event->add();
 $event_base->loop();
 ```
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 PHP 手册 函数参考 其它服务 Sockets Socket 函数 <https://www.php.net/manual/zh/ref.sockets.php>
 
