@@ -406,8 +406,7 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 - 通过C语言可以直接操作epoll，但是，为了避免装逼失败，我决定不用C来演示（放到后面再深入的时候）
 - 如果说通过PHP来操作，我不得不提一件悲催的事情，据我自己得到的经验告诉我，那就是PHP无法直接操控epoll，而是要通过操作libevent来搞定epoll。
 
-那么，什么是Libevent呢？怎么听着好耳熟，不光耳熟，你看下下图，是不是还有点儿眼熟？没错，
-这的博客的前端页面就是抄的[Libevent官网](http://libevent.org/ "Libevent官网")的。
+那么，什么是Libevent呢？可以看下 [Libevent官网](http://libevent.org/ "Libevent官网") 的内容。
 
 我先从Libevent官网抄袭一段话：
 “Currently, libevent supports /dev/poll, kqueue(2), event ports, POSIX select(2), Windows select(), poll(2), and epoll(4). ”，
@@ -451,7 +450,7 @@ select虽然一定程度上解决了一个进程可以读写多个fd的问题，
 extension = '/usr/lib/php/20151012/event.so'
 ```
 
-，然后在终端中执行`php -m`下，是不是有event呢？
+- 然后在终端中执行`php -m`下，是不是有event呢？
 
 好了，今天到这里正式收官，下一篇继续嗑php和他的event扩展二三事！
 
@@ -486,18 +485,18 @@ EventConfig则是一个配置类，实例化后的对象作为参数可以传递
 <?php
 // 给当前php进程安装一个alarm信号处理器
 // 当进程收到alarm时钟信号后会作出动作
-pcntl_signal( SIGALRM, function(){
-  echo "tick.".PHP_EOL;
-} );
+pcntl_signal(SIGALRM, function () {
+    echo "tick." . PHP_EOL;
+});
 // 定义一个时钟间隔时间，1秒钟吧
 $tick = 1;
-while( true ){
-  // 当过了tick时间后，向进程发送一个alarm信号
-  pcntl_alarm( $tick );
-  // 分发信号，呼唤起安装好的各种信号处理器
-  pcntl_signal_dispatch();
-  // 睡个1秒钟，继续
-  sleep( $tick );
+while (true) {
+    // 当过了tick时间后，向进程发送一个alarm信号
+    pcntl_alarm($tick);
+    // 分发信号，呼唤起安装好的各种信号处理器
+    pcntl_signal_dispatch();
+    // 睡个1秒钟，继续
+    sleep($tick);
 }
 ```
 代码保存成timer.php，然后php timer.php运行下，如果不出问题应该能跑起来。但是吧，这个代码有一坨问题。
@@ -511,15 +510,15 @@ while( true ){
 // 初始化一个EventConfig（舰岛），虽然是个仅用于演示的空配置
 $eventConfig = new EventConfig();
 // 根据EventConfig初始化一个EventBase（辽宁舰，根据舰岛配置下辽宁舰）
-$eventBase = new EventBase( $eventConfig );
+$eventBase = new EventBase($eventConfig);
 // 初始化一个定时器event（歼15，然后放到辽宁舰机库中）
-$timer = new Event( $eventBase, -1, Event::TIMEOUT | Event::PERSIST, function(){
-  echo microtime( true )." : 歼15，滑跃，起飞！".PHP_EOL;
-} );
+$timer = new Event($eventBase, -1, Event::TIMEOUT | Event::PERSIST, function () {
+    echo microtime(true) . " : 歼15，滑跃，起飞！" . PHP_EOL;
+});
 // tick间隔为0.05秒钟，我们还可以改成0.5秒钟甚至0.001秒，也就是毫秒级定时器
 $tick = 0.05;
 // 将定时器event添加（将歼15拖到甲板加上弹射器）
-$timer->add( $tick );
+$timer->add($tick);
 // eventBase进入loop状态（辽宁舰！走你！）
 $eventBase->loop();
 ```
@@ -533,16 +532,16 @@ $eventBase->loop();
 如果你有一些自定义用户数据传递给回调函数，可以利用new Event()的第五个参数，这五个参数可以给回调函数用，如下所示：
 ```php
 <?php
-$timer = new Event( $eventBase, -1, Event::TIMEOUT | Event::PERSIST, function() use( &$custom ){
-  //echo microtime( true )." : 歼15，滑跃，起飞！".PHP_EOL;
-  print_r( $custom );
+$timer = new Event($eventBase, -1, Event::TIMEOUT | Event::PERSIST, function () use (&$custom) {
+    //echo microtime( true )." : 歼15，滑跃，起飞！".PHP_EOL;
+    print_r($custom);
 }, $custom = array(
-  'name' => 'woshishui',
-) );
+    'name' => 'woshishui',
+));
 ```
 
 需要重点说明的是new Event()这行代码了，我把原型贴过来给大家看下：
-```php
+```
 public Event::__construct ( EventBase $base , mixed $fd , int $what , callable $cb [, mixed $arg = NULL ] )
 ```
 - 第一个参数是一个eventBase对象即可
@@ -568,15 +567,15 @@ public Event::__construct ( EventBase $base , mixed $fd , int $what , callable $
 // 依然是照例行事，尽管暂时没什么实际意义上的配置
 $eventConfig = new EventConfig();
 // 初始化eventBase
-$eventBase = new EventBase( $eventConfig );
+$eventBase = new EventBase($eventConfig);
 // 初始化event
-$event = new Event( $eventBase, SIGTERM, Event::SIGNAL, function(){
-  echo "signal come.".PHP_EOL;
-} );
+$event = new Event($eventBase, SIGTERM, Event::SIGNAL, function () {
+    echo "signal come." . PHP_EOL;
+});
 // 挂起event对象
 $event->add();
 // 进入循环
-echo "进入循环".PHP_EOL;
+echo "进入循环" . PHP_EOL;
 $eventBase->loop();
 ```
 
@@ -590,9 +589,9 @@ $eventBase->loop();
 奇怪啊，从第一张图看到确实收到term信号了，但是很奇怪为什么这个php进程退出了呢？是因为没有添加Event::PERSIST，修改如下代码如下：
 ```php
 <?php
-$event = new Event( $eventBase, SIGTERM, Event::SIGNAL | Event::PERSIST, function(){
-  echo "signal come.".PHP_EOL;
-} );
+$event = new Event($eventBase, SIGTERM, Event::SIGNAL | Event::PERSIST, function () {
+    echo "signal come." . PHP_EOL;
+});
 ```
 
 可能还有一些同学觉得php进程退出就退出,收到kill就退出,好正常,你仔细看下,tick.php进程只要求收到一个term就echo输出,并没有说规定进程退出,
@@ -620,17 +619,17 @@ root@jingmian:/# kill -l
 <?php
 // 查看当前系统平台支持的IO多路复用的方法都有哪些？
 $method = Event::getSupportedMethods();
-print_r( $method );
+print_r($method);
 // 查看当前用的方法是哪一个？
 $eventBase = new EventBase();
-echo "当前event的方法是：".$eventBase->getMethod().PHP_EOL;
+echo "当前event的方法是：" . $eventBase->getMethod() . PHP_EOL;
 // 跑了许久龙套的config这次也得真的露露手脚了
 $eventConfig = new EventConfig;
 // 避免使用方法kqueue
 $eventConfig->avoidMethod('kqueue');
 // 利用config初始化event base
-$eventBase = new EventBase( $eventConfig );
-echo "当前event的方法是：".$eventBase->getMethod().PHP_EOL;
+$eventBase = new EventBase($eventConfig);
+echo "当前event的方法是：" . $eventBase->getMethod() . PHP_EOL;
 ```
 将代码保存了，然后执行一下，可以看到结果如下图所示：
 
@@ -640,17 +639,17 @@ echo "当前event的方法是：".$eventBase->getMethod().PHP_EOL;
 ```php
 <?php
 $base = new EventBase();
-echo "特性：".PHP_EOL;
+echo "特性：" . PHP_EOL;
 $features = $base->getFeatures();
 // 看不到这个判断条件的，请反思自己“位运算”相关欠缺
-if( $features & EventConfig::FEATURE_ET ){
-  echo "边缘触发".PHP_EOL;
+if ($features & EventConfig::FEATURE_ET) {
+    echo "边缘触发" . PHP_EOL;
 }
-if( $features & EventConfig::FEATURE_O1 ){
-  echo "O1添加删除事件".PHP_EOL;
+if ($features & EventConfig::FEATURE_O1) {
+    echo "O1添加删除事件" . PHP_EOL;
 }
-if( $features & EventConfig::FEATURE_FDS ){
-  echo "任意文件描述符，不光socket".PHP_EOL;
+if ($features & EventConfig::FEATURE_FDS) {
+    echo "任意文件描述符，不光socket" . PHP_EOL;
 }
 ```
 
@@ -674,29 +673,29 @@ if( $features & EventConfig::FEATURE_FDS ){
 <?php
 $host = '0.0.0.0';
 $port = 9999;
-$listen_socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $listen_socket, $host, $port );
-socket_listen( $listen_socket );
+$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($listen_socket, $host, $port);
+socket_listen($listen_socket);
 
-echo PHP_EOL.PHP_EOL."Http Server ON : http://{$host}:{$port}".PHP_EOL;
+echo PHP_EOL . PHP_EOL . "Http Server ON : http://{$host}:{$port}" . PHP_EOL;
 
 // 将服务器设置为非阻塞，此处概念可能略拐弯，建议各位查阅一下手册
-socket_set_nonblock( $listen_socket );
+socket_set_nonblock($listen_socket);
 // 创建事件基础体，还记得航空母舰吗？
 $event_base = new EventBase();
 // 创建一个事件，还记得歼15舰载机吗？我们将“监听socket”添加到事件监听中，触发条件是read，
 // 也就是说，一旦“监听socket”上有客户端来连接，就会触发这里，我们在回调函数里来处理接受到新请求后的反应
-$event = new Event( $event_base, $listen_socket, Event::READ | Event::PERSIST, function( $listen_socket ) {
+$event = new Event($event_base, $listen_socket, Event::READ | Event::PERSIST, function ($listen_socket) {
     // 为什么写成这样比较执拗的方式？因为，“监听socket”已经被设置成了非阻塞，
     // 这种情况下，accept是立即返回的，所以，必须通过判定accept的结果是否为true来执行后面的代码。
     // 一些实现里，包括workerman在内，可能是使用@符号来压制错误，个人不太建议这样做
-    if( ( $connect_socket = socket_accept( $listen_socket ) ) != false){
-        echo "有新的客户端：".intval( $connect_socket ).PHP_EOL;
+    if (($connect_socket = socket_accept($listen_socket)) != false) {
+        echo "有新的客户端：" . intval($connect_socket) . PHP_EOL;
         $msg = "HTTP/1.0 200 OK\r\nContent-Length: 2\r\n\r\nHi";
-        socket_write( $connect_socket, $msg, strlen( $msg ) );
-        socket_close( $connect_socket );
+        socket_write($connect_socket, $msg, strlen($msg));
+        socket_close($connect_socket);
     }
-}, $listen_socket );
+}, $listen_socket);
 $event->add();
 $event_base->loop();
 ```
@@ -717,52 +716,51 @@ $event_base->loop();
 <?php
 $host = '0.0.0.0';
 $port = 9999;
-$fd = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $fd, $host, $port );
-socket_listen( $fd );
+$fd = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($fd, $host, $port);
+socket_listen($fd);
 // 注意，将“监听socket”设置为非阻塞模式
-socket_set_nonblock( $fd );
+socket_set_nonblock($fd);
 
 // 这里值得注意，我们声明两个数组用来保存 事件 和 连接socket
-$event_arr = []; 
-$conn_arr = []; 
+$event_arr = [];
+$conn_arr = [];
 
-echo PHP_EOL.PHP_EOL."欢迎来到ti-chat聊天室!发言注意遵守当地法律法规!".PHP_EOL;
-echo "        tcp://{$host}:{$port}".PHP_EOL;
+echo PHP_EOL . PHP_EOL . "欢迎来到ti-chat聊天室!发言注意遵守当地法律法规!" . PHP_EOL;
+echo "        tcp://{$host}:{$port}" . PHP_EOL;
 
 $event_base = new EventBase();
-$event = new Event( $event_base, $fd, Event::READ | Event::PERSIST, function( $fd ){
+$event = new Event($event_base, $fd, Event::READ | Event::PERSIST, function ($fd) {
     // 使用全局的event_arr 和 conn_arr
-    global $event_arr,$conn_arr,$event_base;
-    
+    global $event_arr, $conn_arr, $event_base;
+
     // 非阻塞模式下，注意accpet的写法会稍微特殊一些。如果不想这么写，请往前面添加@符号，不过不建议这种写法
-    if ( ( $conn = socket_accept( $fd ) ) != false ) {
-        echo date('Y-m-d H:i:s').'：欢迎'.intval( $conn ).'来到聊天室'.PHP_EOL;
-        
+    if (($conn = socket_accept($fd)) != false) {
+        echo date('Y-m-d H:i:s') . '：欢迎' . intval($conn) . '来到聊天室' . PHP_EOL;
+
         // 将连接socket也设置为非阻塞模式
-        socket_set_nonblock( $conn );
-        
+        socket_set_nonblock($conn);
+
         // 此处值得注意，我们需要将连接socket保存到数组中去
-        $conn_arr[ intval( $conn ) ] = $conn;
-        
-        $event = new Event( $event_base, $conn, Event::READ | Event::PERSIST, function( $conn )  { 
+        $conn_arr[intval($conn)] = $conn;
+
+        $event = new Event($event_base, $conn, Event::READ | Event::PERSIST, function ($conn) {
             global $conn_arr;
-            $buffer = socket_read( $conn, 65535 );
-            foreach( $conn_arr as $conn_key => $conn_item )
-            {
-                if ( $conn != $conn_item ) {
-                    $msg = intval( $conn ).'说 : '.$buffer;
-                    socket_write( $conn_item, $msg, strlen( $msg ) );
-                }   
-            }   
-        }, $conn );
-        
+            $buffer = socket_read($conn, 65535);
+            foreach ($conn_arr as $conn_key => $conn_item) {
+                if ($conn != $conn_item) {
+                    $msg = intval($conn) . '说 : ' . $buffer;
+                    socket_write($conn_item, $msg, strlen($msg));
+                }
+            }
+        }, $conn);
+
         $event->add();
-        
+
         // 此处值得注意，我们需要将事件本身存储到全局数组中，如果不保存，连接会话会丢失，也就是说服务端和客户端将无法保持持久会话
-        $event_arr[ intval( $conn ) ] = $event;
+        $event_arr[intval($conn)] = $event;
     }
-}, $fd );
+}, $fd);
 $event->add();
 $event_base->loop();
 ```
@@ -802,18 +800,17 @@ scalable network applications.”，看到其中有asynchronous（异步）的�
  ```php
 <?php
 // 创建一个监听socket，这个一个阻塞IO的socket
-$listen = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $listen, '0.0.0.0', 9999 );
-socket_listen( $listen );
-while( true )
-{
-     // socket_accept也是阻塞的，虽然有while，但是由于accpet是阻塞的，所以这段代码不会进入无限死循环中
-     $connect = socket_accept( $listen );
-     if( $connect ){
-       echo "有新的客户端".PHP_EOL;
-     } else {
-       echo "客户端连接失败".PHP_EOL;
-     }
+$listen = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($listen, '0.0.0.0', 9999);
+socket_listen($listen);
+while (true) {
+    // socket_accept也是阻塞的，虽然有while，但是由于accpet是阻塞的，所以这段代码不会进入无限死循环中
+    $connect = socket_accept($listen);
+    if ($connect) {
+        echo "有新的客户端" . PHP_EOL;
+    } else {
+        echo "客户端连接失败" . PHP_EOL;
+    }
 }
  ```
  
@@ -823,17 +820,17 @@ while( true )
  ```php
 <?php
 // 创建一个监听socket，将其设置为非阻塞
-$listen = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-socket_bind( $listen, '0.0.0.0', 9999 );
-socket_listen( $listen );
+$listen = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($listen, '0.0.0.0', 9999);
+socket_listen($listen);
 // ⚠️⚠️⚠️⚠️⚠️⚠️ 这里设置非阻塞！
-socket_set_nonblock( $listen );
-while( true ){
-    $connect = socket_accept( $listen );
-    if ( $connect ) {
-        echo "有新的客户端".PHP_EOL;
+socket_set_nonblock($listen);
+while (true) {
+    $connect = socket_accept($listen);
+    if ($connect) {
+        echo "有新的客户端" . PHP_EOL;
     } else {
-        echo "客户端连接失败".PHP_EOL;
+        echo "客户端连接失败" . PHP_EOL;
     }
 }
 ```
@@ -924,27 +921,27 @@ $http->start();
 <?php
 // 你要创建异步的MySQL客户端，而不是普普通通的pdo mysqli
 $async_mysql = new async_mysql();
-$async_mysql->on( 'connect', function( $async_mysql ){
-    echo '连接成功'.PHP_EOL;
+$async_mysql->on('connect', function ($async_mysql) {
+    echo '连接成功' . PHP_EOL;
     // 插入评论
     $sql = "insert into pinglun() values()";
-    $async_mysql->query( $sql, function( $async_mysql, $result ) {
+    $async_mysql->query($sql, function ($async_mysql, $result) {
         // 如果插入成功
-        if ( true == $result ) {
+        if (true == $result) {
             // 获取5条最新评论
             $sql = "select * from pinglun limit 5";
-            $async_mysql->query( $sql, function( $async_mysql, $result ){
+            $async_mysql->query($sql, function ($async_mysql, $result) {
                 // 获取成功后拿数据
-                if ( true == $result ) {
-                    print_r( $result->fetchAll() );
+                if (true == $result) {
+                    print_r($result->fetchAll());
                 } else {
-                    echo "获取失败".PHP_EOL;
+                    echo "获取失败" . PHP_EOL;
                 }
             });
-        
-        // 如果插入失败
+
+            // 如果插入失败
         } else {
-            echo "插入数据失败".PHP_EOL;
+            echo "插入数据失败" . PHP_EOL;
         }
     });
 });
@@ -963,11 +960,11 @@ $async_mysql->on( 'connect', function( $async_mysql ){
 <?php
 $pdo = new pdo();
 try {
-  $pdo->connect( $host, $port );
-  $pdo->query( "insert into pinglun() values()" );
-  $pdo->query( "select * from pinglun limit 5" );
-} catch( Exception $e ) {
-  throw new Exception('error.');
+    $pdo->connect($host, $port);
+    $pdo->query("insert into pinglun() values()");
+    $pdo->query("select * from pinglun limit 5");
+} catch (Exception $e) {
+    throw new Exception('error.');
 }
 ```
 
@@ -989,11 +986,11 @@ worker进程中业务逻辑代码就是往数据库里添加一条记录，你�
 
 ```php
 <?php
-$server = new Swoole\Http\Server('127.0.0.1', 9501 );
-$server->set( array(
-  'worker_num' => 1,
-) );
-$server->on('Request', function($request, $response) {
+$server = new Swoole\Http\Server('127.0.0.1', 9501);
+$server->set(array(
+    'worker_num' => 1,
+));
+$server->on('Request', function ($request, $response) {
     // 数据库插入一条数据
     $sql = "insert into user(`name`) values('iwejf')";
 
@@ -1012,8 +1009,8 @@ $server->on('Request', function($request, $response) {
         'user' => 'root',
         'password' => 'root',
         'database' => 'meshbox',
-    ]); 
-    $ret = $mysql->query( $sql );
+    ]);
+    $ret = $mysql->query($sql);
 
     // 回应客户端ok
     $response->end("ok");
@@ -1076,12 +1073,12 @@ $server->start();
 ```php
 <?php
 $start_mem = memory_get_usage();
-$arr = range( 1, 10000 );
-foreach( $arr as $item ){
-  //echo $item.',';
+$arr = range(1, 10000);
+foreach ($arr as $item) {
+    //echo $item.',';
 }
 $end_mem = memory_get_usage();
-echo " use mem : ". ( $end_mem - $start_mem ) .'bytes'.PHP_EOL; 
+echo " use mem : " . ($end_mem - $start_mem) . 'bytes' . PHP_EOL;
 ```
 
 一顿操作猛如虎，运行一下成绩1-5，你们感受一下：
@@ -1097,17 +1094,19 @@ echo " use mem : ". ( $end_mem - $start_mem ) .'bytes'.PHP_EOL;
 ```php
 <?php
 $start_mem = memory_get_usage();
-function yield_range( $start, $end ){
-  while( $start <= $end ){
-    $start++;
-    yield $start;
-  }
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+        $start++;
+        yield $start;
+    }
 }
-foreach( yield_range( 0, 9999 ) as $item ){
-  echo $item.',';
+
+foreach (yield_range(0, 9999) as $item) {
+    echo $item . ',';
 }
 $end_mem = memory_get_usage();
-echo " use mem : ". ( $end_mem - $start_mem ) .'bytes'.PHP_EOL;
+echo " use mem : " . ($end_mem - $start_mem) . 'bytes' . PHP_EOL;
 ```
 
 运行一下，你们感受一下：
@@ -1121,14 +1120,16 @@ echo " use mem : ". ( $end_mem - $start_mem ) .'bytes'.PHP_EOL;
 
 ```php
 <?php
-function yield_range( $start, $end ){
-  while( $start <= $end ){
-    $start++;
-    yield $start;
-  }
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+        $start++;
+        yield $start;
+    }
 }
-$rs = yield_range( 1, 100 );
-var_dump( $rs );
+
+$rs = yield_range(1, 100);
+var_dump($rs);
 /*
 object(Generator)#1 (0) {
 }
@@ -1140,17 +1141,19 @@ yield返回的是一个叫做Generator（中文名就是生成器）的object对
 
 ```php
 <?php
-function yield_range( $start, $end ){
-  while( $start <= $end ){
-    yield $start;
-    $start++;
-  }
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+        yield $start;
+        $start++;
+    }
 }
-$generator = yield_range( 1, 10 );
+
+$generator = yield_range(1, 10);
 // valid() current() next() 都是Iterator接口中的方法
-while( $generator->valid() ){
-  echo $generator->current().PHP_EOL;
-  $generator->next();
+while ($generator->valid()) {
+    echo $generator->current() . PHP_EOL;
+    $generator->next();
 }
 ```
 
@@ -1170,15 +1173,17 @@ while( $generator->valid() ){
 
 ```php
 <?php
-function yield_range( $start, $end ){
-  while( $start <= $end ){
-    $ret = yield $start;
-    $start++;
-    echo "yield receive : ".$ret.PHP_EOL;
-  }
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+        $ret = yield $start;
+        $start++;
+        echo "yield receive : " . $ret . PHP_EOL;
+    }
 }
-$generator = yield_range( 1, 10 );
-$generator->send( $generator->current() * 10 );
+
+$generator = yield_range(1, 10);
+$generator->send($generator->current() * 10);
 ```
 
 运行结果如图所示：
@@ -1189,23 +1194,24 @@ send方法可以修改yield的返回值，但是，你也不能想当然，比�
 
 ```php
 <?php
-function yield_range( $start, $end ){
-  while( $start <= $end ){
-    $ret = yield $start;
-    $start++;
-    echo "yield receive : ".$ret.PHP_EOL;
-  }
+function yield_range($start, $end)
+{
+    while ($start <= $end) {
+        $ret = yield $start;
+        $start++;
+        echo "yield receive : " . $ret . PHP_EOL;
+    }
 }
-$generator = yield_range( 1, 10 );
-foreach( $generator as $item ){
-  $generator->send( $generator->current() * 10 );
+
+$generator = yield_range(1, 10);
+foreach ($generator as $item) {
+    $generator->send($generator->current() * 10);
 }
 ```
 
 本来以为运行结果是类似于这样的：
 
 ```php
-<?php
 yield receive : 10
 yield receive : 20
 yield receive : 30
@@ -1271,37 +1277,41 @@ PS：那篇文章中在最后我犯了一个错误，误下了一个结论：for
 下面我通过一坨代码来体会一把“翻身农奴”，你们感受一下：
 ```php
 <?php
-function gen1() {
-  for( $i = 1; $i <= 10; $i++ ) {
-    echo "GEN1 : {$i}".PHP_EOL;
-    // sleep没啥意思，主要就是运行时候给你一种切实的调度感，你懂么
-    // 就是那种“你看！你看！尼玛,我调度了！卧槽”
-    sleep( 1 );
-    // 这句很关键，表示自己主动让出CPU，我不下地狱谁下地狱
-    yield;
-  }
+function gen1()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "GEN1 : {$i}" . PHP_EOL;
+        // sleep没啥意思，主要就是运行时候给你一种切实的调度感，你懂么
+        // 就是那种“你看！你看！尼玛,我调度了！卧槽”
+        sleep(1);
+        // 这句很关键，表示自己主动让出CPU，我不下地狱谁下地狱
+        yield;
+    }
 }
-function gen2() {
-  for( $i = 1; $i <= 10; $i++ ) {
-    echo "GEN2 : {$i}".PHP_EOL;
-    // sleep没啥意思，主要就是运行时候给你一种切实的调度感，你懂么
-    // 就是那种“你看！你看！尼玛,我调度了！卧槽”
-    sleep( 1 );
-    // 这句很关键，表示自己主动让出CPU，我不下地狱谁下地狱
-    yield;
-  }
+
+function gen2()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "GEN2 : {$i}" . PHP_EOL;
+        // sleep没啥意思，主要就是运行时候给你一种切实的调度感，你懂么
+        // 就是那种“你看！你看！尼玛,我调度了！卧槽”
+        sleep(1);
+        // 这句很关键，表示自己主动让出CPU，我不下地狱谁下地狱
+        yield;
+    }
 }
+
 $task1 = gen1();
 $task2 = gen2();
-while( true ) {
-  // 首先我运行task1，然后task1主动下了地狱
-  echo $task1->current();
-  // 这会儿我可以让task2介入进来了
-  echo $task2->current();
-  // task1恢复中断
-  $task1->next();
-  // task2恢复中断
-  $task2->next();
+while (true) {
+    // 首先我运行task1，然后task1主动下了地狱
+    echo $task1->current();
+    // 这会儿我可以让task2介入进来了
+    echo $task2->current();
+    // task1恢复中断
+    $task1->next();
+    // task2恢复中断
+    $task2->next();
 }
 ```
 上面代码执行结果如下图：
@@ -1309,21 +1319,26 @@ while( true ) {
 ![](/blog/images/20200921/20200921002132.png)
 
 
-虽然我话都说到这里了，但是肯定还是有人get不到“所以，到底发生了什么？”。你要知道，如果function gen1和function gen2中没有yield，而是普通函数，你是无法中断其中的for循环的，诸如下面这样的代码：
+虽然我话都说到这里了，但是肯定还是有人get不到“所以，到底发生了什么？”。你要知道，
+如果function gen1和function gen2中没有yield，而是普通函数，你是无法中断其中的for循环的，诸如下面这样的代码：
 
 ```php
 <?php
-function gen1() {
-  for( $i = 1; $i <= 10; $i++ ) {
-    echo "GEN1 : {$i}".PHP_EOL;
-    sleep( 1 );
-  }
+function gen1()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "GEN1 : {$i}" . PHP_EOL;
+        sleep(1);
+    }
 }
-function gen2() {
-  for( $i = 1; $i <= 10; $i++ ) {
-    echo "GEN2 : {$i}".PHP_EOL;
-  }
+
+function gen2()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "GEN2 : {$i}" . PHP_EOL;
+    }
 }
+
 gen1();
 gen2();
 // 看这里，看这里，看这里！
@@ -1339,37 +1354,39 @@ gen2将向一个文本文件中写内容，我们的目的就是在耗时的curl
 <?php
 $ch1 = curl_init();
 // 这个地址中的php，我故意sleep了5秒钟，然后输出一坨json
-curl_setopt( $ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1" );
-curl_setopt( $ch1, CURLOPT_HEADER, 0 );
+curl_setopt($ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1");
+curl_setopt($ch1, CURLOPT_HEADER, 0);
 $mh = curl_multi_init();
-curl_multi_add_handle( $mh, $ch1 );
+curl_multi_add_handle($mh, $ch1);
 
-function gen1( $mh, $ch1 ) {
-  do {
-    $mrc = curl_multi_exec( $mh, $running );
-    // 请求发出后，让出cpu
-    yield;
-  } while( $running > 0 );
-  $ret = curl_multi_getcontent( $ch1 );
-  echo $ret.PHP_EOL;
-  return false;
+function gen1($mh, $ch1)
+{
+    do {
+        $mrc = curl_multi_exec($mh, $running);
+        // 请求发出后，让出cpu
+        yield;
+    } while ($running > 0);
+    $ret = curl_multi_getcontent($ch1);
+    echo $ret . PHP_EOL;
+    return false;
 }
 
-function gen2() {
-  for ( $i = 1; $i <= 10; $i++ ) {
-    echo "gen2 : {$i}".PHP_EOL;
-    file_put_contents( "./yield.log", "gen2".$i, FILE_APPEND );
-    yield;
-  }
+function gen2()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "gen2 : {$i}" . PHP_EOL;
+        file_put_contents("./yield.log", "gen2" . $i, FILE_APPEND);
+        yield;
+    }
 }
 
-$gen1 = gen1( $mh, $ch1 );
+$gen1 = gen1($mh, $ch1);
 $gen2 = gen2();
-while( true ) {
-  echo $gen1->current();
-  echo $gen2->current();
-  $gen1->next();
-  $gen2->next();
+while (true) {
+    echo $gen1->current();
+    echo $gen2->current();
+    $gen1->next();
+    $gen2->next();
 }
 ```
 
@@ -1382,39 +1399,41 @@ while( true ) {
 <?php
 $ch1 = curl_init();
 // 这个地址中的php，我故意sleep了5秒钟，然后输出一坨json
-curl_setopt( $ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1" );
-curl_setopt( $ch1, CURLOPT_HEADER, 0 );
+curl_setopt($ch1, CURLOPT_URL, "http://www.selfctrler.com/index.php/test/test1");
+curl_setopt($ch1, CURLOPT_HEADER, 0);
 $mh = curl_multi_init();
-curl_multi_add_handle( $mh, $ch1 );
+curl_multi_add_handle($mh, $ch1);
 
-function gen1( $mh, $ch1 ) {
-  do {
-    $mrc = curl_multi_exec( $mh, $running );
-    // 请求发出后，让出cpu
-    $rs = yield;
-    echo "外部发送数据{$rs}".PHP_EOL;
-  } while( $running > 0 );
-  $ret = curl_multi_getcontent( $ch1 );
-  echo $ret.PHP_EOL;
-  return false;
+function gen1($mh, $ch1)
+{
+    do {
+        $mrc = curl_multi_exec($mh, $running);
+        // 请求发出后，让出cpu
+        $rs = yield;
+        echo "外部发送数据{$rs}" . PHP_EOL;
+    } while ($running > 0);
+    $ret = curl_multi_getcontent($ch1);
+    echo $ret . PHP_EOL;
+    return false;
 }
 
-function gen2() {
-  for ( $i = 1; $i <= 10; $i++ ) {
-    echo "gen2 : {$i}".PHP_EOL;
-    file_put_contents( "./yield.log", "gen2".$i, FILE_APPEND );
-    $rs = yield;
-    echo "外部发送数据{$rs}".PHP_EOL;
-  }
+function gen2()
+{
+    for ($i = 1; $i <= 10; $i++) {
+        echo "gen2 : {$i}" . PHP_EOL;
+        file_put_contents("./yield.log", "gen2" . $i, FILE_APPEND);
+        $rs = yield;
+        echo "外部发送数据{$rs}" . PHP_EOL;
+    }
 }
 
-$gen1 = gen1( $mh, $ch1 );
+$gen1 = gen1($mh, $ch1);
 $gen2 = gen2();
-while( true ) {
-  echo $gen1->current();
-  echo $gen2->current();
-  $gen1->send("gen1");
-  $gen2->send("gen2");
+while (true) {
+    echo $gen1->current();
+    echo $gen2->current();
+    $gen1->send("gen1");
+    $gen2->send("gen2");
 }
 ```
 
@@ -1424,8 +1443,8 @@ while( true ) {
 
 在function gen1中yield有了返回值，并且将返回值打印出来
 
-这件事情告诉我们：yield和send，是可以双向通信的，同时告诉我们send可以用来恢复原来中断的代码，而且在恢复中断的同时可以携带信息回去。
-写到这里，你是不是觉得这玩意的可利用价值是不是比原来高点儿了？
+这件事情告诉我们：yield和send，是可以双向通信的，同时告诉我们send可以用来恢复原来中断的代码，
+而且在恢复中断的同时可以携带信息回去。写到这里，你是不是觉得这玩意的可利用价值是不是比原来高点儿了？
 
 文章最后补个小故事：其实yield是PHP 5.5就已经添加进来了，这个模块的作者叫做Nikita Popov，网络上的名称是Nikic。
 我们知道PHP7这一代主力是惠新宸，下一代PHP主力就是Nikic了。早在2012年，Nikic就发表了一篇关于PHP yield多任务的文章，
