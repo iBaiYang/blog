@@ -624,7 +624,7 @@ print_r($method);
 $eventBase = new EventBase();
 echo "当前event的方法是：" . $eventBase->getMethod() . PHP_EOL;
 // 跑了许久龙套的config这次也得真的露露手脚了
-$eventConfig = new EventConfig;
+$eventConfig = new EventConfig();
 // 避免使用方法kqueue
 $eventConfig->avoidMethod('kqueue');
 // 利用config初始化event base
@@ -781,7 +781,7 @@ $event_base->loop();
 1. 一些有志青年可能最近手刃了Workerman源码，对于里面那一大坨stream_select()、stream_socket_server()表示疑惑，
 这个玩意和socket_create、socket_set_nonblock()有啥区别？其实，php官方手册里也提到过一嘴，socket系函数就是基于BSD Socket那一套玩意搞的，
 几乎就是将那些东西简单包装了一下直接抄过来用的，抄到甚至连名字都和C语言操控socket的函数一模一样，
-所以说socket系函数是一种比较低级（Low-Level，这里的低级是指软件工程中分层中层次的高低）socket操控方式，
+所以说socket系函数是一种比较低级（Low-Level，这里的低级是指软件工程中分层中层次的高低）的socket操控方式，
 可以最大程度给你操作socket的自由以及细腻度。在php中，socket系本身是作为php扩展而体现的，这个你可以通过php -m来查看有没有socket，
 这件事情意味着有些php环境可能没有安装这个扩展，这个时候你就无法使用socket系的函数了。但stream则不同了，这货是内建于php中的，
 除了能处理socket网络IO外，还能操控普通文件的打开写入读取等，stream系将这些输入输出统一抽象成了流，通过流来对待一切。
@@ -1260,7 +1260,7 @@ PS：那篇文章中在最后我犯了一个错误，误下了一个结论：for
 function yield_range($start, $end)
 {
     while ($start <= $end) {
-		echo "start : " . $start . PHP_EOL;
+        echo "start : " . $start . PHP_EOL;
         $ret = yield $start;
         $start++;
         echo "yield receive : " . $ret . PHP_EOL;
@@ -1269,7 +1269,7 @@ function yield_range($start, $end)
 
 $generator = yield_range(1, 10);
 foreach ($generator as $item) {
-	echo "current : " . $generator->current() . PHP_EOL;
+    echo "current : " . $generator->current() . PHP_EOL;
     $generator->send($generator->current() * 10);
 }
 ```
