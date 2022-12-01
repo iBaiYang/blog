@@ -291,6 +291,7 @@ $schedule->command('test/index')->cron('* * * * *');
 - 图片裁剪上传
 - 多 Input 框控件
 - 地图经纬度选择
+- Select下拉选择
 - Select2
 - 省市区控件
 - 省市区控件(复选框)
@@ -554,6 +555,12 @@ config 更多参考 http://fex.baidu.com/webuploader/doc/
 <?= $form->field($model, 'address')->widget(\common\widgets\selectmap\Map::class, [
     'type' => 'amap', // amap高德;tencent:腾讯;baidu:百度
 ]); ?>
+```
+
+#### Select下拉选择
+
+```
+<?= $form->field($model, 'partner_id')->dropDownList(['20' => 'test91', '24' => 'test78']); ?>
 ```
 
 #### Select2
