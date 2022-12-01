@@ -736,8 +736,9 @@ ajax 返回数据案例
 
 #### TreeGrid
 
-控制器
+实现树状结构，如多层权限、多层菜单等，可以使用TreeGrid。
 
+控制器：
 ```
 use yii\web\Controller;
 use Yii;
