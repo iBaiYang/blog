@@ -580,10 +580,9 @@ php-fpm选择并连接到一个fastcgi子进程，并将环境变量和标准输
 fastcgi子进程完成处理后将标准输出和错误信息返回。当fastcgi子进程关闭连接时，请求便告处理完成，等待下次处理。
 
 普通的cgi模式是进程，但存在一个问题，每来一个请求，就必须fork一个进程，导致效率缓慢。
+所以才有了 fastcgi，fpm 就是 fastcgi manager。
 
-所以才有了 fast cgi ， fpm 就是 fast cgi manager
-
-fpm的模式也是进程，但他会prefork 就是服务启动的时候，先fork一部分进程等待处理请求。
+fpm模式也是进程，但他会prefork，就是服务启动的时候，先fork一部分进程等待处理请求。
 
 **Swoole**
 
