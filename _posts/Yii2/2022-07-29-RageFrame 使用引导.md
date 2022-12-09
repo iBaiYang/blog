@@ -198,6 +198,7 @@ Package operations: 184 installs, 0 updates, 0 removals
 
 发现CPU占用过高，win10会自动控制进程，导致虚拟机异常。
 打开任务管理器，杀死虚拟机进程后，重新加载，多尝试几次。
+或者在win10安装PHPStudy，然后在win10环境下运行Composer。
 
 ```
 root@02891538d8c9:/var/www/html/rageframe2# composer install
