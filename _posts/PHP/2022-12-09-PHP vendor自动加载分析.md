@@ -36,6 +36,8 @@ return ComposerAutoloaderInit82c3996fbc74c498b11153bcc8cd8e49::getLoader();
 autoload.php这个文件是Composer生成和更新的，在 vendor 根文件夹下。
 下面其他文件在 vendor/composer 文件夹下。
 
+### autoload_real.php
+
 看下 autoload_real.php 的文件内容：
 ```php
 <?php
@@ -110,6 +112,8 @@ function composerRequire82c3996fbc74c498b11153bcc8cd8e49($fileIdentifier, $file)
 }
 
 ```
+
+### ClassLoader.php
 
 ClassLoader.php 文件内容：
 ```php
@@ -561,6 +565,8 @@ function includeFile($file)
 
 ```
 
+### autoload_static.php
+
 autoload_static.php 文件内容：
 ```php
 <?php
@@ -657,6 +663,8 @@ class ComposerStaticInit82c3996fbc74c498b11153bcc8cd8e49
 
 ```
 
+### autoload_files.php
+
 autoload_files.php 文件内容：
 ```php
 <?php
@@ -672,6 +680,8 @@ return array(
 );
 
 ```
+
+### autoload_classmap.php
 
 autoload_classmap.php 文件内容：
 ```php
@@ -691,6 +701,8 @@ return array(
 
 ```
 
+### autoload_namespaces.php
+
 autoload_namespaces.php 文件内容：
 ```php
 <?php
@@ -706,6 +718,8 @@ return array(
 );
 
 ```
+
+### autoload_psr4.php
 
 autoload_psr4.php 文件内容：
 ```php
@@ -726,6 +740,8 @@ return array(
 );
 
 ```
+
+### install.json
 
 install.json 文件内容：
 ```
@@ -1360,6 +1376,8 @@ install.json 文件内容：
 ]
 
 ```
+
+### LICENSE
 
 还有一个 LICENSE 文件，内容：
 ```
