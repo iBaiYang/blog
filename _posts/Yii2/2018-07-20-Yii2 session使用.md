@@ -29,7 +29,7 @@ $session->remove('name_array');
 $session->removeAll();
 
 (五)、判断session是否已定义
-$session->has( 'name_string' )
+$session->has('name_string')
 ```
 
 如果Yii::$app->session这样用报错： Unknown component ID: session
