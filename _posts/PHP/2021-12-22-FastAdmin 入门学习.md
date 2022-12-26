@@ -1926,7 +1926,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
 ### 视图文件PHP语法使用
 
-FastAdmin视图页中自定义的那些所谓的标签是真多余，如`{if condition="$a""} ... {/if}` 等，
+FastAdmin视图页中自定义的那些所谓的标签是真多余，如`{if condition="$a"} ... {/if}` 等，
 在没有上面 ”自定义的js内容“经验前，还得每次去查所谓的 FastAdmin的使用手册，上面的内容又写的极其的差，
 隐藏了好多东西，就想等你去购买所谓的专业服务，现在我可以放开改这个框架了（不再拘束了框架本身，哪怕把框架改的支离破碎）。
 
