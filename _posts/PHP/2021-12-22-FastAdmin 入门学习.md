@@ -1877,6 +1877,75 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function (
 });
 ```
 
+### 自定义的js内容
+
+在开发中，一直不知道怎么把自己写的定制化js操作加到页面操作中，如点击列表中的下载按钮进行文件下载。
+瞎摸索着在 view 文件夹下的 .html 文件中直接写入js脚本并不会执行。
+难道只能使用FastAdmin自动生成的list的js，但这个js文件只有列表内容和增删改查的表单操作。
+查询了好多内容之后，模棱两可的发现一个答案，说是在 列表list 的js文件的 `var Controller` 结构体中写点击下载的逻辑，
+但自己还是看不懂，对以后怎么写自定义js操作没有指导价值。
+
+最后把FastAdmin这个项目不再看的很重要、很专业，自己并不需要对FastAdmin这个项目太认真——这就是个垃圾框架，
+自己放开了写、放开了改，或者说是破坏原结构的瞎写，发现一切居然都解决了，写的开始顺手了。
+
+我们完全可以在 列表list 的js文件中，直接在开头写：
+```
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    $(document).on('click', '#btn-download-file', function() {
+        var url = $('#btn-download-file').attr('data-url');
+        window.open(url);
+    });
+    
+    $(document).on('click', '.buy-header-box .product-box .price-header', function() {
+        if ($(this).parent('.product-one').find('.price-body').hasClass('hide')) {
+            $(this).parent('.product-one').find('.price-body').removeClass('hide').addClass('show');
+            $(this).find('.fa').removeClass('fa-chevron-up').addClass("fa-chevron-down");
+        } else {
+            $(this).parent('.product-one').find('.price-body').removeClass('show').addClass('hide');
+            $(this).find('.fa').removeClass('fa-chevron-down').addClass("fa-chevron-up");
+        }
+    });
+    
+    var Controller = {
+        // ... 省略若干
+    };
+    return Controller;
+});
+```
+
+上面两端就是自己随手写的自定义页面操作。
+
+### 引入自定义CSS文件
+
+有时除了FastAdmin带的CSS样式，如AdminLTE、BootStrap等，我们也会自己写一些样式在样式文件中，如何引入呢？
+
+我们可以在 view/common 文件夹下的 meta.html 文件中引入，如：
+```
+<link href="__CDN__/assets/css/insure.css?v={$Think.config.site.version}" rel="stylesheet">
+```
+
+### 视图文件PHP语法使用
+
+FastAdmin视图页中自定义的那些所谓的标签是真多余，如`{if condition="$a""} ... {/if}` 等，
+在没有上面 ”自定义的js内容“经验前，还得每次去查所谓的 FastAdmin的使用手册，上面的内容又写的极其的差，
+隐藏了好多东西，就想等你去购买所谓的专业服务，现在我可以放开改这个框架了（不再拘束了框架本身，哪怕把框架改的支离破碎）。
+
+好好的PHP自己有各种标签，如条件判断的if、循环的for等，非要在这里再多此一举的学习一套FastAdmin的所谓快速标签，不累吗？
+现在我们就直接在 view 文件夹下的 .html 视图文件中写PHP自带的标签吧，如：
+```
+<div class="group">
+    {foreach name="invoice_types" item="vo"}
+        <span>{$key} - {$vo}</span>
+    {/foreach}
+</div>
+<div class="group">
+    <?php if (!empty($invoice->electronic_filepath)) {?>
+        <span>电子发票</span>
+    <?php } ?>
+</div>
+```
+
+看看上面那个foreach循环，你知道 $key 从哪冒出来的吗？对比下面if语句，熟悉不！
 
 
 
