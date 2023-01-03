@@ -1,17 +1,17 @@
 ---
 layout: post
-categories: PHP
+categories: Docker
 title: LNMP 阿里云ECS之Docker使用
 meta: LNMP 阿里云ECS之Docker使用
 ---
 * content
 {:toc}
 
-### 正文
+## 正文
 
 在阿里云上购买ECS后，命令行root连接登录实例。
 
-#### docker安装
+### docker安装
 
 ECS实例是centos 7.6 64位系统。 centos 8.*版本安装会有问题。
 
@@ -146,7 +146,7 @@ Server:
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-#### mysql安装
+### mysql安装
 
 下载mysql镜像：
 
@@ -207,7 +207,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   13 seconds ago      Up 12 seconds        0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-##### 新建用户和数据库
+#### 新建用户和数据库
 
 接下来可以新建用户和新建库：
 
@@ -265,7 +265,7 @@ GRANT  ALL  ON  dog.*  TO  'dog'@'%';
 GRANT  ALL  ON   *.*   TO  'aaa'@'%'  WITH GRANT OPTION;
 ```
 
-#### php安装
+### php安装
 
 下载镜像：
 
@@ -316,7 +316,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   28 minutes ago      Up 28 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-##### mysqli拓展安装
+#### mysqli拓展安装
 
 默认的 php 镜像中不带有 mysqli 模块，我们需要给容器内的 php 安装 mysqli 模块：
 > docker exec -it server-phpfpm /bin/bash
@@ -630,7 +630,7 @@ find . -name .libs -a -type d|xargs rm -rf
 rm -f libphp.la       modules/* libs/*
 ```
 
-##### pdo_mysql拓展安装
+#### pdo_mysql拓展安装
 
 一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
 ```
@@ -681,7 +681,7 @@ Registered Stream Filters	zlib.*, convert.iconv.*, string.rot13, string.toupper,
 
 > docker start server-phpfpm
 
-##### bcmath拓展安装
+#### bcmath拓展安装
 
 bcmath拓展可进行一些精度数学运行，需要安装好。
 
@@ -691,7 +691,7 @@ bcmath拓展可进行一些精度数学运行，需要安装好。
 
 别忘了重启server-phpfpm服务。
 
-#### nginx安装
+### nginx安装
 
 > docker pull nginx
 
@@ -818,7 +818,7 @@ http {
 
 我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
 
-#### git安装
+### git安装
 
 安装git后，我们项目代码就可以直接用git实现更新了，而不是用繁杂的ftp，总言之，就是方便：
 
@@ -838,7 +838,7 @@ git clone 项目git地址
 git pull
 ```
 
-#### web项目搭建
+### web项目搭建
 
 我们上面已经运行了nginx容器，但这个容器并无法调用php脚本服务，我们需要做相应配置。
 
@@ -994,7 +994,7 @@ server {
 
 同样，其他项目我们也可以像test项目这样部署，共用nginx和php容器。
 
-#### 附录
+### 附录
 
 我们打印phpinfo信息看一下：
 
@@ -1015,7 +1015,7 @@ docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/ngin
 ```
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 阿里云ECS服务器安装docker <https://www.cnblogs.com/one-reader/p/11406047.html>
 

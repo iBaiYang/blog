@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: PHP
+categories: Docker
 title: LNMP 阿里云ECS之Docker使用V2
 meta: LNMP 阿里云ECS之Docker使用第2版
 ---
