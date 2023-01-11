@@ -7,7 +7,7 @@ meta: 大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，
 * content
 {:toc}
 
-### 正文
+## 正文
 
 ![]({{site.baseurl}}/images/20190816/20190816134124.png)
 
@@ -68,7 +68,7 @@ header不能少吧，好的，CGI就是规定要传哪些数据、以什么样�
 
 ![]({{site.baseurl}}/images/20190902/20190902112145.jpeg)
 
-#### web服务器
+### web服务器
 
 php是后端语言，对外提供服务要借助于web服务器，或者说用户通过访问web服务器才能收到php提供的服务。
 
@@ -78,7 +78,7 @@ php是后端语言，对外提供服务要借助于web服务器，或者说用�
 
 ![]({{site.baseurl}}/images/20201118/20201118104555.jpg)
 
-#### mod_php模式
+### mod_php模式
 
 上面讲清楚了php必须借助于web服务器才能提供web的功能服务，现在看下他俩是怎么搭伙的。
 
@@ -103,7 +103,7 @@ AddType application/x-httpd-php .php
 
 那么php5_module是怎么来将数据传给php解析器来解析php代码的呢？
 
-#### sapi
+### sapi
 
 答案是通过sapi。
 
@@ -120,7 +120,7 @@ AddType application/x-httpd-php .php
 
 我们把这种运行方式叫做`mod_php模式`。
 
-#### mod_fastcgi模式
+### mod_fastcgi模式
 
 sapi是php提供的统一接口，有两种模式。
 一种模式是 mod_php模式，通过php5_module加载模式。
@@ -158,7 +158,7 @@ fastcgi是一个独立与apache和php的独立个体，它随着apache一起启�
 这样就能应对大规模的并发请求，因为web server的要做的事情少了，所以就更快的去处理下一个请求，这样并发就提高了。
 由于apache 与 php 独立了。出问题，很好定位到底是哪里出问题了。这点也是这种模式受欢迎的原因之一。
 
-#### php-fpm
+### php-fpm
 
 fastcgi 是一个与平台无关，与语言无关，任何语言只要按照它的接口来实现，就能实现自己语言的fastcgi能力和web server 通讯。
 
@@ -173,9 +173,57 @@ PHP-CGI就是PHP实现的自带的FastCGI管理器。虽然是php官方出品，
 
 PHP在 5.3.3 之后已经将php-fpm写入php源码核心了，不需要单独下载。
 
+## Nginx与PHP-FPM通信
+
+Nginx和PHP-FPM的进程间通信有两种方式:
+1. 是TCP 
+2. 是UNIX Domain Socket
+
+其中TCP是IP加端口，可以跨服务器。
+
+而UNIX Domain Socket不经过网络，只能用于Nginx跟PHP-FPM都在同一服务器的场景。
+
+用哪种取决于你的PHP-FPM配置:
+
+方式1：
+
+php-fpm.conf: listen = 127.0.0.1:9000
+
+nginx.conf: fastcgi_pass 127.0.0.1:9000;
+
+方式2:
+
+php-fpm.conf: listen = /tmp/php-fpm.sock
+
+nginx.conf: fastcgi_pass unix:/tmp/php-fpm.sock;
+
+其中php-fpm.sock是一个文件，由php-fpm生成，类型是 srw-rw----
+
+UNIX Domain Socket可用于两个没有亲缘关系的进程，是目前广泛使用的IPC机制，
+比如X Window服务器和GUI程序之间就是通过UNIX Domain Socket通讯的。这种通信方式是发生在系统内核里而不会在网络里传播。
+UNIX Domain Socket和长连接都能避免频繁创建TCP短连接而导致TIME_WAIT连接过多的问题。
+对于进程间通讯的两个程序，UNIX Domain Socket的流程不会走到TCP那层，直接以文件形式，以stream socket通讯。
+如果是TCP Socket，则需要走到IP层，对于非同一台服务器上，TCP Socket走的就更多了。
+
+UNIX Domain Socket：Nginx <=> socket <=> PHP-FPM
+
+TCP Socket(本地回环)：Nginx <=> socket <=> TCP/IP <=> socket <=> PHP-FPM
+
+TCP Socket(Nginx和PHP-FPM位于不同服务器)：Nginx <=> socket <=> TCP/IP <=> 物理层 <=> 路由器 <=> 物理层 <=> TCP/IP <=> socket <=> PHP-FPM
+
+像mysql命令行客户端连接mysqld服务也类似有这两种方式:
+
+使用Unix Socket连接(默认)：mysql -uroot -p --protocol=socket --socket=/tmp/mysql.sock
+
+使用TCP连接：mysql -uroot -p --protocol=tcp --host=127.0.0.1 --port=3306
+
+
+
+
+
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 php-fpm安装、配置与优化 <https://blog.csdn.net/ivan820819/article/details/54970330>
 
@@ -184,3 +232,6 @@ php中fastcgi和php-fpm是什么东西 <https://www.zybuluo.com/phper/note/50231
 php-fpm的配置和优化 <https://www.zybuluo.com/phper/note/89081>
 
 <https://segmentfault.com/q/1010000000256516>
+
+nginx php 进程,Nginx和PHP-FPM的进程间通信 <https://blog.csdn.net/weixin_32006655/article/details/115246826>
+
