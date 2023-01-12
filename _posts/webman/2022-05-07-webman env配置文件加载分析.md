@@ -609,7 +609,9 @@ class Env
 
 在这里看到了类 `Dotenv\Repository\RepositoryBuilder`，这个类是 `vlucas/phpdotenv` 包中的类。
 
+总体追溯下来这个过程挺复杂，点到为止，有时间慢慢研究。
 
+现在要说的是新版webma取消了对env的支持，因为phpdotenv 在多线程环境下有bug。
 
 
 <br/><br/><br/><br/><br/>
