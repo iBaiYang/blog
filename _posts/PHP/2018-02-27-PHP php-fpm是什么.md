@@ -211,11 +211,11 @@ TCP Socket(本地回环)：Nginx <=> socket <=> TCP/IP <=> socket <=> PHP-FPM
 
 TCP Socket(Nginx和PHP-FPM位于不同服务器)：Nginx <=> socket <=> TCP/IP <=> 物理层 <=> 路由器 <=> 物理层 <=> TCP/IP <=> socket <=> PHP-FPM
 
-像mysql命令行客户端连接mysqld服务也类似有这两种方式:
+像 MySQL命令行客户端 连接mysqld服务也类似有这两种方式:
 
-使用Unix Socket连接(默认)：mysql -uroot -p --protocol=socket --socket=/tmp/mysql.sock
+使用Unix Socket连接(默认)：```mysql -u root -p --protocol=socket --socket=/tmp/mysql.sock```
 
-使用TCP连接：mysql -uroot -p --protocol=tcp --host=127.0.0.1 --port=3306
+使用TCP连接：```mysql -u root -p --protocol=tcp --host=127.0.0.1 --port=3306```
 
 
 
