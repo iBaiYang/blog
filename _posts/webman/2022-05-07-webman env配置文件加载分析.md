@@ -328,6 +328,34 @@ if (class_exists('Dotenv\Dotenv') && file_exists(base_path() . '/.env')) {
 }
 ```
 
+上面两个方法的内容：
+```php
+<?php
+use Dotenv\Repository\RepositoryBuilder;
+
+class Dotenv
+{
+    public static function createUnsafeImmutable($paths, $names = null, bool $shortCircuit = true, string $fileEncoding = null)
+    {
+        $repository = RepositoryBuilder::createWithDefaultAdapters()
+            ->addAdapter(PutenvAdapter::class)
+            ->immutable()
+            ->make();
+    
+        return self::create($repository, $paths, $names, $shortCircuit, $fileEncoding);
+    }
+    
+    public static function createMutable($paths, $names = null, bool $shortCircuit = true, string $fileEncoding = null)
+    {
+        $repository = RepositoryBuilder::createWithDefaultAdapters()->make();
+    
+        return self::create($repository, $paths, $names, $shortCircuit, $fileEncoding);
+    }
+    
+    // 省略若干...
+}
+```
+
 ### 获取分析
 
 在项目代码中获取环境配置，如：
