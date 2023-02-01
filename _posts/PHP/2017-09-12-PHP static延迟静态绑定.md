@@ -166,18 +166,15 @@ echo num3();    // 输出 13
 ```
 
 从中我们看出几点：
-
-1、函数体中的静态变量与全局中的静态变量不冲突，函数体中相当于重定义
-
-2、函数体中global作用下会使局部与全局统一，相当于内存地址引用
-
-3、函数体中的静态变量在函数调用的时候只会被初始化一次
+1. 函数体中的静态变量与全局中的静态变量不冲突，函数体中相当于重定义
+2. 函数体中global作用下会使局部与全局统一，相当于内存地址引用
+3. 函数体中的静态变量在函数调用的时候只会被初始化一次
 
 因为静态变量在全局数据区分配内存；
 
 此处要提一下 缓存在逻辑上大致区分为：栈、堆、全局区、程序代码区、文字常量区
 
-栈：存放变量名(会有一部分的整型,浮点型,字符串存放在此处)
+栈：存放变量名(会有一部分的整型，浮点型，字符串存放在此处)
 
 堆：存放变量值
 
@@ -258,7 +255,7 @@ echo second::$num;
 <br/><br/><br/><br/><br/>
 ### 参考资料
 
-PHP $this，static，self，const的区别和联系 <https://ibaiyang.github.io/blog/php/2019/07/23/PHP-$this-static-self-const%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB.html#%E8%BD%AC%E5%8F%91%E8%B0%83%E7%94%A8forwarding-call>
+PHP $this，static，self，const的区别和联系 <https://ibaiyang.github.io/blog/php/2019/07/23/PHP-$this-static-self-const的区别和联系.html>
 
 <http://www.jellythink.com/archives/956>
 
