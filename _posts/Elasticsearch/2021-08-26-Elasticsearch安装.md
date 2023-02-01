@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: Elasticsearch
-title: CentOS7.6 安装Elasticsearch
-meta: CentOS7.6 安装Elasticsearch
+title: Elasticsearch安装
+meta: Elasticsearch安装
 ---
 * content
 {:toc}
@@ -10,6 +10,15 @@ meta: CentOS7.6 安装Elasticsearch
 ### 正文
 
 <https://ibaiyang.github.io/blog/linux/2021/08/25/CentOS7.6-搭建ELK.html#安装es>
+
+<https://ibaiyang.github.io/blog/linux/2020/04/01/linux-安装Elasticsearch.html>
+
+
+
+
+
+
+
 
 <br/><br/><br/><br/><br/>
 ### 参考资料
