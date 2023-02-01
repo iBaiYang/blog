@@ -1354,7 +1354,7 @@ elastic/elasticsearch-php <https://github.com/elastic/elasticsearch-php>
 
 Packagist elasticsearch/elasticsearch <https://packagist.org/packages/elasticsearch/elasticsearch>
 
-PHP Elasticsearch查询服务示例 <https://ibaiyang.github.io/blog/php/2018/12/27/PHP-Elasticsearch%E6%9F%A5%E8%AF%A2%E6%9C%8D%E5%8A%A1%E7%A4%BA%E4%BE%8B.html>
+PHP Elasticsearch查询服务示例 <https://ibaiyang.github.io/blog/php/2018/12/27/PHP-Elasticsearch查询服务示例.html>
 
 linux 安装Elasticsearch <https://ibaiyang.github.io/blog/linux/2020/04/01/linux-%E5%AE%89%E8%A3%85Elasticsearch.html>
 
