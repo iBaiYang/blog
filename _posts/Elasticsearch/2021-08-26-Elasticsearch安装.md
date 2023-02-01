@@ -13,7 +13,7 @@ meta: Elasticsearch安装
 
 <https://ibaiyang.github.io/blog/linux/2020/04/01/linux-安装Elasticsearch.html>
 
-
+ELK可以干什么呢 <https://www.zhihu.com/question/338932215/answer/777380560>
 
 
 
