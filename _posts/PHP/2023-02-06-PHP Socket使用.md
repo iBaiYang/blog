@@ -113,7 +113,7 @@ new SocketServer(1034);
 ```
 
 运行：
-> php server.php 
+> php server.php 1>/dev/null 2>&1 &
 
 客户端
 ```php
