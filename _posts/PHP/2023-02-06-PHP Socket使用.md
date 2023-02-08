@@ -117,7 +117,14 @@ new SocketServer(1034);
 运行：
 > php server.php 1>/dev/null 2>&1 &
 
-客户端
+客户端原本想用Socket实现的，发现Nginx请求php的web服务时报错：
+```
+Call to undefined function socket_create()
+```
+
+也是神奇，最后用了stream_socket来实现，fread() 时需要注意第二个参数读取的大小，小了会都不完整，大了又具体不知道究竟多大，尽量大一些。
+
+客户端：
 ```php
 <?php
 $file_name = $_FILES['image']['name'];
@@ -133,7 +140,7 @@ if (!$socket) {
 fwrite($socket, $data);
 fwrite($socket, "\r\n\r\n");
 
-$response = fread($socket, 1024);
+$response = fread($socket, 8192);
 $response = json_decode($response, true);
 
 // 返回的文件地址
@@ -239,7 +246,15 @@ function compress($image_src, $image_dist, $dist_width = 320, $dist_height = 240
 }
 ```
 
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
+
+<https://php.p2hp.com/manual/zh/function.socket-read.php>
+
 
 
