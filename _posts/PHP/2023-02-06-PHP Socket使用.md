@@ -7,9 +7,7 @@ meta: PHP Socket使用
 * content
 {:toc}
 
-## 正文
-
-### 文件服务器
+## 文件服务器
 
 开发中中碰到一个问题，B项目要用到A项目中的图片，如何实现呢？
 
@@ -117,6 +115,191 @@ new SocketServer(1034);
 运行：
 > php server.php 1>/dev/null 2>&1 &
 
+最好使用Supervisor。
+
+具体在使用中，后端还要可以对文件进行管理，借用Yii2搭了个管理项目，命令行也使用项目中的console部分。
+
+看一下封装：
+```php
+<?php
+namespace console\controllers;
+
+use common\models\App;
+use common\models\File;
+use Yii;
+use yii\console\Controller;
+
+class FileController extends Controller
+{
+    public function actionSocket()
+    {
+        if (($listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) === false) {
+            echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+            die;
+        }
+
+        if ((socket_bind($listen_socket, '0.0.0.0', Yii::$app->fileShare->port)) === false) {
+            echo "socket_bind() failed: reason: " . socket_strerror(socket_last_error($listen_socket)) . "\n";
+            die;
+        }
+
+        if (socket_listen($listen_socket) === false) {
+            echo "socket_listen() failed: reason: " . socket_strerror(socket_last_error($listen_socket)) . "\n";
+            die;
+        }
+
+        while (true) {
+            if (($conn = socket_accept($listen_socket)) === false) {
+                continue;
+            }
+
+            $data = '';
+
+            try {
+                while (!preg_match('/\r\n\r\n/', $data)) {
+                    $data .= socket_read($conn, 4096);
+                }
+                $data = preg_replace('/\r\n\r\n/', '', $data);
+                $data = explode('<<<<<<>>>>>>', $data);
+
+                if (!in_array(count($data), [4, 5]) || empty($data['0']) || empty($data['1']) || !in_array($data['2'], ['add', 'delete'])) {
+                    throw new \yii\base\Exception('参数错误');
+                }
+
+                $modelApp = App::find()
+                    ->where(['app_uuid' => $data['0']])
+                    ->one();
+                if (empty($modelApp) || $modelApp->status != App::STATUS_ENABLE) {
+                    throw new \yii\base\Exception('应用未找到或不可用');
+                }
+
+                if (!Yii::$app->security->validatePassword($data['1'], $modelApp->password_hash)) {
+                    throw new \yii\base\Exception('应用密码错误');
+                }
+
+                if ($data['2'] == 'add') {
+                    if (empty($data['3']) || empty($data['4'])) {
+                        throw new \yii\base\Exception('文件参数为空');
+                    }
+
+                    $file_path = Yii::$app->fileShare->write($data['3'], $data['4']);
+
+                    $modelFile = new File();
+                    $modelFile->app_id = $modelApp->app_id;
+                    $modelFile->location = $file_path;
+                    $modelFile->status = File::STATUS_ENABLE;
+                    $modelFile->created_at = $modelFile->updated_at = time();
+                    if (!($modelFile->save())) {
+                        throw new \yii\base\Exception('文件记录保存失败');
+                    }
+
+                    $data = [
+                        'code' => '1',
+                        'data' => [
+                            'path' => $file_path
+                        ],
+                        'msg' => 'ok'
+                    ];
+                } elseif ($data['2'] == 'delete') {
+                    if (empty($data['3'])) {
+                        throw new \yii\base\Exception('文件地址为空');
+                    }
+
+                    $modelFile = File::find()
+                        ->where(['app_id' => $modelApp->app_id, 'location' => $data['3']])
+                        ->one();
+                    if (empty($modelFile) || $modelFile->status != File::STATUS_ENABLE) {
+                        throw new \yii\base\Exception('文件未找到或已被删除');
+                    }
+
+                    $modelFile->status = File::STATUS_DELETE;
+                    if (!($modelFile->save())) {
+                        throw new \yii\base\Exception('文件删除失败');
+                    }
+
+                    $data = [
+                        'code' => '1',
+                        'data' => [],
+                        'msg' => 'ok'
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $data = [
+                    'code' => '-1',
+                    'data' => [],
+                    'msg' => $e->getMessage()
+                ];
+            }
+
+            $data = json_encode($data) ."\r\n\r\n";
+
+            socket_write($conn, $data, strlen($data));
+            socket_close($conn);
+        }
+
+        socket_close($listen_socket);
+    }
+}
+```
+
+```php
+<?php
+
+namespace common\components;
+
+use yii;
+use yii\base\Component;
+
+class FileShare extends Component
+{
+    public $path_www;
+    public $path_upload;
+    public $port;
+
+    public function init()
+    {
+        parent::init();
+    }
+
+    public function write($name, $stream)
+    {
+        $path_upload = $this->path_upload .date('Ymd');
+        $path_www = Yii::getAlias($this->path_www) .$path_upload;
+
+        $suffix = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        $suffix = $suffix && preg_match("/^[a-zA-Z0-9]+$/", $suffix) ? $suffix : 'file';
+        $filename = time() .uniqid() .'.' .$suffix;
+
+        if (!is_dir($path_www)) {
+            mkdir($path_www, 0755, true);
+        }
+
+        $fd = fopen($path_www .'/' .$filename, 'w+');
+        fwrite($fd, $stream);
+        fclose($fd);
+
+        return $path_upload .'/' .$filename;
+    }
+}
+```
+
+配置文件：
+```
+'components' => [
+    'fileShare' => [
+        'class' => 'common\components\FileShare',
+        'path_www' => '@backend/web',
+        'path_upload' => '/upload/',
+        'port' => '1055',
+    ],
+]
+```
+
+启动命令：
+> php yii file/socket 1>/dev/null 2>&1 &
+
+### 客户端
+
 客户端原本想用Socket实现的，发现Nginx请求php的web服务时报错：
 ```
 Call to undefined function socket_create()
@@ -149,6 +332,95 @@ if ($response['code'] == 1) {
     $file_path = $response['data']['path'];
 }
 ```
+
+除了新增文件，还要删除文件，这里自己写了个封装类：
+```php
+<?php
+
+namespace common\components;
+
+class FileShare
+{
+    private $link;
+    private $app_uuid;
+    private $app_password;
+
+    public function __construct($ip ='', $port = '', $app_uuid = '', $app_password = '')
+    {
+        $this->link = 'tcp://' .$ip .':' .$port;
+        $this->app_uuid = $app_uuid;
+        $this->app_password = $app_password;
+    }
+
+    public function add($file_name = '', $file_path = '')
+    {
+        if (empty($file_name)) {
+            throw new \Exception('file_name is empty');
+        }
+
+        if (!file_exists($file_path)) {
+            throw new \Exception('file is not found');
+        }
+
+        $data = $this->app_uuid .'<<<<<<>>>>>>'
+            . $this->app_password .'<<<<<<>>>>>>'
+            . 'add' .'<<<<<<>>>>>>'
+            . $file_name .'<<<<<<>>>>>>';
+        $data .= file_get_contents($file_path) ."\r\n\r\n";
+
+        $socket = stream_socket_client($this->link, $errno, $errstr);
+        if (!$socket) {
+            throw new \Exception($errno . $errstr);
+        }
+
+        fwrite($socket, $data);
+
+        $response = fread($socket, 8192);
+        $response = json_decode($response, true);
+
+        fclose($socket);
+
+        if ($response['code'] != 1) {
+            throw new \Exception($response['msg']);
+        }
+
+        return $response['data']['path'];
+    }
+
+    public function delete($path = '')
+    {
+        if (empty($file_name)) {
+            throw new \Exception('path is empty');
+        }
+
+        $data = $this->app_uuid .'<<<<<<>>>>>>'
+            . $this->app_password .'<<<<<<>>>>>>'
+            . 'delete' .'<<<<<<>>>>>>'
+            . $path
+            . "\r\n\r\n";
+
+        $socket = stream_socket_client($this->link, $errno, $errstr);
+        if (!$socket) {
+            throw new \Exception($errno . $errstr);
+        }
+
+        fwrite($socket, $data);
+
+        $response = fread($socket, 8192);
+        $response = json_decode($response, true);
+
+        fclose($socket);
+
+        if ($response['code'] != 1) {
+            throw new \Exception($response['msg']);
+        }
+
+        return true;
+    }
+}
+```
+
+### 图片压缩
 
 图片太大时，会用到压缩，这里提供一个图片压缩函数：
 ```php
