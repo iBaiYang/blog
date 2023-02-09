@@ -1356,19 +1356,18 @@ $task1 = gen1();
 $task2 = gen2();
 while (true) {
     // 首先我运行task1，然后task1主动下了地狱
-    echo $task1->current();
+    $task1->current();
     // 这会儿我可以让task2介入进来了
-    echo $task2->current();
-    // task1恢复中断
+    $task2->current();
+    // task1恢复中断，执行函数体中yield下面部分
     $task1->next();
-    // task2恢复中断
+    // task2恢复中断，执行函数体中yield下面部分
     $task2->next();
 }
 ```
 上面代码执行结果如下图：
 
 ![](/blog/images/20200921/20200921002132.png)
-
 
 虽然我话都说到这里了，但是肯定还是有人get不到“所以，到底发生了什么？”。你要知道，
 如果function gen1和function gen2中没有yield，而是普通函数，你是无法中断其中的for循环的，诸如下面这样的代码：
@@ -1501,7 +1500,78 @@ while (true) {
 我们知道PHP7这一代主力是惠新宸，下一代PHP主力就是Nikic了。早在2012年，Nikic就发表了一篇关于PHP yield多任务的文章，
 链接我贴出来大家共赏一下 --- <http://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html>
 
+## 思考记录
 
+上面关于yield的示例代码中，`Generator->current()` 究竟和 `Generator->next()` 的执行顺序是怎样的，下面写个验证代码：
+```php
+<?php
+function gen1()
+{
+    for ($i = 1; $i <= 3; $i++) {
+        sleep(1);
+        echo "GEN--1 : ".time() . PHP_EOL;
+        yield;
+        sleep(2);
+    }
+}
+
+function gen2()
+{
+    for ($i = 1; $i <= 3; $i++) {
+        sleep(3);
+        echo "GEN--2 : ".time() . PHP_EOL;
+        yield;
+        sleep(4);
+    }
+}
+
+echo "0--1 : " .time(). PHP_EOL;
+$task1 = gen1();
+echo "0--2 : " .time(). PHP_EOL;
+$task2 = gen2();
+echo "0--3 : " .time() .PHP_EOL;
+while (true) {
+    $task1->current();
+    echo '--1--' .PHP_EOL;
+    $task2->current();
+    echo '--2--' .PHP_EOL;
+    $task1->next();
+    echo '--3--' .PHP_EOL;
+    $task2->next();
+    echo '--4--' .PHP_EOL;
+    if (!$task2->valid()) {
+        die;
+    }
+}
+```
+
+输出：
+```
+0--1 : 1675925763
+0--2 : 1675925763
+0--3 : 1675925763
+GEN--1 : 1675925764
+--1--
+GEN--2 : 1675925767
+--2--
+GEN--1 : 1675925770
+--3--
+GEN--2 : 1675925777
+--4--
+--1--
+--2--
+GEN--1 : 1675925780
+--3--
+GEN--2 : 1675925787
+--4--
+--1--
+--2--
+--3--
+--4--
+```
+
+可以看出，第一次运行时，`Generator->current()`时会先执行yield上面部分的代码，然后主动让出CPU控制权，
+在`Generator->next()`时重新找回CPU控制权继续向下执行，一直再到yield。
 
 ## 总结一下
 
