@@ -1571,7 +1571,7 @@ GEN--2 : 1675925787
 ```
 
 可以看出，第一次运行时，`Generator->current()`时会先执行yield上面部分的代码，然后主动让出CPU控制权，
-在`Generator->next()`时重新找回CPU控制权继续向下执行，一直再到yield。
+在`Generator->next()`时重新找回CPU控制权继续向下执行，一直再到yield，然后再主动让出CPU控制权。
 
 ## 总结一下
 
