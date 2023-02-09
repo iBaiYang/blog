@@ -312,7 +312,8 @@ class FileShare extends Component
 Call to undefined function socket_create()
 ```
 
-也是神奇，最后用了stream_socket来实现，fread() 时需要注意第二个参数读取的大小，小了会都不完整，大了又具体不知道究竟多大，尽量大一些。
+也是神奇，最后用了stream来实现，`fread()` 时需要注意第二个参数，这个参数是必填，
+注意读取的大小，小了会不完整，大了又具体不知道究竟多大，尽量大一些。
 
 客户端：
 ```php
@@ -525,6 +526,28 @@ function compress($image_src, $image_dist, $dist_width = 320, $dist_height = 240
 }
 ```
 
+## 问题说明
+
+### socket_read
+
+在看一篇文章说到：
+
+`socket_read()`: 从连接资源中读取指定字节数的数据, 读取成功时, 返回字符串，失败时, 返回FALSE. 没有数据时, 返回空字符串
+
+所以可以用：
+```
+$data = '';
+// 循环读取指定长度的服务器响应数据
+while($response = socket_read($sock, 4))
+{
+    $data .= $response;
+}
+```
+
+在服务端尝试下来才发现，这样是可以用，但是是在客户端使用了 `socket_close()` 断开连接的情况下。
+只适合于单向通信，如果服务端要把处理结果发送给客户端，就使用不了了。
+不过客户端倒是可以使用这个函数，当服务端使用了 `socket_close()` 断开连接时，客户端获取到所有信息，
+然后进行处理。
 
 
 
@@ -535,5 +558,6 @@ function compress($image_src, $image_dist, $dist_width = 320, $dist_height = 240
 
 <https://php.p2hp.com/manual/zh/function.socket-read.php>
 
+PHP 下的 Socket 编程 <https://zhuanlan.zhihu.com/p/374036250>  ，下面有几个文章集合，可以看看
 
 
