@@ -298,6 +298,12 @@ class FileShare extends Component
 启动命令：
 > php yii file/socket 1>/dev/null 2>&1 &
 
+最后说一下这里使用 传统socket 与 select、epoll、协程 的区别。
+对于这里的 监听socket，无论是在 传统socket，还是 select 或 epoll 中，都是同步阻塞服务，QPS没有什么区别，
+都是对单端口的监听，多开几个进程也一样。
+区别是在使用协程上。使用PHP原生的yield，因为这里数据库读写连续，无其他业务间交互，所以无法使用。
+不过使用Swoole的协程，可以在 监听socket 上做文章，相当于在 各监听socket 间做协程切换，所以可以大幅度提高QPS。
+
 ### 客户端
 
 客户端原本想用Socket实现的，发现Nginx请求php的web服务时报错：
