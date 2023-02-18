@@ -394,12 +394,22 @@ $reflectionClass->getProperties();
 
 返回一个由ReflectionProperty对象构成的数组：
 ```
-array(2) { 
-    [0]=> 
-    object(ReflectionProperty)#2 (2) { ["name"]=> string(6) "radius" ["class"]=> string(6) "Circle" } 
-    [1]=> 
-    object(ReflectionProperty)#3 (2) { ["name"]=> string(6) "center" ["class"]=> string(6) "Circle" } 
-} 
+array(2) {
+  [0]=>
+  object(ReflectionProperty)#2 (2) {
+    ["name"]=>
+    string(6) "radius"
+    ["class"]=>
+    string(6) "Circle"
+  }
+  [1]=>
+  object(ReflectionProperty)#3 (2) {
+    ["name"]=>
+    string(6) "center"
+    ["class"]=>
+    string(6) "Circle"
+  }
+}
 ```
 
 反射出类中定义的方法：
@@ -409,13 +419,29 @@ $reflectionClass->getMethods();
 
 返回ReflectionMethod对象构成的数组
 ```
-array(3) { 
-    [0]=> 
-    object(ReflectionMethod)#2 (2) { ["name"]=> string(11) "__construct" ["class"]=> string(6) "Circle" } 
-    [1]=> 
-    object(ReflectionMethod)#3 (2) { ["name"]=> string(11) "printCenter" ["class"]=> string(6) "Circle" } 
-    [2]=> 
-    object(ReflectionMethod)#4 (2) { ["name"]=> string(4) "area" ["class"]=> string(6) "Circle" } } 
+array(3) {
+  [0]=>
+  object(ReflectionMethod)#2 (2) {
+    ["name"]=>
+    string(11) "__construct"
+    ["class"]=>
+    string(6) "Circle"
+  }
+  [1]=>
+  object(ReflectionMethod)#3 (2) {
+    ["name"]=>
+    string(11) "printCenter"
+    ["class"]=>
+    string(6) "Circle"
+  }
+  [2]=>
+  object(ReflectionMethod)#4 (2) {
+    ["name"]=>
+    string(4) "area"
+    ["class"]=>
+    string(6) "Circle"
+  }
+}
 ```
 
 我们还可以通过getConstructor()来单独获取类的构造方法，其返回值为一个ReflectionMethod对象：
@@ -431,11 +457,18 @@ $parameters = $constructor->getParameters();
 其返回值为ReflectionParameter对象构成的数组。
 
 ```
-array(2) { 
-    [0]=> 
-    object(ReflectionParameter)#3 (1) { ["name"]=> string(5) "point" } 
-    [1]=> 
-    object(ReflectionParameter)#4 (1) { ["name"]=> string(6) "radius" } } 
+array(2) {
+  [0]=>
+  object(ReflectionParameter)#3 (1) {
+    ["name"]=>
+    string(5) "point"
+  }
+  [1]=>
+  object(ReflectionParameter)#4 (1) {
+    ["name"]=>
+    string(6) "radius"
+  }
+}
 ```
 
 ### 依赖注入
@@ -469,7 +502,6 @@ function getDependencies($parameters) {
                 // laravel是通过service provider注册closure到IocContainer,
                 // 在closure里可以通过 return new Class($param1, $param2) 来返回类的实例
                 // 然后在make时回调这个closure即可解析出对象
-                // 具体细节我会在另一篇文章里面描述
                 $dependencies[] = '0'; 
             } 
         } else { 
@@ -488,20 +520,30 @@ function getDependencies($parameters) {
 $circle = make('Circle'); 
 $area = $circle->area(); 
 
-/* var_dump($circle, $area);
-object(Circle)#6 (2) { 
-    ["radius"]=> int(1) 
-    ["center"]=> object(Point)#11 (2) { ["x"]=> int(0) ["y"]=> int(0) } 
- }
- float(3.14)
- */ 
+/*
+var_dump($circle, $area);
+ 
+object(Circle)#6 (2) {
+  ["radius"]=>
+  int(1)
+  ["center"]=>
+  object(Point)#11 (2) {
+    ["x"]=>
+    int(0)
+    ["y"]=>
+    int(0)
+  }
+}
+
+float(3.14)*/
 ```
 
-通过过上面这个实例我简单描述了一下如何利用PHP类的反射来实现依赖注入，Laravel的依赖注入也是通过这个思路来实现的，
+通过过上面这个实例，简单描述了一下如何利用PHP类的反射来实现依赖注入，Laravel的依赖注入也是通过这个思路来实现的，
 只不过设计的更精密大量地利用了闭包回调来应对各种复杂的依赖注入，
-详情可以参考一篇介绍Laravel服务容器<https://segmentfault.com/a/1190000012760443>的文章。
+详情可以参考一篇介绍Laravel服务容器<https://segmentfault.com/a/1190000012760443>的文章，
+还可以看下<https://segmentfault.com/a/1190000012918283>。
 
-在平常开发中，用到反射的地方不多：一个是对对象进行调试，另一个是获取类的信息。
+在平常开发中，反射还可以对对象进行调试，获取类的信息。
 在MVC和插件开发中，使用反射很常见，但是反射的消耗也很大，在可以找到替代方案的情况下，就不要滥用。
 
 PHP有Token函数，可以通过这个机制实现一些反射功能。从简单灵活的角度讲，使用已经提供的反射API是可取的。
