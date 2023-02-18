@@ -7,7 +7,7 @@ meta: PHP Reflection
 * content
 {:toc}
 
-## 说明一
+## 概述
 
 ### 一、概念
 
@@ -27,33 +27,33 @@ meta: PHP Reflection
 
 #### 1、反射类
 
-(1) $reflectClass = new ReflectionClass(<类名>);
+(1) `$reflectClass = new ReflectionClass(<类名>);`
 
 传入类名字符串，返回控制目标类的ReflectionClass类实例；
 
-(2) $reflectClass->getConstant(<常量名>);
+(2) `$reflectClass->getConstant(<常量名>);`
 
-传入类中定义了的常量名，返回常量值，可通过$reflectClass->getConstants返回类中所有定义的常量的数组；
+传入类中定义了的常量名，返回常量值，可通过`$reflectClass->getConstants()`返回类中所有定义的常量的数组；
 
-(3) $class = $reflectClass->newInstance();
+(3) `$class = $reflectClass->newInstance();`
 
-实例化类，返回目标类实例；也可通过$reflectClass->newInstanceArgs(<参数数组>)传入实例化的构造函数参数进行实例化;
+实例化类，返回目标类实例；也可通过`$reflectClass->newInstanceArgs(<参数数组>)`传入实例化的构造函数参数进行实例化;
 
 #### 2、反射方法
 
-(1) $reflectMethod = new ReflectionMethod(<方法名>);
+(1) `$reflectMethod = new ReflectionMethod(<方法名>);`
 
-传入方法名名字符串，返回控制目标方法的ReflectionMethod类实例；
+传入方法名字符串，返回控制目标方法的ReflectionMethod类实例；
 
-(2) $parameters = $reflectMethod->getParameters();
+(2) `$parameters = $reflectMethod->getParameters();`
 
 获取该类所需的参数名，该方法返回一个包含所有参数名的二维数组；
 
-(3) $name = $parameters->getName();
+(3) `$name = $parameters->getName();`
 
 返回要执行的方法所需参数数组的单个参数名，可通过foreach循环逐一获取和赋值；
 
-(4) $reflectMethod->invokeArgs(<类实例>,<执行该方法所需参数数组>);
+(4) `$reflectMethod->invokeArgs(<类实例>,<执行该方法所需参数数组>);`
 
 传入类实例和方法参数，执行方法，返回执行结果。
 
@@ -67,7 +67,7 @@ ReflectionMethod:
 
 ![]({{site.baseurl}}/images/20230217/pic20230217183326.png)
 
-#### 4、
+#### 4、其他
 
 除了ReflectionClass和ReflectionMethod，我们对于类中的参数、属性和php服务的环境变量、
 扩展等参数也是可以通过反射API的一些方法来执行的，如下：
@@ -80,7 +80,7 @@ ReflectionMethod:
 2. 既然反射可以探知类的内部结构，那么可以用它做hook实现插件功能；
 3. 可以用于做动态代理，在未知或者不确定类名的情况下，动态生成和实例化一些类和执行方法；
 4. 对于多次继承的类，我们可以通过多次反射探索到基类的结构，或者采用递归的形式反射，
-实现实例化所有继承类，这即是PHP依赖注入的原理。
+实现实例化所有继承类，这即是PHP**依赖注入**的原理。
 
 ### 四、PHP反射的优缺点
 
@@ -100,9 +100,16 @@ ReflectionMethod:
 3. 由于将部分信息检查工作从编译期推迟到了运行期，此举在提高了代码灵活性的同时，牺牲了一点点运行效率。
 4. 通过深入学习反射的特性和技巧，它的劣势可以尽量避免，但这需要许多时间和经验的积累。
 
-## 说明二
+## 使用
 
-如何使用反射API
+PHP具有完整的反射 API，提供了对类、接口、函数、方法和扩展进行逆向工程的能力。
+通过类的反射提供的能力，我们能够知道类是如何被定义的，它有什么属性、什么方法，方法都有哪些参数，
+类文件的路径是什么等很重要的信息。也正因为类的反射，很多PHP框架才能实现依赖注入来自动解决类与类之间的依赖关系，
+这给我们平时的开发带来了很大的方便。
+
+那如何使用反射API？
+
+### 获取类信息
 
 ```php
 <?php
@@ -113,7 +120,7 @@ class person
     
     public function say()
     {
-        echo $this->name, "\tis ", $this->gender, "\r\n";
+        echo $this->name, " is ", $this->gender, "\r\n";
     }
 
     public function set($name, $value)
@@ -137,24 +144,23 @@ $student = new person();
 $student->name = 'Tom';
 $student->gender = 'male';
 $student->age = 24;
-```
-    
+``` 
 
 现在，要获取这个student对象的方法和属性列表该怎么做呢？如以下代码所示：
 ```php
 <?php
-$reflect = newReflectionObject($student);
+$reflect = new ReflectionObject($student);
 
 // 获取对象属性列表
 $props = $reflect->getProperties();
 foreach ($props as $prop) {
-    print$prop->getName() . "\n";
+    print$prop->getName() . "\r\n";
 }
 
 // 获取对象方法列表
 $m = $reflect->getMethods();
 foreach ($m as $prop) {
-    print$prop->getName() . "\n";
+    print $prop->getName() . "\r\n";
 }
 ```
 
@@ -182,8 +188,7 @@ echo get_class($student);
 ```php
 <?php
 // 反射获取类的原型
-
-$obj = newReflectionClass('person');
+$obj = new ReflectionClass('person');
 
 $className = $obj->getName();
 
@@ -191,57 +196,55 @@ $Methods = $Properties = array();
 
 foreach ($obj->getProperties() as $v) {
     $Properties[$v->getName()] = $v;
-    }
+}
 
 foreach ($obj->getMethods() as $v) {
     $Methods[$v->getName()] = $v;
-    }
+}
 
-echo "class {$className}\n{\n";
+echo "class {$className}\r\n{\r\n";
 
 is_array($Properties) && ksort($Properties);
 
 foreach ($Properties as $k => $v) {
-    echo "t";
+    echo "\t";
     echo $v->isPublic() ? ' public' : '', $v->isPrivate() ? ' private' : '',
-    $v->isProtected() ? ' protected' : '',
-    $v->isStatic() ? ' static' : '';
-    echo "t{$k}\n";
-
+        $v->isProtected() ? ' protected' : '',
+        $v->isStatic() ? ' static' : '';
+    echo "\t{$k}\r\n";
 }
 
-echo "\n";
+echo "\r\n";
 
 if (is_array($Methods)) ksort($Methods);
 
 foreach ($Methods as $k => $v) {
-    echo "\tfunction {$k}(){}\n";
+    echo "\tfunction {$k}(){}\r\n";
 }
 
-echo "}n";
+echo "}\r\n";
 ````
+
 输出如下：
-```php
-<?php
+```
 class person
 {
     public $gender;
     public $name;
 
-    function get()
-    {
-    }
+    function get(){}
 
-    function set()
-    {
-    }
+    function set(){}
 
-    function say()
-    {
-    }
+    function say(){}
 }
 ````
-不仅如此，PHP手册中关于反射API更是有几十个，可以说，反射完整地描述了一个类或者对象的原型。反射不仅可以用于类和对象，还可以用于函数、扩展模块、异常等。
+
+不仅如此，PHP手册中关于反射API更是有几十个，可以说，反射完整地描述了一个类或者对象的原型。
+
+反射不仅可以用于类和对象，还可以用于函数、扩展模块、异常等。
+
+### 动态代理
 
 反射有什么作用
 
@@ -256,7 +259,7 @@ class mysql
 {
     function connect($db)
     {
-        echo "连接到数据库${db［0］}\r\n";
+        echo "连接到数据库${db[0]}\r\n";
     }
 }
 
@@ -266,13 +269,13 @@ class sqlproxy
 
     function construct($tar)
     {
-        $this->target［］ = new$tar();
+        $this->target[]  = new $tar();
     }
 
     function call($name, $args)
     {
         foreach ($this->target as $obj) {
-            $r = newReflectionClass($obj);
+            $r = new ReflectionClass($obj);
             if ($method = $r->getMethod($name)) {
                 if ($method->isPublic() && !$method->isAbstract()) {
                     echo "方法前拦截记录LOG\r\n";
@@ -285,23 +288,29 @@ class sqlproxy
 }
 
 $obj = new sqlproxy('mysql');
-$obj->connect('member');
+$obj->call('connect');
 ````
 
-### 1
+### 依赖注入
 
 为了更好地理解，我们通过一个例子来看类的反射，以及如何实现依赖注入。
+
 下面这个类代表了坐标系里的一个点，有两个属性横坐标x和纵坐标y。
 ```php
 <?php
-/** * Class Point */
-
+/** 
+ * Class Point 
+ */
 class Point
 {
     public $x;
     public $y;
 
-    /** * Point constructor. * @param int $x horizontal value of point's coordinate * @param int $y vertical value of point's coordinate */
+    /** 
+     * Point constructor. 
+     * @param int $x horizontal value of point's coordinate 
+     * @param int $y vertical value of point's coordinate 
+     */
     public function __construct($x = 0, $y = 0)
     {
         $this->x = $x;
@@ -310,18 +319,24 @@ class Point
 }
 ```
 
-接下来这个类代表圆形，可以看到在它的构造函数里有一个参数是Point类的，即Circle类是依赖与Point类的。
+接下来这个类代表圆形，可以看到在它的构造函数里有一个参数是Point类的，即Circle类是依赖于Point类的。
 
 ```php
 <?php
 class Circle
 {
-    /** * @var int */
-    public $radius; //半径
-    /** * @var Point */
+    /** 
+     * 半径 
+     * @var int 
+     */
+    public $radius; 
+    
+    /** 
+     * @var Point 
+     */
     public $center;
 
-    //圆心点
+    // 圆心点
     const PI = 3.14;
 
     public function __construct(Point $point, $radius = 1)
@@ -330,13 +345,13 @@ class Circle
         $this->radius = $radius;
     }
 
-    //打印圆点的坐标
+    // 打印圆点的坐标
     public function printCenter()
     {
         printf('center coordinate is (%d, %d)', $this->center->x, $this->center->y);
     }
 
-    //计算圆形的面积
+    // 计算圆形的面积
     public function area()
     {
         return 3.14 * pow($this->radius, 2);
@@ -344,30 +359,27 @@ class Circle
 }
 ```
 
-ReflectionClass
-
 下面我们通过反射来对Circle这个类进行反向工程。
-把Circle类的名字传递给reflectionClass来实例化一个ReflectionClass类的对象。
 
-```php
-<?php
-$reflectionClass = new reflectionClass(Circle::class);
+把Circle类的名字传递给reflectionClass来实例化一个ReflectionClass类的对象：
+```
+$reflectionClass = new ReflectionClass(Circle::class);
+```
 
-//返回值如下
+返回值如下：
+```
 object(ReflectionClass)#1 (1) {
   ["name"]=>
   string(6) "Circle" 
 }
 ```
 
-反射出类的常量
-
-```php
-<?php
+反射出类的常量：
+```
 $reflectionClass->getConstants(); 
 ```
 
-返回一个由常量名称和值构成的关联数组
+返回一个由常量名称和值构成的关联数组：
 ```
 array(1) { 
   ["PI"]=> 
@@ -375,65 +387,127 @@ array(1) {
 } 
 ```
 
-通过反射获取属性
-```php
-<?php
+通过反射获取属性：
+```
 $reflectionClass->getProperties(); 
 ```
 
-返回一个由ReflectionProperty对象构成的数组
+返回一个由ReflectionProperty对象构成的数组：
 ```
-array(2) { [0]=> object(ReflectionProperty)#2 (2) { ["name"]=> string(6) "radius" ["class"]=> string(6) "Circle" } [1]=> object(ReflectionProperty)#3 (2) { ["name"]=> string(6) "center" ["class"]=> string(6) "Circle" } } 
+array(2) { 
+    [0]=> 
+    object(ReflectionProperty)#2 (2) { ["name"]=> string(6) "radius" ["class"]=> string(6) "Circle" } 
+    [1]=> 
+    object(ReflectionProperty)#3 (2) { ["name"]=> string(6) "center" ["class"]=> string(6) "Circle" } 
+} 
 ```
 
-反射出类中定义的方法
-```php
-<?php
+反射出类中定义的方法：
+```
 $reflectionClass->getMethods(); 
 ```
 
 返回ReflectionMethod对象构成的数组
 ```
-array(3) { [0]=> object(ReflectionMethod)#2 (2) { ["name"]=> string(11) "__construct" ["class"]=> string(6) "Circle" } [1]=> object(ReflectionMethod)#3 (2) { ["name"]=> string(11) "printCenter" ["class"]=> string(6) "Circle" } [2]=> object(ReflectionMethod)#4 (2) { ["name"]=> string(4) "area" ["class"]=> string(6) "Circle" } } 
+array(3) { 
+    [0]=> 
+    object(ReflectionMethod)#2 (2) { ["name"]=> string(11) "__construct" ["class"]=> string(6) "Circle" } 
+    [1]=> 
+    object(ReflectionMethod)#3 (2) { ["name"]=> string(11) "printCenter" ["class"]=> string(6) "Circle" } 
+    [2]=> 
+    object(ReflectionMethod)#4 (2) { ["name"]=> string(4) "area" ["class"]=> string(6) "Circle" } } 
 ```
 
-我们还可以通过getConstructor()来单独获取类的构造方法，其返回值为一个ReflectionMethod对象。
-
-```php
-<?php
+我们还可以通过getConstructor()来单独获取类的构造方法，其返回值为一个ReflectionMethod对象：
+```
 $constructor = $reflectionClass->getConstructor(); 
 ```
 
-反射出方法的参数
-```php
-<?php
+反射出方法的参数：
+```
 $parameters = $constructor->getParameters(); 
 ```
 
 其返回值为ReflectionParameter对象构成的数组。
 
 ```
-array(2) { [0]=> object(ReflectionParameter)#3 (1) { ["name"]=> string(5) "point" } [1]=> object(ReflectionParameter)#4 (1) { ["name"]=> string(6) "radius" } } 
+array(2) { 
+    [0]=> 
+    object(ReflectionParameter)#3 (1) { ["name"]=> string(5) "point" } 
+    [1]=> 
+    object(ReflectionParameter)#4 (1) { ["name"]=> string(6) "radius" } } 
 ```
 
-依赖注入
+### 依赖注入
 
-好了接下来我们编写一个名为make的函数，传递类名称给make函数返回类的对象，在make里它会帮我们注入类的依赖，即在本例中帮我们注入Point对象给Circle类的构造方法。
+接下来我们编写一个名为make的函数，传递类名称给make函数返回类的对象，在make里它会帮我们注入类的依赖，
+即在本例中帮我们注入Point对象给Circle类的构造方法。
 
 ```php
 <?php
-//构建类的对象 function make($className) { $reflectionClass = new ReflectionClass($className); $constructor = $reflectionClass->getConstructor(); $parameters = $constructor->getParameters(); $dependencies = getDependencies($parameters); return $reflectionClass->newInstanceArgs($dependencies); } //依赖解析 function getDependencies($parameters) { $dependencies = []; foreach($parameters as $parameter) { $dependency = $parameter->getClass(); if (is_null($dependency)) { if($parameter->isDefaultValueAvailable()) { $dependencies[] = $parameter->getDefaultValue(); } else { //不是可选参数的为了简单直接赋值为字符串0 //针对构造方法的必须参数这个情况 //laravel是通过service provider注册closure到IocContainer, //在closure里可以通过return new Class($param1, $param2)来返回类的实例 //然后在make时回调这个closure即可解析出对象 //具体细节我会在另一篇文章里面描述 $dependencies[] = '0'; } } else { //递归解析出依赖类的对象 $dependencies[] = make($parameter->getClass()->name); } } return $dependencies; } 
+// 构建类的对象 
+function make($className) { 
+    $reflectionClass = new ReflectionClass($className); 
+    $constructor = $reflectionClass->getConstructor();
+    $parameters = $constructor->getParameters(); 
+    $dependencies = getDependencies($parameters); 
+    
+    return $reflectionClass->newInstanceArgs($dependencies); 
+} 
+
+// 依赖解析
+function getDependencies($parameters) { 
+    $dependencies = []; 
+    foreach ($parameters as $parameter) { 
+        $dependency = $parameter->getClass(); 
+        if (is_null($dependency)) { 
+            if ($parameter->isDefaultValueAvailable()) { 
+                $dependencies[] = $parameter->getDefaultValue(); 
+            } else { 
+                // 不是可选参数的为了简单直接赋值为字符串0
+                // 针对构造方法的必须参数这个情况
+                // laravel是通过service provider注册closure到IocContainer,
+                // 在closure里可以通过 return new Class($param1, $param2) 来返回类的实例
+                // 然后在make时回调这个closure即可解析出对象
+                // 具体细节我会在另一篇文章里面描述
+                $dependencies[] = '0'; 
+            } 
+        } else { 
+            // 递归解析出依赖类的对象
+            $dependencies[] = make($parameter->getClass()->name); 
+        } 
+    } 
+    
+    return $dependencies; 
+}
 ```
 
-定义好make方法后我们通过它来帮我们实例化Circle类的对象:
-
+定义好make方法后我们通过它来帮我们实例化Circle类的对象：
 ```php
-$circle = make('Circle'); $area = $circle->area(); /*var_dump($circle, $area); object(Circle)#6 (2) { ["radius"]=> int(1) ["center"]=> object(Point)#11 (2) { ["x"]=> int(0) ["y"]=> int(0) } } float(3.14)*/ 
+<?php
+$circle = make('Circle'); 
+$area = $circle->area(); 
+
+/* var_dump($circle, $area);
+object(Circle)#6 (2) { 
+    ["radius"]=> int(1) 
+    ["center"]=> object(Point)#11 (2) { ["x"]=> int(0) ["y"]=> int(0) } 
+ }
+ float(3.14)
+ */ 
 ```
 
-过上面这个实例我简单描述了一下如何利用PHP类的反射来实现依赖注入，Laravel的依赖注入也是通过这个思路来实现的，只不过设计的更精密大量地利用了闭包回调来应对各种复杂的依赖注入，详情可以参考我的另一篇介绍Laravel服务容器的文章。
+通过过上面这个实例我简单描述了一下如何利用PHP类的反射来实现依赖注入，Laravel的依赖注入也是通过这个思路来实现的，
+只不过设计的更精密大量地利用了闭包回调来应对各种复杂的依赖注入，
+详情可以参考一篇介绍Laravel服务容器<https://segmentfault.com/a/1190000012760443>的文章。
 
+在平常开发中，用到反射的地方不多：一个是对对象进行调试，另一个是获取类的信息。
+在MVC和插件开发中，使用反射很常见，但是反射的消耗也很大，在可以找到替代方案的情况下，就不要滥用。
 
+PHP有Token函数，可以通过这个机制实现一些反射功能。从简单灵活的角度讲，使用已经提供的反射API是可取的。
+
+很多时候，善用反射能保持代码的优雅和简洁，但反射也会破坏类的封装性，
+因为反射可以使本不应该暴露的方法或属性被强制暴露了出来，这既是优点也是缺点。
 
 
 
@@ -442,7 +516,11 @@ $circle = make('Circle'); $area = $circle->area(); /*var_dump($circle, $area); o
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
+PHP 手册 函数参考 变量与类型相关扩展 反射  <https://www.php.net/manual/zh/intro.reflection.php>
+
 php反射描述 <https://blog.csdn.net/weixin_40172337/article/details/115025059>
+
+浅析如何通过PHP类的反射来实现依赖注入 <https://segmentfault.com/a/1190000012696784>
 
 PHP Reflection与依赖注入 <https://blog.csdn.net/kevin_tech/article/details/90547265>
 
