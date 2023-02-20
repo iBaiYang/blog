@@ -267,7 +267,7 @@ class sqlproxy
 {
     private $target;
 
-    function construct($tar)
+    function __construct($tar)
     {
         $this->target[]  = new $tar();
     }
@@ -444,7 +444,7 @@ array(3) {
 }
 ```
 
-我们还可以通过getConstructor()来单独获取类的构造方法，其返回值为一个ReflectionMethod对象：
+我们还可以通过`getConstructor()`来单独获取类的构造方法，其返回值为一个ReflectionMethod对象：
 ```
 $constructor = $reflectionClass->getConstructor(); 
 ```
