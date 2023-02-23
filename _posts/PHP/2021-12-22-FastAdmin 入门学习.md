@@ -1913,7 +1913,66 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 });
 ```
 
-上面两端就是自己随手写的自定义页面操作。
+上面两段就是自己随手写的自定义页面操作。
+
+再说个经历，一次在开发中，需要根据店铺是否开通，展示不同的视图页面：add.html、info.html，
+但控制器还是同一个 Shop，JS文件是相应的 shop.js。
+
+在add.html进行店铺信息填写开通店铺，在info.html展示和更行店铺信息。JS部分怎么写呢？
+
+```html
+<form class="form-horizontal" role="form-shop-add" data-toggle="validator">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">店铺名称:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input class="form-control" name="shop[name]" type="text" value="" data-rule="required" placeholder="请填写店铺名称" />
+        </div>
+    </div>
+</form>
+```
+
+```javascript
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function ($, undefined, Backend, Table, Form, Upload) {
+    /** 开通 **/
+    // 直接写jquery代码，获取表单内容并提交到后端
+    // 要想使用FastAdmin的一些原生视图表单，我们需要对这块结构体进行绑定，内容参考 https://doc.fastadmin.net/doc/frontend.html#toc-5
+    Form.api.bindevent($("form[role=form-shop-add]"));
+    $("#btn_shop_add_submit").click(function(){
+        var name = $('input[name="shop[name]"]').val().trim();
+        if (name == '') {
+            Toastr.error("请填写店铺名称");
+            return false;
+        }
+        
+        var post_data = {
+            name: name,
+        };
+        
+         $.post("/shop/add",
+            {
+                row: post_data
+            },
+            function (data, status) {
+                if (data.code == 1) {
+                    Toastr.success("开通成功");
+                    location.reload(true);
+                } else {
+                    alert(data.msg);
+                }
+            }
+        );
+    });
+    
+    /** 更新 **/
+    // 直接写jquery代码，获取表单内容并提交到后端
+    Form.api.bindevent($("form[role=form-shop-add]"));
+    // 省略若干
+    
+    // 把Controller加上，不然会提示Controller缺失
+    var Controller = {};
+    return Controller;
+});
+```
 
 ### 引入自定义CSS文件
 
