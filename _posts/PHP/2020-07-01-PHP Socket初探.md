@@ -1608,7 +1608,7 @@ yield 返回的是 Generator，输出当前值用 `Generator->current()`，要�
 
 用了yield，`Generator->current()`时会主动让出CPU控制权，在`Generator->next()`时重新找回CPU控制权继续向下执行。
 
-yield和`Generator->current()` 可以双向通信，在恢复中断的同时可以携带信息回去，这里可操作空间很大。
+yield和`Generator->send()` 可以双向通信，在恢复中断的同时可以携带信息回去，这里可操作空间很大。
 
 
 
