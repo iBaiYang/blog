@@ -22,7 +22,7 @@ RIGHT JOIN 与 LEFT JOIN 同理。
 
 关键是使用的时候，要考虑清楚哪个表可能没数据，然后选择合适的Join。
 
-![]({{site.baseurl}}/images/20210128/20210128184390.png)
+![]({{site.baseurl}}/images/20230302/20230302211180.jpg)
 
 LEFT JOIN(左联接) 返回包括左表中的所有记录和右表中联结字段相等的记录
 
@@ -40,6 +40,8 @@ RIGHT OUTER JOIN
 
 UNION 与 UNION ALL
 
+CROSS JOIN 
+
 ## 实例
 
 通过文氏图 Venn diagrams 解释了SQL的Join。
@@ -49,7 +51,7 @@ UNION 与 UNION ALL
 
 ![]({{site.baseurl}}/images/20230302/20230302211120.png)
 
-1、`INNER JOIN`
+1、INNER JOIN
 
 `SELECT * FROM TableA INNER JOIN TableB ON TableA.name = TableB.name`
 
@@ -57,21 +59,25 @@ UNION 与 UNION ALL
 
 2、`FULL [OUTER] JOIN`
 
-(1)
-
-`SELECT * FROM TableA FULL OUTER JOIN TableB ON TableA.name = TableB.name`
+(1) `SELECT * FROM TableA FULL OUTER JOIN TableB ON TableA.name = TableB.name`
 
 ![]({{site.baseurl}}/images/20230302/20230302211140.png)
+
+(2) `SELECT * FROM TableA FULL OUTER JOIN TableB ON TableA.name = TableB.name WHERE TableA.id is null OR TableB.id is null`
 
 ![]({{site.baseurl}}/images/20230302/20230302211143.png)
 
 3、`LEFT [OUTER] JOIN`
 
+(1) `SELECT * FROM TableA LEFT OUTER JOIN TableB ON TableA.name = TableB.name`
+
+(2) `SELECT * FROM TableA LEFT OUTER JOIN TableB ON TableA.name = TableB.name WHERE TableB.id is null`
+
 ![]({{site.baseurl}}/images/20230302/20230302211146.png)
 
 4、`RIGHT [OUTER] JOIN`
 
-RIGHT OUTER JOIN 是后面的表为基础，与 LEFT OUTER JOIN 用法类似。这里不介绍了。
+`RIGHT [OUTER] JOIN` 是后面的表为基础，与 `LEFT [OUTER] JOIN` 用法类似。这里不介绍了。
 
 5、UNION 与 UNION ALL
 
@@ -97,14 +103,14 @@ UNION 操作符用于合并两个或多个 SELECT 语句的结果集。
 
 由于 id 1 Pirate   与 id 2 Pirate 并不相同，不合并
 
-还需要注册的是我们还有一个是“交差集” cross join, 这种Join没有办法用文式图表示，
-因为其就是把表A和表B的数据进行一个 N*M 的组合，即笛卡尔积。
+6、CROSS JOIN 
+
+还需要注册的是我们还有一个是“交差集” CROSS JOIN , 这种Join没有办法用文式图表示，
+因为其就是把表A和表B的数据进行一个 N * M 的组合，即笛卡尔积。
 表达式如下：`SELECT * FROM TableA CROSS JOIN TableB`
 
 这个笛卡尔乘积会产生 4 x 4 = 16 条记录，一般来说，我们很少用到这个语法。但是我们得小心，
 如果不是使用嵌套的select语句，一般系统都会产生笛卡尔乘积然再做过滤。这是对于性能来说是非常危险的，尤其是表很大的时候。
-
-![]({{site.baseurl}}/images/20230302/20230302211180.jpg)
 
 
 
