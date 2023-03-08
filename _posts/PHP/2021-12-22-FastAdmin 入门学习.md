@@ -1555,8 +1555,6 @@ columns: [
         {field: 'name', title: "规格名称", operate: 'LIKE'},
         {field: 'audit_status', title: "审核状态", searchList: {"0":"待审核","10":"审核通过","20":"审核失败"}, formatter: Table.api.formatter.status},
         {field: 'audit_content', title: "审核内容", operate: false},
-        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-        {field: 'update_time', title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
     ]
 ]
@@ -1608,8 +1606,6 @@ columns: [
         {field: 'name', title: "规格名称", operate: 'LIKE'},
         {field: 'audit_status', title: "审核状态", searchList: {"0":"待审核","10":"审核通过","20":"审核失败"}, formatter: Table.api.formatter.status},
         {field: 'audit_content', title: "审核内容", operate: false},
-        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-        {field: 'update_time', title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
     ]
 ]
@@ -1639,6 +1635,13 @@ public function index($product_id = '')
         unset($filter['product_name']);
         unset($op['product_name']);
     }
+    
+    $audit_status = null;
+    if (isset($filter['audit_status']) && isset($op['audit_status']) && $op['audit_status'] == '=') {
+        $audit_status = $filter['audit_status'];
+        unset($filter['audit_status']);
+        unset($op['audit_status']);
+    }
 
     $this->request->get(['filter' => json_encode($filter)]);
     $this->request->get(['op' => json_encode($op)]);
@@ -1653,6 +1656,10 @@ public function index($product_id = '')
 
     if (!empty($product_name)) {
         $list = $list->where('p.name', 'like', '%' .$product_name .'%');
+    }
+    
+    if ($audit_status !== null) {
+        $list = $list->where('s.audit_status', $audit_status);
     }
 
     $list = $list->where($where)
