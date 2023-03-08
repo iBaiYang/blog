@@ -1301,7 +1301,7 @@ public function get($name = '', $default = null, $filter = '')
     if (is_array($name)) {
         $this->param      = [];
         $this->mergeParam = false;
-        return $this->get = array_merge($this->get, $name);
+        return $this->get = array_merge($this->get, $name);  // array_merge()，后面数组中的数据覆盖前面同名的数据 
     }
     return $this->input($this->get, $name, $default, $filter);
 }
@@ -1540,6 +1540,131 @@ protected function buildparams($searchfields = null, $relationSearch = null)
         }
     };
     return [$where, $sort, $order, $offset, $limit, $page, $alias, $bind];
+}
+```
+
+### 列表数据查询改造
+
+开发中碰到一个场景：一家企业有多个店铺，每个店铺可以添加多款商品，每款商品又可以有多种规格，在规格列表页面中怎样获取数据。
+
+这是FastAdmin中原生的列表页前端JS实现：
+```
+columns: [
+    [
+        {field: 'product.name', title: "商品名称", operate: false},
+        {field: 'name', title: "规格名称", operate: 'LIKE'},
+        {field: 'audit_status', title: "审核状态", searchList: {"0":"待审核","10":"审核通过","20":"审核失败"}, formatter: Table.api.formatter.status},
+        {field: 'audit_content', title: "审核内容", operate: false},
+        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+        {field: 'update_time', title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+    ]
+]
+```
+
+这是推荐的后端代码：
+```
+public function index()
+{
+    $this->request->filter(['strip_tags', 'trim']);
+
+    if (!$this->request->isAjax()) {
+        return $this->view->fetch();
+    } 
+    
+    list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+    
+    $list = (new SpecModel())->hasWhere("product", ["enterprise_id" => $this->enterprise_id])
+        ->where($where)
+        ->with(["product"])
+        ->order($sort, $order)
+        ->paginate($limit);
+
+    $total = $list->total();
+    $rows = $list->items();
+
+    $result = array("total" => $total, "rows" => $rows);
+
+    return json($result);
+}
+```
+
+可以看下来，的确代码写的很少，方便了广大开发者。但通过商品名称怎么搜索？
+如果商品数据表中没有企业ID，企业ID在商铺表中，怎么过滤？
+还有一个问题，规格和商品都有审核状态，且字段名都是 audit_status，怎么解决报错：
+`Integrity constraint violation: 1052 Column 'audit_status' in where clause is ambiguous`
+
+发现虽然FastAdmin为了方便大家开发，定制了方便的搜索功能开发，但这个搜索实在太简单了，
+适合单表类查询，却不适合复杂查询，我们需要用底层ThinkPHP5的查询来对FastAdmin查询进行大改造。
+
+下面实现这个查询，这里借用上面 **搜索条件定制** 的内容。
+假设如果传入商品id（$product_id），则只查询该商品下的规格，否则查询全部。
+
+前端JS代码：
+```
+columns: [
+    [
+        {field: 'product_name', title: "商品名称"},
+        {field: 'name', title: "规格名称", operate: 'LIKE'},
+        {field: 'audit_status', title: "审核状态", searchList: {"0":"待审核","10":"审核通过","20":"审核失败"}, formatter: Table.api.formatter.status},
+        {field: 'audit_content', title: "审核内容", operate: false},
+        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+        {field: 'update_time', title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+    ]
+]
+```
+
+后端代码：
+```
+public function index($product_id = '')
+{
+    $this->request->filter(['strip_tags', 'trim']);
+
+    if (!$this->request->isAjax()) {
+        return $this->view->fetch();
+    } 
+    
+    $filter = json_decode($this->request->get('filter'), true);
+    $op = json_decode($this->request->get('op'), true);
+
+    if (!empty($product_id)) {
+        $filter['product_id'] = $product_id;
+        $op['product_id'] = '=';
+    }
+
+    $product_name = '';
+    if (isset($filter['product_name']) && isset($op['product_name']) && $op['product_name'] == '=') {
+        $product_name = $filter['product_name'];
+        unset($filter['product_name']);
+        unset($op['product_name']);
+    }
+
+    $this->request->get(['filter' => json_encode($filter)]);
+    $this->request->get(['op' => json_encode($op)]);
+
+    list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+
+    $list = (new SpecModel())->alias('s')
+        ->field('s.*, p.name as product_name')
+        ->join('product p', 's.product_id = p.id', 'LEFT')
+        ->join('shop', 'p.shop_id = shop.id', 'LEFT')
+        ->where('shop.enterprise_id', $this->enterprise_id);
+
+    if (!empty($product_name)) {
+        $list = $list->where('p.name', 'like', '%' .$product_name .'%');
+    }
+
+    $list = $list->where($where)
+        ->order($sort, $order)
+        ->paginate($limit);
+
+    $total = $list->total();
+    $rows = $list->items();
+
+    $result = array("total" => $total, "rows" => $rows);
+
+    return json($result);
 }
 ```
 
