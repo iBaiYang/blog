@@ -148,6 +148,8 @@ function tcp_client($port, $ip, $in)
 
 #### UDP协议
 
+![]({{site.baseurl}}/images/20230322/20230322113831.jpg)
+
 UDP服务端：
 ```php
 <?php
@@ -165,7 +167,7 @@ if (!($sock = socket_create(AF_INET, SOCK_DGRAM, 0))) {
 echo "Socket created \n";
 
 // Bind the source address
-if (!socket_bind($sock, "127.0.0.1", 9999)) {
+if (!socket_bind($sock, "127.0.0.1", 8012)) {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
 
@@ -190,8 +192,67 @@ socket_close($sock);
 ```
 
 UDP客户端：
+```php
+<?php
+//error_reporting(E_ALL | E_STRICT);
+set_time_limit(0);
+ob_implicit_flush();
+
+$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+
+$msg = "ping";
+$len = strlen($msg);
+socket_sendto($sock, $msg, $len, 0, "127.0.0.1", 8012);
+
+$from_remote = "127.0.0.1";
+$port_remote = 8012;
+socket_recvfrom($sock, $buf, 65535, 0, $from_remote, $port_remote);
+echo "$buf".PHP_EOL;
+
+socket_close($sock);
 ```
 
+参阅 <https://blog.csdn.net/sinat_40957383/article/details/98616352>
+
+这里面的服务端：
+
+```php
+<?php
+error_reporting(E_ALL | E_STRICT);
+set_time_limit(0);
+ob_implicit_flush();
+
+$socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+
+if ( $socket === false ) {
+    echo "socket_create() failed:reason:" . socket_strerror( socket_last_error() ) . "\n";
+}
+
+$ok = socket_bind($socket, '127.0.0.1',8012);
+
+if ( $ok === false ) {
+    echo "socket_bind() failed:reason:" . socket_strerror( socket_last_error( $socket ) );
+}
+
+while ( true ) {
+    $from_remote = '';
+    $port_remote = 0;
+    $num = socket_recvfrom($socket, $buf, 65535, 0, $from_remote, $port_remote);
+    if ($num===false) {
+        break;
+    }
+    echo "Received $buf from remote address $from_remote and remote port $port_remote".PHP_EOL;
+    //sleep(1000);
+
+    $msg = random_int(4, 100);
+    //$msg = "Pong!";
+    $msg = "er".$msg;
+    $len = strlen($msg);
+    socket_sendto($socket,$msg,$len,0,$from_remote, $port_remote);
+}
+
+socket_close($socket);
+?>
 ```
 
 ### Stream
