@@ -12,7 +12,6 @@ meta: 记录一下 Linux 下安装安装Composer流程
 按照下面的参考地址一步一步安装就好，顺便附一下自己安装的流程图：
 
 到/usr/local/src下操作：
-
 ```
 下载composer安装包：
 > php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -115,24 +114,21 @@ Composer version 2.0.8 2020-12-03 17:20:38
 ### 其他问题
 
 在安装过程中，可能会碰到这个错误提示：
-
 ```
 The phar extension is missing.
 Install it or recompile php without --disable-phar
 ```
 
 phar拓展缺失。我们要给php安装这个拓展：
-
 > sudo apt install php7.1-phar
 
-修改php.ini文件：
-
+定位 php.ini 文件位置：
 > sudo find / -name php.ini
 
+修改php.ini文件：
 > sudo vim /etc/php/7.1/cli/php.ini 
 
 加入一行：
-
 ```
 extension=phar.so 
 ```
