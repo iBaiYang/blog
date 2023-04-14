@@ -74,7 +74,7 @@ Docker在启动时会开启一个虚拟网桥设备docker0，默认的地址为1
 可以看到第7条就是docker0。
 
 
-## Nginx镜像生成
+## Nginx镜像管理
 
 **新建Dockerfile**
 
@@ -168,7 +168,7 @@ centos7_nginx1.18            v1.0                60f1a3c49c5a        6 minutes a
 
 启动一个容器：
 ```
-docker run --name=nginx --privileged=true -p 81:80 -d centos7_nginx1.18:v1.0
+docker run --name=nginx --privileged=true -p 80:80 -d centos7_nginx1.18:v1.0
 ```
 
 `--name` 容器名称；`--privileged` 特权模式；`-p`  映射端口号，宿主机端口：容器端口；
@@ -224,6 +224,55 @@ Commercial support is available at
 ```
 
 也可以打开浏览器，访问虚拟机IP，查看页面内容。
+
+**提交仓库**
+
+我们可以把上面生成的镜像提交的 Docker官方的个人仓库中，以备日后自己直接使用。
+
+首先在Docker仓库官网 <https://hub.docker.com/> 申请账号，如用户名是 ibaiyang 。
+
+然后本地命令行登录：
+```
+[root@localhost ~]# docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: ibaiyang
+Password:
+Login Succeeded
+[root@localhost ~]#
+```
+
+给镜像打标签(60f1a3c49c5a是镜像的ID)：
+```
+[root@localhost ~]# docker tag 60f1a3c49c5a ibaiyang/centos7_nginx1.18:v1.0
+[root@localhost ~]#
+[root@localhost ~]# docker images
+REPOSITORY                      TAG          IMAGE ID            CREATED             SIZE
+centos7_nginx1.18               v1.0         60f1a3c49c5a        6 minutes ago       994 MB
+ibaiyang/centos7_nginx1.18      v1.0         60f1a3c49c5a        6 minutes ago       994 MB
+[root@localhost ~]#
+```
+
+推送镜像到Docker个人仓库：
+```
+[root@localhost ~]# docker push ibaiyang/centos7_nginx1.18:v1.0
+The push refers to a repository [docker.io/ibaiyang/centos7_nginx1.18]
+cf609eac522b: Pushed
+ff0de8b371e9: Mounted from library/nginx
+37ec37fdbd74: Mounted from library/nginx
+d491a3adbb37: Mounted from library/nginx
+fdcab9036a54: Mounted from library/nginx
+cb66017db9e6: Mounted from library/nginx
+v1.0: digest: sha256:992901a9aea825b81a0bac0878f42b49ba8821968efdfede687d54b3c63f1fe9 size: 2622
+[root@localhost ~]#
+```
+
+在Docker仓库官网的个人中心中就可以看到自己提交的镜像包了。
+
+下次下载时，直接使用：
+> docker pull ibaiyang/centos7_nginx1.18:v1.0
+
+还有一点需要说明，docker 也有类似 git 的版本管理，每次修改后生成的镜像没问题时，
+可以用`docker commit` 命令打个新的Tag标签，然后再推送到个人仓库。
 
 **移除容器**
 
