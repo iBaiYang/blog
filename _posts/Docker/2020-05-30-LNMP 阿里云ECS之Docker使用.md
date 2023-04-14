@@ -1203,6 +1203,16 @@ docker run --name server-phpfpm -p 9000:9000 -v /web/php-fpm/etc:/usr/local/etc/
 docker run --name server-nginx -p 80:80  -v /web/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /web/nginx/conf/vhost:/etc/nginx/conf.d  -v /web/nginx/logs:/var/log/nginx  -v /var/www/html:/usr/share/nginx/html  -v /etc/localtime:/etc/localtime:ro  --link server-phpfpm:php  -d nginx
 ```
 
+
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
