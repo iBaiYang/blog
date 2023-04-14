@@ -7,7 +7,7 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 * content
 {:toc}
 
-## 正文
+## 引言
 
 ![]({{site.baseurl}}/images/20221010/20221010215527.png)
 
@@ -26,7 +26,7 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 
 ![]({{site.baseurl}}/images/20200703/20200703111105.png)
 
-### Docker信息查看
+## Docker信息查看
 
 我们在《趣谈网络协议》的TCP/IP实验环境的搭建中安装过Docker，另外有些Linux发行版本可能集成了Docker，我们可以查看下Docker的基本信息。
 
@@ -77,11 +77,11 @@ Server: Docker Engine - Community
 
 输出：
 ```
-REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
-hub.c.163.com/liuchao110119163/ubuntu   tcpip               396485da9bdd        21 months ago       345MB
+REPOSITORY                              TAG      IMAGE ID         CREATED        SIZE
+hub.c.163.com/liuchao110119163/ubuntu   tcpip    396485da9bdd     21 months ago  345MB
 ```
 
-### 安装Docker引擎
+## 安装Docker引擎
 
 Docker 的旧版本被称为 docker，docker.io 或 docker-engine 。如果已安装，请卸载它们:
 > sudo apt-get remove docker docker-engine docker.io containerd runc
@@ -215,6 +215,8 @@ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> c
 
 `<VERSION_STRING>`, 替换为 5:19.03.8~3-0~debian-stretch 。
 
+`sudo apt-get install docker-ce=5:19.03.8~3-0~debian-stretch docker-ce-cli=5:19.03.8~3-0~debian-stretch containerd.io`
+
 或者我们可以通过下面的命令直接安装最新版，不过有可能不是稳定版：
 > sudo apt-get install docker-ce docker-ce-cli containerd.io
 
@@ -250,21 +252,15 @@ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> c
 通过以上步骤，Docker就安装好了。
 
 containerd.io、docker-ce-cli、docker-ce分别是干什么的：
-
-containerd.io   - daemon to interface with the OS API (in this case, LXC - Linux Containers), 
+* containerd.io   - daemon to interface with the OS API (in this case, LXC - Linux Containers), 
 essentially decouples Docker from the OS, also provides container services for non-Docker container managers
-
-docker-ce   - Docker daemon, this is the part that does all the management work, requires the other two on Linux
-
-docker-ce-cli   - CLI tools to control the daemon, you can install them on their own if you want to control a remote Docker daemon.
+* docker-ce   - Docker daemon, this is the part that does all the management work, requires the other two on Linux
+* docker-ce-cli   - CLI tools to control the daemon, you can install them on their own if you want to control a remote Docker daemon.
 
 翻译过来是：
-
-containerd.io    -与OS API进行交互的守护程序（在本例中为LXC-Linux容器），从本质上将Docker与OS分离，还为非Docker容器管理器提供容器服务。
-
-docker-ce    -Docker守护程序，这是完成所有管理工作的部分，在Linux上需要另外两个。
-
-docker-ce-cli    -用于控制守护程序的CLI工具，如果要控制远程Docker守护程序，则可以单独安装它们。
+* containerd.io    -与OS API进行交互的守护程序（在本例中为LXC-Linux容器），从本质上将Docker与OS分离，还为非Docker容器管理器提供容器服务。
+* docker-ce    -Docker守护程序，这是完成所有管理工作的部分，在Linux上需要另外两个。
+* docker-ce-cli    -用于控制守护程序的CLI工具，如果要控制远程Docker守护程序，则可以单独安装它们。
 
 Docker是虚拟化容器引擎，我们可以运行hello world映像，验证Docker引擎是否正确安装：
 > sudo docker run hello-world
@@ -306,23 +302,102 @@ Docker引擎已安装并运行。docker组已创建，但未添加任何用户�
 
 原则上一个容器只提供一种服务，这样可以方便以后服务的维护。所以我们mysql独立一个容器、nginx独立一个容器、php-fpm独立一个容器。
 
-### centos安装
+## 帮助信息
+
+查看docker帮助信息：
+> docker --help
+
+```
+Usage:  docker COMMAND
+
+A self-sufficient runtime for containers
+
+Options:
+      --config string      Location of client config files (default "/root/.docker")
+  -D, --debug              Enable debug mode
+      --help               Print usage
+  -H, --host list          Daemon socket(s) to connect to (default [])
+  -l, --log-level string   Set the logging level ("debug", "info", "warn", "error", "fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default "/root/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file (default "/root/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default "/root/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Management Commands:
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  volume      Manage volumes
+
+Commands:
+  attach      Attach to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
+
+Run 'docker COMMAND --help' for more information on a command.
+```
+
+## centos安装
 
 我们可以在自己的机子上再装一个linux虚拟环境，可以用docker实现。
 
-在docker官方仓库 https://hub.docker.com/_/centos?tab=tags 看一下具体的centos版本有哪些，自己需要哪一个。
+在docker官方仓库 <https://hub.docker.com/_/centos?tab=tags> 看一下具体的centos版本有哪些，自己需要哪一个。
 
 拉取镜像：
-
 > docker pull centos:7
 
 创建容器并运行：
-
 > docker run -td centos:7
 
 用`docker ps`可以看到centos的容器正在UP运行中。
 
-### mysql安装
+## mysql安装
 
 下载mysql镜像：
 
@@ -362,7 +437,7 @@ docker run --name mysql_server -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql
 -e 内置环境变量 这里是给ROOT 帐号设置密码
 ```
 
-### nginx安装
+## nginx安装
 
 > docker pull nginx
 
@@ -385,7 +460,7 @@ docker run --privileged=true -p 81:80  -d nginx
 
 现在我们通过浏览器访问一下127.0.0.1:81，就可以看到nginx的欢迎界面了。
 
-### php-fpm安装
+## php-fpm安装
 
 > docker pull php:7.1.30-fpm
 
@@ -455,7 +530,7 @@ docker run --name server-nginx --privileged=true -p 80:80 -v /var/www/docker/ngi
 
 访问：127.0.0.1，可以看到效果，展示了phpinfo()详情。
 
-### 容器自动停止问题
+## 容器自动停止问题
 
 以 `docker run -d` 运行之后，还是会自动停止，`docker ps` 看不到运行的容器， docker ps -a 后看到容器状态为 Exited。
 
@@ -490,7 +565,7 @@ Docker要求您的命令在前台继续运行。否则，它会认为您的应�
 
 >  docker run -d centos tail -f /dev/null 
 
-### Dockerfile
+## Dockerfile
 
 Dockerfile是用来构建Docker镜像的文件，是由一系列命令和参数构成的脚本。
 
@@ -513,9 +588,9 @@ Docker每一层镜像的json文件，都扮演着一个非常重要的角色，�
 
 Docker镜像的json文件可以认为是镜像的元数据信息。
 
-### 示例配置
+## 示例配置
 
-#### php-fpm镜像build脚本
+### php-fpm镜像build脚本
 
 Dockerfile 文件:
 ```
@@ -595,7 +670,7 @@ yum install make -y
 yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
 ```
 
-#### 项目镜像build脚本
+### 项目镜像build脚本
 
 ```
 # 生成docker-php-entrypoint文件
@@ -691,7 +766,7 @@ Successfully tagged crm:test
 
 配置文件`./crm.json`，压缩包文件`./dist/crm.tar.gz`，我们需要在当前目录下准备好。
 
-### 原环境php清空
+## 原环境php清空
 
 个人使用的是Linux环境做个人主机，也是因为对Linux不熟悉，各种摸索和折腾，光PHP就安装了好多个版本，而且里面的版本还升过版本，
 导致服务环境非常乱，给PHP安装个拓展总是报错：拓展编码的phpize版本和PHP的版本不一致，导致拓展使用不了，折腾了好长时间无法解决。

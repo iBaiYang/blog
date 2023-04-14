@@ -7,11 +7,9 @@ meta: LNMP 阿里云ECS之Docker使用
 * content
 {:toc}
 
-## 正文
+## docker安装
 
 在阿里云上购买ECS后，命令行root连接登录实例。
-
-### docker安装
 
 ECS实例是centos 7.6 64位系统。 centos 8.*版本安装会有问题。
 
@@ -146,10 +144,93 @@ Server:
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-### mysql安装
+## 帮助信息
+
+查看docker帮助信息：
+> docker --help
+
+```
+[root@localhost ~]# docker --help
+
+Usage:  docker COMMAND
+
+A self-sufficient runtime for containers
+
+Options:
+      --config string      Location of client config files (default "/root/.docker")
+  -D, --debug              Enable debug mode
+      --help               Print usage
+  -H, --host list          Daemon socket(s) to connect to (default [])
+  -l, --log-level string   Set the logging level ("debug", "info", "warn", "error", "fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default "/root/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file (default "/root/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default "/root/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Management Commands:
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  volume      Manage volumes
+
+Commands:
+  attach      Attach to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
+
+Run 'docker COMMAND --help' for more information on a command.
+[root@localhost ~]#
+```
+
+## mysql安装
 
 下载mysql镜像：
-
 > docker pull mysql:5.7
 
 输出：
@@ -207,7 +288,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   13 seconds ago      Up 12 seconds        0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-#### 新建用户和数据库
+### 新建用户和数据库
 
 接下来可以新建用户和新建库：
 
@@ -265,7 +346,7 @@ GRANT  ALL  ON  dog.*  TO  'dog'@'%';
 GRANT  ALL  ON   *.*   TO  'aaa'@'%'  WITH GRANT OPTION;
 ```
 
-### php安装
+## php安装
 
 下载镜像：
 
@@ -316,7 +397,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 2bfff24639a3        mysql:5.7           "docker-entrypoint..."   28 minutes ago      Up 28 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-#### mysqli拓展安装
+### mysqli拓展安装
 
 默认的 php 镜像中不带有 mysqli 模块，我们需要给容器内的 php 安装 mysqli 模块：
 > docker exec -it server-phpfpm /bin/bash
@@ -630,7 +711,7 @@ find . -name .libs -a -type d|xargs rm -rf
 rm -f libphp.la       modules/* libs/*
 ```
 
-#### pdo_mysql拓展安装
+### pdo_mysql拓展安装
 
 一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
 ```
@@ -681,7 +762,7 @@ Registered Stream Filters	zlib.*, convert.iconv.*, string.rot13, string.toupper,
 
 > docker start server-phpfpm
 
-#### bcmath拓展安装
+### bcmath拓展安装
 
 bcmath拓展可进行一些精度数学运行，需要安装好。
 
@@ -691,7 +772,7 @@ bcmath拓展可进行一些精度数学运行，需要安装好。
 
 别忘了重启server-phpfpm服务。
 
-### nginx安装
+## nginx安装
 
 > docker pull nginx
 
@@ -818,7 +899,7 @@ http {
 
 我们需要再加一条入方向80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
 
-### git安装
+## git安装
 
 安装git后，我们项目代码就可以直接用git实现更新了，而不是用繁杂的ftp，总言之，就是方便：
 
@@ -838,7 +919,7 @@ git clone 项目git地址
 git pull
 ```
 
-### web项目搭建
+## web项目搭建
 
 我们上面已经运行了nginx容器，但这个容器并无法调用php脚本服务，我们需要做相应配置。
 
@@ -994,7 +1075,7 @@ server {
 
 同样，其他项目我们也可以像test项目这样部署，共用nginx和php容器。
 
-### 附录
+## 附录
 
 我们打印phpinfo信息看一下：
 
