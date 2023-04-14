@@ -9,6 +9,49 @@ meta: Docker 是一个开源的应用容器引擎，让开发者可以打包他�
 
 ## 引言
 
+个人使用的是Linux环境做个人主机，也是因为对Linux不熟悉，各种摸索和折腾，光PHP就安装了好多个版本，而且里面的版本还升过版本，
+导致服务环境非常乱，给PHP安装个拓展总是报错：拓展编码的phpize版本和PHP的版本不一致，导致拓展使用不了，折腾了好长时间无法解决。
+算了，还是把这些很杂乱的版本就卸载了吧，居然卸载也卸载不了，因为PHP有的是apt安装的、有的是yum安装的、有的是编译安装的、有的还用apt升过级，
+现在不知道哪个版本是用哪种方式安装的了，也没法卸载了，只能物理删除了。
+
+查看下当前的PHP版本：
+> php -v
+
+看一下PHP的命令地址：
+> which php
+
+再看下php在哪里：
+> whereis php
+
+这里可以看到php散落在各个地方。
+
+还好当时安装的都是php7的版本，我们搜一下php7开头的有哪些：
+```
+> find / -name 'php7*'
+```
+
+发现列出了很长的一个列表，既有7.0，又有7.1，还有7.4。既然无法一个一个卸载，那就物理删除吧：
+```
+find / -name 'php7*'|xargs rm -rf
+```
+
+操作完成后，再搜索看一下：
+```
+> find / -name 'php7*'
+```
+
+接下来就是一些很琐碎的相关文件删除了，先大致搜索看看：
+> find / -name php.ini
+>
+> find / -name php
+
+追踪看看，能删的就删了吧，注意别把自己的项目开发文件给删了！
+
+可以看到，一个系统安装很多版本导致的问题，会影响到系统的正常使用，如果安装时只安装一个版本就好了。
+或者现在有一种解决方案，就是用docker，一个container中运行一个服务、一个版本，这样以后想尝试多版本也有办法了。
+
+## 介绍
+
 ![]({{site.baseurl}}/images/20221010/20221010215527.png)
 
 在未使用虚拟化技术的机子上，长期使用后，上面的软件和版本就变得乱七八器，很混乱和庞杂，比如一个机子上可能既有PHP7.1、又有PHP7.0、还有PHP5.6，
@@ -482,7 +525,7 @@ Status: Downloaded newer image for php:7.1.30-fpm
 docker.io/library/php:7.1.30-fpm
 ```
 
-新建几个文件夹，分别用来映射：网站根目录、nginx配置文件、日志文件:
+新建几个文件夹，分别用来映射：网站根目录、日志文件、nginx配置文件:
 
 > mkdir -p /var/www/docker/nginx/www /var/www/docker/nginx/logs /var/www/docker/nginx/conf
 
@@ -532,7 +575,7 @@ docker run --name server-nginx --privileged=true -p 80:80 -v /var/www/docker/ngi
 
 ## 容器自动停止问题
 
-以 `docker run -d` 运行之后，还是会自动停止，`docker ps` 看不到运行的容器， docker ps -a 后看到容器状态为 Exited。
+以 `docker run -d` 运行之后，还是会自动停止，`docker ps` 看不到运行的容器， `docker ps -a` 后看到容器状态为 Exited。
 
 可能原因1，容器中发生了错误，所以容器 Exited 了，我们可以用 docker logs CONTAINER 查看下日志，如：
 
@@ -546,12 +589,12 @@ nginx: [emerg] socket() 0.0.0.0:80 failed (13: Permission denied)
 
 可以看出是容器中执行命令权限不够，被拒绝执行了。
 
-我们可以在生成容器时加上`privileged=true`，如：
+我们可以在生成容器时加上`--privileged=true`，如：
 ```
 docker run --privileged=true -p 80:80  -d nginx
 ```
 
-现在在ps看一下容器运行状态就处于Up状态了。
+现在再ps看一下容器运行状态就处于Up状态了。
 
 大约在0.6版，privileged被引入docker。使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限。
 privileged启动的容器，可以看到很多host上的设备，并且可以执行mount。甚至允许你在docker容器中启动docker容器。
@@ -588,9 +631,9 @@ Docker每一层镜像的json文件，都扮演着一个非常重要的角色，�
 
 Docker镜像的json文件可以认为是镜像的元数据信息。
 
-## 示例配置
+### 示例配置
 
-### php-fpm镜像build脚本
+#### php-fpm镜像build脚本
 
 Dockerfile 文件:
 ```
@@ -670,7 +713,7 @@ yum install make -y
 yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
 ```
 
-### 项目镜像build脚本
+#### 项目镜像build脚本
 
 ```
 # 生成docker-php-entrypoint文件
@@ -766,48 +809,14 @@ Successfully tagged crm:test
 
 配置文件`./crm.json`，压缩包文件`./dist/crm.tar.gz`，我们需要在当前目录下准备好。
 
-## 原环境php清空
 
-个人使用的是Linux环境做个人主机，也是因为对Linux不熟悉，各种摸索和折腾，光PHP就安装了好多个版本，而且里面的版本还升过版本，
-导致服务环境非常乱，给PHP安装个拓展总是报错：拓展编码的phpize版本和PHP的版本不一致，导致拓展使用不了，折腾了好长时间无法解决。
-算了，还是把这些很杂乱的版本就卸载了吧，居然卸载也卸载不了，因为PHP有的是apt安装的、有的是yum安装的、有的是编译安装的、有的还用apt升过级，
-现在不知道哪个版本是用哪种方式安装的了，也没法卸载了，只能物理删除了。
 
-查看下当前的PHP版本：
-> php -v
 
-看一下PHP的命令地址：
-> which php
 
-再看下php在哪里：
-> whereis php
 
-这里可以看到php散落在各个地方。
 
-还好当时安装的都是php7的版本，我们搜一下php7开头的有哪些：
-```
-> find / -name 'php7*'
-```
 
-发现列出了很长的一个列表，既有7.0，又有7.1，还有7.4。既然无法一个一个卸载，那就物理删除吧：
-```
-find / -name 'php7*'|xargs rm -rf
-```
 
-操作完成后，再搜索看一下：
-```
-> find / -name 'php7*'
-```
-
-接下来就是一些很琐碎的相关文件删除了，先大致搜索看看：
-> find / -name php.ini
->
-> find / -name php
-
-追踪看看，能删的就删了吧，注意别把自己的项目开发文件给删了！
-
-可以看到，一个系统安装很多版本导致的问题，会影响到系统的正常使用，如果安装时只安装一个版本就好了。
-或者现在有一种解决方案，就是用docker，一个container中运行一个服务、一个版本，这样以后想尝试多版本也有办法了。
 
 <br/><br/><br/><br/><br/>
 ## 参考资料

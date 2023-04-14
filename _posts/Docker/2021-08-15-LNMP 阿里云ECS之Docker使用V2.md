@@ -7,7 +7,7 @@ meta: LNMP 阿里云ECS之Docker使用第2版
 * content
 {:toc}
 
-## 正文
+## 引言
 
 ![]({{site.baseurl}}/images/20221010/20221010215527.png)
 
@@ -17,7 +17,7 @@ Linux、Nginx、MySQL、PHP运行环境都要重新搭建，关键是要把MySQL
 
 在阿里云上购买ECS后，重置root用户密码并重启实例，然后命令行root连接登录实例。
 
-### docker安装
+## docker安装
 
 ECS实例是centos 7.6 64位系统。
 
@@ -534,7 +534,7 @@ Server:
 {"registry-mirrors": ["https://registry.docker-cn.com"], "live-restore": true}
 ```
 
-### mysql安装
+## mysql安装
 
 下载mysql镜像：
 > docker pull mysql:5.7
@@ -590,7 +590,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 c6b99eed3bc6        mysql:5.7           "docker-entrypoint..."   34 seconds ago      Up 33 seconds       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-#### 远程登录管理
+### 远程登录管理
 
 一般我们会用Navicat等工具远程登录管理MySQL，我们需要进行一些操作。
 
@@ -660,7 +660,7 @@ GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION;
 
 退出容器后，在Navicat上用root用户连接就可以了。
 
-#### 新建用户和数据库
+### 新建用户和数据库
 
 接下来可以新建用户和新建库：
 
@@ -710,7 +710,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON dog.* TO 'dog'@'%';
 
 可以通过Navicat把旧服务器上的数据表数据导入新服务器数据库中。
 
-### php安装
+## php安装
 
 下载镜像：
 > docker pull php:7.1.30-fpm
@@ -764,7 +764,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 c6b99eed3bc6        mysql:5.7           "docker-entrypoint..."   25 minutes ago      Up 25 minutes       0.0.0.0:3306->3306/tcp, 33060/tcp   server-mysql
 ```
 
-#### mysqli拓展安装
+### mysqli拓展安装
 
 进入容器：
 > docker exec -it server-phpfpm /bin/bash
@@ -970,7 +970,7 @@ rm -f libphp.la       modules/* libs/*
 > 
 > docker start server-phpfpm
 
-#### pdo_mysql拓展安装
+### pdo_mysql拓展安装
 
 一般我们Yii用到的Pdo拓展也是缺失的，我们需要把Pdo拓展打开。不然会报错：
 ```
@@ -1125,7 +1125,7 @@ rm -f libphp.la       modules/* libs/*
 
 ![]({{site.baseurl}}/images/20210816/20210816233352.png)
 
-#### bcmath拓展安装
+### bcmath拓展安装
 
 bcmath拓展可进行一些精度数学运行，需要安装好。
 
@@ -1355,7 +1355,7 @@ root@9a480218544e:/var/www/html#
 
 别忘了退出容器，重启server-phpfpm服务。
 
-### nginx安装
+## nginx安装
 
 下载镜像：
 > docker pull nginx
@@ -1425,7 +1425,7 @@ c6b99eed3bc6        mysql:5.7           "docker-entrypoint..."   36 minutes ago 
 
 我们需要在 安全组 入方向 再加一条入方向 http 80端口的安全规则，加入后用浏览器访问我们实例的公网ip就可以看到nginx欢迎的界面了。
 
-### git安装
+## git安装
 
 安装git后，我们项目代码就可以直接用git实现更新了，而不是用繁杂的ftp，总言之，就是方便：
 ```
@@ -1512,7 +1512,7 @@ git clone 项目git地址
 git pull
 ```
 
-### web项目搭建
+## web项目搭建
 
 我们上面已经运行了nginx容器，但这个容器并无法调用php脚本服务，我们需要做相应配置。
 
@@ -1579,7 +1579,7 @@ server {
 
 同样，其他项目我们也可以像test项目这样部署，共用nginx和php容器。
 
-### 附录
+## 附录
 
 
 
