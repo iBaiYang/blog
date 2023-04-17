@@ -348,7 +348,9 @@ Docker引擎已安装并运行。docker组已创建，但未添加任何用户�
 ## 帮助信息
 
 查看docker帮助信息：
+```
 > docker --help
+```
 
 ```
 Usage:  docker COMMAND
@@ -631,9 +633,7 @@ Docker每一层镜像的json文件，都扮演着一个非常重要的角色，�
 
 Docker镜像的json文件可以认为是镜像的元数据信息。
 
-### 示例配置
-
-#### php-fpm镜像build脚本
+### php-fpm镜像build脚本
 
 Dockerfile 文件:
 ```
@@ -713,7 +713,7 @@ yum install make -y
 yum autoremove systemtap-sdt-devel enchant-devel xpm-devel libXpm-devel libc-client-devel openldap-devel libmcrypt-devel unixODBC-devel
 ```
 
-#### 项目镜像build脚本
+### 项目镜像build脚本
 
 ```
 # 生成docker-php-entrypoint文件

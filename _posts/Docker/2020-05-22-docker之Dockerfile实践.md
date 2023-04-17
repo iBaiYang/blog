@@ -147,8 +147,8 @@ CMD ["-g", "daemon off;"]
 docker build --network host -t centos7_nginx1.18:v1.0 .
 ```
 
-注意，最后有个点，centos7_nginx 是镜像名称，1.18.0 是打的标签，跟版本号一样的意思。
-`-t` 或者 `--tag`： 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。
+注意，最后有个点。`centos7_nginx1.18` 是镜像名称，`v1.0` 是打的标签，跟版本号一样的意思。
+`-t` 或者 `--tag`： 镜像的名字及标签，通常 `name:tag` 或者 `name` 格式；可以在一次构建中为一个镜像设置多个标签。
 `--network`: 默认 default，这里可以去掉，在RUN指令构建期间再设置网络模式。
 
 生成过程中，可能会报错，按照提示，进行修改。具体生成细节查看 附录 部分。
@@ -171,7 +171,7 @@ centos7_nginx1.18            v1.0                60f1a3c49c5a        6 minutes a
 docker run --name=nginx --privileged=true -p 80:80 -d centos7_nginx1.18:v1.0
 ```
 
-`--name` 容器名称；`--privileged` 特权模式；`-p`  映射端口号，宿主机端口：容器端口；
+`--name` 容器名称；`--privileged` 特权模式；`-p`  映射端口号，宿主机端口:容器端口；
 `-d`  是守护进程运行的意思，即容器后台运行不会退出；`centos7_nginx1.18:v1.0` 是使用的 镜像:版本号 。
 
 输出：
@@ -192,7 +192,7 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
 [root@localhost ~]#
 ```
 
-命令行执行`curl 127.0.0.1:81` 命令，能看到  Welcome to nginx  等英文提示，即说明一切OK。
+命令行执行`curl 127.0.0.1:80` 命令，能看到  Welcome to nginx  等英文提示，即说明一切OK。
 ```
 [root@localhost ~]# curl 127.0.0.1:80
 \<!DOCTYPE html>
@@ -227,7 +227,7 @@ Commercial support is available at
 
 **提交仓库**
 
-我们可以把上面生成的镜像提交的 Docker官方的个人仓库中，以备日后自己直接使用。
+我们可以把上面生成的镜像，提交到Docker官方的个人仓库中，以备日后直接使用。
 
 首先在Docker仓库官网 <https://hub.docker.com/> 申请账号，如用户名是 ibaiyang 。
 
@@ -358,7 +358,7 @@ Total reclaimed space: 0 B
 Dockerfile用于本地生成镜像，像Nginx这类软件，定制化程度很低，不需要自己生成，直接用docker官方库的就可以：
 > docker pull nginx
 
-PHP等软件可能牵扯到各类拓展，如 bcmath 等，倒是可以在本地生成镜像，打上版本号，然后推送到docker官方库，
+PHP等软件可能牵扯到各类拓展，如 bcmath、gd 等，倒是可以在本地生成镜像，打上版本号，然后推送到docker官方库，
 下次直接从官方库`docker pull 镜像`下载。
 
 
@@ -564,13 +564,13 @@ or they can omit the executable, in which case you must specify an ENTRYPOINT in
 
 这也是为什么大多数网上博客论坛说的“cmd会被覆盖”，其实为什么会覆盖？因为cmd的角色定位就是默认，
 如果你不额外指定，那么就执行cmd的命令，否则呢？只要你指定了，那么就不会执行cmd，也就是cmd会被覆盖。
-　　
+
 明白了CMD命令的主要用途。下面就看看具体用法。
 
 总共有三种用法：
-１. `CMD [“executable”,“param1”,“param2”]` (exec form, this is the preferred form)
-２. `CMD [“param1”,“param2”]` (as default parameters to ENTRYPOINT)
-３. `CMD command param1 param2` (shell form)
+1. `CMD [“executable”,“param1”,“param2”]` (exec form, this is the preferred form)
+2. `CMD [“param1”,“param2”]` (as default parameters to ENTRYPOINT)
+3. `CMD command param1 param2` (shell form)
 
 因为还没有讲 ENTRYPOINT，所以先不看用法2。 
 
