@@ -958,7 +958,7 @@ $ docker run --rm --entrypoint hostname test2
 
 ## 附录
 
-### Nginx镜像生成
+### Nginx镜像生成细节
 
 看一下Nginx镜像生成细节：
 > docker build -t centos7_nginx1.18:v1.0 .
