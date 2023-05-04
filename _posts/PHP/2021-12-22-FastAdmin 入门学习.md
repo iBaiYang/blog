@@ -2138,6 +2138,80 @@ FastAdmin视图页中自定义的那些所谓的标签是真多余，如`{if con
 
 看看上面那个foreach循环，你知道 $key 从哪冒出来的吗？对比下面if语句，熟悉不！
 
+### 表单中键值对的使用
+
+碰到一种情况，项目中需要企业添加多位联系人，而且姓名有可能重复，怎么实现？
+
+可以使用 FastAdmin键值组件(Fieldlist)。
+
+Fieldlist示例 可以参阅 <https://www.58how.com/index.php/zhanchangxueyuan/80973.html>
+
+看下这个需求的实现：
+
+视图页：
+```
+<div class="form-group">
+    <label class="control-label col-xs-12 col-sm-2">联系信息:</label>
+    <div class="col-xs-12 col-sm-8">
+        <dl class="fieldlist" data-name="row[contacter_list]" id="shop_contacter_list">
+            <dd>
+                <ins>姓名</ins>
+                <ins>手机号</ins>
+            </dd>
+            <dd><a href="javascript:;" class="btn-append btn btn-sm btn-success"><i class="fa fa-plus"></i> {:__('Append')}</a></dd>
+            <textarea name="row[contacter_list]" class="form-control hide" cols="30" rows="5">{$row.contacter_list}</textarea>
+        </dl>
+    </div>
+</div>
+```
+
+JS：
+```
+$(document).on("fa.event.appendfieldlist", '[data-name="row[contacter_list]"] .btn-append', function(){
+    if ($('[data-name="row[contacter_list]"] .form-inline').size() > 5) {
+        Layer.alert("最多可以填写5条，现已达到上限");
+    }
+});
+```
+
+如果姓名不重复，后端PHP可以这样写：
+```
+$post_contacter_list = $_POST["row"]['contacter_list'];  
+// 也可以考虑用 $params = $this->request->post("row/a"); $post_contacter_list = $params['contacter_list'];
+$post_contacter_list = json_decode($post_contacter_list, true);
+if (empty($post_contacter_list)) {
+    $this->error("请填写完整联系人信息");
+}
+$shop_contacter_list = [];
+foreach ($post_contacter_list as $name => $phone) {
+    $shop_contacter_list[] = [
+        'name' => trim($name),
+        'phone' => trim($phone),
+    ];
+};
+$shop_contacter_list = json_encode($shop_contacter_list);
+```
+
+提交的时候，数据：
+```
+// 表单部分
+{
+
+	"row[contacter_list][0][key]": "张三",
+	"row[contacter_list][0][value]": "184032501014",
+	"row[contacter_list][1][key]": "张三",
+	"row[contacter_list][1][value]": "184032501013",
+	"row[contacter_list]": "{\"张三\":\"184032501013\"}",
+}
+
+// 因为数组同名，后面的会覆盖前面的，相当于重新赋值，后台 $_POST 获取到的数据，把另外一个丢失了
+{"张三":"184032501013"}
+```
+
+如果姓名重复，后端需要用`file_get_contents("php://input");`来获取全部参数了，
+但这里牵扯到 `$_POST` 、`file_get_contents("php://input");` 、`$HTTP_RAW_POST_DATA` 的异同比较，
+还牵扯到 `urlencode()` 、`htmlspecialchars()` 、`htmlentities()` 的异同比较，需要研究清楚。
+
 
 
 
