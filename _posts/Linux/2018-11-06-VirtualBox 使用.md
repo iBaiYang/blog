@@ -9,8 +9,44 @@ meta:
 
 ## 引言
 
-尽管Windows上有WSL，但对于运行于Linux环境上的项目，体验还是太差了，好多功能无法正常使用，被迫还是要在Linux环境下开发，
+尽管Windows上有WSL，如 <https://ibaiyang.github.io/blog/linux/2021/08/24/WSL-CentOS7.6搭建使用.html> ，
+但对于运行于Linux环境上的项目，体验还是太差了，好多功能无法正常使用，被迫还是要在Linux环境下开发，
 现在VirtualBox就派上用场了。
+
+## Linux环境搭建
+
+VirtualBox 搭建Centos7.9：<https://ibaiyang.github.io/blog/linux/2022/02/16/VirtualBox-搭建Centos7.9.html>
+
+
+
+## Vagrant
+
+Vagrant 是一个基于 Ruby 的工具，用于创建和部署虚拟化开发环境，基于VirtualBox。
+
+这种环境搭建的方式有个问题，就是每次关机前都要先 `vagrant halt` 关闭服务，不然下次启动就会异常从而导致无法正常使用。
+
+具体参考：
+
+Windows 下PHP开发环境LNMP搭建流程：<https://ibaiyang.github.io/blog/linux/2017/07/01/Windows-下PHP开发环境LNMP搭建流程.html>
+
+VirtualBox 搭建Centos7.8：<https://ibaiyang.github.io/blog/linux/2022/02/15/VirtualBox-搭建Centos7.8.html>
+
+Vagrant 使用命令：<https://ibaiyang.github.io/blog/linux/2021/08/21/Vagrant-使用.html>
+
+vagrant异常处理：<https://ibaiyang.github.io/blog/linux/2017/12/28/vagrant异常处理.html>
+
+vagrant 运行速度越来越慢解决方法：<https://ibaiyang.github.io/blog/linux/2018/06/06/vagrant-运行速度越来越慢解决方法.html>
+
+vagrant js/css文件缓存及乱码解决：<https://ibaiyang.github.io/blog/linux/2018/01/30/vagrant-js,css文件缓存及乱码解决.html>
+
+两次安装失败的记录，也可以参考下：
+
+<https://ibaiyang.github.io/blog/linux/2021/08/22/Vagrant-Centos7.8搭建.html>
+
+<https://ibaiyang.github.io/blog/linux/2021/08/22/Vagrant-Centos8.3搭建.html>
+
+
+
 
 ## ln无法创建软连接解决方案
 
