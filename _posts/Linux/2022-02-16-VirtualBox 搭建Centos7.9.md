@@ -2221,6 +2221,25 @@ forward-port: 端口转发
 rule: 自定义规则
 ```
 
+查看端口的开放情况：
+```
+> sudo firewall-cmd --list-all
+
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+```
+
 命令：
 ```
 # 查看是否开启

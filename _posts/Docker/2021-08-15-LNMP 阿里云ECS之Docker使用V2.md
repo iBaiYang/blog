@@ -640,6 +640,50 @@ Aug 16 15:07:06 iZuf68667dvb6i22hgkrshZ systemd[1]: Stopped firewalld - dynamic 
 Hint: Some lines were ellipsized, use -l to show in full.
 ```
 
+**开放指定端口**
+
+开放端口：
+```
+> firewall-cmd --zone=public --add-port=3306/tcp --permanent
+```
+zone：作用域；add-port=1935/tcp：添加端口，格式为 端口/通讯协议；permanent：永久生效，没有此参数重启后失效
+
+重新加载防火墙：
+```
+> firewall-cmd --reload
+> 
+> systemctl restart firewalld.service # 或者重启防火墙
+```
+
+查看已开启的端口：
+```
+> firewall-cmd --list-ports
+```
+
+关闭指定端口：
+```
+> firewall-cmd --zone=public --remove-port=8080/tcp --permanent
+```
+
+查看端口的开放情况：
+```
+> sudo firewall-cmd --list-all
+
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+```
+
 **授权**
 
 进入mysql容器：
@@ -1550,7 +1594,7 @@ server {
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     #
     location ~ \.php$ {
-        root           /var/www/html/test;
+        root           /usr/share/nginx/html/test;
         fastcgi_pass   php:9000;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
