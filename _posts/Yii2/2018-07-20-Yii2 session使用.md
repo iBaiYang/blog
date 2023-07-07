@@ -7,6 +7,54 @@ meta: session使用
 * content
 {:toc}
 
+## 引言
+
+HTTP协议是无状态的，服务器无法区分哪些请求来自哪些客户端，或者客户端是处于连接状态还是断开状态，所以需要标识。
+
+什么是Cookie？Cookie是网站区分不同访问者的身份而存储在客户端上的数据，是一个文本文件。
+Cookie是某些网站为了辨别用户身份、进行 Session 跟踪而储存在用户本地终端上的数据（通常经过加密）。
+
+什么是Session？在用户访问网页与服务器断开连接的一个时间段内，
+Session可以跟踪用户的状态(如是否已登录，这样用户切换网页后也可以知道该用户需不需要登录)。
+Session是一种会话，存储在服务端，它记录会话信息，使得客户端与服务端的会话得以保持。
+
+Session和Cookie区别是什么？
+1. Cookie是通过扩展http协议实现的，而Session是一种类似散列表的形式保存信息；
+2. Cookie是保存在【客户端】的，而Session是保存在【服务端】的。
+
+一、Cookie 是通过扩展HTTP协议实现的
+
+Cookie 主要包括：名字、值、过期时间、路径和域。
+
+如果Cookie不设置生命周期，则以浏览器关闭而关闭，这种Cookie一般存储在内存而不是硬盘上。
+若设置了生命周期则相反，不随浏览器的关闭而消失，这些Cookie仍然有效直到超过设定的过期时间。
+
+二、Session 一种类似散列表的形式保存信息
+
+当程序需要为某个客户端的请求创建一个Session时，服务器首先检查这个客户端的请求里是否已包含了一个Session标识（称为session_id）。
+
+如果已包含则说明以前已经为此客户端创建过Session，服务器就按照session_id把这个Session检索出来使用（检索不到，会新建一个），
+如果客户端请求不包含session_id，则为此客户端创建一个Session并且生成一个与此Session相关联的session_id，
+session_id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，**这个session_id将在本次响应中返回给客户端保存**。
+
+保存这个session_id的方式可以采用Cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。
+一般这个Cookie的名字都是类似于SEEESIONID。
+
+但Cookie可以被人为的禁止，则必须有其他机制以便在Cookie被禁止时仍然**能够把session_id传递回服务器**。
+
+优缺点：
+1. Cookie数据存放在客户的浏览器上，Session数据放在服务器上。
+2. Cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗，考虑到安全应当使用Session（如果认为自己的加密足够复杂，可以不用Session，不过不建议）。
+3. Session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用COOKIE。
+4. 单个Cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个Cookie。
+5. 建议：将登陆信息等重要信息存放为SESSION；其他信息如果需要保留，可以放在COOKIE中
+
+Cookie伪造：
+1、破解自己的Cookie获取加密规则，然后伪造访问站点
+2、获取他人Cookie进行站点访问
+
+关于网站安全，参阅 <https://www.163.com/dy/article/GC4RPJ000531PCHX.html>
+
 ## 正文
 
 session使用举例：
@@ -53,6 +101,27 @@ $session->open();
     'timeout' => 86400,
 ],
 ```
+
+## 完整示例
+
+Yii2项目中配置如下：
+```
+'session' => [
+    'class' => 'yii\web\Session',
+    'name' => 'demo-backend',
+],
+'user' => [
+    'identityClass' => 'backend\models\User',
+    'enableAutoLogin' => true,
+    'identityCookie' => ['name' => '_identity-demo', 'httpOnly' => true],
+],
+```
+
+登录后，再请求时：
+
+![]({{site.baseurl}}/images/20230707/20230707163642.png)
+
+![]({{site.baseurl}}/images/20230707/20230707163706.png)
 
 ## 源码
 
