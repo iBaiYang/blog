@@ -7,7 +7,7 @@ meta: MySQL only_full_group_by错误处理
 * content
 {:toc}
 
-### 正文
+## 正文
 
 在MySQL的使用中，如select查询和create创建表时，可能会报错：
 ```
@@ -65,8 +65,22 @@ set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISI
 set sql_mode = '';
 ```
 
+## 拓展
+
+有时 SELECT 查询时会同时用到 GROUP BY 和 ORDER BY，使用不当就会报错，举一个正确的例子，理解一下。
+
+一个年级有多个班，每个班有多个学生，每个学生都有自己考试的成绩，如何读出每个班中成绩分数最大的学生。
+
+正确的写法：`select max(chengji) from record group by ban order by max(chengji);`
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 
 
