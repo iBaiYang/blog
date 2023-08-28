@@ -113,7 +113,7 @@ config.vm.box = "centos67"
 
 ![]({{site.baseurl}}/images/20200329/20200329191547.jpg)
 
-### 安装PHP：
+### 安装PHP
 
 到软件资源目录下： 
 > cd /usr/local/src/
