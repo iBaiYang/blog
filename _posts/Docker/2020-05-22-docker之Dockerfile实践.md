@@ -357,6 +357,40 @@ Total reclaimed space: 0 B
 [root@localhost ~]#
 ```
 
+### Compose使用
+
+在Dockerfile同一文件夹下新建 docker-compose.yml 文件，写入：
+```
+version: '3'
+services:
+  nginx2:                                # 服务名为'nginx2'
+    container_name: nginx2               # 容器名为'nginx2'
+    restart: unless-stopped              # 指定容器退出后的重启策略为始终重启，但是不考虑在Docker守护进程启动时就已经停止了的容器
+    volumes:                            # 数据卷挂载路径设置,将本机目录映射到容器目录
+      - "./nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
+      - "./nginx/html:/usr/share/nginx/html"
+      - "./nginx/log:/var/log/nginx"
+    environment:                        # 设置环境变量,相当于docker run命令中的-e
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:                              # 映射端口
+      - "80:80"
+```
+
+`./nginx/conf/nginx.conf` 等文件及文件夹是Dockerfile同一目录下的文件夹nginx中的内容。
+
+启动：
+> docker-compose up
+
+查看 `docker images` 多了一个镜像。
+
+查看 `docker ps` 运行的容器，多了一个 nginx2 的容器。
+
+容器停止运行后，查看镜像和容器，上面生成的两个都在。
+
+再次`docker-compose up`启动时少了好多初始化操作。
+
 ### 总结
 
 Dockerfile用于本地生成镜像，像Nginx这类软件，定制化程度很低，不需要自己生成，直接用docker官方库的就可以：
@@ -431,6 +465,18 @@ services:
     restart: always
     command: nginx -g 'daemon off;'
 ```
+
+docker-compose.yml 文件 `version: '3.0'` 是指定本 yml 依从的 compose 哪个版本制定的；
+services 下的 nginx 是自定义服务名；
+container_name 是指定自定义容器名称，而不是生成的默认名称；
+`context: .` 是 Dockerfile 上下文路径；
+args 中的 NGINX_VER 是 Dockerfile 文件的 `${NGINX_VER}` 变量；
+ports 是容器和主机绑定的端口；
+volumes 是将主机的数据卷或着文件挂载到容器里；
+`restart: always` 容器总是重新启动；
+`command: nginx -g 'daemon off;'` 覆盖容器启动的默认命令。
+
+
 
 ### PHP
 

@@ -45,10 +45,30 @@ $ docker-compose version
 cker-compose version 1.24.1, build 4667896b
 ```
 
+如果报错：
+```
+/usr/local/bin/docker-compose:行1: html: 没有那个文件或目录
+/usr/local/bin/docker-compose:行2: 未预期的符号 `<' 附近有语法错误
+'usr/local/bin/docker-compose:行2: `<head><title>503 Service Temporarily Unavailable</title></head>
+```
+
+查看下载的文件内容：
+```
+[root@localhost ~]# cat /usr/local/bin/docker-compose
+<html>
+<head><title>503 Service Temporarily Unavailable</title></head>
+<body>
+<center><h1>503 Service Temporarily Unavailable</h1></center>
+</body>
+</html>
+[root@localhost 23082901]#
+```
+
+网络下载不了，本地下载好后，通过SSH等方法移动到服务器吧。
+
 ### 使用
 
-
-
+这里可以参考下 <https://gitee.com/zhengqingya/docker-compose/>
 
 ### 示例
 
