@@ -76,7 +76,7 @@ Docker在启动时会开启一个虚拟网桥设备docker0，默认的地址为1
 
 ## Nginx镜像管理
 
-**新建Dockerfile**
+### 新建Dockerfile
 
 在一个文件夹下（如：/home/test/nginx），新建Dockerfile文件：
 
@@ -140,7 +140,7 @@ ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]
 ```
 
-**生成镜像**
+### 生成镜像
 
 然后生成镜像：
 ```
@@ -164,7 +164,7 @@ centos7_nginx1.18            v1.0                60f1a3c49c5a        6 minutes a
 [root@localhost ~]#
 ```
 
-**启动容器**
+### 启动容器
 
 启动一个容器：
 ```
@@ -225,7 +225,7 @@ Commercial support is available at
 
 也可以打开浏览器，访问虚拟机IP，查看页面内容。
 
-**提交仓库**
+### 提交仓库
 
 我们可以把上面生成的镜像，提交到Docker官方的个人仓库中，以备日后直接使用。
 
@@ -271,10 +271,14 @@ v1.0: digest: sha256:992901a9aea825b81a0bac0878f42b49ba8821968efdfede687d54b3c63
 下次下载时，直接使用：
 > docker pull ibaiyang/centos7_nginx1.18:v1.0
 
-还有一点需要说明，docker 也有类似 git 的版本管理，每次修改后生成的镜像没问题时，
-可以用`docker commit` 命令打个新的Tag标签，然后再推送到个人仓库。
+还有一点需要说明，docker 也有类似 git 的版本管理功能，每次在运行的容器内修改后，确认没有问题时，
+可以用`docker commit` 命令打个新的Tag标签，生成一个新的镜像，然后再推送到个人仓库。
 
-**移除容器**
+```
+docker commit <容器ID或名称> <新镜像名称:标签>
+```
+
+### 移除容器
 
 先停止容器运行：
 > docker stop nginx
@@ -298,7 +302,7 @@ CONTAINER ID        IMAGE          COMMAND       CREATED     STATUS      PORTS  
 [root@localhost ~]# 
 ```
 
-**删除镜像**
+### 删除镜像
 
 删除镜像，执行命令：
 > docker rmi centos7_nginx1.18:v1.0
@@ -339,7 +343,7 @@ REPOSITORY                   TAG                 IMAGE ID            CREATED    
 [root@localhost ~]# 
 ```
 
-**清理镜像**
+### 清理镜像
 
 在使用 Docker 一段时间后，系统一般都会残存一些临时的、没有被使用的镜像文件，可以通过以下命令进行清理：
 > docker image prune
@@ -353,7 +357,7 @@ Total reclaimed space: 0 B
 [root@localhost ~]#
 ```
 
-**总结**
+### 总结
 
 Dockerfile用于本地生成镜像，像Nginx这类软件，定制化程度很低，不需要自己生成，直接用docker官方库的就可以：
 > docker pull nginx
@@ -568,8 +572,8 @@ or they can omit the executable, in which case you must specify an ENTRYPOINT in
 明白了CMD命令的主要用途。下面就看看具体用法。
 
 总共有三种用法：
-1. `CMD [“executable”,“param1”,“param2”]` (exec form, this is the preferred form)
-2. `CMD [“param1”,“param2”]` (as default parameters to ENTRYPOINT)
+1. `CMD ["executable","param1","param2"]` (exec form, this is the preferred form)
+2. `CMD ["param1","param2"]` (as default parameters to ENTRYPOINT)
 3. `CMD command param1 param2` (shell form)
 
 因为还没有讲 ENTRYPOINT，所以先不看用法2。 
@@ -580,7 +584,7 @@ or they can omit the executable, in which case you must specify an ENTRYPOINT in
 ```
 # vi Dockerfile
 FROM ubuntu:18.04
-CMD echo “hello cmd!”
+CMD echo "hello cmd!"
 #
 # docker build -t hello .
 # docker run hello
@@ -592,7 +596,7 @@ hello cmd!
 ```
 # vi Dockerfile
 FROM ubuntu:18.04
-CMD ["/bin/bash", “-c”, “echo ‘hello2 cmd!’”]
+CMD ["/bin/bash", "-c", "echo ‘hello2 cmd!’"]
 #
 # docker build -t hello2 .
 # docker run hello2
@@ -618,7 +622,7 @@ An ENTRYPOINT allows you to configure a container that will run as an executable
 也就是说entrypoint才是正统地用于定义容器启动以后的执行体的，其实我们从名字也可以理解，这个是容器的“入口”。
 
 有两种用法：
-1. `ENTRYPOINT [“executable”, “param1”, “param2”]` (exec form, preferred)
+1. `ENTRYPOINT ["executable", "param1", "param2"]` (exec form, preferred)
 2. `ENTRYPOINT command param1 param2` (shell form)
 
 命令行和shell。
@@ -632,8 +636,8 @@ An ENTRYPOINT allows you to configure a container that will run as an executable
 ```
 # vi Dockerfile
 FROM ubuntu:18.04
-CMD [“p in cmd”]
-ENTRYPOINT [“echo”]
+CMD ["p in cmd"]
+ENTRYPOINT ["echo"]
 
 #
 # docker build -t hello3 .
@@ -659,7 +663,7 @@ abcdefg
 ```
 # vi Dockerfile
 FROM ubuntu:18.04
-CMD [“p in cmd”]
+CMD ["p in cmd"]
 ENTRYPOINT echo
 
 #
@@ -703,7 +707,7 @@ CMD 和 ENTRYPOINT 指令都支持 exec 模式和 shell 模式的写法，所以
 使用 exec 模式时，容器中的任务进程就是容器内的 1 号进程，看下面的例子：
 ```
 FROM ubuntu:18.04
-CMD [ “top” ]
+CMD [ "top" ]
 ```
 
 把上面的代码保存到 test1 目录的 Dockerfile 中，然后进入 test1 目录构建镜像并启动一个容器：
@@ -727,7 +731,7 @@ exec 模式是建议的使用模式，因为当运行任务的进程作为容器
 exec 模式的特点是不会通过 shell 执行相关的命令，所以像 $HOME 这样的环境变量是取不到的：
 ```
 FROM ubuntu:18.04
-CMD [ “echo”, “$HOME” ]
+CMD [ "echo", "$HOME" ]
 ```
 
 把上面的代码保存到 test1 目录的 Dockerfile 中，然后进入 test1 目录构建镜像并启动一个容器：
@@ -740,7 +744,7 @@ $HOME
 通过 exec 模式执行 shell 可以获得环境变量：
 ```
 FROM ubuntu:18.04
-CMD [ “sh”, “-c”, “echo $HOME” ]
+CMD [ "sh", "-c", "echo $HOME" ]
 ```
 
 把上面的代码保存到 test1 目录的 Dockerfile 中，然后进入 test1 目录构建镜像并启动一个容器：
@@ -754,7 +758,7 @@ $ docker run --rm test1
 
 **shell 模式**
 
-使用 shell 模式时，docker 会以 /bin/sh -c “task command” 的方式执行任务命令。也就是说容器中的 1 号进程不是任务进程而是 bash 进程，看下面的例子：
+使用 shell 模式时，docker 会以 `/bin/sh -c "task command"` 的方式执行任务命令。也就是说容器中的 1 号进程不是任务进程而是 bash 进程，看下面的例子：
 ```
 FROM ubuntu:18.04
 CMD top
@@ -783,17 +787,17 @@ CMD 指令的目的是：为容器提供默认的执行命令。
 
 CMD 指令有三种使用方式，其中的一种是为 ENTRYPOINT 提供默认的参数：
 
-`CMD [“param1”,“param2”]`
+`CMD ["param1","param2"]`
 
 另外两种使用方式分别是 exec 模式和 shell 模式：
-* `CMD [“executable”,“param1”,“param2”]` // 这是 exec 模式的写法，注意需要使用双引号。
+* `CMD ["executable","param1","param2"]` // 这是 exec 模式的写法，注意需要使用双引号。
 * `CMD command param1 param2` // 这是 shell 模式的写法。
 
 注意命令行参数可以覆盖 CMD 指令的设置，但是只能是重写，却不能给 CMD 中的命令通过命令行传递参数。
 一般的镜像都会提供容器启动时的默认命令，但是有些场景中用户并不想执行默认的命令。用户可以通过命令行参数的方式覆盖 CMD 指令提供的默认命令。比如通过下面命令创建的镜像：
 ```
 FROM ubuntu:18.04
-CMD [ “top” ]
+CMD [ "top" ]
 ```
 
 在启动容器时我们通过命令行指定参数 ps aux 覆盖默认的 top 命令：
@@ -819,7 +823,7 @@ root 1 0.0 0.0 25940 1544 ? Rs 03:21 0:00 ps aux
 ENTRYPOINT 指令的目的也是为容器指定默认执行的任务。
 
 ENTRYPOINT 指令有两种使用方式，就是我们前面介绍的 exec 模式和 shell 模式：
-* `ENTRYPOINT [“executable”, “param1”, “param2”]` // 这是 exec 模式的写法，注意需要使用双引号。
+* `ENTRYPOINT ["executable", "param1", "param2"]` // 这是 exec 模式的写法，注意需要使用双引号。
 * `ENTRYPOINT command param1 param2` // 这是 shell 模式的写法。
 
 exec 模式和 shell 模式的基本用法和 CMD 指令是一样的，下面我们介绍一些比较特殊的用法。
@@ -827,7 +831,7 @@ exec 模式和 shell 模式的基本用法和 CMD 指令是一样的，下面我
 指定 ENTRYPOINT 指令为 exec 模式时，命令行上指定的参数会作为参数添加到 ENTRYPOINT 指定命令的参数列表中。用下面的代码构建镜像 test1：
 ```
 FROM ubuntu:18.04
-ENTRYPOINT [ “top”, “-b” ]
+ENTRYPOINT [ "top", "-b" ]
 ```
 
 运行下面的命令：
@@ -849,8 +853,8 @@ PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND
 由 CMD 指令指定默认的可选参数：
 ```
 FROM ubuntu
-ENTRYPOINT [ “top”, “-b” ]
-CMD [ “-c” ]
+ENTRYPOINT [ "top", "-b" ]
+CMD [ "-c" ]
 ```
 
 使用这段代码构建镜像 test2 并不带命令行参数启动容器：
