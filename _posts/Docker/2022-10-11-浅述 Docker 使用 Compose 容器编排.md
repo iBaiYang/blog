@@ -68,8 +68,6 @@ cker-compose version 1.24.1, build 4667896b
 
 ### 使用
 
-这里可以参考下 <https://gitee.com/zhengqingya/docker-compose/>
-
 ### 示例
 
 #### PHP
@@ -192,6 +190,37 @@ services:
 > docker-compose up -d
 
 ### yml 配置指令参考
+
+
+## 其他示例
+
+这里可以参考下 <https://gitee.com/zhengqingya/docker-compose/>
+
+### nginx
+
+如 nginx容器 docker-compose 生成，看下 docker-compose.yml 文件内容：
+```
+version: '3'
+services:
+  nginx2:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/nginx:1.21.1       # 镜像`nginx:1.21.1`
+    container_name: nginx2               # 容器名为'nginx2'
+    restart: unless-stopped              # 指定容器退出后的重启策略为始终重启，但是不考虑在Docker守护进程启动时就已经停止了的容器
+    volumes:                            # 数据卷挂载路径设置,将本机目录映射到容器目录
+      - "./nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
+      - "./nginx/html:/usr/share/nginx/html"
+      - "./nginx/log:/var/log/nginx"
+    environment:                        # 设置环境变量,相当于docker run命令中的-e
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:                              # 映射端口
+      - "80:80"
+```
+
+可以直接从 docker镜像image 生成，不一定需要在本地写 Dockerfile 文件。
+
+`./nginx/conf/nginx.conf` 等文件及文件夹是docker-compose.yml同一目录下的文件夹nginx中的内容。
 
 
 ## 收录
