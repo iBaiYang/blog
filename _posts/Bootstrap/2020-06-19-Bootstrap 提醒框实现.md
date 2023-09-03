@@ -7,12 +7,12 @@ meta: tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹�
 * content
 {:toc}
 
-### 正文
+## 正文
 
 tooltip、popover都可以实现提醒框，tooltip鼠标划过及时弹出，popover鼠标点击弹出。
 这两个点击后提醒框都会持久留在页面，除非再次点击才会消失。
 
-#### Tooltip
+### Tooltip
 
 ![]({{site.baseurl}}/images/20210112/20210112144100.png)
 
@@ -45,7 +45,7 @@ $(function () { $("[data-toggle='tooltip']").tooltip(); });
 
 更多完整功能看一下 [Bootstrap 提示工具（Tooltip）插件](https://www.runoob.com/bootstrap/bootstrap-tooltip-plugin.html) 。
 
-#### Popover
+### Popover
 
 ![]({{site.baseurl}}/images/20210112/20210112144123.png)
 
@@ -84,7 +84,7 @@ $(function () { $("[data-toggle='popover']").popover(); });
 
 更多完整功能看一下 [Bootstrap 弹出框（Popover）插件](https://www.runoob.com/bootstrap/bootstrap-popover-plugin.html) 。
 
-### 参考资料 
+## 参考资料 
 
 Bootstrap 提示工具（Tooltip）插件 <https://www.runoob.com/bootstrap/bootstrap-tooltip-plugin.html>
 

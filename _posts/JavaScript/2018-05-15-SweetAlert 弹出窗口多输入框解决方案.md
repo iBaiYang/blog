@@ -8,9 +8,9 @@ meta: SweetAlert的示例中有单个输入框的例子，但是实际开发中�
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### 单输入框
+### 单输入框
 
 SweetAlert的示例中有单个输入框的例子：
 
@@ -39,7 +39,7 @@ function(inputValue){
 });		
 ```
 
-#### 多输入框
+### 多输入框
 
 但是实际开发中会遇到多个输入框的情况：
 
@@ -108,7 +108,7 @@ function class_del_error_show( msg ) {
 如果输入区域要操作的内容比较多，可以考虑 Bootstrap 的[模态框](https://www.runoob.com/bootstrap/bootstrap-modal-plugin.html)（Modal）插件。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 SweetAlert 中文文档 <http://mishengqiang.com/sweetalert/>
 

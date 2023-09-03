@@ -7,7 +7,7 @@ meta: Bootstrap select插件使用
 * content
 {:toc}
 
-### 正文
+## 正文
 
 ![]({{site.baseurl}}/images/20210112/20210112145341.png)
 
@@ -38,7 +38,7 @@ Bootstrap-select包下载后引入：
 更多用法，需要看着文档多用。
 
 <br/><br/><br/><br/><br/>
-### 参考资料 
+## 参考资料 
 
 Bootstrap-select 中文网 <https://www.bootstrapselect.cn/>
 

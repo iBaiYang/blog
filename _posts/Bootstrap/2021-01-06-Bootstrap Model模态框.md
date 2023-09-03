@@ -7,7 +7,7 @@ meta: Bootstrap Model模态框
 * content
 {:toc}
 
-### 正文
+## 正文
 
 引入Bootstrap的js、css文件，使用：
 ```javascript
@@ -100,6 +100,6 @@ $(document).on('click', 'a[rel=remind_plan_edit]', function () {
 ```
 
 <br/><br/><br/><br/><br/>
-### 参考资料 
+## 参考资料 
 
 Bootstrap4 模态框 <https://www.runoob.com/bootstrap4/bootstrap4-modal.html>
