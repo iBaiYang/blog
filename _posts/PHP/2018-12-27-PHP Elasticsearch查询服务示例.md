@@ -7,7 +7,7 @@ meta: 一般我们可以通过kibana查看Elasticsearch数据，但如果要在P
 * content
 {:toc}
 
-### 正文
+## 正文
 
 Elasticsearch中有个元数据的概念：元数据（Metadata），又称中介数据、中继数据，为描述数据的数据（data about data），
 主要是描述数据属性（property）的信息，用来支持如指示存储位置、历史数据、资源查找、文件记录等功能；元数据算是一种电子式目录，
@@ -42,7 +42,7 @@ Elasticsearch中的元数据有：
 
 1. 代表一个document，是一个json对象（{json}）,包含一个实例对象。
 
-#### 引导
+### 引导
 
 在PHP代码中查找Elasticsearch数据，我们可以用已经写好的vendor类库——elasticsearch/elasticsearch。
 首先需要知道安装的Elasticsearch版本，然后选择对应elasticsearch/elasticsearch。
@@ -71,7 +71,7 @@ $client = ClientBuilder::create()->build();
 
 在elasticsearch-php中，几乎所有东西都是由关联数组配置的。 REST端，文档和可选参数，一切都是一个关联数组。
 
-##### 创建index索引
+#### 创建index索引
 
 ```
 $params = [
@@ -99,11 +99,11 @@ Array
 通过上面这些操作可以看出，elasticsearch-php这个拓展中，可以实现对文档及索引的增删改查，我们实际情况下，新增文档都是通过kafka 、 logstash中转实现的，
 项目中不直接写入文档。一般在项目中都是搜索文档。
 
-###### mapping
+##### mapping
 
 
 
-##### 删除index索引
+#### 删除index索引
 
 ```
 $deleteParams = [
@@ -121,9 +121,9 @@ Array
 )
 ```
 
-##### 写入文档
+#### 写入文档
 
-###### 导入单条数据
+##### 导入单条数据
 
 要为文档建立索引，我们需要指定三项信息：index, id 和 body文档主体：
 ```
@@ -158,11 +158,11 @@ Array
 )
 ```
 
-###### 批量导入数据
+##### 批量导入数据
 
 bulk
 
-##### 获取文档
+#### 获取文档
 
 ```
 $params = [
@@ -212,7 +212,7 @@ Array
 )
 ```
 
-##### 搜索文档
+#### 搜索文档
 
 搜索是Elasticsearch的标志，因此让我们执行搜索。 
 
@@ -275,7 +275,7 @@ Array
 
 took是耗时，单位是ms。 hits.total 表示有多少个 Document。
 
-##### 删除文档
+#### 删除文档
 
 ```
 $params = [
@@ -308,7 +308,7 @@ Array
 )
 ```
 
-#### 具体使用
+### 具体使用
 
 读取代码中：
 ```
@@ -411,7 +411,7 @@ $type = 'client';
 
 ![]({{site.baseurl}}/images/20181227/20181227130504.jpg)
 
-#### 合并语句查询
+### 合并语句查询
 
 我们一般多用合并语句查询，这些语句可以是如下形式：
 
@@ -461,7 +461,7 @@ $type = 'client';
 
 你要理解到，一条复合语句可以将多条语句 — 叶子语句和其它复合语句 — 合并成一个单一的查询语句。
 
-#### 查询关键字
+### 查询关键字
 
 match_all 查询：简单的 匹配所有文档
 
@@ -512,7 +512,7 @@ exists 查询、missing 查询：用于查找那些指定字段中有值 (exists
 }
 ```
 
-#### 组合多查询
+### 组合多查询
 现实的查询需求从来都没有那么简单；它们需要在多个字段上查询多种多样的文本，
 并且根据一系列的标准来过滤。为了构建类似的高级查询，你需要一种能够将多查询组合成单一查询的查询方法。
 
@@ -628,7 +628,7 @@ wildcard模糊查询：
 }
 ```
 
-#### 聚合分析
+### 聚合分析
 
 aggs
 
@@ -695,9 +695,9 @@ Es支持的聚合分析的语法如：
 ]
 ```
 
-### 后记
+## 后记
 
-#### 用户认证
+### 用户认证
 
 在一次项目对接中用到了ES，连接时报了错，用curl请求报错是一样的：
 ```
@@ -708,7 +708,7 @@ Es支持的聚合分析的语法如：
 "header":{"WWW-Authenticate":"Basic realm=\"security\" charset=\"UTF-8\""}},"status":401}
 ```
 
-查询后，说是Elasticsearch安装x-pack插件后,无法正常按照之前的参数来进行CRUL操作，因为安装的x-pack的插件中新增了Shield的安全机制。 
+查询后，说是Elasticsearch安装x-pack插件后，无法正常按照之前的参数来进行CRUL操作，因为安装的x-pack的插件中新增了Shield的安全机制。 
 
 解决方法：在使用crul命令的时候加入两个参数：`-u username:password` ，格式如下：
 ```
@@ -736,8 +736,11 @@ $hosts = [
 ];
 ```
 
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 elastic/elasticsearch-php <https://github.com/elastic/elasticsearch-php>
 

@@ -7,11 +7,11 @@ meta: linux 安装Elasticsearch
 * content
 {:toc}
 
-### 正文
+## 正文
 
 你可以选择手动编译安装，或者apt方式安装。
 
-#### 手动安装
+## 手动安装
 
 在安装目录下下载包：
 
@@ -107,11 +107,11 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee 
 
 但是发现apt安装总是失败。
 
-#### 安装IK分词器
+### 安装IK分词器
 
 > sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.6.2/elasticsearch-analysis-ik-7.6.2.zip
 
-#### 安装head插件
+### 安装head插件
 
 > sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install https://github.com/mobz/elasticsearch-head/archive/v5.0.0.zip
 
@@ -136,7 +136,7 @@ npm run start
 
 然后打开 http://localhost:9100/ 网址看一下。
 
-#### 安装Kibana
+### 安装Kibana
 
 安装前的设置与Es相同，上面已经设置过一遍，这里可以直接执行：
 
@@ -178,7 +178,7 @@ http://127.0.0.1:5601/app/kibana#/home/tutorial_directory/sampleData
 
 建议安装 Version: 5.2.2 版本，越新版越难用。
 
-#### 具体使用
+### 具体使用
 
 Elasticsearch中有个元数据的概念：元数据（Metadata），又称中介数据、中继数据，为描述数据的数据（data about data），
 主要是描述数据属性（property）的信息，用来支持如指示存储位置、历史数据、资源查找、文件记录等功能；元数据算是一种电子式目录，
@@ -214,7 +214,7 @@ Elasticsearch中的元数据有：
 1. 代表一个document，是一个json对象（{json}）,包含一个实例对象。
 
 
-##### 命令行下使用
+#### 命令行下使用
 
 命令行下curl请求：
 ```
@@ -243,7 +243,7 @@ curl -XPUT '127.0.0.1:9200/demo_logs_dev_2020.04.03/2/AXE_baZOxB5-91nMXmB1?prett
 }
 ```
 
-##### Kibana下使用
+#### Kibana下使用
 
 **查看集群的健康状况**
 
@@ -589,14 +589,23 @@ Kibana页面创建Index patterns：
 
 ![]({{site.baseurl}}/images/20200403/20200403183656.png)
 
-##### Postman下使用
+#### Postman下使用
 
 **查看集群的健康状况**
 
 GET HTTP://IP:PORT/_cat/health?v
 
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 Install Elasticsearch with Debian Package <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html#deb-key>
 
