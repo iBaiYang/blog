@@ -7,11 +7,11 @@ meta: RabbitMQ相关
 * content
 {:toc}
 
-### 正文
+## 正文
 
 ![]({{site.baseurl}}/images/20191115/20191115175726.png)
 
-#### 简单介绍
+### 简单介绍
 
 **什么叫消息队列?**
 
@@ -80,9 +80,9 @@ RabbitMQ 提供了一个易用的用户界面，使得用户可以监控和管�
 RabbitMQ 提供了许多插件，来从多方面进行扩展，也可以编写自己的插件。
 
 
-#### 引入举例
+### 引入举例
 
-##### 生产者
+#### 生产者
 
 先看一个生产者的例子：
 ```
@@ -265,7 +265,8 @@ public function setType($exchange_type) { }
 public function setFlags($flags) { }
 ```
 
-交换机模式有 AMQP_DURABLE, AMQP_PASSIVE 两种，表示了如果MQ服务器重启,这个交换机是否要重新建立(如果设置为AMQP_DURABLE，则重启mq，该交换机还是存在，相当于持久化。)
+交换机模式有 AMQP_DURABLE, AMQP_PASSIVE 两种，表示了如果MQ服务器重启，这个交换机是否要重新建立(如果设置为AMQP_DURABLE，
+则重启mq，该交换机还是存在，相当于持久化。)
 
 AMQP_DURABLE，Durable exchanges and queues will survive a broker restart, complete with all of their data. 
 持久的交换和队列将在代理重新启动后幸存下来，并保留所有数据。
@@ -455,7 +456,7 @@ $attributes = [
 消费者那面连接到borker服务器，创建队列实例，声明队列名queue_name，并声明与Exchange交换机bind绑定的具体routing关键字。
 然后生产者这面通过Exchange交换机推送到指定routing关键字的信息就会被交换到指定的目标Queue队列中。
 
-##### 消费者
+#### 消费者
 
 再看消费者的例子：
 ```
@@ -870,7 +871,7 @@ public function ack($delivery_tag, $flags = AMQP_NOPARAM) { }
 
 在没有 AMQP_AUTOACK 标志时，这个方法可以通过调用 `AMQPQueue::get()` 或 `AMQPQueue::consume()` 确认检索到的信息。
 
-#### AMQP messaging 中的基本概念
+### AMQP messaging 中的基本概念
 
 ![]({{site.baseurl}}/images/20190418/20190418181901.jpg)
 
@@ -912,7 +913,7 @@ Binding信息被保存到exchange中的查询表中，用于message的分发依�
 
 Consumer: 消息的消费者，表示一个从消息队列中取得消息的客户端应用程序。
 
-#### 典型的“生产／消费”消息模型
+### 典型的“生产／消费”消息模型
 
 ![]({{site.baseurl}}/images/20190418/20190418182644.jpg)
 
@@ -921,7 +922,7 @@ Consumer: 消息的消费者，表示一个从消息队列中取得消息的客�
 Exchange分发消息，根据类型 binding 的不同分发策略有区别。消息最后来到Queue中，等待消费者取走。
 生产者把消息发布到 Exchange 上，消息最终到达队列并被消费者接收，而 Binding 决定交换器的消息应该发送到那个队列。
 
-#### Exchange类型
+### Exchange类型
 
 Exchange有多种类型，最常用的是Direct／Topic／Fanout三种类型。
 
@@ -948,7 +949,7 @@ Fanout (multicast)
 每个发到Fanout类型Exchange的message都会分到所有绑定的queue上去。
 
 
-#### 生产者封装类
+### 生产者封装类
 
 一般我们都会对使用方法进行封装，看一下Yii2中的封装类：
 
@@ -1133,7 +1134,7 @@ Queue::produce(['indexname' => 'weberror', 'type' => 'adminWeb', 'error' => 3030
 Queue::produce(['id' => 101], 'async', 'ticket');
 ```
 
-#### 消费者封装类
+### 消费者封装类
 
 具体看github项目代码： <https://github.com/peachpear/peach-rabbitmq>
 
@@ -1216,7 +1217,7 @@ public function run($envelope, $queue)
 }
 ```
 
-#### 延迟队列声明
+### 延迟队列声明
 
 延迟队列并不消费，只是交换器上延迟绑定的声明，我们需要声明这个延迟队列过了延迟时长应该推送到哪个常规队列中，所以我们只跑一次脚本就可以，不需要常驻进程：
 ```
@@ -1277,14 +1278,23 @@ $this->bindSetting = [
 ];
 ```
 
-#### 其他说明
+### 其他说明
 
 命令行运行消费者，需要常驻进程，就需要守护进程程序，PHP开发守护进程涉及到 pcntl_fork()、posix_setsid() 等函数。
 队列消费者连接RabbitMQ使用的是TCP长连接，可能会连接断开，导致消费者无法消费。可以使用python开发的守护进程的小工具supervisor实现，
 消费者进程异常后，还会重新拉起。
 
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 RabbitMQ官网 <https://www.rabbitmq.com/>
 
