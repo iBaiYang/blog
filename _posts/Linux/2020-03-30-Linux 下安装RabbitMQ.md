@@ -7,9 +7,9 @@ meta: 记录一下 Linux 下安装RabbitMQ流程
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### 安装Erlang环境
+### 安装Erlang环境
 
 安装之前要装一些必要的库:
 
@@ -41,7 +41,7 @@ meta: 记录一下 Linux 下安装RabbitMQ流程
 
 ![]({{site.baseurl}}/images/20200330/20200330184710.png)
 
-#### 安装RabbitMQ
+### 安装RabbitMQ
 
 > sudo apt-get install rabbitmq-server
 
@@ -51,7 +51,7 @@ meta: 记录一下 Linux 下安装RabbitMQ流程
 
 ![]({{site.baseurl}}/images/20200330/20200330184756.png)
 
-#### RabbitMQ配置
+### RabbitMQ配置
 
 ![]({{site.baseurl}}/images/20200330/20200330184436.png)
 
@@ -79,7 +79,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 > service rabbitmq-server restart
 
-#### 安装插件
+### 安装插件
 
 现在还不能通过web页面管理rabbitmq，我们需要安装插件：
 
@@ -97,7 +97,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 ![]({{site.baseurl}}/images/20200330/20200330190649.png)
 
-#### 初步使用
+### 初步使用
 
 可以看到首页概览中 Exchanges 有8个，看一下详情：
 
@@ -123,7 +123,7 @@ localhost或者127.0.0.1，从外部访问需要添加上面的配置。
 
 现在可以在项目代码中使用这个用户连接RabbitMQ写入数据或消费队列数据了。
 
-#### 项目准备
+### 项目准备
 
 现在RabbitMQ队列服务器好了，但项目代码使用我们还需要做一些准备工作，不然项目投递过来的数据到不了队列中。
 
@@ -151,7 +151,7 @@ TO queue:           queue_mail
 现在我们项目中就可以给 async 的 mail 投送数据了，数据会自动保存在 queue_mail 队列中。
 
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 Rabbitmq安装教程（Deepin15.11） <https://blog.csdn.net/qq_41999455/article/details/103006950>
 
