@@ -7,9 +7,9 @@ meta: linux Logstash安装
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### 手动安装
+### 手动安装
 
 下载：
 
@@ -27,7 +27,7 @@ meta: linux Logstash安装
 
 > bin/logstash -f logstash.conf
 
-#### apt安装
+### apt安装
 
 下载安装Public Signing Key：
 ```
@@ -38,7 +38,7 @@ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add
 
 > sudo apt-get install apt-transport-https
 
-将存储库定义保存到/etc/apt/sources.list.d/elastic-7.x.list：
+将存储库定义保存到`/etc/apt/sources.list.d/elastic-7.x.list`：
 
 ```
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
@@ -50,7 +50,7 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee 
 
 apt安装这个很费劲，网速极差，还是手动下载软件包安装吧。
 
-#### 具体使用
+### 具体使用
 
 Logstash是数据源与目的库之间的中间服务，如从RabbitMQ/kafka等队列服务中获取数据，然后保存到Es库中。
 
@@ -188,8 +188,13 @@ output {
 }
 ```
 
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 Download Logstash <https://www.elastic.co/cn/downloads/logstash>
 
