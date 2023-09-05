@@ -7,7 +7,7 @@ meta: linux kafka安装
 * content
 {:toc}
 
-### 正文
+## 正文
 
 kafka是用于构建实时数据管道和流应用程序。
 
@@ -35,7 +35,7 @@ Kafka相关术语介绍：
 
 ![]({{site.baseurl}}/images/20200710/20200710111105.png)
 
-#### 源码包安装
+### 源码包安装
 
 在/usr/local/src目录下下载：
 
@@ -47,7 +47,7 @@ Kafka相关术语介绍：
 
 安装完成。
 
-#### 启动服务
+### 启动服务
 
 > cd kafka_2.12-2.4.1
 
@@ -81,7 +81,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash
 
 可以实时看到数据内容。
 
-#### 停止服务
+### 停止服务
 
 停止Kafka服务：
 
@@ -91,7 +91,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic logstash
 
 > sudo bin/zookeeper-server-stop.sh
 
-#### 其他问题
+### 其他问题
 
 启动ZooKeeper服务时发现报错了：
 ```
@@ -136,7 +136,7 @@ java    9914 baiyang  120u  IPv6 7073484      0t0  TCP *:2181 (LISTEN)
 
 再重新启动就可以了。
 
-#### Kafka原理
+### Kafka原理
 
 DMA （Direct Memory Access 直接内存访问）工作图：
 
@@ -173,9 +173,9 @@ Kafka 零拷贝（Zero-Copy）：
 
 这也是为什么，Kafka 是目前实时数据传输管道的标准解决方案。
 
-#### 零拷贝
+### 零拷贝
 
-##### 传统IO
+#### 传统IO
 
 基于传统的IO方式，底层实际上通过调用`read()`和`write()`来实现。
 
@@ -211,7 +211,7 @@ Kafka 零拷贝（Zero-Copy）：
 
 但是无论谁来拷贝，频繁的拷贝耗时也是对性能的影响。
 
-##### 零拷贝
+#### 零拷贝
 
 ```
 零拷贝技术是指计算机执行操作时，CPU不需要先将数据从某处内存复制到另一个特定区域，这种技术通常用于通过网络传输文件时节省CPU周期和内存带宽。
@@ -279,7 +279,7 @@ Linux2.4内核版本之后对sendfile做了进一步优化，通过引入新的�
 
 `DMA gather`和`sendfile`一样数据对用户空间不可见，而且需要硬件支持，同时输入文件描述符只能是文件，但是过程中完全没有CPU拷贝过程，极大提升了性能。
 
-##### 应用场景
+#### 应用场景
 
 对于文章开头说的两个场景：RocketMQ和Kafka都使用到了零拷贝的技术。
 
@@ -287,7 +287,7 @@ Linux2.4内核版本之后对sendfile做了进一步优化，通过引入新的�
 
 对于RocketMQ来说这两个步骤使用的是`mmap+write`，而Kafka则是使用`mmap+write`持久化数据，发送数据使用`sendfile`。
 
-##### 总结
+#### 总结
 
 由于CPU和IO速度的差异问题，产生了DMA技术，通过DMA搬运来减少CPU的等待时间。
 
@@ -300,8 +300,17 @@ Linux2.4内核版本之后对sendfile做了进一步优化，通过引入新的�
 
 `sendfile+DMA gather`方式产生2次DMA拷贝，没有CPU拷贝，而且也只有2次上下文切换。虽然极大地提升了性能，但是需要依赖新的硬件设备支持。
 
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 kafka Quickstart <http://kafka.apache.org/quickstart>
 
