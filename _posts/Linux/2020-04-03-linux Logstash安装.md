@@ -68,6 +68,8 @@ Logstash是数据源与目的库之间的中间服务，如从RabbitMQ/kafka等�
 }
 ```
 
+**kafka源**
+
 kafka源的相应配置：
 
 logstash.conf
@@ -157,6 +159,8 @@ output {
     }
 }
 ```
+
+**RabbitMQ源**
 
 RabbitMQ源的相应配置：
 
