@@ -150,6 +150,13 @@ TO queue:           queue_mail
 
 现在我们项目中就可以给 async 的 mail 投送数据了，数据会自动保存在 queue_mail 队列中。
 
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料
 
