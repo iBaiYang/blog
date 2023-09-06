@@ -466,6 +466,7 @@ return [
 
 #### AR活动记录
 
+`common\components\ES\ActiveRecordInterface` 类：
 ```php
 <?php
 namespace common\components\ES;
@@ -502,6 +503,7 @@ interface ActiveRecordInterface {
 }
 ```
 
+`common\components\ES\ActiveRecord` 类：
 ```php
 <?php
 namespace common\components\ES;
@@ -553,6 +555,7 @@ abstract class ActiveRecord extends \ArrayObject implements ActiveRecordInterfac
 
 #### ActiveQuery活动搜索层
 
+`common\components\ES\ActiveQuery` 类：
 ```php
 <?php
 namespace common\components\ES;
@@ -709,7 +712,7 @@ class ActiveQuery extends BaseObject
 
 #### Model类
 
-看个例子：
+看个例子，`common\esModels\UserInfo`类：
 ```php
 <?php
 namespace common\esModels;
