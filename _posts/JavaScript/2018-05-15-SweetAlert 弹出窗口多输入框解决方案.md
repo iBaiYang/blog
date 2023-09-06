@@ -36,7 +36,7 @@ function(inputValue){
     } 
     
     swal("非常好！", "你输入了：" + inputValue,"success"); 
-});		
+});        
 ```
 
 ### 多输入框

@@ -116,7 +116,7 @@ array(51) {
   ["PATH"]=>
   string(60) "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   ["PHPIZE_DEPS"]=>
-  string(76) "autoconf 		dpkg-dev 		file 		g++ 		gcc 		libc-dev 		make 		pkg-config 		re2c"
+  string(76) "autoconf         dpkg-dev         file         g++         gcc         libc-dev         make         pkg-config         re2c"
   ["PWD"]=>
   string(13) "/var/www/html"
   ["PHP_SHA256"]=>
@@ -327,39 +327,39 @@ Array
 
 里面有好多请求头的内容，所以下面打一下 信息头 请求头 详情：
 ```
-Accept	text/html,application/xhtml+xm…plication/xml;q=0.9,*/*;q=0.8
-Accept-Encoding	gzip, deflate
-Accept-Language	zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
-Cache-Control	no-cache
-Connection	keep-alive
-Cookie	advanced-backend=j1ed1satr2o83…D%3F%C8%9D%D9%DCL%26%22%3B%7D
-Host	yii2_test_backend.host
-Pragma	no-cache
-Upgrade-Insecure-Requests	1
-User-Agent	Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/61.0
+Accept    text/html,application/xhtml+xm…plication/xml;q=0.9,*/*;q=0.8
+Accept-Encoding    gzip, deflate
+Accept-Language    zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Cache-Control    no-cache
+Connection    keep-alive
+Cookie    advanced-backend=j1ed1satr2o83…D%3F%C8%9D%D9%DCL%26%22%3B%7D
+Host    yii2_test_backend.host
+Pragma    no-cache
+Upgrade-Insecure-Requests    1
+User-Agent    Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/61.0
 ```
 
 信息头 响应头 详情：
 ```
-Connection	keep-alive
-Content-Type	text/html; charset=UTF-8
-Date	Sat, 11 Aug 2018 07:33:43 GMT
-Server	nginx/1.12.2
-Transfer-Encoding	chunked
-X-Powered-By	PHP/7.0.25
+Connection    keep-alive
+Content-Type    text/html; charset=UTF-8
+Date    Sat, 11 Aug 2018 07:33:43 GMT
+Server    nginx/1.12.2
+Transfer-Encoding    chunked
+X-Powered-By    PHP/7.0.25
 ```
 
-Cookie	详情：
+Cookie    详情：
 ```
-请求 Cookie	
-_csrf-backend	77180f9813f30581775717caf6d24a1aeaa8a4b2143bb2df77641388b4e5ae54a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"t� 7ÌÖ��Â�gÖ=���ªülúÉ�U� ?È�ÙÜL&";}
-advanced-backend	j1ed1satr2o83vrrne1qphsd57
+请求 Cookie    
+_csrf-backend    77180f9813f30581775717caf6d24a1aeaa8a4b2143bb2df77641388b4e5ae54a:2:{i:0;s:13:"_csrf-backend";i:1;s:32:"t� 7ÌÖ��Â�gÖ=���ªülúÉ�U� ?È�ÙÜL&";}
+advanced-backend    j1ed1satr2o83vrrne1qphsd57
 ```
 
 参数 详情：
 ```
-查询字符串	
-r	site/login
+查询字符串    
+r    site/login
 ```
 
 响应 就是上面第一个

@@ -222,7 +222,7 @@ pcntl_fork <https://www.php.net/manual/en/function.pcntl-fork.php>
 记录php daemon 进程 遇到的问题--posix_setsid函数 <https://segmentfault.com/a/1190000005979154>
 
 用php编写守护进程 <http://imhuchao.com/638.html>
-	
+    
 php写守护进程（Daemon） <https://blog.csdn.net/tengzhaorong/article/details/9764655>
 
 深入探讨pcntl_fork函数 <https://www.jianshu.com/p/22aca20c84e4>

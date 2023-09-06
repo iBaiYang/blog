@@ -25,15 +25,15 @@ setInterval(code, milliseconds);
 setInterval(function, milliseconds, param1, param2, ...)
 ```
 
-参数 	描述
+参数     描述
 
-code/function 	必需。要调用一个代码串，也可以是一个函数。
+code/function     必需。要调用一个代码串，也可以是一个函数。
 
-milliseconds 	必须。周期性执行或调用 code/function 之间的时间间隔，以毫秒计。
+milliseconds     必须。周期性执行或调用 code/function 之间的时间间隔，以毫秒计。
 
-param1, param2, ... 	可选。 传给执行函数的其他参数（IE9 及其更早版本不支持该参数）。
+param1, param2, ...     可选。 传给执行函数的其他参数（IE9 及其更早版本不支持该参数）。
 
-返回值: 	返回一个 ID（数字），可以将这个ID传递给clearInterval()，clearTimeout() 以取消执行。
+返回值:     返回一个 ID（数字），可以将这个ID传递给clearInterval()，clearTimeout() 以取消执行。
 
 #### 示例
 

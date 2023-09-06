@@ -116,10 +116,10 @@ Ubuntu 16.04.5 LTS \n \l
 root@localhost:/usr/local/src/# 
 root@localhost:/usr/local/src/# lsb_release -a
 No LSB modules are available.
-Distributor ID:	Ubuntu
-Description:	Ubuntu 16.04.5 LTS
-Release:	16.04
-Codename:	xenial
+Distributor ID:    Ubuntu
+Description:    Ubuntu 16.04.5 LTS
+Release:    16.04
+Codename:    xenial
 root@localhost:/usr/local/src/#
 ```
 

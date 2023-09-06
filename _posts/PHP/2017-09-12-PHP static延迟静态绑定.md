@@ -149,13 +149,13 @@ function num2(){
     global $a;
     echo $a += 1;
 }
-	
+    
 function num3(){
     static $a = 10;
     return $a += 1;
 }
-	
-echo num1();	// 输出 1
+    
+echo num1();    // 输出 1
 
 num2();         // 输出 4
 echo $a;        // 输出 4
@@ -234,7 +234,7 @@ $two->static_use();
 class first
 {    
     static $num = 1;
-	
+    
     public static function self_use(){
         static::$num += 1;
     }

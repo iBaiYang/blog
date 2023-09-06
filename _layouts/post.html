@@ -3,29 +3,29 @@ layout: default
 ---
 
 <div class="row">
-	<div id="myArticle" class="col-sm-9">
-		<div class="post-area post">
-			<header>
-				<h1>{{ page.title }}</h1>
-				<p>
-					{% if page.author %} </br> {{ page.author }}{% endif %}
-					{% if page.meta %} </br> {{ page.meta }}{% endif %}
-				</p>
-			</header>
-			<hr>
-			<article>
-				{{content}}
-			</article>
-			<hr>
-			<p><a href="{{ site.baseurl }}/#{{ page.categories }}">返回</a></p>
-		</div>
-	</div>
-	<div id="content" class="col-sm-3">
-		<div id="myAffix" class="shadow-bottom-center hidden-xs" >
-			<div class="categories-list-header">
-				文章目录
-			</div>
-			<div class="content-text"></div>
-		</div>
-	</div>
+    <div id="myArticle" class="col-sm-9">
+        <div class="post-area post">
+            <header>
+                <h1>{{ page.title }}</h1>
+                <p>
+                    {% if page.author %} </br> {{ page.author }}{% endif %}
+                    {% if page.meta %} </br> {{ page.meta }}{% endif %}
+                </p>
+            </header>
+            <hr>
+            <article>
+                {{content}}
+            </article>
+            <hr>
+            <p><a href="{{ site.baseurl }}/#{{ page.categories }}">返回</a></p>
+        </div>
+    </div>
+    <div id="content" class="col-sm-3">
+        <div id="myAffix" class="shadow-bottom-center hidden-xs" >
+            <div class="categories-list-header">
+                文章目录
+            </div>
+            <div class="content-text"></div>
+        </div>
+    </div>
 </div>

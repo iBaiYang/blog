@@ -645,19 +645,19 @@ MAINTAINER www  ibaiyang@email.com
 
 # 设置变量
 ENV PHPIZE_DEPS \
-		autoconf \
-		file \
-		g++ \
-		gcc \
+        autoconf \
+        file \
+        g++ \
+        gcc \
 
 # apk add命令从仓库中安装最新软件包，并自动安装必须的依赖包
 RUN apk add --no-cache --virtual .persistent-deps \
-		ca-certificates \
-		curl \
-		tar \
-		xz \
+        ca-certificates \
+        curl \
+        tar \
+        xz \
 # https://github.com/docker-library/php/issues/494
-		libressl
+        libressl
 
 # 设置变量
 ENV PHP_INI_DIR /usr/local/etc/php
@@ -676,11 +676,11 @@ ENV PHP_URL="https://secure.php.net/get/php-7.1.23.tar.xz/from/this/mirror" PHP_
 
 # 生成php包下载目录，并下载php包
 RUN mkdir -p /usr/src; \
-	cd /usr/src; \
-	\
-	wget -O php.tar.xz "$PHP_URL";
+    cd /usr/src; \
+    \
+    wget -O php.tar.xz "$PHP_URL";
 
-RUN	wget -O /usr/src/php.tar.xz  https://secure.php.net/get/php-7.1.21.tar.xz/from/this/mirror && rm -rf /usr/src/php && mkdir /usr/src/php && tar -Jxf /usr/src/php.tar.xz -C /usr/src/php --strip-components=1 \
+RUN    wget -O /usr/src/php.tar.xz  https://secure.php.net/get/php-7.1.21.tar.xz/from/this/mirror && rm -rf /usr/src/php && mkdir /usr/src/php && tar -Jxf /usr/src/php.tar.xz -C /usr/src/php --strip-components=1 \
 
 # 给php配置拓展
 RUN  ./configure   --prefix=/usr/local/php --with-pdo-mysql --disable-cgi  -with-mysqli  -enable-ftp  -enable-zip  -with-bz2  -with-jpeg-dir   -with-png-dir    -with-freetype-dir    -with-libxml-dir  -with-xmlrpc    -with-zlib-dir   -with-gd  -with-curl   -with-gettext    -with-pear  -enable-mbstring -enable-bcmath   -enable-sockets   -enable-exif  -enable-fpm  -enable-pcntl   -with-mhash  -with-gmp    -with-openssl   -enable-sysvsem   -enable-sysvshm -enable-mbregex --enable-intl --with-mcrypt --enable-shmop

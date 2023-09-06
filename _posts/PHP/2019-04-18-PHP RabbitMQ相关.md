@@ -422,22 +422,22 @@ define('AMQP_REQUEUE', 16384);
 
 `array $attributes = array()`， 可以设置一些参数：
 
-| 配置项   | 类型	| 说明 | 
+| 配置项   | 类型    | 说明 | 
 | --------   | :-----  | :----  |
-| content_type	| 短文本	| MIME类型表示消息是一种什么类型的格式,参考[MIME类型](https://baike.baidu.com/item/MIME/2900607)，一般为text/plain | 
-| content_encoding		| 短文本		| 正文传输编码,比如内容是gzip压缩的.值就是gzip,[参考](https://www.tuicool.com/articles/b6BNNfN)，一般为UTF-8 | 
-| application_headers		|  数组 	| 	请求的headers信息 | 
-| delivery_mode		| 数字 	| 	表示是否持久化,1为否,2为是 [参考](https://www.cnblogs.com/xiazh/archive/2011/04/29/2004859.html)   | 
-| priority		| 数字 	| 	发送权重,也就是优先级  | 
-| correlation_id	| 短文本		| 相关性ID [参考](http://www.01happy.com/python-rabbitmq-rfc-correlation-id/)  | 
-| reply_to	| 	短文本	| 	消息被发送者处理完后,返回回复时执行的回调(在rpc时会用到)  | 
-| expiration		| 短文本	|    存活时间,毫秒数   | 
-| message_id	| 	短文本	| 	扩展属性   | 
-| timestamp	| 	数字 	| 	时间戳   | 
-| type	| 	短文本		| 扩展属性   | 
-| user_id		| 短文本	| 	扩展属性   | 
-| app_id   	|  短文本 	| 	扩展属性  | 
-| cluster_id 	|  短文本 	| 扩展属性  | 
+| content_type    | 短文本    | MIME类型表示消息是一种什么类型的格式,参考[MIME类型](https://baike.baidu.com/item/MIME/2900607)，一般为text/plain | 
+| content_encoding        | 短文本        | 正文传输编码,比如内容是gzip压缩的.值就是gzip,[参考](https://www.tuicool.com/articles/b6BNNfN)，一般为UTF-8 | 
+| application_headers        |  数组     |     请求的headers信息 | 
+| delivery_mode        | 数字     |     表示是否持久化,1为否,2为是 [参考](https://www.cnblogs.com/xiazh/archive/2011/04/29/2004859.html)   | 
+| priority        | 数字     |     发送权重,也就是优先级  | 
+| correlation_id    | 短文本        | 相关性ID [参考](http://www.01happy.com/python-rabbitmq-rfc-correlation-id/)  | 
+| reply_to    |     短文本    |     消息被发送者处理完后,返回回复时执行的回调(在rpc时会用到)  | 
+| expiration        | 短文本    |    存活时间,毫秒数   | 
+| message_id    |     短文本    |     扩展属性   | 
+| timestamp    |     数字     |     时间戳   | 
+| type    |     短文本        | 扩展属性   | 
+| user_id        | 短文本    |     扩展属性   | 
+| app_id       |  短文本     |     扩展属性  | 
+| cluster_id     |  短文本     | 扩展属性  | 
 
 如延迟队列实现：
 ```

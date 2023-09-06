@@ -40,16 +40,16 @@ jQuery的工厂函数 $()，创建DOM对象，并封装成jQuery对象后返回�
 <script type="text/javascript">
 //<![CDATA[
 $(function(){
-    var $li_1 = $("<li title='香蕉'>香蕉</li>");	// 创建一个<li>元素
+    var $li_1 = $("<li title='香蕉'>香蕉</li>");    // 创建一个<li>元素
                                                     // 包括元素节点,文本节点和属性节点
                                                     // 其中title='香蕉' 就是创建的属性节点
-    var $li_2 = $("<li title='雪梨'>雪梨</li>");	 // 创建一个<li>元素
+    var $li_2 = $("<li title='雪梨'>雪梨</li>");     // 创建一个<li>元素
                                                     // 包括元素节点,文本节点和属性节点
                                                     // 其中title='雪梨' 就是创建的属性节点  
-    var $parent = $("ul");		// 获取<ul>节点。<li>的父节点
+    var $parent = $("ul");        // 获取<ul>节点。<li>的父节点
     
-    $parent.append($li_1);	    // 添加到<ul>节点中，使之能在网页中显示
-    $parent.append($li_2);	    // 等价于：$parent.append($li_1).append($li_2);
+    $parent.append($li_1);        // 添加到<ul>节点中，使之能在网页中显示
+    $parent.append($li_2);        // 等价于：$parent.append($li_1).append($li_2);
 });
 //]]>
 </script>
@@ -89,7 +89,7 @@ $(function(){
 //<![CDATA[
 $(function(){
     var $li = $("ul li:eq(1)").remove();  // 获取第二个<li>元素节点后，将它从网页中删除。
-    $li.appendTo("ul");					  // 把刚才删除的又重新添加到<ul>元素里
+    $li.appendTo("ul");                      // 把刚才删除的又重新添加到<ul>元素里
     // 所以，删除只是从网页中删除，在jQuery对象中，这个元素还是存在的，我们可以重新获取它
 });
 //]]>
@@ -519,15 +519,15 @@ $(function(){
     var y = 20;
     $("a.tooltip").mouseover(function(e){
         this.myTitle = this.title;
-        this.title = "";	
+        this.title = "";    
         var tooltip = "<div id='tooltip'>"+ this.myTitle +"<\/div>"; //创建 div 元素
-        $("body").append(tooltip);	//把它追加到文档中
+        $("body").append(tooltip);    //把它追加到文档中
         $("#tooltip")
             .css({
                 "top": (e.pageY+y) + "px",
                 "left": (e.pageX+x)  + "px"
-            }).show("fast");	  //设置x坐标和y坐标，并且显示
-    }).mouseout(function(){		
+            }).show("fast");      //设置x坐标和y坐标，并且显示
+    }).mouseout(function(){        
         this.title = this.myTitle;
         $("#tooltip").remove();   //移除 
     }).mousemove(function(e){
@@ -603,18 +603,18 @@ $(function(){
     var y = 20;
     $("a.tooltip").mouseover(function(e){
         this.myTitle = this.title;
-        this.title = "";	
+        this.title = "";    
         var imgTitle = this.myTitle? "<br/>" + this.myTitle : "";
         var tooltip = "<div id='tooltip'><img src='"+ this.href +"' alt='产品预览图'/>"+imgTitle+"<\/div>"; //创建 div 元素
-        $("body").append(tooltip);	//把它追加到文档中						 
+        $("body").append(tooltip);    //把它追加到文档中                         
         $("#tooltip")
             .css({
                 "top": (e.pageY+y) + "px",
                 "left":  (e.pageX+x)  + "px"
-            }).show("fast");	  //设置x坐标和y坐标，并且显示
+            }).show("fast");      //设置x坐标和y坐标，并且显示
     }).mouseout(function(){
-        this.title = this.myTitle;	
-        $("#tooltip").remove();	 //移除 
+        this.title = this.myTitle;    
+        $("#tooltip").remove();     //移除 
     }).mousemove(function(e){
         $("#tooltip")
             .css({

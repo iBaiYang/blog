@@ -327,7 +327,7 @@ $skipFiles = !empty($env['skipFiles']) ? $env['skipFiles'] : [];
 foreach(array_column($envs, 'path') as $envPath) {
     if ($env['path'] === $envPath) continue;
 
-	$filesToRemove =
+    $filesToRemove =
         array_merge(
             $filesToRemove,
             array_diff(getFileList("$root/environments/{$envPath}"), $files, $filesToRemove, $skipFiles)
@@ -335,15 +335,15 @@ foreach(array_column($envs, 'path') as $envPath) {
 }
 $filesToRemove = array_filter($filesToRemove, 'file_exists');
 if ($filesToRemove) {
-	echo "\n  Remove files from other environments ...\n\n";
+    echo "\n  Remove files from other environments ...\n\n";
 
-	$all = false;
-	foreach ($filesToRemove as $file) {
-		if (!removeFile($root, $file, $all, $params)) {
-			break;
-		}
-	}
-	echo "\n";
+    $all = false;
+    foreach ($filesToRemove as $file) {
+        if (!removeFile($root, $file, $all, $params)) {
+            break;
+        }
+    }
+    echo "\n";
 }
 
 $callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable', 'createSymlink'];
@@ -421,34 +421,34 @@ function copyFile($root, $source, $target, &$all, $params)
 
 function removeFile($root, $target, &$all, $params)
 {
-	if (is_file($root . '/' . $target)) {
-		if ($all) {
-			echo "  delete $target\n";
-		} else {
-			echo "      delete $target\n";
-			echo "            ...confirm? [Yes|No|All|Quit] ";
+    if (is_file($root . '/' . $target)) {
+        if ($all) {
+            echo "  delete $target\n";
+        } else {
+            echo "      delete $target\n";
+            echo "            ...confirm? [Yes|No|All|Quit] ";
 
-			$answer = !empty($params['delete']) ? $params['delete'] : trim(fgets(STDIN));
-			if (!strncasecmp($answer, 'q', 1)) {
-				return false;
-			} else {
-				if (!strncasecmp($answer, 'y', 1)) {
-					echo "  delete $target\n";
-				} else {
-					if (!strncasecmp($answer, 'a', 1)) {
-						echo "  delete $target\n";
-						$all = true;
-					} else {
-						echo "       skip $target\n";
-						return true;
-					}
-				}
-			}
-		}
-		return unlink($root . '/' . $target);
-	}
+            $answer = !empty($params['delete']) ? $params['delete'] : trim(fgets(STDIN));
+            if (!strncasecmp($answer, 'q', 1)) {
+                return false;
+            } else {
+                if (!strncasecmp($answer, 'y', 1)) {
+                    echo "  delete $target\n";
+                } else {
+                    if (!strncasecmp($answer, 'a', 1)) {
+                        echo "  delete $target\n";
+                        $all = true;
+                    } else {
+                        echo "       skip $target\n";
+                        return true;
+                    }
+                }
+            }
+        }
+        return unlink($root . '/' . $target);
+    }
 
-	return true;
+    return true;
 }
 
 function getParams()

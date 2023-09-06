@@ -280,41 +280,41 @@ swal({
 
 你可以使用这些参数，通过一个对象传入到sweetAlert中：
 
-| 参数 | 	默认值  |     描述 |
+| 参数 |     默认值  |     描述 |
 | :--------   | :-----  | :----  |
-| title 	| null (required) 	| 弹窗的标题。可以通过对象的”title”属性或第一个参数进行传递。| 
-| text 	| null | 	弹窗的描述。可以通过对象的”text”属性或第二个参数进行传递。| 
-| type 	| null 	| 弹窗的类型。SweetAlert有四个内置类型，可以展示相应的图标动画: "warning","error", "success" and "info"。你也可以设置为"input"类型变成输入弹窗。可以通过对象的”type”属性或第三个参数进行传递。| 
-| allowEscapeKey 	| true 	| 如果设置为true，用户可以通过按下Escape键关闭弹窗。|
-| customClass 	| null | 	弹窗的自定义样式，可以通过对象的"customClass"属性进行添加。|
-| allowOutsideClick 	| false 	| 如果设置为true，用户点击弹窗外部可关闭弹窗。|
-| showCancelButton 	| false 	| 如果设置为true，“取消”按钮将会显示，用户点击取消按钮会关闭弹窗。|
-| showConfirmButton 	| true 	| 如果设置为false，“确认”按钮将会隐藏。为了良好的用户体验，最好你设置了定时关闭或者allowOutsideClick为true时才将该参数设置为false。|
-| confirmButtonText 	| "OK" 	| 使用该参数来修改“确认”按钮的显示文本。如果showCancelButton设置为true，确定按钮的显示文本将会自动使用“Confirm”而不是“OK”。|
-| confirmButtonColor 	| "#AEDEF4" 	| 使用该参数来修改“确认”按钮的背景颜色（必须是十六进制值）。|
-| cancelButtonText 	| "Cancel" 	| 使用该参数来修改“取消”按钮的显示文本。|
-| closeOnConfirm 	| true 	| 设置为false，用户点击“确认”按钮后，弹窗会继续保持打开状态。如果点击“确认”按钮后需要打开另一个SweetAlert弹窗，这是非常有用的。|
-| closeOnCancel 	| true 	| 这和closeOnConfirm的功能相似，只不过这个是“取消”按钮。|
-| imageUrl 	| null 	| 为弹窗添加一个自定义的图标。这个参数是一个字符串图片路径。|
-| imageSize 	| "80x80" 	| 如果设置了imageUrl，你可以使用像素（px）指定图片大小来描述你想要多大的图标。在一个字符串中使用“x”来分割两个值，第一个值是宽度，第二值是高度。|
-| timer 	| null 	| 自动关闭弹窗的定时器。单位为毫秒（ms）。|
-| html 	| false 	| 如果你设置为true，参数title和参数text的值将会被html解析显示而不是纯文本。（如果你担心被XSS攻击那就设置为false。）|
-| animation 	| true 	| 如果设置为false, 弹窗的动画将会被禁用。其它字符串值：pop(这是animation设置为true时的默认值), slide-from-top, slide-from-bottom|
-| inputType 	| "text" 	| 当使用type: "input"时，该参数用来改变输入的类型(例如：如果你想让用户输入密码，这可能是有用的)。|
-| inputPlaceholder 	| null 	| 当使用输入类型时，你可以使用placeholder来帮助用户明白应该输入什么内容。|
-| inputValue 	| null 	| 当使用type: "input"时，你希望在输入前展示默认值时，可以指定一个默认值。|
-| showLoaderOnConfirm 	| false 	| 设置为true，当处于加载时会禁用确认按钮并显示为加载样式。|
+| title     | null (required)     | 弹窗的标题。可以通过对象的”title”属性或第一个参数进行传递。| 
+| text     | null |     弹窗的描述。可以通过对象的”text”属性或第二个参数进行传递。| 
+| type     | null     | 弹窗的类型。SweetAlert有四个内置类型，可以展示相应的图标动画: "warning","error", "success" and "info"。你也可以设置为"input"类型变成输入弹窗。可以通过对象的”type”属性或第三个参数进行传递。| 
+| allowEscapeKey     | true     | 如果设置为true，用户可以通过按下Escape键关闭弹窗。|
+| customClass     | null |     弹窗的自定义样式，可以通过对象的"customClass"属性进行添加。|
+| allowOutsideClick     | false     | 如果设置为true，用户点击弹窗外部可关闭弹窗。|
+| showCancelButton     | false     | 如果设置为true，“取消”按钮将会显示，用户点击取消按钮会关闭弹窗。|
+| showConfirmButton     | true     | 如果设置为false，“确认”按钮将会隐藏。为了良好的用户体验，最好你设置了定时关闭或者allowOutsideClick为true时才将该参数设置为false。|
+| confirmButtonText     | "OK"     | 使用该参数来修改“确认”按钮的显示文本。如果showCancelButton设置为true，确定按钮的显示文本将会自动使用“Confirm”而不是“OK”。|
+| confirmButtonColor     | "#AEDEF4"     | 使用该参数来修改“确认”按钮的背景颜色（必须是十六进制值）。|
+| cancelButtonText     | "Cancel"     | 使用该参数来修改“取消”按钮的显示文本。|
+| closeOnConfirm     | true     | 设置为false，用户点击“确认”按钮后，弹窗会继续保持打开状态。如果点击“确认”按钮后需要打开另一个SweetAlert弹窗，这是非常有用的。|
+| closeOnCancel     | true     | 这和closeOnConfirm的功能相似，只不过这个是“取消”按钮。|
+| imageUrl     | null     | 为弹窗添加一个自定义的图标。这个参数是一个字符串图片路径。|
+| imageSize     | "80x80"     | 如果设置了imageUrl，你可以使用像素（px）指定图片大小来描述你想要多大的图标。在一个字符串中使用“x”来分割两个值，第一个值是宽度，第二值是高度。|
+| timer     | null     | 自动关闭弹窗的定时器。单位为毫秒（ms）。|
+| html     | false     | 如果你设置为true，参数title和参数text的值将会被html解析显示而不是纯文本。（如果你担心被XSS攻击那就设置为false。）|
+| animation     | true     | 如果设置为false, 弹窗的动画将会被禁用。其它字符串值：pop(这是animation设置为true时的默认值), slide-from-top, slide-from-bottom|
+| inputType     | "text"     | 当使用type: "input"时，该参数用来改变输入的类型(例如：如果你想让用户输入密码，这可能是有用的)。|
+| inputPlaceholder     | null     | 当使用输入类型时，你可以使用placeholder来帮助用户明白应该输入什么内容。|
+| inputValue     | null     | 当使用type: "input"时，你希望在输入前展示默认值时，可以指定一个默认值。|
+| showLoaderOnConfirm     | false     | 设置为true，当处于加载时会禁用确认按钮并显示为加载样式。|
 
 #### 方法
 
 SweetAlert还带有一些简单的方法，你可以调用它们：
 
-| 方法 	| 示例    | 描述| 
+| 方法     | 示例    | 描述| 
 | :--------   | :-----  | :----  |
-| setDefaults 	| `swal.setDefaults({ confirmButtonColor: '#0000' });` 	| 当调用SweetAlert时，如果你使用很多相同的设置，您可以在程序的开始使用setDefaults设置它们！| 
-| close 	| `swal.close();` 	| 通过编程的方式将当前打开的SweetAlert弹窗关闭。| 
-| showInputError 	| `swal.showInputError("Invalid email!");` 	| 如果用户输入的数据是错误的，在验证输入字段后会显示一个错误的信息。| 
-| enableButtons, disableButtons 	| `swal.disableButtons();` 	| 禁用或启用用户点击取消按钮和确认按钮。| 
+| setDefaults     | `swal.setDefaults({ confirmButtonColor: '#0000' });`     | 当调用SweetAlert时，如果你使用很多相同的设置，您可以在程序的开始使用setDefaults设置它们！| 
+| close     | `swal.close();`     | 通过编程的方式将当前打开的SweetAlert弹窗关闭。| 
+| showInputError     | `swal.showInputError("Invalid email!");`     | 如果用户输入的数据是错误的，在验证输入字段后会显示一个错误的信息。| 
+| enableButtons, disableButtons     | `swal.disableButtons();`     | 禁用或启用用户点击取消按钮和确认按钮。| 
 
 
 <br/><br/><br/><br/><br/>

@@ -49,7 +49,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
 
 
-`-rw-r--r--`	
+`-rw-r--r--`    
 
 文件类型（`-` 文件 `d` 目录  `l` 软链接文件）
   
@@ -300,7 +300,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 功能描述：显示文件前面几行
 
     -n 指定行数
-			
+            
 范例：   
 > $ head -n 20 /etc/services
 
@@ -318,7 +318,7 @@ meta: 兄弟连Linux教程(李明,沈超) 第4章 Linux常用命令
 
     -n 指定行数
     -f  动态显示文件末尾内容
-			
+            
 范例：   
 > $ tail -n 18 /etc/services
 
@@ -1138,16 +1138,16 @@ mysql                                      **Never logged in**
 
 选项：
 
-    -t 	：	TCP协议
-    -u	：	UDP协议
-    -l	：	监听
-    -r	：	路由
-    -n	：	显示IP地址和端口号
+    -t     ：    TCP协议
+    -u    ：    UDP协议
+    -l    ：    监听
+    -r    ：    路由
+    -n    ：    显示IP地址和端口号
 
 范例：
 
 查看本机监听的端口
->  netstat -tlun		
+>  netstat -tlun        
 
 ```
 Active Internet connections (only servers)
@@ -1162,10 +1162,10 @@ udp        0      0 0.0.0.0:68                  0.0.0.0:*
 ```
 
 查看本机所有的网络连接
->  netstat -an		
+>  netstat -an        
 
 查看本机路由表
->  netstat -rn	
+>  netstat -rn    
 
 ```
 Kernel IP routing table
@@ -1224,13 +1224,13 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 
 **4、系统运行级别**
 
-    0 		关机
-    1		单用户
-    2		不完全多用户，不含NFS服务
-    3		完全多用户
-    4		未分配
-    5		图形界面
-    6		重启
+    0         关机
+    1        单用户
+    2        不完全多用户，不含NFS服务
+    3        完全多用户
+    4        未分配
+    5        图形界面
+    6        重启
 
 修改系统默认运行级别
 > [root@localhost ~]# cat /etc/inittab

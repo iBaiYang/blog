@@ -116,13 +116,13 @@ server {
     
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass php_upstream;		
+        fastcgi_pass php_upstream;        
         #fastcgi_pass unix:/run/php/php7.0-fpm.sock;
     }
-	
-	
+    
+    
     charset utf-8;
-	
+    
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
     location ~ /\.ht {
@@ -2197,11 +2197,11 @@ $shop_contacter_list = json_encode($shop_contacter_list);
 // 表单部分
 {
 
-	"row[contacter_list][0][key]": "张三",
-	"row[contacter_list][0][value]": "184032501014",
-	"row[contacter_list][1][key]": "张三",
-	"row[contacter_list][1][value]": "184032501013",
-	"row[contacter_list]": "{\"张三\":\"184032501013\"}",
+    "row[contacter_list][0][key]": "张三",
+    "row[contacter_list][0][value]": "184032501014",
+    "row[contacter_list][1][key]": "张三",
+    "row[contacter_list][1][value]": "184032501013",
+    "row[contacter_list]": "{\"张三\":\"184032501013\"}",
 }
 
 // 因为数组同名，后面的会覆盖前面的，相当于重新赋值，后台 $_POST 获取到的数据，把另外一个丢失了

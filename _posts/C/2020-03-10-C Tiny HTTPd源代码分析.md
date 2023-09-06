@@ -669,10 +669,10 @@ Makefile 编译文件内容：
 all: httpd
 
 httpd: httpd.c
-	gcc -W -Wall -lpthread -o httpd httpd.c
+    gcc -W -Wall -lpthread -o httpd httpd.c
 
 clean:
-	rm httpd
+    rm httpd
 ```
 
 命令行 make 编译，然后 ./httpd 运行服务器。

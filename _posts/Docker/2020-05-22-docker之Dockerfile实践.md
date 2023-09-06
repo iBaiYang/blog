@@ -127,7 +127,7 @@ WORKDIR /usr/local/nginx/conf
 # 建立子配置文件夹，可以不建，或者叫其它名称都可以，但最好不要带特殊符号
 # RUN mkdir vhost
 
-# 设置变量，执行命令时，就可以省略前缀目录了	
+# 设置变量，执行命令时，就可以省略前缀目录了    
 ENV PATH /usr/local/nginx/sbin:$PATH
 
 # 暴露端口
@@ -503,9 +503,9 @@ events {
 }
 
 http {
-	include /etc/nginx/mime.types;
-	default_type application/octet-stream;
-	charset UTF-8; 
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    charset UTF-8; 
 
     sendfile on;
     tcp_nopush on;
@@ -518,13 +518,13 @@ http {
     server_name_in_redirect off;
     server_names_hash_bucket_size 64;
     types_hash_max_size 2048;
-	client_header_timeout 10; 
-	client_header_buffer_size 32k;
-	large_client_header_buffers 4 32k;
-	client_max_body_size 100m;
-	client_body_timeout 10; 
-	client_body_buffer_size 10m;
-	reset_timedout_connection on; 
+    client_header_timeout 10; 
+    client_header_buffer_size 32k;
+    large_client_header_buffers 4 32k;
+    client_max_body_size 100m;
+    client_body_timeout 10; 
+    client_body_buffer_size 10m;
+    reset_timedout_connection on; 
 
     # log setting
     log_format main  '{"@timestamp":"$time_local",'
@@ -547,14 +547,14 @@ http {
     error_log /var/log/nginx/error.log warn;
 
     # fast cgi 相关参数是为了改善网站的性能：减少资源占用，提高访问速度。下面参数看字面意思都能理解。
-	fastcgi_buffers 256 16k; 
-	fastcgi_buffer_size 128k; 
-	fastcgi_connect_timeout 3s; 
-	fastcgi_send_timeout 120s; 
-	fastcgi_read_timeout 120s; 
-	fastcgi_busy_buffers_size 256k; 
-	fastcgi_temp_file_write_size 256k; 
-	fastcgi_hide_header X-Powered-By;
+    fastcgi_buffers 256 16k; 
+    fastcgi_buffer_size 128k; 
+    fastcgi_connect_timeout 3s; 
+    fastcgi_send_timeout 120s; 
+    fastcgi_read_timeout 120s; 
+    fastcgi_busy_buffers_size 256k; 
+    fastcgi_temp_file_write_size 256k; 
+    fastcgi_hide_header X-Powered-By;
 
     # Gzip Compression
     gzip on;
@@ -568,10 +568,10 @@ http {
     gzip_vary on;
 
 
-	open_file_cache max=10000 inactive=20s;
-	open_file_cache_valid 30s;
-	open_file_cache_min_uses 2;
-	open_file_cache_errors on;
+    open_file_cache max=10000 inactive=20s;
+    open_file_cache_valid 30s;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
 
     #负载均衡配置 TODO
 
@@ -741,21 +741,21 @@ server {
 `./conf.d`下另外有一个查看php-fpm运行状态的配置文件，phpfpm_status.conf
 ```
 server {
-	listen 80;
-	server_name 127.0.0.1;
-	allow 127.0.0.1;
+    listen 80;
+    server_name 127.0.0.1;
+    allow 127.0.0.1;
 
-	location /server-status {
-		stub_status on;
-		access_log off;
-	}
+    location /server-status {
+        stub_status on;
+        access_log off;
+    }
 
-	location /php-status {
-	    fastcgi_pass  php-fpm:9000;
-		include fastcgi_params;
-		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
-		access_log off;
-	}
+    location /php-status {
+        fastcgi_pass  php-fpm:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+        access_log off;
+    }
 }
 ```
 
@@ -793,8 +793,8 @@ RUN apt-get update && apt-get install -y \
         libjpeg62-turbo-dev \
         libpng-dev \
         libxml2-dev \
-		libssl-dev \
-		librabbitmq-dev
+        libssl-dev \
+        librabbitmq-dev
 
 # 安装PHP核心拓展
 RUN docker-php-ext-install \
@@ -805,7 +805,7 @@ RUN docker-php-ext-install \
         exif \
         zip \
         bcmath \
-	&& docker-php-ext-configure gd \
+    && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/ \
         --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
