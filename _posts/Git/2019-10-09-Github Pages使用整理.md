@@ -1,15 +1,25 @@
 ---
 layout: post
 categories: Git
-title: Github Pages中Jekyll升级导致项目构建失败
-meta: Github Pages中Jekyll升级导致项目构建失败
+title: Github Pages使用整理
+meta: Github Pages使用整理
 ---
 * content
 {:toc}
 
-### 正文
+## 注意Github Pages的关键字
 
-今天更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知邮件：
+一次提交后博客没有更新成功，收到的邮件中提示报了错，点开邮件中的超链接，查看 build 中的提示文字是：
+```
+github-pages 228 | Error:  Liquid syntax error (line 925): Variable '{{1, 2}' was not properly terminated with regexp: /\}\}/
+```
+
+其中上面把具体文件也点出来了，这里就是因为使用了双大括号`{`导致的。
+双大括号具有特殊含义，其中图片地址就用到了，这里把大括号删除后，再次提交就没有问题了。
+
+## Github Pages中Jekyll升级导致项目构建失败
+
+一次更新了blog，发现Github Pages没有更新，接着收到Github Pages的构建失败的通知邮件：
 ```
 The page build failed for the `master` branch with the following error: 
 
@@ -115,7 +125,7 @@ rvm 1.29.9 (latest) by Michal Papis, Piotr Kuczynski, Wayne E. Seguin [https://r
 
 输出 jekyll 4.0.0。
 
-#### 定位问题
+### 定位问题
 
 现在我们可以定位问题了，cd切换到项目目录下，也就是_config.yml所在的目录下，构建：
 
