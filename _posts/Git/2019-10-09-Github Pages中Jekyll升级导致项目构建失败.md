@@ -156,6 +156,16 @@ Configuration file: /home/bai/www/blog/_config.yml
 
 然后提交到github上，发现构建成功了，问题解决。
 
+
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ### 参考资料
 

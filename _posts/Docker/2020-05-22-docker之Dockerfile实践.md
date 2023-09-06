@@ -195,7 +195,7 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
 命令行执行`curl 127.0.0.1:80` 命令，能看到  Welcome to nginx  等英文提示，即说明一切OK。
 ```
 [root@localhost ~]# curl 127.0.0.1:80
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Welcome to nginx!</title>
