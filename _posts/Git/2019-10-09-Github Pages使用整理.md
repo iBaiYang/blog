@@ -11,7 +11,7 @@ meta: Github Pages使用整理
 
 一次提交后博客没有更新成功，收到的邮件中提示报了错，点开邮件中的超链接，查看 build 中的提示文字是：
 ```
-github-pages 228 | Error:  Liquid syntax error (line 925): Variable '{{1, 2}' was not properly terminated with regexp: /\}\}/
+github-pages 228 | Error:  Liquid syntax error (line 925): Variable '\{\{1, 2}' was not properly terminated with regexp: /\}\}/
 ```
 
 其中上面把具体文件也点出来了，这里就是因为使用了双大括号`{`导致的。
