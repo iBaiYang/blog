@@ -9,6 +9,180 @@ meta: 不使用pcntl,pthreads,swoole的前提下，Laravel 如何实现伪多进
 
 ## 正文
 
+一、前言
+
+众所周知，多进程/多线程可以并行/并发的执行多个任务，提高运行效率。
+
+PHP默认是不支持多进程/多线程的，需要安装pcntl/pthreads扩展来支持。
+协程如果不用swoole等框架，那么实现比较复杂。
+
+以上方法均不使用，那么该如何提高程序的运行效率呢？
+
+
+二、思路
+
+对于耗时的任务, 通常会推送到任务队列中，然后队列消费进程从任务队列中获取任务执行。
+
+一个队列是可以开启多个消费进程的，那么执行任务的效率是比单个进程顺序执行效率多很多的。
+
+如果不需要等待所有任务的执行完成来获取结果的话，其实开启多个队列消费进程已经够了。
+
+如果需要等待所有任务完成才返回结果的操作，比如在定时任务中需要读取Mysql的100条记录，去调用第三方的API，
+这个三方API很Low，调用一次需要2s，最终需要生成这100条记录的CSV文件。顺序执行至少需要200s才能完成, 
+如果有4个队列消费进程, 那么只需要50s左右即可完成。
+
+主要问题在于如何解决进程间通信？因为需要知道这些子任务是否执行完，以及需要知道任务的执行结果。
+那么是否可以将使用redis来通信呢？用redis进行计数操作，每个任务执行完将计数器加1，
+每个任务的执行结果都放在redis的list/hash中，当计数器的总数等于任务总数的时候，
+就可以断定任务已经执行完成，然后取出redis存放的结果，生成csv文件。
+
+三、实现
+
+实际项目已在线上稳定跑了几个月了，在这里只贴伪代码展示一下实现思路，有兴趣的可以自己实现试试。
+
+定时任务command，这里主要是程序入口, 设置好计数器, 并且等待队列任务执行完成，获取结果。
+
+```
+/**
+*    定时任务
+*    Author:ClassmateLin
+*    Email:classmatelin.site@gmail.com
+*    Site:https://www.classmatelin.top
+*/
+public function handle()
+{
+    $recordL1st=[1,2,3,4,5,6,7,8,9,10];
+    $taskService = app(abstract:TaskService:class);
+    $taskService->init(count($recordList));//初始化计数器，设置任务总数
+    
+    foreach ($recordL1st as $record)
+    {
+        //将任务推送到calculate队列中
+        CalculateJob:dispatch($record)->onQueue(queue:'calculate');
+    }
+    
+    //这里等待任务完成
+    while ($taskService->isFinish()){
+        sleep(seconds:1);
+    }
+    
+    /获取任务结果
+    Sresult = $taskService->getResult();
+}
+```
+
+具体任务Job代码, 主要执行耗时任务，以及执行完成计数器进行加1，需要注意的是异常也要保证计数器+1，
+否则任务总数跟执行总数不相等，那么主进程command会卡死。
+
+```
+/**
+* 执行具体耗时任务
+* Author:ClassmateLin
+* Email:classmatelin.site@gmail.com
+* Site:https://www.classmatelin.top
+*/
+public function handle()
+{
+    try {
+        sleep(seconds::2);//执行任务
+        $this->taskService->addResult($this->job->getJobId(),result::123);//保存结果到redis
+        
+        $this->taskService->do();//计数器+1
+    } catch (\Exception Se) {
+        /记录错误
+        $this->taskService->do();/需要注意失败计数器也+1，要保证执行总数等于任务总数，不然主进程会卡死。
+    }
+}
+```
+
+将任务相关信息保存到redis的hash数据结构中, 需要保存任务总数的key, 用于统计的已执行任务总数的key，
+计数可以用时间复杂度为O(1)的`hincrby`命令。
+
+```
+{
+    protected ShashTableName 'counter:hash';//hash table name
+    protected StotalTaskKey 'total_task:count';/total
+    protected SexecutedTaskKey 'executed_task:count';/executed
+    protected $LockKey='counter:Lock';/锁名称
+    
+    /** 初始化
+        Author:ClassmateLin
+        Email:classmatelin.site@gmail.com
+        Site:https://www.classmatelin.top
+        @param Scount
+    */
+    public function init(Scount)
+    {
+        app(abstract:'redis.connection')->hset($this->hashTableName,$this->totaLTaskKey,$count);
+    }
+    
+    /** 计数器+1
+        Author:ClassmateLin
+        Email:classmatelin.site@gmail.com
+        Site:https://www.classmatelin.top
+    */
+    public function do()
+    {
+        do {
+            $isLock = app(abstract:'redis.connection')->set($this->LockKey,1,'ex',1,'nx');
+            if (sisLock){
+                app(abstract:'redis.connection')->hincrby($this->hashTableName,$this->executedTaskKey,1);   
+            }
+        }while(!$isLock);
+    }
+    
+}
+```
+
+结果也可以保存到该hash中, 通过hvals获取结果前先把两个count的key删除即可。
+
+```
+public function isFinish():bool
+{
+    $executedCount = app(abstract:'redis.connection')->hget($this->hashTableName,$this->executedTaskKey);
+    /其实定义常量就行了。
+    $totalCount = app(abstract:'redis.connection')->hget($this->hashTableName,$this->totalTaskKey);
+    
+    return $executedCount = $totalCount;
+}
+
+/**
+    获取最终结果
+    Author:ClassmateLin
+    Email:classmatelin.site@gmail.com
+    Site:https://www.classmatelin.top
+*/
+public function getResult()
+{
+    app(abstract:'redis.connection')->hdel($this->hashTabLeName,$this->totaLTaskKey,$this->executedTaskKey);
+    return app(abstract:'redis.connection')->hvals($this->hashTableName);
+}
+
+/**
+    保存一条结果
+    Author:ClassmateLin
+    Email:classmatelin.site@gmail.com
+    Site:https://www.classmatelin.top
+    dparam $jobId
+    dparam Sresult
+*/
+public function addResult($jobId,Sresult)
+{
+    app(abstract:'redis.connection')->hset($this->hashTableName,$jobId,$result);
+}
+```
+
+该代码示例只适合学习使用，如果需要生产使用需要自己处理细节问题。
+
+
+开启多个任务队列, 可手动开启几个终端手动执行:`php artisan queue:work redis --queue=calculate`启动多个队列消费进程，
+也可以通过`supervisor`来启动, 通过配置`numprocs=8`参数来限制进程数量。
+
+
+
+
+
+
 
 
 <br/><br/><br/><br/><br/>
