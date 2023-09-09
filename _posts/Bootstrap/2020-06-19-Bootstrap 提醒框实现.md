@@ -84,6 +84,11 @@ $(function () { $("[data-toggle='popover']").popover(); });
 
 更多完整功能看一下 [Bootstrap 弹出框（Popover）插件](https://www.runoob.com/bootstrap/bootstrap-popover-plugin.html) 。
 
+
+
+
+
+<br/><br/><br/><br/><br/>
 ## 参考资料 
 
 Bootstrap 提示工具（Tooltip）插件 <https://www.runoob.com/bootstrap/bootstrap-tooltip-plugin.html>

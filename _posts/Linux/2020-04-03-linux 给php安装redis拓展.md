@@ -7,9 +7,9 @@ meta: linux 给php安装redis拓展
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### apt安装
+### apt安装
 
 用apt方式安装：
 
@@ -78,7 +78,7 @@ W: APT had planned for dpkg to do more than it reported back (0 vs 4).
 
 上面只是一部分，具体可以参考下 [Linux php7.1 apt安装](https://ibaiyang.github.io/blog/linux/2019/12/19/Linux-php7.1-apt%E5%AE%89%E8%A3%85.html#%E5%AE%89%E8%A3%85redis%E6%8B%93%E5%B1%95) 。
 
-#### 编译安装
+### 编译安装
 
 在/usr/local/src目录下，下载php-redis拓展包：
 
@@ -130,8 +130,12 @@ php -m | grep redis
 
 > service php7.1-fpm restart
 
+
+
+
+
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 PECL redis <http://pecl.php.net/package/redis>
 
