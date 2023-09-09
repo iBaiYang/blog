@@ -7,9 +7,9 @@ meta: 记录一下 Linux 下安装Redis流程
 * content
 {:toc}
 
-### 正文
+## 正文
 
-#### Linux 源码安装
+### Linux 源码安装
 
 > cd /usr/local/src/
 >
@@ -34,7 +34,7 @@ meta: 记录一下 Linux 下安装Redis流程
 
 ![]({{site.baseurl}}/images/20210112/20210112125427.jpg)
 
-#### apt方式安装
+### apt方式安装
 
 安装：
 > sudo apt-get update
@@ -60,7 +60,7 @@ meta: 记录一下 Linux 下安装Redis流程
 Redis server v=3.2.6 sha=00000000:0 malloc=jemalloc-3.6.0 bits=64 build=c9ca860b301a190d
 ```
 
-#### Windows 版
+### Windows 版
 
 Redis是一个基于内存亦可持久化的日志型、Key-Value的NoSQL数据库。
 
@@ -95,7 +95,7 @@ Redis是一个基于内存亦可持久化的日志型、Key-Value的NoSQL数据�
 现在，你可以在代码中使用redis服务了。
 
 
-#### 拓展
+### 拓展
 
 linux下安装教程：
 
@@ -107,7 +107,7 @@ linux下安装教程：
 
 <http://www.cnblogs.com/zgaspnet/p/3939198.html>
 
-不过仅是参考而已，不要照着做，应该想LNMP那里安装swoole拓展一样安装：
+不过仅是参考而已，不要照着做，应该像LNMP那里安装swoole拓展一样安装：
 
 <http://blog.sina.com.cn/s/blog_6aba78b40102x297.html>
 
@@ -121,8 +121,12 @@ redis拓展包在这里下载：
 
 
     
+    
+    
+    
+    
 <br/><br/><br/><br/><br/>
-### 参考资料
+## 参考资料
 
 redis 官网下载 <https://redis.io/download>
 
