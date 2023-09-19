@@ -1152,11 +1152,13 @@ private function msgQueue()
     }
     echo "\n" ."Connect Success" ."\n";
     $channel = new \AMQPChannel($conn);
+    
     $ex = new \AMQPExchange($channel);
     $ex->setName($this->bindSetting['exchange']);
     $ex->setType(AMQP_EX_TYPE_DIRECT);
     $ex->setFlags(AMQP_DURABLE);
     $ex->declareExchange();
+    
     $q = new \AMQPQueue($channel);
     $q->setName($this->bindSetting['queue']);
     $q->setFlags(AMQP_DURABLE);
@@ -1165,6 +1167,7 @@ private function msgQueue()
         $this->bindSetting['exchange'],
         $this->bindSetting['routing']
     );
+    
     if (!file_exists($this->root . '/workers/' . $this->consumer . '.php')) {
         echo "\n" ."workerService does not exist" ."\n";
         exit();
@@ -1173,11 +1176,12 @@ private function msgQueue()
     $this->worker = new $workerName();
     $channel->qos(0,1);
     $q->consume(array($this->worker, 'run'));
+    
     $conn->disconnect();
 }
 ```
 
-可以看到每次消费后都断开了连接，我们需要用进程池来管理消费进程。
+命令窗口关闭后该进程会退出，我们可以使用 pc_ntl系列函数 常驻进程。
 
 参数举例：
 ```
