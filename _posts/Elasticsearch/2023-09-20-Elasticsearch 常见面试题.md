@@ -7,7 +7,251 @@ meta: Elasticsearch 常见面试题
 * content
 {:toc}
 
-## 正文
+## 思维导图
+
+![]({{site.baseurl}}/images/Elasticsearch/20230921232401.png)
+
+![]({{site.baseurl}}/images/Elasticsearch/20230921232405.png)
+
+![]({{site.baseurl}}/images/Elasticsearch/20230921232409.png)
+
+![]({{site.baseurl}}/images/Elasticsearch/20230921242409.png)
+
+## 基本操作
+
+Elasticsearch 提供 RESTful 的 API 对文档的操作也是增删查改，语法设计的主要内容就是 HTTP 请求的动作，
+HTTP 请求的路径，请求体。
+
+### 创建索引
+
+直接运行：
+```
+curl -XPUT "localhost:9200/index_test"
+```
+
+会创建名为index_test的索引，ES会根据插入的数据自动创建type与mapping，可以通过配置文件关闭ES的自动创建mapping功能。 
+
+也可以手动指定mapping，请求方式如下：
+```
+curl -XPUT "localhost:9200/index_test" -d ' # 注意这里的'号
+{
+  "settings": {
+    "index": {
+      "number_of_replicas": "1", # 设置复制数
+      "number_of_shards": "5" # 设置主分片数
+    }
+  },
+  "mappings": { # 创建mapping
+    "test_type": { # 在index中创建一个新的type(相当于table)
+      "properties": {
+        "name": { # 创建一个字段（string类型数据，使用普通索引）
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "age": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
+```
+
+查看mapping：
+```
+curl -XGET 'localhost:9200/index_test/_mapping/test_type'
+```
+
+删除mapping：
+```
+curl -XDELETE 'localhost:9200/index_test/_mapping/test_type'
+```
+
+删除该索引：
+```
+curl -XDELETE "localhost:9200/index_test"
+```
+
+### 增
+
+Elasticsearch 中的增是由 HTTP PUT 方法完成的，路径指定使用的索引和文档 Id（索引无则自动创建，没有 Id 则随即生成），
+请求体是文档体（以 json 形式）。
+
+新增一条，使用 _doc 端点新增一个文档（books 即为文档归属的索引），1 即文档 Id
+```
+PUT books/_doc/1
+{
+    "title":"Effective Java",
+    "author":"Joshua Bloch",
+    "release_date":"2001-06-01",
+    "amazon_rating":4.7,
+    "best_seller":true,
+    "prices": {
+        "usd":9.95,
+    }
+}
+```
+
+批量新增多个文档：
+```
+POST _bulk
+{"index":{"_index":"books","_id":"1"}}
+{"title": "titlePHP,"author": "author1","edition": 11, "synopsis": "PHP synopsis","amazon_rating": 4.6,"release_date": "2018-08-27","tags": ["Programming Languages, PHP Programming"]}
+{"index":{"_index":"books","_id":"2"}}
+{"title": "titleJAVA","author": "author2", "edition": 3,"synopsis": "JAVA synopsis", "amazon_rating": 4.7, "release_date": "2017-12-27", "tags": ["Object Oriented Software Design"]}
+```
+
+注意这里的请求体并非是一个常规的 json，这里是使用 多个 json 组成的，每两个 json 为一组，前一个制定索引和 Id，后一个指定文档体。
+
+### 查
+
+**计数**
+
+通过索引下的 _count 端点
+```
+GET /books/_count
+```
+
+根路径下的 _count 端点返回所有索引的文档数量。
+
+**通过 Id 查询文档**
+
+通过索引下的 _doc 或 _source 端点和文档 Id
+```
+GET /books/_doc/1
+
+GET /books/_source/1
+```
+
+**搜索文档（包括聚合）**
+
+通过索引下的 _search 端点和查询请求体。
+
+Elasticsearch 存在许多复杂请求基本都是依靠请求体进行的。
+
+-----------------------
+
+查询指定属性：
+```
+GET books/_search
+{
+    "query": {
+        "match": {
+            "author": "Joshua"
+        }
+    }
+}
+```
+
+-----------------------
+
+结构化查询（如查询age在18-60之间的文档）：
+```
+GET books/_search
+{
+    "query": {
+        "range":{
+            "age{
+                "gte":18,
+                "lte":60
+            }
+        }
+    }
+}
+```
+
+也支持filter操作，速度比query快，需要结合布尔类型使用。
+
+-----------------------
+
+多个条件联合查询（如查找name中包含“一页书“且age为18的文档）：
+```
+GET books/_search
+{
+    "query": {
+        “bool”: {
+            "must":[
+                {
+                    "match":{
+                        "name":"一页书"
+                    }
+                },
+                {
+                "filter":{
+                    "term"{
+                        "age":18
+                    }
+                }
+            ]
+        }
+    }
+}
+```
+
+支持must（与）、should（或）、must not等逻辑运算。
+
+-----------------------
+
+match、macth_phrase、multi_match与term的区别
+
+match对会先对query进行分词，只要文档里面包含一个query中一个词就会被搜出来； 
+
+macth_phrase也会对query进行分词，但一个文档必须包含query里面所有的词才会被搜出来，可以通过slop参数降低这种约束； 
+```
+GET books/_search
+{
+    "query": {
+        "match_phrase": {
+            "content" : {
+                "query" : "我的宝马多少马力",
+                "slop" : 1
+            }
+        }
+    }
+}
+```
+
+multi_match对多个字段同时进行匹配；
+
+term表示完全匹配，不对query进行分词，直接去匹配索引。
+
+### 更新
+
+修改整条数据（也可用PUT）：
+```
+POST books/_doc/1
+{
+    "title":"Effective Java",
+    "author":"Joshua Bloch",
+    "release_date":"2001-06-01",
+    "amazon_rating":4.7,
+    "best_seller":true,
+    "prices": {
+        "usd":9.95,
+    }
+}
+```
+
+只修改里面的一部分字段（只能使用POST）：
+```
+POST books/_update/1
+{
+    "doc": {
+        "title":"JS"
+    }
+}
+```
+
+### 删除
+
+```
+DELETE books/_doc/1
+```
+
+
+
+
+## 讲解一
 
 ### 1、Elasticsearch是什么
 
@@ -107,54 +351,54 @@ PUT /product
 
 2.4 映射参数
 
-1.index:是否对创建对当前字段创建倒排索引，默认true,如果不创建索引，该字段不会通过索引被搜索到，但是仍然会在source元数据中展示
-2.analyzer:：指定分析器(character filter、tokenizer、.Token filters)。
-3.boost:对当前字段相关度的评分权重，默认1
-4.coerce:是否允许强制类型转换 true "1” => 1 false  "1” =< 1
-5.copy to:该参数允许将多个字段的值复制到组字段中，然后可以将其作为单个字段进行查询
-6.doc values:为了提升排序和聚合效率，默认true,如果确定不需要对字段进行排序或聚合，也不需要
-通过脚本访问字段值，则可以禁用doc值以节省磁盘
-空间（不支持text和annotated text)
-7.dynamic:控制是否可以动态添加新字段
-1.true新检测到的字段将添加到映射中。（默认）
-2.false新检测到的字段将被忽略。这些字段将不会被索引，因此将无法搜索，但仍会出现在
-source返回的匹配项中。这些字段不会添加到映射中，必须显式
-添加新字
-段。
-3.strict如果检测到新字段，则会引发异常并拒绝文档。必须将新字段显式添加到映射中
-8.eager_global_ordinals:用于聚合的字段上，优化聚合性能。
-9.Frozen indices(冻结索引：有些索引使用率很高，会被保存在内存中，有些使用率特别低，宁愿在
-使用的时候重新创建，在使用完毕后丢弃数据，Frozen indices的数据命中频率小，不适用于高搜索负
-载，数据不会被保存在内存中，堆空间占用比普通索引少得多，Frozen indices是只读的，请求可能是
-秒级或者分钟级。*eager global ordinals?不适用于Frozen indices
-10.enable:是否创建倒排索引，可以对字段操作，也可以对索引操作，如果不创建索引，让然可以检索并
-在source元数据中展示，通慎使用，该状态无法修改。fielddata:查询时内存数据结构，在首次用当
-前字段聚合、排序或者在脚本中使用时，需要字段为fielddata数据结构，并且创建倒排索l保存到堆中
+1. index：是否对创建对当前字段创建倒排索引，默认true,如果不创建索引，该字段不会通过索引被搜索到，但是仍然会在source元数据中展示
+2. analyzer：指定分析器(character filter、tokenizer、.Token filters)。
+3. boost：对当前字段相关度的评分权重，默认1
+4. coerce：是否允许强制类型转换 true "1” => 1 false  "1” =< 1
+5. copy to：该参数允许将多个字段的值复制到组字段中，然后可以将其作为单个字段进行查询
+6. doc values：为了提升排序和聚合效率，默认true,如果确定不需要对字段进行排序或聚合，也不需要通过脚本访问字段值，
+则可以禁用doc值以节省磁盘空间（不支持text和annotated text)
+7. dynamic：控制是否可以动态添加新字段
+* 1.true新检测到的字段将添加到映射中。（默认）
+* 2.false新检测到的字段将被忽略。这些字段将不会被索引，因此将无法搜索，但仍会出现在source返回的匹配项中。
+这些字段不会添加到映射中，必须显式添加新字段。
+* 3.strict如果检测到新字段，则会引发异常并拒绝文档。必须将新字段显式添加到映射中
+8. eager_global_ordinals：用于聚合的字段上，优化聚合性能。
+9. Frozen indices(冻结索引：有些索引使用率很高，会被保存在内存中，有些使用率特别低，宁愿在使用的时候重新创建，
+在使用完毕后丢弃数据，Frozen indices的数据命中频率小，不适用于高搜索负载，数据不会被保存在内存中，
+堆空间占用比普通索引少得多，Frozen indices是只读的，请求可能是秒级或者分钟级。*eager global ordinals?不适用于Frozen indices
+10. enable：是否创建倒排索引，可以对字段操作，也可以对索引操作，如果不创建索引，让然可以检索并在source元数据中展示，
+通慎使用，该状态无法修改。fielddata：查询时内存数据结构，在首次用当前字段聚合、排序或者在脚本中使用时，
+需要字段为fielddata数据结构，并且创建倒排索l保存到堆中
+```
 PUT my_index
 "mappings":
 "enabled":false
-11.*fields:给field创建多字段，用于不同目的（全文检索或者聚合分析排序）
-12.format:格式化
+```
+11. *fields：给field创建多字段，用于不同目的（全文检索或者聚合分析排序）
+12. format：格式化
+```
 "date":
 "type":"date",
 "format":"yyyy-MM-dd"
-13.ignore above:超过长度将被忽略
-14.ignore malformed:忽路类型错误
-15.index options:控制将哪些信息添加到反向索引中以进行搜索和突出显示。仅用于text字段
-16.Index phrases:提升exact value查询速度，但是要消耗更多磁盘空间
-17.Index prefixes:前缀搜索
-1.min chars:前缀最小长度，>0，默认2（包含）》
-2.max chars:.前缀最大长度，<20，默认5（包含）】
-18.meta:附加元数据
-19.normalizer:
-20.norms:是否禁用评分（在filter和聚合字段上应该禁用）。
-21.null value:为null值设置默认值*
-22.position increment gap:
-23.proterties:除了mapping还可用于object的属性设置
-24.search analyzer:设置单独的查询时分析器：
-25.similarity:为字段设置相关度算法，支持BM25、claassic(TF-lDF)、boolean
-26.store:设置字段是否仅查询
-27.term vector:*运维参数
+```
+13. ignore above：超过长度将被忽略
+14. ignore malformed：忽路类型错误
+15. index options：控制将哪些信息添加到反向索引中以进行搜索和突出显示。仅用于text字段
+16. Index phrases：提升exact value查询速度，但是要消耗更多磁盘空间
+17. Index prefixes：前缀搜索
+* 1.min chars：前缀最小长度，>0，默认2（包含）》
+* 2.max chars：.前缀最大长度，<20，默认5（包含）】
+18. meta：附加元数据
+19. normalizer：
+20. norms：是否禁用评分（在filter和聚合字段上应该禁用）。
+21. null value：为null值设置默认值*
+22. position increment gap：
+23. proterties：除了mapping还可用于object的属性设置
+24. search analyzer：设置单独的查询时分析器：
+25. similarity：为字段设置相关度算法，支持BM25、claassic(TF-lDF)、boolean
+26. store：设置字段是否仅查询
+27. term vector：*运维参数
 
 ### 3、什么是全文检索
 
@@ -384,5 +628,7 @@ B+Trees：B加树
 
 ES面试必问：Elasticsearch是什么？ <https://www.bilibili.com/video/BV1714y1c7Gh>
 
+如何系统学习ElasticSearch、Kibana、Logstash （博主博客列表有好多可阅读的ElasticSearch相关内容） <https://blog.csdn.net/qq_36095679/article/details/103144985>
 
+Elasticsearch 索引、修改、删除文档 <https://zhuanlan.zhihu.com/p/378416938>
 
