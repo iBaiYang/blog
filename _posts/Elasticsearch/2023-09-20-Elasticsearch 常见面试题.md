@@ -9,9 +9,9 @@ meta: Elasticsearch 常见面试题
 
 ## 思维导图
 
-![]({{site.baseurl}}/images/Elasticsearch/20230921232401.png)
-
 ![]({{site.baseurl}}/images/Elasticsearch/20230921232405.png)
+
+![]({{site.baseurl}}/images/Elasticsearch/20230921232407.png)
 
 ![]({{site.baseurl}}/images/Elasticsearch/20230921232409.png)
 
