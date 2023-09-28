@@ -29,14 +29,14 @@ socket赋予了我们操控传输层和网络层的能力，从而得到更强�
 先来做个最简单socket服务器：
 ```php
 <?php
-$host = '0.0.0.0';
-$port = 9999;
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind($listen_socket, $host, $port);
+socket_bind($serverSocket, $serverAddress, $serverPort);
 // 开始监听socket
-socket_listen($listen_socket);
+socket_listen($serverSocket);
 // 进入while循环，不用担心死循环死机，因为程序将会阻塞在下面的socket_accept()函数上
 while (true) {
     // 此处将会阻塞住，一直到有客户端来连接服务器。阻塞状态的进程是不会占据CPU的
@@ -46,13 +46,13 @@ while (true) {
     你也可以看到下图,调度只在运行和就绪之间的,所以cpu不会傻傻等正在休息的士兵起来了,再指挥
     */
     // 所以你不用担心while循环会将机器拖垮，不会的 
-    $connection_socket = socket_accept($listen_socket);
+    $connection_socket = socket_accept($serverSocket);
     // 向客户端发送一个helloworld
     $msg = "helloworld\r\n";
     socket_write($connection_socket, $msg, strlen($msg));
     socket_close($connection_socket);
 }
-socket_close($listen_socket);
+socket_close($serverSocket);
 ```
 
 ![](/blog/images/20200921/20200921002101.jpeg)
@@ -76,19 +76,19 @@ socket_close($listen_socket);
 这样当accept了第二个客户端后再fork一个子进程来处理第二个客户端的请求，这样问题不就解决了吗？OK！撸一把代码演示一下：
 ```php
 <?php
-$host = '0.0.0.0';
-$port = 9999;
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind($listen_socket, $host, $port);
+socket_bind($serverSocket, $serverAddress, $serverPort);
 // 开始监听socket
-socket_listen($listen_socket);
+socket_listen($serverSocket);
 // 进入while循环，不用担心死循环死机，因为程序将会阻塞在下面的socket_accept()函数上
 while (true) {
     // 此处将会阻塞住，一直到有客户端来连接服务器。阻塞状态的进程是不会占据CPU的
     // 所以你不用担心while循环会将机器拖垮，不会的 
-    $connection_socket = socket_accept($listen_socket);
+    $connection_socket = socket_accept($serverSocket);
     // 当accept了新的客户端连接后，就fork出一个子进程专门处理
     $pid = pcntl_fork();
     // 在子进程中处理当前连接的请求业务
@@ -103,7 +103,7 @@ while (true) {
         exit;
     }
 }
-socket_close($listen_socket);
+socket_close($serverSocket);
 ```
 
 将代码保存为server.php，然后执行php server.php，客户端依然使用telnet 127.0.0.1 9999，只不过这次我们开启两个终端来执行telnet。
@@ -122,14 +122,14 @@ socket_close($listen_socket);
 而是继续等待下一个客户端的请求。这样，不仅避免了进程反复fork销毁巨大资源浪费，而且通过固定数量的子进程来保护系统不会因无限fork而崩溃。
 ```php
 <?php
-$host = '0.0.0.0';
-$port = 9999;
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
 // 创建一个tcp socket
-$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 // 将socket bind到IP：port上
-socket_bind($listen_socket, $host, $port);
+socket_bind($serverSocket, $serverAddress, $serverPort);
 // 开始监听socket
-socket_listen($listen_socket);
+socket_listen($serverSocket);
 // 给主进程换个名字
 cli_set_process_title('phpserver master process');
 // 按照数量fork出固定个数子进程
@@ -138,7 +138,7 @@ for ($i = 1; $i <= 10; $i++) {
     if (0 == $pid) {
         cli_set_process_title('phpserver worker process');
         while (true) {
-            $conn_socket = socket_accept($listen_socket);
+            $conn_socket = socket_accept($serverSocket);
             $msg = "helloworld\r\n";
             socket_write($conn_socket, $msg, strlen($msg));
             socket_close($conn_socket);
@@ -150,7 +150,7 @@ for ($i = 1; $i <= 10; $i++) {
 while (true) {
     sleep(1);
 }
-socket_close($listen_socket);
+socket_close($serverSocket);
 ```
 
 将文件保存为server.php后php server.php执行，然后再用 `ps -ef | grep phpserver | grep -v grep` 来看下服务器进程状态：
@@ -258,28 +258,41 @@ socket初探 --- 先从一个简单的socket服务器开始，依次讲解了三
 下面用 socket_select 代码演示一个客户端进行群聊的例子：
 ```php
 <?php
-// BEGIN 创建一个tcp socket服务器
-$host = '0.0.0.0';
-$port = 9999;
-$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_bind($listen_socket, $host, $port);
-socket_listen($listen_socket);
-// END 创建服务器完毕 
+/* BEGIN 创建一个tcp socket服务器 */ 
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
+$serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+if ($serverSocket === false) {  
+    echo "无法创建 Socket: " . socket_strerror(socket_last_error()) . "\n";  
+    exit;  
+}  
 
-// $client用来保存连接的客户端，也将监听socket放入到read fd set中去，因为select也要监听listen_socket上发生事件
-$client = [$listen_socket];
+if (socket_bind($serverSocket, $serverAddress, $serverPort) === false) {  
+    echo "无法绑定 Socket: " . socket_strerror(socket_last_error($serverSocket)) . "\n";  
+    exit;  
+}  
+
+if (socket_listen($serverSocket) === false) {  
+    echo "无法监听 Socket: " . socket_strerror(socket_last_error($serverSocket)) . "\n";  
+    exit;  
+}  
+/* END 创建服务器完毕 */ 
+
+// $clientSockets用来保存连接的客户端，也将监听socket放入到read fd set中去，因为select也要监听listen_socket上发生事件
+$clientSockets = [$serverSocket];
 
 // 先暂时只引入读事件，避免有同学晕头
-$write = [];
-$exp = [];
+$writeSockets = [];
+$exceptSockets = [];
+$timeout = null; 
 
 // 开始进入循环
 while (true) {
-    // $read读取的客户端为连接的客户端
-    $read = $client;
+    // $readSockets读取的客户端为连接的客户端
+    $readSockets = $clientSockets;
     
     /*
-    当select监听到了fd变化，注意第四个参数为null；如果写成大于0的整数那么表示将在规定时间内超时；
+    当select监听到了fd变化，注意第四个参数$timeout为null；如果写成大于0的整数那么表示将在规定时间内超时；
     如果写成等于0的整数那么表示不断调用select，执行后立马返回，然后继续；
     如果写成null，那么表示select会阻塞一直到监听发生变化。
     */
@@ -287,42 +300,55 @@ while (true) {
     第一个参数必须是数组,数组里面含有待检测的套接字,而且第四个参数写成null阻塞就是代表程序就一直停在socket_select这个函数上,
     什么都不干,等你有连接或者有数据发送,我才继续执行,所以你使用var_dump后,再进行telnet 才会有返回值,否则没有任何输出的
     */
-    if (socket_select($read, $write, $exp, null) > 0) {
-        // 判断listen_socket有没有发生变化，如果有就是有客户端发生连接操作了。刚开始把$listen_socket放入了$client，$client又放入了$read
-        if (in_array($listen_socket, $read)) {
-            // 将客户端socket加入到客户端连接client数组中
-            // socket_accept创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
-            $client_socket = socket_accept($listen_socket);
-            
-            //下面这句很有用,避免了  unset( $read[ $key ] )后,在while时,客户端进来再次用  $client赋值给$read
-            $client[] = $client_socket;
-            
-            // 然后将listen_socket从read中去除掉
-            $key = array_search($listen_socket, $read);
-            unset($read[$key]);
-        }
+    $result = socket_select($readSockets, $writeSockets, $exceptSockets, $timeout);
+    if ($result === false) {  
+        echo "select 调用失败: " . socket_strerror(socket_last_error()) . "\n";  
+        exit;  
+    } elseif ($result === 0) {  
+        // select 返回 0 表示没有就绪的 Socket 资源，继续循环等待  
+        continue;  
+    }
+    
+    // 判断$serverSocket有没有发生变化，如果有就是有客户端发生连接操作了。刚开始把$serverSocket放入了$clientSockets，$clientSockets又放入了$readSockets
+    if (in_array($serverSocket, $readSockets)) {
+        // 将客户端socket加入到客户端连接client数组中
+        // $serverSocket创建一个可用套接字传送数据，后面准备给其他客户端发送数据用的
+        $clientSocket = socket_accept($serverSocket);
         
-        // 查看去除listen_socket中是否还有client_socket。
-        // 已经进行telnet连接后，会直接走这一步，不会进去上面代码的in_array。
-        // 第一个客户端连接，第一次到这里$read数为0，第二次循环执行到这里$read中为其自身的连接，
-        // 或者其他后续的客户端连接发生了连接，会执行到这里。
-        if (count($read) > 0) {
-            // 循环监听的所有客户端连接
-            foreach ($read as $socket_item) {
-                // 从可读取的客户端连接fd中读取出来数据内容，然后发送给其他客户端
-                $content = socket_read($socket_item, 2048);
-                // 循环client数组，将内容发送给其余所有客户端
-                foreach ($client as $client_socket) {
-                    // 因为client数组中包含了 listen_socket 以及当前发送者自己socket，$client_socket != $socket_item 再次排除自已,所以需要排除二者
-                    if ($client_socket != $listen_socket && $client_socket != $socket_item) {
-                        socket_write($client_socket, $content, strlen($content));
+        //下面这句很有用,避免了  unset( $readSockets[ $key ] )后,在while时,客户端进来再次用  $clientSockets赋值给$readSockets
+        $clientSockets[] = $clientSocket;
+        
+        // 然后将$serverSocket从read中去除掉
+        $key = array_search($serverSocket, $readSockets);
+        unset($readSockets[$key]);
+    }
+    
+    // 查看去除$serverSocket中是否还有$clientSocket。
+    // 已经进行telnet连接后，会直接走这一步，不会进去上面代码的in_array。
+    // 第一个客户端连接，第一次到这里$readSockets数为0，第二次循环执行到这里$readSockets中为其自身的连接，
+    // 或者其他后续的客户端连接发生了连接，会执行到这里。
+    if (count($readSockets) > 0) {
+        // 循环监听的所有客户端连接
+        foreach ($readSockets as $socket_item) {
+            // 从可读取的客户端连接fd中读取出来数据内容，然后发送给其他客户端
+            $content = socket_read($socket_item, 2048);
+            if ($content === false) {  
+                echo "读取数据失败: " . socket_strerror(socket_last_error($socket_item)) . "\n";  
+                // 关闭客户端连接  
+                socket_close($socket_item);  
+                // 从客户端 Socket 列表中移除连接  
+                $index = array_search($socket_item, $clientSockets);  
+                unset($clientSockets[$index]);  
+            } else {  
+                // 循环$clientSockets数组，将内容发送给其余所有客户端
+                foreach ($clientSockets as $clientSocket) {
+                    // 因为$clientSockets数组中包含了 $serverSocket 以及当前发送者自己socket，$clientSocket != $socket_item 再次排除自已,所以需要排除二者
+                    if ($clientSocket != $serverSocket && $clientSocket != $socket_item) {
+                        socket_write($clientSocket, $content, strlen($content));
                     }
                 }
             }
         }
-    } else {
-        // 当select没有监听到可操作fd的时候，直接continue进入下一次循环
-        continue;
     }
 }
 ```
@@ -385,9 +411,9 @@ int socket_select ( array &$read , array &$write , array &$except , int $tv_sec 
 
 select虽然一定程度上解决了一个进程可以读写多个fd的问题，但是select有如下致命缺点：
 - 默认情况下，select可管理的fd的数量是1024个（阿梅最多帮你收1024个快递）
-- select每次检测到fd集合中有可读写的fd时，它会把整个fd全部复制一遍给你，然后你自己再去逐个轮询究竟是哪个fd可读写
+- select每次检测到fd集合中有可读写的fd时，它会把整个fd全部复制一遍给你（可读可写的fd），然后你自己再去逐个轮询究竟是哪个fd可读可写
 - 正如以上所说，它会把整个fd全部复制给你（她把整个清单抄了一份给你），从术语上讲，这个过程是将fd从内核态复制一遍给用户态的调用进程
-- 正如以上所说，你自己逐个轮询所有fd才能知道究竟是哪个可读写（反正就是有快递来了，来了几个都是谁你自己个儿对着清单查去）
+- 正如以上所说，你自己逐个轮询所有fd才能知道究竟是哪个可读、哪个可写（反正就是有快递来了，来了几个都是谁你自己个儿对着清单查去）
 - 你自己个轮询的过程是线性的，如果有个n个fd，那么时间复杂度一定是O(n)
 
 而epoll则拥有更加专业的高端大气上档次的技能指标：
@@ -671,31 +697,31 @@ if ($features & EventConfig::FEATURE_FDS) {
 
 ```php
 <?php
-$host = '0.0.0.0';
-$port = 9999;
-$listen_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_bind($listen_socket, $host, $port);
-socket_listen($listen_socket);
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
+$serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_bind($serverSocket, $serverAddress, $serverPort);
+socket_listen($serverSocket);
 
-echo PHP_EOL . PHP_EOL . "Http Server ON : http://{$host}:{$port}" . PHP_EOL;
+echo PHP_EOL . PHP_EOL . "Http Server ON : http://{$serverAddress}:{$serverPort}" . PHP_EOL;
 
 // 将服务器设置为非阻塞，此处概念可能略拐弯，建议各位查阅一下手册
-socket_set_nonblock($listen_socket);
+socket_set_nonblock($serverSocket);
 // 创建事件基础体，还记得航空母舰吗？
 $event_base = new EventBase();
 // 创建一个事件，还记得歼15舰载机吗？我们将“监听socket”添加到事件监听中，触发条件是read，
 // 也就是说，一旦“监听socket”上有客户端来连接，就会触发这里，我们在回调函数里来处理接受到新请求后的反应
-$event = new Event($event_base, $listen_socket, Event::READ | Event::PERSIST, function ($listen_socket) {
+$event = new Event($event_base, $serverSocket, Event::READ | Event::PERSIST, function ($serverSocket) {
     // 为什么写成这样比较执拗的方式？因为，“监听socket”已经被设置成了非阻塞，
     // 这种情况下，accept是立即返回的，所以，必须通过判定accept的结果是否为true来执行后面的代码。
     // 一些实现里，包括workerman在内，可能是使用@符号来压制错误，个人不太建议这样做
-    if (($connect_socket = socket_accept($listen_socket)) != false) {
+    if (($connect_socket = socket_accept($serverSocket)) != false) {
         echo "有新的客户端：" . intval($connect_socket) . PHP_EOL;
         $msg = "HTTP/1.0 200 OK\r\nContent-Length: 2\r\n\r\nHi";
         socket_write($connect_socket, $msg, strlen($msg));
         socket_close($connect_socket);
     }
-}, $listen_socket);
+}, $serverSocket);
 $event->add();
 $event_base->loop();
 ```
@@ -714,10 +740,10 @@ $event_base->loop();
 啦啦啦啦，开始码：
 ```php
 <?php
-$host = '0.0.0.0';
-$port = 9999;
+$serverAddress = '0.0.0.0';
+$serverPort = 9999;
 $fd = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_bind($fd, $host, $port);
+socket_bind($fd, $serverAddress, $serverPort);
 socket_listen($fd);
 // 注意，将“监听socket”设置为非阻塞模式
 socket_set_nonblock($fd);
@@ -727,7 +753,7 @@ $event_arr = [];
 $conn_arr = [];
 
 echo PHP_EOL . PHP_EOL . "欢迎来到ti-chat聊天室!发言注意遵守当地法律法规!" . PHP_EOL;
-echo "        tcp://{$host}:{$port}" . PHP_EOL;
+echo "        tcp://{$serverAddress}:{$serverPort}" . PHP_EOL;
 
 $event_base = new EventBase();
 $event = new Event($event_base, $fd, Event::READ | Event::PERSIST, function ($fd) {
@@ -960,7 +986,7 @@ $async_mysql->on('connect', function ($async_mysql) {
 <?php
 $pdo = new pdo();
 try {
-    $pdo->connect($host, $port);
+    $pdo->connect($serverAddress, $serverPort);
     $pdo->query("insert into pinglun() values()");
     $pdo->query("select * from pinglun limit 5");
 } catch (Exception $e) {
