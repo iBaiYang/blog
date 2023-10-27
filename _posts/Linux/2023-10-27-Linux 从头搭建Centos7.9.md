@@ -29,6 +29,10 @@ meta: VirtualBox 从头搭建Centos7.9
 
 ![]({{site.baseurl}}/images/Linux/20231027181544.png)
 
+名称是虚拟机的名称，文件夹是把虚拟机安装在哪个文件夹下，虚拟光盘是上面下载的Centos的iso安装包。
+
+点击下一步：
+
 ![]({{site.baseurl}}/images/Linux/20231027181613.png)
 
 ![]({{site.baseurl}}/images/Linux/20231027181641.png)
