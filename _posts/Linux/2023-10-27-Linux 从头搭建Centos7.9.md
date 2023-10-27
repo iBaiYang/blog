@@ -17,7 +17,7 @@ meta: VirtualBox 从头搭建Centos7.9
 
 ### 虚拟机安装
 
-这里的虚拟机只是类似于刚出场未安装系统（如Win10）的裸机，只是提供硬件上的支持，这也是下面可能会报错的来源。
+这里的虚拟机只是类似于刚出厂未安装系统（如Win10）的裸机，只是提供硬件上的支持，这也是下面可能会报错的来源。
 在安装Centos时才是安装运行的软件系统。有了这个认识后，下面安装应该会好理解一些。
 
 在Centos官网下载iso安装包 [Centos download](http://isoredirect.centos.org/centos/7/isos/x86_64/) ，
@@ -27,6 +27,43 @@ meta: VirtualBox 从头搭建Centos7.9
 
 启动 VirtualBox，点击新建：
 
+![]({{site.baseurl}}/images/Linux/20231027181544.png)
+
+![]({{site.baseurl}}/images/Linux/20231027181613.png)
+
+![]({{site.baseurl}}/images/Linux/20231027181641.png)
+
+![]({{site.baseurl}}/images/Linux/20231027181723.png)
+
+![]({{site.baseurl}}/images/Linux/20231027181748.png)
+
+![]({{site.baseurl}}/images/Linux/20231027181904.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182012.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182045.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182335.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182435.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182537.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182649.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182723.png)
+
+![]({{site.baseurl}}/images/Linux/20231027182824.png)
+
+![]({{site.baseurl}}/images/Linux/20231027183053.png)
+
+![]({{site.baseurl}}/images/Linux/20231027183229.png)
+
+![]({{site.baseurl}}/images/Linux/20231027183505.png)
+
+![]({{site.baseurl}}/images/Linux/20231027183534.png)
+
+![]({{site.baseurl}}/images/Linux/20231027183819.png)
 
 
 
@@ -66,9 +103,9 @@ IConsole {6ac83d89-6ee7-4e33-8ae6-b257b2e81be8}
 
 保存你的设置并重启电脑后，你应该就可以在你的虚拟机中运行你的程序了。
 
-例如装了i5CPU的华硕电脑。
-1. 开机时按 Del 键 进入BIOS，按 F7 进入 Advanced Mode（高级模式）
-2. 在“Advanced Mode”（高级模式）下，按以下路径找到“Advanced”（高级）——“CPU Configuration”（CPU设置）
+例如在装了i5系列CPU的华硕电脑：
+1. 开机时按 Del 键 进入BIOS，按 F7 进入 “Advanced Mode”（高级模式）
+2. 在“Advanced Mode”（高级模式）下，按以下路径找到“Advanced”（高级）—>“CPU Configuration”（CPU设置）
 3. 下滑页面到底部，“Intel (VMX) Virtual Technology”（或者叫虚拟化技术），然后把“Disabled”（禁用）修改为“Enabled”（启用）。
 4. 按“F10”键保存并退出，就成功开启VT了。
 
