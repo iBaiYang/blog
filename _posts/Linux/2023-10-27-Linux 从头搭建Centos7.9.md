@@ -31,46 +31,25 @@ meta: VirtualBox 从头搭建Centos7.9
 
 名称是虚拟机的名称，文件夹是把虚拟机安装在哪个文件夹下，虚拟光盘是上面下载的Centos的iso安装包。
 
-点击下一步：
+点击下一步，修改下密码：
 
 ![]({{site.baseurl}}/images/Linux/20231027181613.png)
 
+点击下一步，配置内存大小和处理器数目：
+
 ![]({{site.baseurl}}/images/Linux/20231027181641.png)
+
+点击下一步，配置虚拟硬盘大小：
 
 ![]({{site.baseurl}}/images/Linux/20231027181723.png)
 
+点击下一步，看一下上面概括起来的配置：
+
 ![]({{site.baseurl}}/images/Linux/20231027181748.png)
 
+点击“完成”按钮，等待安装完成，不过这里安装好的是 虚拟机，不是 Centos7.9 系统环境，所以右侧提示“不能安装系统”：
+
 ![]({{site.baseurl}}/images/Linux/20231027181904.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182012.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182045.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182335.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182435.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182537.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182649.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182723.png)
-
-![]({{site.baseurl}}/images/Linux/20231027182824.png)
-
-![]({{site.baseurl}}/images/Linux/20231027183053.png)
-
-![]({{site.baseurl}}/images/Linux/20231027183229.png)
-
-![]({{site.baseurl}}/images/Linux/20231027183505.png)
-
-![]({{site.baseurl}}/images/Linux/20231027183534.png)
-
-![]({{site.baseurl}}/images/Linux/20231027183819.png)
-
-
-
 
 ### CPU未开启虚拟机支持功能
 
@@ -117,6 +96,61 @@ IConsole {6ac83d89-6ee7-4e33-8ae6-b257b2e81be8}
 
 ### Centos7.9安装
 
+选中左侧的 虚拟机，点击“启动”，弹出窗口中会提示你选择光驱，在这里选择我们上面下载好的 CentOS-7-x86_64-Minimal-2009.iso 包：
+
+![]({{site.baseurl}}/images/Linux/20231027182012.png)
+
+点击“挂载并尝试启动”，选择 “Install Centos 7”，回车安装：
+
+![]({{site.baseurl}}/images/Linux/20231027182045.png)
+
+选择语言：
+
+![]({{site.baseurl}}/images/Linux/20231027182335.png)
+
+提示安装位置有误：
+
+![]({{site.baseurl}}/images/Linux/20231027182435.png)
+
+点击，选择上面配置的 虚拟硬盘，然后点击左上角的 安装目标位置“完成”按钮：
+
+![]({{site.baseurl}}/images/Linux/20231027182537.png)
+
+点击开始安装，进入安装进度页：
+
+![]({{site.baseurl}}/images/Linux/20231027182649.png)
+
+设置 ROOT 账户密码：
+
+![]({{site.baseurl}}/images/Linux/20231027182723.png)
+
+创建用户：
+
+![]({{site.baseurl}}/images/Linux/20231027182824.png)
+
+现在我们可以看一下虚拟机安装Centos的具体参数（现在 存储 部分中还有 光驱）：
+
+![]({{site.baseurl}}/images/Linux/20231027183053.png)
+
+安装进度提示完成，点击“重启”按钮：
+
+![]({{site.baseurl}}/images/Linux/20231027183229.png)
+
+Centos7.9服务器启动成功，进入命令行模式：
+
+![]({{site.baseurl}}/images/Linux/20231027183505.png)
+
+我们再看一下虚拟机安装的Centos的具体参数（现在 存储 部分中已经没有 光驱 了）：
+
+![]({{site.baseurl}}/images/Linux/20231027183534.png)
+
+在命令行窗口中登录 root 账户：
+
+![]({{site.baseurl}}/images/Linux/20231027183819.png)
+
+至此，Centos7.9安装完成。
+
+接下来是服务配置部分。
 
 
 
