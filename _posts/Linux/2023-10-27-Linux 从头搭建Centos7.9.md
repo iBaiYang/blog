@@ -208,6 +208,22 @@ ping: www.baidu.com: 未知的名称或服务
 [root@localhost ~]# ping 36.155.132.55
 connect: 网络不可达
 [root@localhost ~]#
+[root@localhost ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 351sec preferred_lft 351sec
+    inet6 fe80::90bb:7c4e:f558:7881/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@localhost ~]#
 [root@localhost ~]# ls /etc/sysconfig/network-scripts/
 ifcfg-enp0s3  ifdown-ipv6    ifdown-Team      ifup-eth    ifup-post      ifup-tunnel
 ifcfg-lo      ifdown-isdn    ifdown-TeamPort  ifup-ippp   ifup-ppp       ifup-wireless
@@ -243,6 +259,26 @@ ONBOOT=no
 [root@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
 [root@localhost ~]#
 [root@localhost ~]# systemctl restart network
+[root@localhost ~]#
+[root@localhost ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 85874sec preferred_lft 85874sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 351sec preferred_lft 351sec
+    inet6 fe80::90bb:7c4e:f558:7881/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
 [root@localhost ~]#
 [root@localhost ~]# ping www.baidu.com
 PING www.a.shifen.com (14.119.104.254) 56(84) bytes of data.
