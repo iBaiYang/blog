@@ -152,7 +152,7 @@ Centos7.9服务器启动成功，进入命令行模式：
 
 接下来是服务器配置部分。
 
-### 网络配置
+### SSH客户端连接
 
 看一下现在服务器的网络信息：
 
@@ -184,7 +184,7 @@ Centos7.9服务器启动成功，进入命令行模式：
 
 ![]({{site.baseurl}}/images/Linux/20231028171601.png)
 
-正常运行中。如果命令不存在，我们需要安装以下 SSH协议服务。
+正常运行中。如果服务不存在，我们需要安装下 SSH协议服务软件。
 
 我们通过PuTTY连接下服务器：
 
@@ -197,8 +197,82 @@ Centos7.9服务器启动成功，进入命令行模式：
 接下来就可以在主机本地操作服务器了，比原来在虚拟机打开的服务器窗口中操作时总是提示“捕获鼠标”方便了不少。
 下次服务器启动时，选择“无界面启动”。
 
+### 网络配置
 
+看一下服务器访问外网的情况：
+```
+[root@localhost ~]# ping www.baidu.com
+ping: www.baidu.com: 未知的名称或服务
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# ping 36.155.132.55
+connect: 网络不可达
+[root@localhost ~]#
+[root@localhost ~]# ls /etc/sysconfig/network-scripts/
+ifcfg-enp0s3  ifdown-ipv6    ifdown-Team      ifup-eth    ifup-post      ifup-tunnel
+ifcfg-lo      ifdown-isdn    ifdown-TeamPort  ifup-ippp   ifup-ppp       ifup-wireless
+ifdown        ifdown-post    ifdown-tunnel    ifup-ipv6   ifup-routes    init.ipv6-global
+ifdown-bnep   ifdown-ppp     ifup             ifup-isdn   ifup-sit       network-functions
+ifdown-eth    ifdown-routes  ifup-aliases     ifup-plip   ifup-Team      network-functions-ipv6
+ifdown-ippp   ifdown-sit     ifup-bnep        ifup-plusb  ifup-TeamPort
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s3
+UUID=c7c6c14c-c2c1-424f-9367-621a3c0a36c7
+DEVICE=enp0s3
+ONBOOT=no
+[root@localhost ~]#
+```
 
+访问失败，看到 `ONBOOT=no` ，需要修改为 `ONBOOT=yes` 。在网卡配置中，`ONBOOT="yes"` 表示在系统启动时激活网卡。
+只有处于激活状态的网卡才能去连接网络，进行网络通讯。
+
+修改后重启网卡，然后再跨网段访问试一下：
+```
+[root@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
+[root@localhost ~]#
+[root@localhost ~]# systemctl restart network
+[root@localhost ~]#
+[root@localhost ~]# ping www.baidu.com
+PING www.a.shifen.com (14.119.104.254) 56(84) bytes of data.
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=1 ttl=53 time=27.1 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=2 ttl=53 time=32.1 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=3 ttl=53 time=26.6 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=4 ttl=53 time=26.6 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=5 ttl=53 time=26.9 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=6 ttl=53 time=26.7 ms
+64 bytes from 14.119.104.254 (14.119.104.254): icmp_seq=7 ttl=53 time=26.8 ms
+^C
+--- www.a.shifen.com ping statistics ---
+7 packets transmitted, 7 received, 0% packet loss, time 7741ms
+rtt min/avg/max/mdev = 26.647/27.578/32.105/1.858 ms
+[root@localhost ~]#
+[root@localhost ~]# ping 14.119.104.254
+PING 14.119.104.254 (14.119.104.254) 56(84) bytes of data.
+64 bytes from 14.119.104.254: icmp_seq=1 ttl=53 time=27.3 ms
+64 bytes from 14.119.104.254: icmp_seq=2 ttl=53 time=26.7 ms
+64 bytes from 14.119.104.254: icmp_seq=3 ttl=53 time=26.7 ms
+64 bytes from 14.119.104.254: icmp_seq=4 ttl=53 time=26.5 ms
+64 bytes from 14.119.104.254: icmp_seq=5 ttl=53 time=26.7 ms
+^C
+--- 14.119.104.254 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4010ms
+rtt min/avg/max/mdev = 26.578/26.845/27.328/0.292 ms
+[root@localhost ~]#
+```
+
+访问顺利，网络配置成功。
 
 ## PHP安装
 
