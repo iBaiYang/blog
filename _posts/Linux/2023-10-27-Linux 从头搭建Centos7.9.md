@@ -335,7 +335,337 @@ rtt min/avg/max/mdev = 26.578/26.845/27.328/0.292 ms
 
 ## 共享文件夹
 
+设置共享文件夹，让虚拟机服务器和宿主主机共同操作同一个文件夹。
 
+一、设置共享文件夹
+
+![]({{site.baseurl}}/images/Linux/20231029201505.png)
+
+二、加载增强软件镜像
+
+（一）在VirtualBox软件安装目录里找到下面的`VBoxGuestAdditions.ios`文件
+
+（二）在centos虚拟机界面加载`VBoxGuestAdditions.iso`镜像文件
+
+![]({{site.baseurl}}/images/Linux/20231029201605.png)
+
+`lsscsi` 命令查看SATA/SCSI设备(或主机)及它们的属性：
+```
+[root@10 ~]# lsscsi
+[1:0:0:0]    cd/dvd  VBOX     CD-ROM           1.0   /dev/sr0
+[2:0:0:0]    disk    ATA      VBOX HARDDISK    1.0   /dev/sda
+[root@10 ~]#
+```
+
+`/dev/sr0` 就是光驱，这个位置上是用来插入并读取光盘内容的。
+
+把`/dev/sr0`挂载到`/media/cdrom`文件夹里：
+```
+[root@10 ~]# mkdir -p /media/cdrom
+[root@10 ~]#
+[root@10 ~]# mount /dev/sr0 /media/cdrom
+mount: /dev/sr0 写保护，将以只读方式挂载
+[root@10 ~]#
+[root@10 ~]# ll /media/cdrom
+总用量 42137
+-r--r--r--. 1 root root     1048 7月  27 00:44 AUTORUN.INF
+-r-xr-xr-x. 1 root root     6848 10月 13 00:56 autorun.sh
+dr-xr-xr-x. 2 root root     1468 10月 13 01:41 cert
+dr-xr-xr-x. 2 root root     1252 10月 13 01:41 NT3x
+dr-xr-xr-x. 2 root root     2828 10月 13 01:41 OS2
+-r-xr-xr-x. 1 root root     5096 10月 13 00:56 runasroot.sh
+-r--r--r--. 1 root root      592 10月 13 01:41 TRANS.TBL
+-r--r--r--. 1 root root  2203724 10月 13 01:00 VBoxDarwinAdditions.pkg
+-r-xr-xr-x. 1 root root     4224 10月 13 01:00 VBoxDarwinAdditionsUninstall.tool
+-r-xr-xr-x. 1 root root  6306248 10月 13 00:56 VBoxLinuxAdditions.run
+-r--r--r--. 1 root root  9405440 10月 13 00:56 VBoxSolarisAdditions.pkg
+-r-xr-xr-x. 1 root root 15729536 10月 13 01:41 VBoxWindowsAdditions-amd64.exe
+-r-xr-xr-x. 1 root root   242272 10月 13 00:57 VBoxWindowsAdditions.exe
+-r-xr-xr-x. 1 root root  9232920 10月 13 01:19 VBoxWindowsAdditions-x86.exe
+-r--r--r--. 1 root root      261 7月  27 00:44 windows11-bypass.reg
+[root@10 ~]#
+```
+
+三、安装增强软件
+
+（一）通过下面命令进行安装`VBoxLinuxAdditons.run`依赖功能，以及安装增强软件：
+
+> yum update
+> 
+> yum install gcc kernel-devel kernel-headers dkms make bzip2 libXmu
+> 
+> sh /media/cdrom/VBoxLinuxAdditions.run
+
+```
+[root@10 ~]# sh /media/cdrom/VBoxLinuxAdditions.run
+Verifying archive integrity...  100%   MD5 checksums are OK. All good.
+Uncompressing VirtualBox 7.0.12 Guest Additions for Linux  100%
+VirtualBox Guest Additions installer
+Copying additional installer modules ...
+Installing additional modules ...
+VirtualBox Guest Additions: Starting.
+VirtualBox Guest Additions: Setting up modules
+VirtualBox Guest Additions: Building the VirtualBox Guest Additions kernel
+modules.  This may take a while.
+VirtualBox Guest Additions: To build modules for other installed kernels, run
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup <version>
+VirtualBox Guest Additions: or
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup all
+VirtualBox Guest Additions: Kernel headers not found for target kernel
+3.10.0-1160.el7.x86_64. Please install them and execute
+  /sbin/rcvboxadd setup
+VirtualBox Guest Additions: reloading kernel modules and services
+VirtualBox Guest Additions: unable to load vboxguest kernel module, see dmesg
+VirtualBox Guest Additions: kernel modules and services were not reloaded
+The log file /var/log/vboxadd-setup.log may contain further information.
+[root@10 ~]#
+```
+
+最后查看 `/media` 文件夹，多出的 `sf_develop` 文件夹对应我们设置的共享文件夹（develop 是上面设置的共享文件夹名称）：
+```
+[root@10 ~]# ll /media
+总用量 0
+drwxr-xr-x. 2 root root   6 10月 29 20:38 cdrom
+drwxrwx---. 1 root vboxsf 0 10月 29 15:05 sf_develop
+[root@10 ~]#
+[root@10 ~]# ll /media/sf_develop/
+总用量 0
+drwxrwx---. 1 root vboxsf 0 10月 29 21:59 test
+[root@10 ~]#
+```
+
+test文件夹 是在主机的 develop文件夹 下新建的文件夹。
+
+（二）如果安装`VBoxLinuxAdditons.run`依赖功能时报错
+
+如下报错：
+```
+[root@10 ~]# sh /media/cdrom/VBoxLinuxAdditions.run
+Verifying archive integrity... All good.
+Uncompressing VirtualBox 6.1.26 Guest Additions for Linux........
+VirtualBox Guest Additions installer
+Copying additional installer modules ...
+Installing additional modules ...
+VirtualBox Guest Additions: Starting.
+VirtualBox Guest Additions: Building the VirtualBox Guest Additions kernel
+modules.  This may take a while.
+VirtualBox Guest Additions: To build modules for other installed kernels, run
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup <version>
+VirtualBox Guest Additions: or
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup all
+VirtualBox Guest Additions: Kernel headers not found for target kernel
+3.10.0-1160.el7.x86_64. Please install them and execute
+  /sbin/rcvboxadd setup
+modprobe vboxguest failed
+The log file /var/log/vboxadd-setup.log may contain further information.
+[root@10 ~]#
+```
+
+执行以下命令来运行 VirtualBox Guest Additions 的设置脚本
+
+> /sbin/rcvboxadd setup 
+
+```
+[root@10 ~]# /sbin/rcvboxadd setup
+VirtualBox Guest Additions: Starting.
+VirtualBox Guest Additions: Setting up modules
+VirtualBox Guest Additions: Building the VirtualBox Guest Additions kernel
+modules.  This may take a while.
+VirtualBox Guest Additions: To build modules for other installed kernels, run
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup <version>
+VirtualBox Guest Additions: or
+VirtualBox Guest Additions:   /sbin/rcvboxadd quicksetup all
+VirtualBox Guest Additions: Kernel headers not found for target kernel
+3.10.0-1160.el7.x86_64. Please install them and execute
+  /sbin/rcvboxadd setup
+VirtualBox Guest Additions: reloading kernel modules and services
+VirtualBox Guest Additions: unable to load vboxguest kernel module, see dmesg
+VirtualBox Guest Additions: kernel modules and services were not reloaded
+The log file /var/log/vboxadd-setup.log may contain further information.
+[root@10 ~]#
+```
+
+然后重新安装增强软件：
+
+> sh /media/cdrom/VBoxLinuxAdditions.run
+
+### 磁盘相关命令
+
+这部分内容，作为拓展了解即可。
+
+`df` 查看当前机器的磁盘使用情况：
+```
+[root@10 ~]# cat /etc/redhat-release
+CentOS Linux release 7.9.2009 (Core)
+[root@10 ~]#
+[root@10 ~]# df
+文件系统                   1K-块    已用     可用 已用% 挂载点
+devtmpfs                 1927988       0  1927988    0% /dev
+tmpfs                    1939972       0  1939972    0% /devm
+tmpfs                    1939972    8756  1931216    1% /run
+tmpfs                    1939972       0  1939972    0% /sys/fsroup
+/dev/mapper/centos-root 17811456 1288624 16522832    8% /
+/dev/sda1                1038336  ******   **4748   15% /boot
+tmpfs                     387996       0   387996    0% /run/user/0
+[root@10 ~]#
+[root@10 ~]# df -h
+文件系统                 容量  已用  可用 已用% 挂载点
+devtmpfs                 1.9G     0  1.9G    0% /dev
+tmpfs                    1.9G     0  1.9G    0% /dev/shm
+tmpfs                    1.9G  8.6M  1.9G    1% /run
+tmpfs                    1.9G     0  1.9G    0% /sys/fs/cgroup
+/dev/mapper/centos-root   17G  1.3G   16G    8% /
+/dev/sda1               1014M  150M  865M   15% /boot
+tmpfs                    379M     0  379M    0% /run/user/0
+[root@10 ~]#
+```
+
+`lsscsi` 命令列出SATA/SCSI设备(或主机)及它们的属性：
+```
+[root@10 ~]# lsscsi
+[0:0:0:0]    disk    ATA      VBOX HARDDISK    1.0   /dev/sda
+[2:0:0:0]    cd/dvd  VBOX     CD-ROM           1.0   /dev/sr0
+[root@10 ~]#
+```
+
+`fdisk -l` 命令可以查找硬盘和分区：
+```
+[root@10 ~]# fdisk -l
+
+磁盘 /dev/sda：21.5 GB, 21474836480 字节，41943040 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+磁盘标签类型：dos
+磁盘标识符：0x000b260a
+
+   设备 Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048     2099199     1048576   83  Linux
+/dev/sda2         2099200    41943039    19921920   8e  Linux LVM
+
+磁盘 /dev/mapper/centos-root：18.2 GB, 18249416704 字节，35643392 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+
+
+磁盘 /dev/mapper/centos-swap：2147 MB, 2147483648 字节，4194304 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+
+[root@10 ~]#
+```
+
+`lsblk` 命令显示磁盘相关分区、所属关系以及lvm信息：
+```
+[root@10 ~]# lsblk
+NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda               8:0    0   20G  0 disk
+├─sda1            8:1    0    1G  0 part /boot
+└─sda2            8:2    0   19G  0 part
+  ├─centos-root 253:0    0   17G  0 lvm  /
+  └─centos-swap 253:1    0    2G  0 lvm  [SWAP]
+sr0              11:0    1 1024M  0 rom
+[root@10 ~]#
+```
+
+`pvs` 查看当期所有物理卷（或使用 `pvdisplay` 命令）：
+```
+[root@10 ~]# pvs
+  PV         VG     Fmt  Attr PSize   PFree
+  /dev/sda2  centos lvm2 a--  <19.00g    0
+[root@10 ~]#
+[root@10 ~]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda2
+  VG Name               centos
+  PV Size               <19.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              4863
+  Free PE               0
+  Allocated PE          4863
+  PV UUID               k9YCxy-F1PF-lntv-Cno1-A0JF-mTwh-2BP8fD
+
+[root@10 ~]#
+```
+
+`vgs` 查看卷组（或使用 `vgdisplay` 命令）：
+```
+[root@10 ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree
+  centos   1   2   0 wz--n- <19.00g    0
+[root@10 ~]#
+[root@10 ~]# vgdisplay
+  --- Volume group ---
+  VG Name               centos
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  3
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <19.00 GiB
+  PE Size               4.00 MiB
+  Total PE              4863
+  Alloc PE / Size       4863 / <19.00 GiB
+  Free  PE / Size       0 / 0
+  VG UUID               suncF0-Ocef-aqc5-9KMX-JxmK-4XSO-1B1H3I
+
+[root@10 ~]#
+```
+
+`lvs` 查看当前所有逻辑卷（或使用 lvdisplay 命令）：
+```
+[root@10 ~]# lvs
+  LV   VG     Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root centos -wi-ao---- <17.00g
+  swap centos -wi-ao----   2.00g
+[root@10 ~]#
+[root@10 ~]# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/centos/swap
+  LV Name                swap
+  VG Name                centos
+  LV UUID                6eUSpC-Btof-EE9S-v8De-qOb8-dAEP-MPWY0l
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2023-10-27 18:25:59 +0800
+  LV Status              available
+  # open                 2
+  LV Size                2.00 GiB
+  Current LE             512
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+
+  --- Logical volume ---
+  LV Path                /dev/centos/root
+  LV Name                root
+  VG Name                centos
+  LV UUID                rn50GF-Z9f6-A9tK-EAOB-rd4o-1FYE-UAIHml
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2023-10-27 18:26:00 +0800
+  LV Status              available
+  # open                 1
+  LV Size                <17.00 GiB
+  Current LE             4351
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+
+[root@10 ~]#
+```
 
 ## Docker安装
 
@@ -356,4 +686,9 @@ rtt min/avg/max/mdev = 26.578/26.845/27.328/0.292 ms
 ## 参考资料
 
 什么是 SSH 访问？你需要知道的一切 <https://baijiahao.baidu.com/s?id=1734399066815684825>
+
+Centos7 系列：磁盘挂载和磁盘扩容(新加硬盘方式) <https://blog.csdn.net/qq_42449106/article/details/130140345>
+
+VirtualBox虚拟机中Centos7系统如何设置共享文件夹 <https://zhuanlan.zhihu.com/p/633877183>
+
 
