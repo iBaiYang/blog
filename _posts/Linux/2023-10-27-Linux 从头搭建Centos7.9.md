@@ -449,6 +449,7 @@ public (active)
 [root@10 ~]#
 ```
 
+查看正在运行监听的端口，netstat需要安装：
 ```
 [root@10 ~]# yum install -y net-tools
 [root@10 ~]#
@@ -856,6 +857,8 @@ sr0              11:0    1 1024M  0 rom
 
 ## Docker安装
 
+一、安装
+
 安装yum管理工具：
 > yum install -y yum-utils
 
@@ -974,11 +977,13 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 [root@10 ~]#
 ```
 
+二、切换国内源
+
 配置镜像加速：
 ```
 [root@10 ~]# touch /etc/docker/daemon.json
 [root@10 ~]# 
-[root@10 ~]# touch /etc/docker/daemon.json
+[root@10 ~]# vi /etc/docker/daemon.json
 ```
 
 写入：
@@ -1005,12 +1010,12 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 [root@10 ~]#
 ```
 
-浏览器中查看 docker 相关信息。
+三、浏览器中查看 docker 相关信息
 
 开启远程访问，编辑docker服务器上对应的配置文件：
 > vi /usr/lib/systemd/system/docker.service
 
-在 `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` 后增加 `-H tcp://0.0.0.0:2375`：
+在 `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` 后增加 `-H tcp://0.0.0.0:2375` ：
 
 ```
 [root@10 ~]# vi /usr/lib/systemd/system/docker.service
@@ -1098,6 +1103,16 @@ StartLimitBurst=3
   "KernelVersion": "3.10.0-1160.102.1.el7.x86_64",
   "BuildTime": "2023-10-26T09:10:36.000000000+00:00"
 }
+```
+
+```
+[root@10 ~]# netstat -lnpt
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1262/sshd
+tcp6       0      0 :::22                   :::*                    LISTEN      1262/sshd
+tcp6       0      0 :::2375                 :::*                    LISTEN      3128/dockerd
+[root@10 ~]#
 ```
 
 ## PHP安装
