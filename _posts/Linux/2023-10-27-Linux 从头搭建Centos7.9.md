@@ -889,7 +889,7 @@ Loading mirror speeds from cached hostfile
 ```
 [root@10 ~]# yum install -y yum-utils
 已加载插件：fastestmirror
-...
+............
 [root@10 ~]#
 [root@10 ~]# yum-config-manager --add-repo https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
 已加载插件：fastestmirror
@@ -899,7 +899,7 @@ repo saved to /etc/yum.repos.d/docker-ce.repo
 [root@10 ~]#
 [root@10 ~]# yum install -y docker-ce
 已加载插件：fastestmirror
-...
+............
 完毕！
 [root@10 ~]#
 [root@10 ~]# systemctl start docker
@@ -1228,7 +1228,7 @@ zlib
 
 root@a0c75b4db3a6:/var/www/html# pwd
 /var/www/html
-root@a0c75b4db3a6:/var/www/html# ls -l ./
+root@a0c75b4db3a6:/var/www/html# ls -l .
 total 0
 drwxrwx---. 1 root 995 0 Oct 29 21:59 test
 root@a0c75b4db3a6:/var/www/html#
@@ -1253,25 +1253,17 @@ total 10180
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# docker-php-source extract
 root@a0c75b4db3a6:/usr/src#
-root@a0c75b4db3a6:/usr/src# ls -l .
+root@a0c75b4db3a6:/usr/src# ls -l /usr/src
 total 10184
 drwxr-xr-x. 16 root root     4096 Oct 30 14:40 php
 -rw-r--r--.  1 root root 10420144 Nov 15  2022 php.tar.xz
 -rw-r--r--.  1 root root      833 Nov 15  2022 php.tar.xz.asc
 root@a0c75b4db3a6:/usr/src#
-root@a0c75b4db3a6:/usr/src# ls ./php
-CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
-CONTRIBUTING.md      TSRM                 azure-pipelines.yml  docs                 run-tests.php
-EXTENSIONS           UPGRADING            build                ext                  sapi
-LICENSE              UPGRADING.INTERNALS  buildconf            main                 scripts
-NEWS                 Zend                 buildconf.bat        pear                 tests
-README.REDIST.BINS   appveyor             configure            php.ini-development  travis
-root@a0c75b4db3a6:/usr/src#
 ```
 
 拓展包放在`/usr/src/php/ext`目录下：
 ```
-root@a0c75b4db3a6:/usr/src# ls ./php
+root@a0c75b4db3a6:/usr/src# ls /usr/src/php
 CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
 CONTRIBUTING.md      TSRM                 azure-pipelines.yml  docs                 run-tests.php
 EXTENSIONS           UPGRADING            build                ext                  sapi
@@ -1279,7 +1271,7 @@ LICENSE              UPGRADING.INTERNALS  buildconf            main             
 NEWS                 Zend                 buildconf.bat        pear                 tests
 README.REDIST.BINS   appveyor             configure            php.ini-development  travis
 root@a0c75b4db3a6:/usr/src#
-root@a0c75b4db3a6:/usr/src# ls ./php/ext
+root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
 bcmath      dom           gd       ldap      openssl       pdo_odbc    reflection  sodium    tokenizer  zlib
 bz2         enchant       gettext  libxml    pcntl         pdo_pgsql   session     spl       xml
 calendar    exif          gmp      mbstring  pcre          pdo_sqlite  shmop       sqlite3   xmlreader
@@ -1307,12 +1299,12 @@ Configuring for:
 PHP Api Version:         20190902
 Zend Module Api No:      20190902
 Zend Extension Api No:   320190902
-...
+............
 root@a0c75b4db3a6:/usr/src# php -m
 [PHP Modules]
 bcmath
 Core
-...
+............
 
 [Zend Modules]
 
@@ -1331,11 +1323,220 @@ root@a0c75b4db3a6:/usr/src#
 
 其他在 `/usr/src/php/ext` 下的常用包，安装方法也与上面一样，只是把包名换一下。
 
-### 
+### Swoole安装
 
+先把 openssl/ssl.h 头文件安装好，不然安装过程中会报错
+> apt-get update  
+>
+> apt-get install libssl-dev
 
+然后下载和安装：
+> pecl install swoole-4.8.13
+>
+> docker-php-ext-enable swoole
 
+```
+root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
+bcmath      ext_skel.php  intl      pcntl         phar        sockets    xmlreader
+bz2         ffi           json      pcre          posix       sodium     xmlrpc
+calendar    fileinfo      ldap      pdo           pspell      spl        xmlwriter
+com_dotnet  filter        libxml    pdo_dblib     readline    sqlite3    xsl
+ctype       ftp           mbstring  pdo_firebird  reflection  standard   zend_test
+curl        gd            mysqli    pdo_mysql     session     sysvmsg    zip
+date        gettext       mysqlnd   pdo_oci       shmop       sysvsem    zlib
+dba         gmp           oci8      pdo_odbc      simplexml   sysvshm
+dom         hash          odbc      pdo_pgsql     skeleton    tidy
+enchant     iconv         opcache   pdo_sqlite    snmp        tokenizer
+exif        imap          openssl   pgsql         soap        xml
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# pecl install swoole-4.8.13
+downloading swoole-4.8.13.tgz ...
+Starting to download swoole-4.8.13.tgz (2,106,874 bytes)
+............
+.....期间有几个可选拓展是否启用.......
+checking enable sockets support... y
+checking enable openssl support... y
+checking enable http2.0 support... y
+checking enable mysqlnd support... y
+checking enable c-ares support... y
+............
+Build process completed successfully
+Installing '/usr/local/lib/php/extensions/no-debug-non-zts-20190902/swoole.so'
+Installing '/usr/local/include/php/ext/swoole/config.h'
+Installing '/usr/local/include/php/ext/swoole/php_swoole.h'
+install ok: channel://pecl.php.net/swoole-4.8.13
+configuration option "php_ini" is not set to php.ini location
+You should add "extension=swoole.so" to php.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
+bcmath      ext_skel.php  intl      pcntl         phar        sockets    xmlreader
+bz2         ffi           json      pcre          posix       sodium     xmlrpc
+calendar    fileinfo      ldap      pdo           pspell      spl        xmlwriter
+com_dotnet  filter        libxml    pdo_dblib     readline    sqlite3    xsl
+ctype       ftp           mbstring  pdo_firebird  reflection  standard   zend_test
+curl        gd            mysqli    pdo_mysql     session     sysvmsg    zip
+date        gettext       mysqlnd   pdo_oci       shmop       sysvsem    zlib
+dba         gmp           oci8      pdo_odbc      simplexml   sysvshm
+dom         hash          odbc      pdo_pgsql     skeleton    tidy
+enchant     iconv         opcache   pdo_sqlite    snmp        tokenizer
+exif        imap          openssl   pgsql         soap        xml
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+hash
+iconv
+json
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+sodium
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
 
+[Zend Modules]
+
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# docker-php-ext-enable swoole
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+hash
+iconv
+json
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+sodium
+SPL
+sqlite3
+standard
+swoole
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@a0c75b4db3a6:/usr/src#
+```
+
+### Composer安装
+
+下载并安装：
+> php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+>
+> php composer-setup.php
+
+安装完成后移除安装文件：
+> php -r "unlink('composer-setup.php');"
+
+```
+root@a0c75b4db3a6:/usr/src# cd /usr/local/src
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# ls
+composer-setup.php
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# php composer-setup.php
+All settings correct for using Composer
+Downloading...
+
+Composer (version 2.6.5) successfully installed to: /usr/local/src/composer.phar
+Use it: php composer.phar
+
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# php -r "unlink('composer-setup.php');"
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# ls
+composer.phar
+root@a0c75b4db3a6:/usr/local/src#
+```
+
+移动composer文件到 bin 目录：
+> mv composer.phar /usr/local/bin/composer
+
+```
+root@a0c75b4db3a6:/usr/local/src# mv composer.phar /usr/local/bin/composer
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# composer -v
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version 2.6.5 2023-10-06 10:11:52
+............
+root@a0c75b4db3a6:/usr/local/src#
+```
+
+设置国内包源：
+> composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+```
+root@a0c75b4db3a6:/usr/local/src# composer config -g -l repo.packagist
+[repositories.packagist.org.type] composer
+[repositories.packagist.org.url] https://repo.packagist.org
+............
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src# composer config -g -l repo.packagist             
+[repositories.packagist.org.type] composer
+[repositories.packagist.org.url] https://mirrors.aliyun.com/composer/
+............
+root@a0c75b4db3a6:/usr/local/src#
+root@a0c75b4db3a6:/usr/local/src#
+```
 
 
 
