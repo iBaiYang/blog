@@ -333,6 +333,193 @@ rtt min/avg/max/mdev = 26.578/26.845/27.328/0.292 ms
 
 访问顺利，网络配置成功。
 
+### 防火墙配置
+
+一、关闭防火墙
+
+在本地主机使用虚拟机服务器服务，我们可以直接选择关闭防火墙：
+
+> systemctl stop firewalld
+
+```
+[root@10 ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since 一 2023-10-30 10:10:57 CST; 7s ago
+     Docs: man:firewalld(1)
+ Main PID: 7777 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─7777 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+10月 30 10:10:57 10.0.2.15 systemd[1]: Starting firewalld - dynamic firewal....
+10月 30 10:10:57 10.0.2.15 systemd[1]: Started firewalld - dynamic firewall....
+10月 30 10:10:57 10.0.2.15 firewalld[7777]: WARNING: AllowZoneDrifting is e....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@10 ~]#
+[root@10 ~]# systemctl stop firewalld
+[root@10 ~]#
+[root@10 ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: inactive (dead) since 一 2023-10-30 10:11:19 CST; 2s ago
+     Docs: man:firewalld(1)
+  Process: 7777 ExecStart=/usr/sbin/firewalld --nofork --nopid $FIREWALLD_ARGS (code=exited, status=0/SUCCESS)
+ Main PID: 7777 (code=exited, status=0/SUCCESS)
+
+10月 30 10:10:57 10.0.2.15 systemd[1]: Starting firewalld - dynamic firewal....
+10月 30 10:10:57 10.0.2.15 systemd[1]: Started firewalld - dynamic firewall....
+10月 30 10:10:57 10.0.2.15 firewalld[7777]: WARNING: AllowZoneDrifting is e....
+10月 30 10:11:14 10.0.2.15 systemd[1]: Stopping firewalld - dynamic firewal....
+10月 30 10:11:19 10.0.2.15 systemd[1]: Stopped firewalld - dynamic firewall....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@10 ~]#
+```
+
+二、开放指定端口
+
+现在我们对外开放了ssh服务的20端口，但没有对外开放80端口，我们在Win10的命令行中`telnet`一下服务器的80端口看一下：
+```
+C:\Users>telnet 192.168.56.102 22
+SSH-2.0-OpenSSH_7.4
+
+Protocol mismatch.
+
+遗失对主机的连接。
+
+C:\Users>telnet 192.168.56.102 80
+正在连接192.168.56.102...无法打开到主机的连接。 在端口 80: 连接失败
+
+C:\Users>
+``` 
+
+我们需要开放80端口，在服务器命令行中看一下防火墙的内容：
+```
+[root@10 ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@10 ~]#
+```
+
+开放80端口，然后重启防火墙：
+```
+> firewall-cmd --zone=public --add-port=80/tcp --permanent
+>
+> firewall-cmd --zone=public --add-service=http --permanent
+>
+> firewall-cmd --reload
+```
+
+```
+[root@10 ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
+success
+[root@10 ~]#
+[root@10 ~]# firewall-cmd --zone=public --add-service=http --permanent
+success
+[root@10 ~]#
+[root@10 ~]# firewall-cmd --reload
+success
+[root@10 ~]#
+[root@10 ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@10 ~]#
+```
+
+```
+[root@10 ~]# yum install -y net-tools
+[root@10 ~]#
+[root@10 ~]# netstat -lnpt
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1254/sshd
+tcp6       0      0 :::22                   :::*                    LISTEN      1254/sshd
+[root@10 ~]#
+```
+
+### 更换yum源
+
+为了提交下载速度，把yum源更换为国内源。
+
+1、备份
+
+> mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+
+2、下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/
+
+> curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+
+3、运行 yum makecache 生成缓存
+
+> yum clean all && yum makecache
+
+```
+[root@10 ~]# ls /etc/yum.repos.d/
+CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo
+CentOS-CR.repo         CentOS-Media.repo      CentOS-x86_64-kernel.repo
+CentOS-Debuginfo.repo  CentOS-Sources.repo
+[root@10 ~]#
+[root@10 ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.r epo.backup
+[root@10 ~]# 
+[root@10 ~]# curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.co m/repo/Centos-7.repo
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2523  100  2523    0     0   7122      0 --:--:-- --:--:-- --:--:--  7127
+[root@10 ~]#
+[root@10 ~]# yum clean all && yum makecache
+已加载插件：fastestmirror
+正在清理软件源： base extras updates
+Cleaning up list of fastest mirrors
+已加载插件：fastestmirror
+Determining fastest mirrors
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+base                                                      | 3.6 kB  00:00:00
+extras                                                    | 2.9 kB  00:00:00
+updates                                                   | 2.9 kB  00:00:00
+(1/10): base/7/x86_64/group_gz                            | 153 kB  00:00:00
+(2/10): base/7/x86_64/primary_db                          | 6.1 MB  00:00:01
+(3/10): extras/7/x86_64/primary_db                        | 250 kB  00:00:00
+(4/10): extras/7/x86_64/filelists_db                      | 303 kB  00:00:00
+(5/10): base/7/x86_64/other_db                            | 2.6 MB  00:00:00
+(6/10): extras/7/x86_64/other_db                          | 150 kB  00:00:00
+(7/10): base/7/x86_64/filelists_db                        | 7.2 MB  00:00:02
+(8/10): updates/7/x86_64/filelists_db                     |  13 MB  00:00:10
+(9/10): updates/7/x86_64/other_db                         | 1.4 MB  00:00:00
+(10/10): updates/7/x86_64/primary_db                      |  24 MB  00:00:11
+元数据缓存已建立
+[root@10 ~]#
+[root@10 ~]# ls /etc/yum.repos.d/     
+CentOS-Base.repo         CentOS-Debuginfo.repo  CentOS-Sources.repo
+CentOS-Base.repo.backup  CentOS-fasttrack.repo  CentOS-Vault.repo
+CentOS-CR.repo           CentOS-Media.repo      CentOS-x86_64-kernel.repo
+[root@10 ~]#
+```
+
 ## 共享文件夹
 
 设置共享文件夹，让虚拟机服务器和宿主主机共同操作同一个文件夹。
@@ -669,7 +856,123 @@ sr0              11:0    1 1024M  0 rom
 
 ## Docker安装
 
+安装yum管理工具：
+> yum install -y yum-utils
 
+yum添加软件源：
+```
+> yum-config-manager --add-repo https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+```
+
+如果不添加docker的软件源，会报错：
+```
+[root@10 ~]# yum install -y docker-ce
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * extras: mirrors.aliyun.com
+ * updates: mirrors.aliyun.com
+没有可用软件包 docker-ce。
+错误：无须任何处理
+[root@10 ~]#
+```
+
+安装docker-ce（官方维护的社区版）：
+> yum install -y docker-ce
+
+运行docker：
+> systemctl start docker
+
+```
+[root@10 ~]# yum install -y yum-utils
+已加载插件：fastestmirror
+...
+[root@10 ~]#
+[root@10 ~]# yum-config-manager --add-repo https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+已加载插件：fastestmirror
+adding repo from: https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+grabbing file https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo to /etc/yum.repos.d/docker-ce.repo
+repo saved to /etc/yum.repos.d/docker-ce.repo
+[root@10 ~]#
+[root@10 ~]# yum install -y docker-ce
+已加载插件：fastestmirror
+...
+完毕！
+[root@10 ~]#
+[root@10 ~]# systemctl start docker
+[root@10 ~]#
+[root@10 ~]# docker version
+Client: Docker Engine - Community
+ Version:           24.0.7
+ API version:       1.43
+ Go version:        go1.20.10
+ Git commit:        afdd53b
+ Built:             Thu Oct 26 09:11:35 2023
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          24.0.7
+  API version:      1.43 (minimum version 1.12)
+  Go version:       go1.20.10
+  Git commit:       311b9ff
+  Built:            Thu Oct 26 09:10:36 2023
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.6.24
+  GitCommit:        61f9fd88f79f081d64d6fa3bb1a0dc71ec870523
+ runc:
+  Version:          1.1.9
+  GitCommit:        v1.1.9-0-gccaecfc
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+[root@10 ~]#
+```
+
+验证Docker引擎是否正确安装：
+> docker run hello-world
+
+```
+[root@10 ~]# docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[root@10 ~]#
+[root@10 ~]# docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+719385e32844: Pull complete
+Digest: sha256:88ec0acaa3ec199d3b7eaf73588f4518c25f9d34f58ce9a0df68429c5af48e8d
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
+[root@10 ~]#
+```
 
 
 ## PHP安装
