@@ -1572,9 +1572,42 @@ root@a0c75b4db3a6:/usr/local/src#
 root@a0c75b4db3a6:/usr/local/src#
 ```
 
+composer使用过程中会用到 php-zip 和 unzip，需要提前下载好：
+> apt-get install php-zip
+>
+> apt-get install unzip
 
+```
+root@a0c75b4db3a6:/var/www/html# apt-get install php-zip
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Package php-zip is a virtual package provided by:
+  php7.4-zip 7.4.33-1+deb11u4 [Not candidate version]
 
-
+E: Package 'php-zip' has no installation candidate
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# apt-get install unzip
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  zip
+The following NEW packages will be installed:
+  unzip
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 172 kB of archives.
+After this operation, 393 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bullseye/main amd64 unzip amd64 6.0-26+deb11u1 [172 kB]
+Fetched 172 kB in 45s (3825 B/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package unzip.
+(Reading database ... 14745 files and directories currently installed.)
+Preparing to unpack .../unzip_6.0-26+deb11u1_amd64.deb ...
+Unpacking unzip (6.0-26+deb11u1) ...
+Setting up unzip (6.0-26+deb11u1) ...
+root@a0c75b4db3a6:/var/www/html#
+```
 
 
 <br/><br/><br/><br/><br/>
