@@ -855,6 +855,27 @@ sr0              11:0    1 1024M  0 rom
 [root@10 ~]#
 ```
 
+## Git安装
+
+> apt-get update  
+>
+> apt-get install git
+
+```
+root@a0c75b4db3a6:/var/www/html# apt-get update
+...............
+root@a0c75b4db3a6:/var/www/html# 
+root@a0c75b4db3a6:/var/www/html# apt-get install git
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+...............
+root@a0c75b4db3a6:/var/www/html# 
+root@a0c75b4db3a6:/var/www/html# git --version
+git version 2.30.2
+root@a0c75b4db3a6:/var/www/html#
+```
+
 ## Docker安装
 
 一、安装
