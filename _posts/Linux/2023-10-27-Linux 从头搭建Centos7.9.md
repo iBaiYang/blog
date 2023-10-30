@@ -1117,7 +1117,11 @@ tcp6       0      0 :::2375                 :::*                    LISTEN      
 
 ## PHP安装
 
-从官方基础版本构建：
+一、下载PHP的docker包
+
+从官方基础版本构建。
+
+下载7.4-fpm版：
 > docker pull php:7.4-fpm
 
 ```
@@ -1148,6 +1152,193 @@ hello-world   latest    9c7a54a9a43c   5 months ago    13.3kB
 php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
 [root@10 ~]#
 ```
+
+二、创建容器并运行
+
+命令：
+```
+docker run --name php_7.4-fpm -p 9000:9000 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php_7.4-fpm
+```
+
+```
+[root@10 ~]# systemctl restart docker
+[root@10 ~]# 
+[root@10 ~]# docker run --name php_7.4-fpm -p 9000:9000 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php:7.4-fpm
+a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE         COMMAND                   CREATED          STATUS                   PORTS                                       NAMES
+a0c75b4db3a6   php:7.4-fpm   "docker-php-entrypoi…"   11 minutes ago   Up 4 minutes             0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   php_7.4-fpm
+e386a696ef90   hello-world   "/hello"                  3 hours ago      Exited (0) 3 hours ago                                               confident_pike
+[root@10 ~]#
+```
+
+进入容器，查看基本信息：
+> docker exec -it php_7.4-fpm /bin/bash
+>
+> php -v 
+>
+> php -m
+
+```
+[root@10 ~]# docker exec -it php_7.4-fpm /bin/bash
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# php -v
+PHP 7.4.33 (cli) (built: Nov 15 2022 06:05:55) ( NTS )
+Copyright (c) The PHP Group
+Zend Engine v3.4.0, Copyright (c) Zend Technologies
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# php -m
+[PHP Modules]
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+hash
+iconv
+json
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+sodium
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@a0c75b4db3a6:/var/www/html# pwd
+/var/www/html
+root@a0c75b4db3a6:/var/www/html# ls -l ./
+total 0
+drwxrwx---. 1 root 995 0 Oct 29 21:59 test
+root@a0c75b4db3a6:/var/www/html#
+```
+
+在test文件夹下写个PHP文件测试下。
+
+### 拓展安装
+
+一、拓展安装准备
+
+PHP拓展需要安装在源码目录下，初始化php源码目录：
+> docker-php-source extract
+
+```
+root@a0c75b4db3a6:/var/www/html# cd /usr/src
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls -l .
+total 10180
+-rw-r--r--. 1 root root 10420144 Nov 15  2022 php.tar.xz
+-rw-r--r--. 1 root root      833 Nov 15  2022 php.tar.xz.asc
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# docker-php-source extract
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls -l .
+total 10184
+drwxr-xr-x. 16 root root     4096 Oct 30 14:40 php
+-rw-r--r--.  1 root root 10420144 Nov 15  2022 php.tar.xz
+-rw-r--r--.  1 root root      833 Nov 15  2022 php.tar.xz.asc
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls ./php
+CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
+CONTRIBUTING.md      TSRM                 azure-pipelines.yml  docs                 run-tests.php
+EXTENSIONS           UPGRADING            build                ext                  sapi
+LICENSE              UPGRADING.INTERNALS  buildconf            main                 scripts
+NEWS                 Zend                 buildconf.bat        pear                 tests
+README.REDIST.BINS   appveyor             configure            php.ini-development  travis
+root@a0c75b4db3a6:/usr/src#
+```
+
+拓展包放在`/usr/src/php/ext`目录下：
+```
+root@a0c75b4db3a6:/usr/src# ls ./php
+CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
+CONTRIBUTING.md      TSRM                 azure-pipelines.yml  docs                 run-tests.php
+EXTENSIONS           UPGRADING            build                ext                  sapi
+LICENSE              UPGRADING.INTERNALS  buildconf            main                 scripts
+NEWS                 Zend                 buildconf.bat        pear                 tests
+README.REDIST.BINS   appveyor             configure            php.ini-development  travis
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls ./php/ext
+bcmath      dom           gd       ldap      openssl       pdo_odbc    reflection  sodium    tokenizer  zlib
+bz2         enchant       gettext  libxml    pcntl         pdo_pgsql   session     spl       xml
+calendar    exif          gmp      mbstring  pcre          pdo_sqlite  shmop       sqlite3   xmlreader
+com_dotnet  ext_skel.php  hash     mysqli    pdo           pgsql       simplexml   standard  xmlrpc
+ctype       ffi           iconv    mysqlnd   pdo_dblib     phar        skeleton    sysvmsg   xmlwriter
+curl        fileinfo      imap     oci8      pdo_firebird  posix       snmp        sysvsem   xsl
+date        filter        intl     odbc      pdo_mysql     pspell      soap        sysvshm   zend_test
+dba         ftp           json     opcache   pdo_oci       readline    sockets     tidy      zip
+root@a0c75b4db3a6:/usr/src#
+```
+
+这里可以看到 bcmath、pdo_mysql 等常用拓展包。
+
+二、bcmath 拓展安装
+
+安装命令：
+> docker-php-ext-install bcmath
+
+```
+root@a0c75b4db3a6:/usr/src# ls /usr/local/etc/php/conf.d/
+docker-php-ext-sodium.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# docker-php-ext-install bcmath
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+...
+root@a0c75b4db3a6:/usr/src# php -m
+[PHP Modules]
+bcmath
+Core
+...
+
+[Zend Modules]
+
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls /usr/local/etc/php/conf.d/
+docker-php-ext-bcmath.ini  docker-php-ext-sodium.ini
+root@a0c75b4db3a6:/usr/src#
+```
+
+二、pdo_mysql 拓展安装
+
+安装命令：
+> docker-php-ext-install pdo_mysql
+
+三、其他常用包
+
+其他在 `/usr/src/php/ext` 下的常用包，安装方法也与上面一样，只是把包名换一下。
+
+### 
+
+
+
+
+
+
+
 
 
 
