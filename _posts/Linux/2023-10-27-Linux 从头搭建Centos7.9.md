@@ -1609,6 +1609,107 @@ Setting up unzip (6.0-26+deb11u1) ...
 root@a0c75b4db3a6:/var/www/html#
 ```
 
+### 容器新增开放端口
+
+随着容器中功能不多的增多，免不了需要开放更多的端口，可以按照下面步骤操作。
+
+查看当前端口映射：
+> docker port php_7.4-fpm
+
+```
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE         COMMAND                   CREATED       STATUS                   PORTS                                       NAMES
+a0c75b4db3a6   php:7.4-fpm   "docker-php-entrypoi…"   3 hours ago   Up 3 hours               0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   php_7.4-fpm
+e386a696ef90   hello-world   "/hello"                  6 hours ago   Exited (0) 6 hours ago                                               confident_pike
+[root@10 ~]#
+[root@10 ~]# docker port php_7.4-fpm
+9000/tcp -> 0.0.0.0:9000
+9000/tcp -> [::]:9000
+[root@10 ~]#
+```
+
+关闭php容器，和docker服务：
+> docker stop php_7.4-fpm
+>
+> systemctl stop docker
+
+```
+[root@10 ~]# docker stop php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# systemctl stop docker
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+[root@10 ~]#
+```
+
+查看容器对应的ID，为接下来修改 `/var/lib/docker/containers/` 下配置做好准备：
+> docker inspect php_7.4-fpm | grep Id
+
+```
+[root@10 ~]# docker inspect php_7.4-fpm | grep Id
+        "Id": "a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059",
+[root@10 ~]#
+[root@10 ~]# ls -l /var/lib/docker/containers/
+总用量 0
+drwx--x---. 4 root root 237 10月 30 14:19 a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059
+drwx--x---. 4 root root 237 10月 30 14:19 e386a696ef901bfa7d1b1409fa059be484061631bb4d69ee3e9e3ab698f928cf
+[root@10 ~]#
+[root@10 ~]# ls -l /var/lib/docker/containers/a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059/
+总用量 28
+-rw-r-----. 1 root root  252 10月 30 14:19 a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059-json.log
+drwx------. 2 root root    6 10月 30 14:12 checkpoints
+-rw-------. 1 root root 4006 10月 30 14:19 config.v2.json
+-rw-------. 1 root root 1324 10月 30 14:19 hostconfig.json
+-rw-r--r--. 1 root root   13 10月 30 14:19 hostname
+-rw-r--r--. 1 root root  174 10月 30 14:19 hosts
+drwx--x---. 2 root root    6 10月 30 14:19 mounts
+-rw-r--r--. 1 root root   53 10月 30 14:19 resolv.conf
+-rw-r--r--. 1 root root   71 10月 30 14:19 resolv.conf.hash
+[root@10 ~]#
+```
+
+修改 hostconfig.json 文件：
+```
+[root@10 ~]# vi /var/lib/docker/containers/a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059/hostconfig.json
+[root@10 ~]#
+```
+
+增加端口配置：`"9501/tcp":[{"HostIp":"","HostPort":"9501"}]`
+
+![]({{site.baseurl}}/images/Linux/20231030173858.png)
+
+```
+[root@10 ~]# vi /var/lib/docker/containers/a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059/config.v2.json
+[root@10 ~]#
+```
+
+增加端口配置：`"9501/tcp":{}`
+
+![]({{site.baseurl}}/images/Linux/20231030175129.png)
+
+重启docker服务，和php容器，查看端口映射：
+```
+[root@10 ~]# systemctl start docker
+[root@10 ~]#
+[root@10 ~]# docker start php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]# 
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE         COMMAND                   CREATED       STATUS                   PORTS                                                                                  NAMES
+a0c75b4db3a6   php:7.4-fpm   "docker-php-entrypoi…"   4 hours ago   Up 13 seconds            0.0.0.0:9000->9000/tcp, :::9000->9000/tcp, 0.0.0.0:9501->9501/tcp, :::9501->9501/tcp   php_7.4-fpm
+e386a696ef90   hello-world   "/hello"                  7 hours ago   Exited (0) 7 hours ago                                                                                          confident_pike
+[root@10 ~]#
+[root@10 ~]# docker port php_7.4-fpm
+9000/tcp -> 0.0.0.0:9000
+9000/tcp -> [::]:9000
+9501/tcp -> 0.0.0.0:9501
+9501/tcp -> [::]:9501
+[root@10 ~]#
+```
+
+
+
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
