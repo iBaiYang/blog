@@ -1236,6 +1236,19 @@ root@a0c75b4db3a6:/var/www/html#
 
 在test文件夹下写个PHP文件测试下。
 
+退出PHP的Docker容器后，看一下现在端口的监听情况：
+```
+[root@10 ~]# netstat -nlpt
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1262/sshd
+tcp        0      0 0.0.0.0:9000            0.0.0.0:*               LISTEN      4310/docker-proxy
+tcp6       0      0 :::22                   :::*                    LISTEN      1262/sshd
+tcp6       0      0 :::2375                 :::*                    LISTEN      4135/dockerd
+tcp6       0      0 :::9000                 :::*                    LISTEN      4315/docker-proxy
+[root@10 ~]#
+```
+
 ### 拓展安装
 
 一、拓展安装准备
