@@ -974,14 +974,165 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 [root@10 ~]#
 ```
 
+配置镜像加速：
+```
+[root@10 ~]# touch /etc/docker/daemon.json
+[root@10 ~]# 
+[root@10 ~]# touch /etc/docker/daemon.json
+```
+
+写入：
+```
+{
+  "registry-mirrors": ["http://hub-mirror.c.163.com", "https://docker.mirrors.ustc.edu.cn"]
+}
+```
+
+重载 systemd 的脚本配置文件内容：
+> systemctl daemon-reload
+
+重启docker：
+> systemctl restart docker
+
+```
+[root@10 ~]# systemctl daemon-reload
+[root@10 ~]#
+[root@10 ~]# systemctl restart docker
+[root@10 ~]#
+[root@10 ~]# docker info|grep "Registry Mirrors" -A 1
+ Registry Mirrors:
+  http://hub-mirror.c.163.com/
+[root@10 ~]#
+```
+
+浏览器中查看 docker 相关信息。
+
+开启远程访问，编辑docker服务器上对应的配置文件：
+> vi /usr/lib/systemd/system/docker.service
+
+在 `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` 后增加 `-H tcp://0.0.0.0:2375`：
+
+```
+[root@10 ~]# vi /usr/lib/systemd/system/docker.service
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service time-set.target
+Wants=network-online.target containerd.service
+Requires=docker.socket
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock -H tcp://0.0.0.0:2375
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutStartSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+```
+
+重载 systemd 的脚本配置文件内容：
+> systemctl daemon-reload
+
+重启docker：
+> systemctl restart docker
+
+浏览器访问地址 http://192.168.56.102:2375/version ，返回（注意防火墙的配置）：
+```
+{
+  "Platform": {
+    "Name": "Docker Engine - Community"
+  },
+  "Components": [
+    {
+      "Name": "Engine",
+      "Version": "24.0.7",
+      "Details": {
+        "ApiVersion": "1.43",
+        "Arch": "amd64",
+        "BuildTime": "2023-10-26T09:10:36.000000000+00:00",
+        "Experimental": "false",
+        "GitCommit": "311b9ff",
+        "GoVersion": "go1.20.10",
+        "KernelVersion": "3.10.0-1160.102.1.el7.x86_64",
+        "MinAPIVersion": "1.12",
+        "Os": "linux"
+      }
+    },
+    {
+      "Name": "containerd",
+      "Version": "1.6.24",
+      "Details": {
+        "GitCommit": "61f9fd88f79f081d64d6fa3bb1a0dc71ec870523"
+      }
+    },
+    {
+      "Name": "runc",
+      "Version": "1.1.9",
+      "Details": {
+        "GitCommit": "v1.1.9-0-gccaecfc"
+      }
+    },
+    {
+      "Name": "docker-init",
+      "Version": "0.19.0",
+      "Details": {
+        "GitCommit": "de40ad0"
+      }
+    }
+  ],
+  "Version": "24.0.7",
+  "ApiVersion": "1.43",
+  "MinAPIVersion": "1.12",
+  "GitCommit": "311b9ff",
+  "GoVersion": "go1.20.10",
+  "Os": "linux",
+  "Arch": "amd64",
+  "KernelVersion": "3.10.0-1160.102.1.el7.x86_64",
+  "BuildTime": "2023-10-26T09:10:36.000000000+00:00"
+}
+```
 
 ## PHP安装
 
+从官方基础版本构建：
+> docker pull php:7.4-fpm
 
-
-
-
-
+```
+[root@10 ~]# docker pull php:7.4-fpm
+7.4-fpm: Pulling from library/php
+7.4-fpm: Pulling from library/php
+a603fa5e3b41: Pull complete
+c428f1a49423: Pull complete
+156740b07ef8: Pull complete
+fb5a4c8af82f: Pull complete
+972155ae644b: Pull complete
+a8e3b94fe6c1: Pull complete
+93346a3f46bc: Pull complete
+b922b67ca46b: Pull complete
+6137f893bda6: Pull complete
+79b1a1b78461: Pull complete
+Digest: sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811d5b
+Status: Downloaded newer image for php:7.4-fpm
+docker.io/library/php:7.4-fpm
+[root@10 ~]#
+[root@10 ~]# ll
+总用量 4
+-rw-------. 1 root root 1437 10月 27 18:31 anaconda-ks.cfg
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   latest    9c7a54a9a43c   5 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
+[root@10 ~]#
+```
 
 
 
