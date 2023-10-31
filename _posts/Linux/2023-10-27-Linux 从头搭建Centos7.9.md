@@ -2426,4 +2426,4 @@ Centos7 系列：磁盘挂载和磁盘扩容(新加硬盘方式) <https://blog.c
 
 VirtualBox虚拟机中Centos7系统如何设置共享文件夹 <https://zhuanlan.zhihu.com/p/633877183>
 
-
+docker php安装redis扩展 <https://blog.csdn.net/longfeng995/article/details/130557612>
