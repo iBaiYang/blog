@@ -1704,6 +1704,149 @@ zlib
 root@a0c75b4db3a6:/usr/src#
 ```
 
+### Redis拓展安装
+
+Redis拓展安装时，原想的是和上面Swoole安装一样，但 pecl 安装redis时要用到libigbinary-dev，
+libigbinary-dev安装时在apt源中又找不到包，换了apt源后还是不行，操作下来不太顺利：
+```
+> apt-get update  
+>
+> apt-get install vim
+>
+> apt-get install libigbinary-dev 
+>
+> pecl install redis-6.0.2
+>
+> docker-php-ext-enable redis
+```
+
+看来要直接使用Redis拓展包源码安装了。
+
+在容器中的 tmp 目录下下载 redis-6.0.2.tgz 包，解压缩然后进入解压包，phpize生成configure文件：
+
+> cd /tmp
+>
+> curl https://pecl.php.net/get/redis-6.0.2.tgz -O
+>
+> tar -zxf redis-6.0.2.tgz
+>
+> cd redis-6.0.2
+> 
+> /usr/local/bin/phpize
+
+```
+root@a0c75b4db3a6:/usr/src# cd /tmp
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# curl https://pecl.php.net/get/redis-6.0.2.tgz -O
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  357k  100  357k    0     0   100k      0  0:00:03  0:00:03 --:--:--  100k
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+redis-6.0.2.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# tar -zxf redis-6.0.2.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+package.xml  redis-6.0.2  redis-6.0.2.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# cd redis-6.0.2
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+root@a0c75b4db3a6:/tmp/redis-6.0.2# /usr/local/bin/phpize
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+```
+
+查看 php-config 地址，编译redis扩展：
+
+> whereis php-config
+>
+> ./configure --with-php-config=/usr/local/bin/php-config
+
+```
+root@a0c75b4db3a6:/tmp/redis-6.0.2# whereis php-config
+php-config: /usr/local/bin/php-config
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+root@a0c75b4db3a6:/tmp/redis-6.0.2# ./configure --with-php-config=/usr/local/bin/php-config
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+.....................
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: patching config.h.in
+configure: creating ./config.status
+config.status: creating config.h
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+```
+
+编译并安装源代码：
+
+> make && make install
+
+```
+root@a0c75b4db3a6:/tmp/redis-6.0.2# make
+/bin/bash /tmp/redis-6.0.2/libtool --mode=compile cc 
+..................
+Build complete.
+Don't forget to run 'make test'.
+
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+root@a0c75b4db3a6:/tmp/redis-6.0.2# make install
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+root@a0c75b4db3a6:/tmp/redis-6.0.2# ls /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+bcmath.so  opcache.so  pdo_mysql.so  redis.so  sodium.so  swoole.so
+root@a0c75b4db3a6:/tmp/redis-6.0.2#
+```
+
+开启redis拓展：
+
+> cd /usr/local/etc/php/conf.d
+>
+> touch docker-php-ext-redis.ini
+> 
+> vim docker-php-ext-redis.ini
+>
+> echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/redis.so" >> docker-php-ext-redis.ini
+
+```
+root@a0c75b4db3a6:/tmp/redis-6.0.2# cd /usr/local/etc/php/conf.d
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# ls
+docker-php-ext-bcmath.ini     docker-php-ext-sodium.ini
+docker-php-ext-pdo_mysql.ini  docker-php-ext-swoole.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# touch docker-php-ext-redis.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# vim docker-php-ext-redis.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/redis.so" >> docker-php-ext-redis.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+```
+
+退出容器，重新启动，再查看一下：
+
+> exit
+> 
+> docker restart php_7.4-fpm
+
+```
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# exit
+exit
+[root@10 ~]#
+[root@10 ~]# docker restart php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# docker exec -it php_7.4-fpm /bin/bash
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# php -m | grep redis
+redis
+root@a0c75b4db3a6:/var/www/html#
+```
+
 ### Composer安装
 
 下载并安装：
