@@ -1138,6 +1138,8 @@ tcp6       0      0 :::2375                 :::*                    LISTEN      
 
 ## PHP安装
 
+### 基础安装
+
 一、下载PHP的docker包
 
 从官方基础版本构建。
@@ -1269,6 +1271,204 @@ tcp6       0      0 :::2375                 :::*                    LISTEN      
 tcp6       0      0 :::9000                 :::*                    LISTEN      4315/docker-proxy
 [root@10 ~]#
 ```
+
+### 用户准备
+
+我们到连接的主机目录下查看文件属性，发现文件所属组为995：
+
+```
+[root@10 ~]# docker exec -it php_7.4-fpm /bin/bash
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# ls -l /var/www/html/test/
+total 1
+-rwxrwx---. 1 root 995 23 Oct 30 14:35 test.php
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+ssh:x:101:
+root@a0c75b4db3a6:/var/www/html#
+```
+
+995这个组是不存在的，php的用户 www-data 用户ID是 33，组ID是 33，所以对主机文件没有操作权限，我们需要把 www-data 加到 995组下：
+> groupadd -g 995 docker
+>
+> usermod -aG docker www-data
+
+```
+root@a0c75b4db3a6:/var/www/html# groupadd -g 995 docker
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+ssh:x:101:
+docker:x:995:
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# usermod -aG docker www-data
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+ssh:x:101:
+docker:x:995:www-data
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+root@a0c75b4db3a6:/var/www/html#
+```
+
+现在PHP就可以操作主机目录下的文件了。
 
 ### 拓展安装
 
@@ -1707,6 +1907,365 @@ e386a696ef90   hello-world   "/hello"                  7 hours ago   Exited (0) 
 9501/tcp -> [::]:9501
 [root@10 ~]#
 ```
+
+## Nginx安装
+
+### 基础安装
+
+下载nginx包：
+> ocker pull nginx
+
+```
+[root@10 ~]# docker pull nginx
+Using default tag: latest
+latest: Pulling from library/nginx
+............
+[root@10 ~]# 
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+nginx         latest    593aee2afb64   5 days ago      187MB
+hello-world   latest    9c7a54a9a43c   5 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
+[root@10 ~]#
+```
+
+运行：
+```
+docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/docker/nginx:/etc/nginx/conf.d -v /media/sf_develop:/usr/share/nginx/www -v /etc/localtime:/etc/localtime:ro --link php_7.4-fpm:php --privileged=true -d nginx
+```
+
+```
+[root@10 ~]# docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/docker/nginx:/etc/nginx/conf.d -v /media/sf_develop:/usr/share/nginx/www -v /etc/localtime:/etc/localtime:ro --link php_7.4-fpm:php --privileged=true -d nginx
+f2d344418b9fb0dfcc75da53a6bfdaf5b7d722dab1c2edc0f06ad770c2143571
+[root@10 ~]#
+[root@10 ~]# docker exec -it nginx_php_7.4-fpm /bin/bash
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# nginx 0v
+nginx: invalid option: "0v"
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# nginx -v
+nginx version: nginx/1.25.3
+root@f2d344418b9f:/#
+```
+
+### 用户准备
+
+我们到连接的主机目录下查看文件属性，发现文件所属组为995：
+
+```
+root@f2d344418b9f:/# ls -l /usr/share/nginx/www/test
+total 1
+-rwxrwx---. 1 root 995 23 Oct 30 14:35 test.php
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+nginx:x:101:101:nginx user:/nonexistent:/bin/false
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+nginx:x:101:
+root@f2d344418b9f:/#
+```
+
+995这个组是不存在的，nginx 的用户ID是 101，组ID是 101，所以对主机文件没有操作权限，我们需要把 nginx 加到 995组下：
+> groupadd -g 995 docker
+>
+> usermod -aG docker nginx
+
+```
+root@f2d344418b9f:/# groupadd -g 995 docker
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+nginx:x:101:
+docker:x:995:
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# usermod -aG docker nginx
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:
+floppy:x:25:
+tape:x:26:
+sudo:x:27:
+audio:x:29:
+dip:x:30:
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+nginx:x:101:
+docker:x:995:nginx
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+nginx:x:101:101:nginx user:/nonexistent:/bin/false
+root@f2d344418b9f:/#
+```
+
+### 项目配置
+
+下面举一个示例配置，域名 test.test 。
+
+修改主机的hosts文件，Win10中位置：`C:\Windows\System32\drivers\etc\hosts`
+
+文件中新增一行：`192.168.56.102      test.test`
+
+在 `D:\develop\virtualbox\docker\nginx` 文件夹下 新增项目配置文件：`test.test.conf`
+
+写入配置内容：
+```
+server {
+    listen       80;
+    server_name test.test;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html/test;
+        index  index.php;
+        if (!-e $request_filename) {
+               rewrite  ^(.*)$  /index.php?s=/$1  last;
+               break;
+         }
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ \.php$ {
+        root   /var/www/html/test;
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+查看nginx的相关配置有没有问题：
+> nginx -t
+
+重启nginx服务：
+> nginx -s reload
+
+```
+root@f2d344418b9f:/# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@f2d344418b9f:/#
+root@f2d344418b9f:/# nginx -s reload
+2023/10/31 13:46:44 [notice] 55#55: signal process started
+root@f2d344418b9f:/#
+```
+
+浏览器访问地址 `http://test.test/test.php`，得到想要输出。
+
+最后我们可以看一下nginx原来在`/etc/nginx/conf.d`文件夹下的配置文件`default.conf`的内容，可以参考下：
+```
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+
 
 
 
