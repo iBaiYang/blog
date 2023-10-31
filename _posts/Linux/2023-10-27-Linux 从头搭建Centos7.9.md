@@ -529,6 +529,8 @@ CentOS-CR.repo           CentOS-Media.repo      CentOS-x86_64-kernel.repo
 
 ![]({{site.baseurl}}/images/Linux/20231029201505.png)
 
+`D:\develop` 文件夹是我们以后进行开发的根文件夹。
+
 二、加载增强软件镜像
 
 （一）在VirtualBox软件安装目录里找到下面的`VBoxGuestAdditions.ios`文件
@@ -1933,6 +1935,8 @@ php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
 ```
 docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/docker/nginx:/etc/nginx/conf.d -v /media/sf_develop:/usr/share/nginx/www -v /etc/localtime:/etc/localtime:ro --link php_7.4-fpm:php --privileged=true -d nginx
 ```
+
+`D:\develop\virtualbox\docker\nginx` 文件夹用来保存我们所有项目的nginx配置。
 
 ```
 [root@10 ~]# docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/docker/nginx:/etc/nginx/conf.d -v /media/sf_develop:/usr/share/nginx/www -v /etc/localtime:/etc/localtime:ro --link php_7.4-fpm:php --privileged=true -d nginx
