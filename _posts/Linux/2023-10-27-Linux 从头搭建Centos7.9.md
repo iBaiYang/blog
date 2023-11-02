@@ -348,6 +348,7 @@ rtt min/avg/max/mdev = 26.578/26.845/27.328/0.292 ms
 
 > systemctl stop firewalld
 
+明细：
 ```
 [root@10 ~]# systemctl status firewalld
 ● firewalld.service - firewalld - dynamic firewall daemon
@@ -428,6 +429,7 @@ public (active)
 > firewall-cmd --reload
 ```
 
+明细：
 ```
 [root@10 ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
 success
