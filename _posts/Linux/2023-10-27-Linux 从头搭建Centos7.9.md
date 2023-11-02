@@ -11,21 +11,21 @@ meta: VirtualBox 从头搭建Centos7.9
 
 这个是使用VirtualBox重新从头再次搭建一次Centos7.9，可以先参看一下上次的博文 <https://ibaiyang.github.io/blog/linux/2022/02/16/VirtualBox-搭建Centos7.9.html> 。
 
-在VirtualBox官网下载最新版 [Oracle VM VirtualBox](https://www.virtualbox.org/wiki/Downloads) 安装，我这里是VirtualBox-7.0.12版。
+在VirtualBox官网下载最新版 <https://www.virtualbox.org/wiki/Downloads> 安装，我这里是VirtualBox-7.0.12版。
 
 ## Centos7.9环境搭建
 
 ### 虚拟机安装
 
 这里的虚拟机只是类似于刚出厂未安装系统（如Win10）的裸机，只是提供硬件上的支持，这也是下面可能会报错的来源。
-在安装Centos时才是安装运行的软件系统。有了这个认识后，下面安装应该会好理解一些。
+在安装Centos时才是安装运行在该虚拟机上的系统软件。有了这个认识后，下面安装应该会好理解一些。
 
-在Centos官网下载iso安装包 [Centos download](http://isoredirect.centos.org/centos/7/isos/x86_64/) ，
+在Centos官网下载iso安装包 <http://isoredirect.centos.org/centos/7/isos/x86_64/>，
 选择一个下载速度比较快的源，下载后保存到指定位置，我这里下载的是 CentOS-7-x86_64-Minimal-2009.iso 包。
 
 ![]({{site.baseurl}}/images/Linux/20231027150306.png)
 
-启动 VirtualBox，点击新建：
+打开 VirtualBox，点击新建：
 
 ![]({{site.baseurl}}/images/Linux/20231027181544.png)
 
@@ -51,11 +51,12 @@ meta: VirtualBox 从头搭建Centos7.9
 
 ![]({{site.baseurl}}/images/Linux/20231027181904.png)
 
-### CPU未开启虚拟机支持功能
+### CPU开启虚拟机支持功能
+
+有些电脑在虚拟机安装后或启动时会报错：
 
 ![]({{site.baseurl}}/images/Linux/20231027160948.png)
 
-期间虚拟机安装后或启动时报错：
 ```
 Not in a hypervisor partition (HVP=0) (VERR_NEM_NOT_AVAILABLE).
 VT-x is disabled in the BIOS for all CPU modes (VERR_VMX_MSR_ALL_VMX_DISABLED).
@@ -68,6 +69,11 @@ IConsole {6ac83d89-6ee7-4e33-8ae6-b257b2e81be8}
 ```
 
 查询原因后是CPU未开启或不支持虚拟机功能，我们可以在开机阶段进入BIOS开启虚拟机功能。
+
+CPU的硬件虚拟化主要包括Intel的VT-x和AMD的AMD-V技术。它通过提供基于芯片的功能，借助兼容VMM软件能够改进纯软件解决方案。
+由于虚拟化硬件可提供全新的架构，支持操作系统直接在上面运行，从而无需进行二进制转换，减少了相关的性能开销，
+极大简化了VMM设计，进而使VMM能够按通用标准进行编写，性能更加强大。
+说到底就是在CPU芯片上支持虚拟机功能，不过从i5开始才开始支持。
 
 查询到原因：你正在尝试在没有开启硬件虚拟化的情况下运行虚拟机。
 
@@ -1989,8 +1995,11 @@ Warning: Stopping docker.service, but it can still be activated by:
 ```
 
 查看容器对应的ID，为接下来修改 `/var/lib/docker/containers/` 下配置做好准备：
+```
 > docker inspect php_7.4-fpm | grep Id
+```
 
+明细：
 ```
 [root@10 ~]# docker inspect php_7.4-fpm | grep Id
         "Id": "a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059",
@@ -2020,7 +2029,7 @@ drwx--x---. 2 root root    6 10月 30 14:19 mounts
 [root@10 ~]#
 ```
 
-增加端口配置：`"9501/tcp":[{"HostIp":"","HostPort":"9501"}]`
+如增加9501端口，写入配置：`"9501/tcp":[{"HostIp":"","HostPort":"9501"}]`
 
 ![]({{site.baseurl}}/images/Linux/20231030173858.png)
 
