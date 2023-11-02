@@ -35,6 +35,8 @@ meta: VirtualBox 从头搭建Centos7.9
 
 ![]({{site.baseurl}}/images/Linux/20231027181613.png)
 
+（下面的“增强功能”可以选择上，可以减少一步操作，后面设置“共享文件夹”时会用到，用到时详说。）
+
 点击下一步，配置内存大小和处理器数目：
 
 ![]({{site.baseurl}}/images/Linux/20231027181641.png)
@@ -472,7 +474,7 @@ tcp6       0      0 :::22                   :::*                    LISTEN      
 
 ### 更换yum源
 
-为了提交下载速度，把yum源更换为国内源。
+为了提高下载速度，把yum源更换为国内源。
 
 1、备份
 
@@ -486,6 +488,7 @@ tcp6       0      0 :::22                   :::*                    LISTEN      
 
 > yum clean all && yum makecache
 
+明细：
 ```
 [root@10 ~]# ls /etc/yum.repos.d/
 CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo
@@ -595,6 +598,7 @@ dr-xr-xr-x. 2 root root     2828 10月 13 01:41 OS2
 > 
 > sh /media/cdrom/VBoxLinuxAdditions.run
 
+明细：
 ```
 [root@10 ~]# sh /media/cdrom/VBoxLinuxAdditions.run
 Verifying archive integrity...  100%   MD5 checksums are OK. All good.
@@ -660,10 +664,11 @@ The log file /var/log/vboxadd-setup.log may contain further information.
 [root@10 ~]#
 ```
 
-执行以下命令来运行 VirtualBox Guest Additions 的设置脚本
+执行以下命令来运行 VirtualBox Guest Additions 的设置脚本：
 
 > /sbin/rcvboxadd setup 
 
+明细：
 ```
 [root@10 ~]# /sbin/rcvboxadd setup
 VirtualBox Guest Additions: Starting.
@@ -872,6 +877,7 @@ sr0              11:0    1 1024M  0 rom
 >
 > apt-get install git
 
+明细：
 ```
 root@a0c75b4db3a6:/var/www/html# apt-get update
 ...............
@@ -892,6 +898,7 @@ root@a0c75b4db3a6:/var/www/html#
 一、安装
 
 安装yum管理工具：
+
 > yum install -y yum-utils
 
 yum添加软件源：
@@ -913,11 +920,14 @@ Loading mirror speeds from cached hostfile
 ```
 
 安装docker-ce（官方维护的社区版）：
+
 > yum install -y docker-ce
 
 运行docker：
+
 > systemctl start docker
 
+明细：
 ```
 [root@10 ~]# yum install -y yum-utils
 已加载插件：fastestmirror
@@ -968,8 +978,10 @@ Server: Docker Engine - Community
 ```
 
 验证Docker引擎是否正确安装：
+
 > docker run hello-world
 
+明细：
 ```
 [root@10 ~]# docker images
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
@@ -1031,6 +1043,7 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 重启docker：
 > systemctl restart docker
 
+明细：
 ```
 [root@10 ~]# systemctl daemon-reload
 [root@10 ~]#
@@ -1045,10 +1058,12 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 三、浏览器中查看 docker 相关信息
 
 开启远程访问，编辑docker服务器上对应的配置文件：
+
 > vi /usr/lib/systemd/system/docker.service
 
-在 `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` 后增加 `-H tcp://0.0.0.0:2375` ：
+在 `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` 后追加 `-H tcp://0.0.0.0:2375` ：
 
+明细：
 ```
 [root@10 ~]# vi /usr/lib/systemd/system/docker.service
 [Unit]
@@ -1076,9 +1091,11 @@ StartLimitBurst=3
 ```
 
 重载 systemd 的脚本配置文件内容：
+
 > systemctl daemon-reload
 
 重启docker：
+
 > systemctl restart docker
 
 浏览器访问地址 http://192.168.56.102:2375/version ，返回（注意防火墙的配置）：
@@ -1137,6 +1154,7 @@ StartLimitBurst=3
 }
 ```
 
+看一下监听中的端口：
 ```
 [root@10 ~]# netstat -lnpt
 Active Internet connections (only servers)
