@@ -2174,9 +2174,6 @@ f2d344418b9fb0dfcc75da53a6bfdaf5b7d722dab1c2edc0f06ad770c2143571
 [root@10 ~]#
 [root@10 ~]# docker exec -it nginx_php_7.4-fpm /bin/bash
 root@f2d344418b9f:/#
-root@f2d344418b9f:/# nginx 0v
-nginx: invalid option: "0v"
-root@f2d344418b9f:/#
 root@f2d344418b9f:/# nginx -v
 nginx version: nginx/1.25.3
 root@f2d344418b9f:/#
