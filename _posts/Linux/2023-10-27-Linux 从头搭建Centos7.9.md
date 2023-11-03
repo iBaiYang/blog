@@ -2140,7 +2140,7 @@ e386a696ef90   hello-world   "/hello"                  7 hours ago   Exited (0) 
 ### 基础安装
 
 下载nginx包：
-> ocker pull nginx
+> docker pull nginx
 
 明细：
 ```
@@ -2163,6 +2163,9 @@ docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/doc
 ```
 
 `D:\develop\virtualbox\docker\nginx` 文件夹用来保存我们所有项目的nginx配置。
+
+`--link php_7.4-fpm:php` 可以不写，这个是docker内跨容器访问的配置。如果不写，Nginx容器 可以通过 宿主主机 中转访问 PHP容器，
+在下面项目的conf配置中把 `fastcgi_pass   php:9000;` 改为 `fastcgi_pass   192.168.56.102:9000;` 。
 
 明细：
 ```
