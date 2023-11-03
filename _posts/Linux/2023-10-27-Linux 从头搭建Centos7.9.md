@@ -1176,6 +1176,7 @@ tcp6       0      0 :::2375                 :::*                    LISTEN      
 下载7.4-fpm版：
 > docker pull php:7.4-fpm
 
+明细：
 ```
 [root@10 ~]# docker pull php:7.4-fpm
 7.4-fpm: Pulling from library/php
@@ -1212,6 +1213,7 @@ php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
 docker run --name php_7.4-fpm -p 9000:9000 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php_7.4-fpm
 ```
 
+明细：
 ```
 [root@10 ~]# systemctl restart docker
 [root@10 ~]# 
@@ -1232,6 +1234,7 @@ e386a696ef90   hello-world   "/hello"                  3 hours ago      Exited (
 >
 > php -m
 
+明细：
 ```
 [root@10 ~]# docker exec -it php_7.4-fpm /bin/bash
 root@a0c75b4db3a6:/var/www/html#
@@ -1383,6 +1386,7 @@ root@a0c75b4db3a6:/var/www/html#
 >
 > usermod -aG docker www-data
 
+明细：
 ```
 root@a0c75b4db3a6:/var/www/html# groupadd -g 995 docker
 root@a0c75b4db3a6:/var/www/html#
@@ -1503,9 +1507,10 @@ root@a0c75b4db3a6:/var/www/html#
 
 一、拓展安装准备
 
-PHP拓展需要安装在源码目录下，初始化php源码目录：
+一部分PHP拓展在源码目录下，首先提取php源码：
 > docker-php-source extract
 
+明细：
 ```
 root@a0c75b4db3a6:/var/www/html# cd /usr/src
 root@a0c75b4db3a6:/usr/src#
@@ -1524,7 +1529,7 @@ drwxr-xr-x. 16 root root     4096 Oct 30 14:40 php
 root@a0c75b4db3a6:/usr/src#
 ```
 
-拓展包放在`/usr/src/php/ext`目录下：
+看一下放在`/usr/src/php/ext`目录下的拓展包有哪些：
 ```
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php
 CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
@@ -1553,6 +1558,7 @@ root@a0c75b4db3a6:/usr/src#
 安装命令：
 > docker-php-ext-install bcmath
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/src# ls /usr/local/etc/php/conf.d/
 docker-php-ext-sodium.ini
@@ -1588,6 +1594,14 @@ root@a0c75b4db3a6:/usr/src#
 
 ### Swoole安装
 
+我们选择PECL方式来安装。
+
+PECL，The PHP Extension Community Library，PHP拓展社区库（PEAR拓展版本），
+是一个开放的并通过 PEAR打包格式(PHP Extension and Application Repository，PHP 扩展和应用仓库)来打包安装的 PHP 扩展库仓库。
+与以往的多数 PEAR 包不同的是，PECL 扩展包含的是可以编译进 PHP Core 的 C 语言代码，
+因此可以将 PECL 扩展库编译成为可动态加载的 `.so` 共享库，或者采用静态编译方式与 PHP 源代码编译为一体的方法进行扩展。
+同时 pecl 也是基于 PECL仓库 的一个拓展安装管理工具。
+
 先把 openssl/ssl.h 头文件安装好，不然安装过程中会报错
 > apt-get update  
 >
@@ -1598,6 +1612,7 @@ root@a0c75b4db3a6:/usr/src#
 >
 > docker-php-ext-enable swoole
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
 bcmath      ext_skel.php  intl      pcntl         phar        sockets    xmlreader
@@ -1611,6 +1626,21 @@ dba         gmp           oci8      pdo_odbc      simplexml   sysvshm
 dom         hash          odbc      pdo_pgsql     skeleton    tidy
 enchant     iconv         opcache   pdo_sqlite    snmp        tokenizer
 exif        imap          openssl   pgsql         soap        xml
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# pecl version
+PEAR Version: 1.10.13
+PHP Version: 7.4.33
+Zend Engine Version: 3.4.0
+Running on: Linux a0c75b4db3a6 3.10.0-1160.102.1.el7.x86_64 #1 SMP Tue Oct 17 15:42:21 UTC 2023 x86_64
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# pecl search swoole
+Retrieving data...0%
+..Matched packages, channel pecl.php.net:
+=======================================
+Package          Stable/(Latest) Local
+openswoole       22.0.0 (stable)        High Performance Programmatic Server for PHP with Async IO, Coroutines and Fibers
+swoole           5.1.0 (stable)         Event-driven asynchronous and concurrent networking engine with high performance for PHP.
+swoole_serialize 0.1.1 (beta)           the fastest and smallest serialize fucntion bound for php7
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# pecl install swoole-4.8.13
 downloading swoole-4.8.13.tgz ...
@@ -1747,9 +1777,9 @@ libigbinary-dev安装时在apt源中又找不到包，换了apt源后还是不�
 > docker-php-ext-enable redis
 ```
 
-看来要直接使用Redis拓展包源码安装了。
+看来要直接使用Redis拓展包源码进行安装了。
 
-在容器中的 tmp 目录下下载 redis-6.0.2.tgz 包，解压缩然后进入解压包，phpize生成configure文件：
+在容器中的 `/tmp` 目录下下载 redis-6.0.2.tgz 包，解压缩然后进入解压包，phpize 生成 configure文件：
 
 > cd /tmp
 >
@@ -1761,6 +1791,7 @@ libigbinary-dev安装时在apt源中又找不到包，换了apt源后还是不�
 > 
 > /usr/local/bin/phpize
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/src# cd /tmp
 root@a0c75b4db3a6:/tmp#
@@ -1788,11 +1819,13 @@ root@a0c75b4db3a6:/tmp/redis-6.0.2#
 ```
 
 查看 php-config 地址，编译redis扩展：
-
+```
 > whereis php-config
 >
 > ./configure --with-php-config=/usr/local/bin/php-config
+```
 
+明细：
 ```
 root@a0c75b4db3a6:/tmp/redis-6.0.2# whereis php-config
 php-config: /usr/local/bin/php-config
@@ -1813,6 +1846,7 @@ root@a0c75b4db3a6:/tmp/redis-6.0.2#
 
 > make && make install
 
+明细：
 ```
 root@a0c75b4db3a6:/tmp/redis-6.0.2# make
 /bin/bash /tmp/redis-6.0.2/libtool --mode=compile cc 
@@ -1829,8 +1863,8 @@ bcmath.so  opcache.so  pdo_mysql.so  redis.so  sodium.so  swoole.so
 root@a0c75b4db3a6:/tmp/redis-6.0.2#
 ```
 
-开启redis拓展：
-
+开启redis拓展（新建文件并写入内容）：
+```
 > cd /usr/local/etc/php/conf.d
 >
 > touch docker-php-ext-redis.ini
@@ -1838,7 +1872,9 @@ root@a0c75b4db3a6:/tmp/redis-6.0.2#
 > vim docker-php-ext-redis.ini
 >
 > echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/redis.so" >> docker-php-ext-redis.ini
+```
 
+明细：
 ```
 root@a0c75b4db3a6:/tmp/redis-6.0.2# cd /usr/local/etc/php/conf.d
 root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
@@ -1860,6 +1896,7 @@ root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
 > 
 > docker restart php_7.4-fpm
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/local/etc/php/conf.d# exit
 exit
@@ -1877,13 +1914,18 @@ root@a0c75b4db3a6:/var/www/html#
 ### Composer安装
 
 下载并安装：
+```
 > php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 >
 > php composer-setup.php
+```
 
 安装完成后移除安装文件：
+```
 > php -r "unlink('composer-setup.php');"
+```
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/src# cd /usr/local/src
 root@a0c75b4db3a6:/usr/local/src#
@@ -1908,8 +1950,10 @@ root@a0c75b4db3a6:/usr/local/src#
 ```
 
 移动composer文件到 bin 目录：
+
 > mv composer.phar /usr/local/bin/composer
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/local/src# mv composer.phar /usr/local/bin/composer
 root@a0c75b4db3a6:/usr/local/src#
@@ -1926,8 +1970,10 @@ root@a0c75b4db3a6:/usr/local/src#
 ```
 
 设置国内包源：
+
 > composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/local/src# composer config -g -l repo.packagist
 [repositories.packagist.org.type] composer
@@ -1945,10 +1991,12 @@ root@a0c75b4db3a6:/usr/local/src#
 ```
 
 composer使用过程中会用到 php-zip 和 unzip，需要提前下载好：
+
 > apt-get install php-zip
 >
 > apt-get install unzip
 
+明细：
 ```
 root@a0c75b4db3a6:/var/www/html# apt-get install php-zip
 Reading package lists... Done
@@ -1986,8 +2034,10 @@ root@a0c75b4db3a6:/var/www/html#
 随着容器中功能不多的增多，免不了需要开放更多的端口，可以按照下面步骤操作。
 
 查看当前端口映射：
+
 > docker port php_7.4-fpm
 
+明细：
 ```
 [root@10 ~]# docker ps -a
 CONTAINER ID   IMAGE         COMMAND                   CREATED       STATUS                   PORTS                                       NAMES
@@ -2001,10 +2051,12 @@ e386a696ef90   hello-world   "/hello"                  6 hours ago   Exited (0) 
 ```
 
 关闭php容器，和docker服务：
+
 > docker stop php_7.4-fpm
 >
 > systemctl stop docker
 
+明细：
 ```
 [root@10 ~]# docker stop php_7.4-fpm
 php_7.4-fpm
@@ -2090,6 +2142,7 @@ e386a696ef90   hello-world   "/hello"                  7 hours ago   Exited (0) 
 下载nginx包：
 > ocker pull nginx
 
+明细：
 ```
 [root@10 ~]# docker pull nginx
 Using default tag: latest
@@ -2111,6 +2164,7 @@ docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/doc
 
 `D:\develop\virtualbox\docker\nginx` 文件夹用来保存我们所有项目的nginx配置。
 
+明细：
 ```
 [root@10 ~]# docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/docker/nginx:/etc/nginx/conf.d -v /media/sf_develop:/usr/share/nginx/www -v /etc/localtime:/etc/localtime:ro --link php_7.4-fpm:php --privileged=true -d nginx
 f2d344418b9fb0dfcc75da53a6bfdaf5b7d722dab1c2edc0f06ad770c2143571
@@ -2199,10 +2253,12 @@ root@f2d344418b9f:/#
 ```
 
 995这个组是不存在的，nginx 的用户ID是 101，组ID是 101，所以对主机文件没有操作权限，我们需要把 nginx 加到 995组下：
+
 > groupadd -g 995 docker
 >
 > usermod -aG docker nginx
 
+明细：
 ```
 root@f2d344418b9f:/# groupadd -g 995 docker
 root@f2d344418b9f:/#
@@ -2382,6 +2438,7 @@ server {
 重启nginx服务：
 > nginx -s reload
 
+明细：
 ```
 root@f2d344418b9f:/# nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
