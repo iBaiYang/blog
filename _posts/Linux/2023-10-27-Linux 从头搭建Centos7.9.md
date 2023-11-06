@@ -161,7 +161,9 @@ Centos7.9服务器启动成功，进入命令行模式：
 
 ### SSH客户端连接
 
-看一下现在服务器的网络信息（虚拟机无法访问外网，下面网络配置部分解决）：
+一、开启(Host-0nly)网络
+
+看一下现在服务器的网络信息（虚拟机无法访问外网，下面网络配置部分）：
 
 ![]({{site.baseurl}}/images/Linux/20231027224336.png)
 
@@ -228,6 +230,28 @@ Last login: Sat Oct 28 23:05:32 2023 from 192.168.56.1
 
 接下来就可以在主机本地操作服务器了，比原来在虚拟机打开的服务器窗口中操作时总是提示“捕获鼠标”方便了不少。
 下次服务器启动时，选择“无界面启动”。
+
+二、Win10系统更新后错误修复
+
+记一个发生过的错误。Host-0nly已经正常使用了一段时间，在一次Win10系统更新后，再次启动虚拟机时报错：
+```
+虚拟电脑名称: Centos7.9
+
+Failed to open/create the internal network 'HostInterfaceNetworking-VirtualBox Host-Only Ethernet Adapter' (VERR_INTNET_FLT_IF_NOT_FOUND).
+Failed to attach the network LUN (VERR_INTNET_FLT_IF_NOT_FOUND).
+返回 代码:
+E_FAIL (0X80004005)
+组件:
+ConsoleWrap
+界面:
+IConsole {6ac83d89-6ee7-4e33-8ae6-b257b2e81be8}
+```
+
+可以看出是 Host-Only 相关方面的错误，与本次Win10系统更新有关。
+
+查询后，解决方案：在Win10中打开 “打开网络和Internet设置”，点击左侧的 “更改适配器设置”，
+选中 “VirtualBox Host-Only Ethernet Adapter”,右击选中“属性”，勾选中“VitrualBox NDIS6 Bridged Networking Driver”，
+点击“确定”保存，再次启动虚拟机就可以了。
 
 ### 网络配置
 
@@ -1759,6 +1783,36 @@ zlib
 [Zend Modules]
 
 root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php --ri swoole
+
+swoole
+
+Swoole => enabled
+Author => Swoole Team <team@swoole.com>
+Version => 4.8.13
+Built => Oct 30 2023 15:45:37
+coroutine => enabled with boost asm context
+epoll => enabled
+eventfd => enabled
+signalfd => enabled
+cpu_affinity => enabled
+spinlock => enabled
+rwlock => enabled
+openssl => OpenSSL 1.1.1w  11 Sep 2023
+dtls => enabled
+mutex_timedlock => enabled
+pthread_barrier => enabled
+futex => enabled
+async_redis => enabled
+
+Directive => Local Value => Master Value
+swoole.enable_coroutine => On => On
+swoole.enable_library => On => On
+swoole.enable_preemptive_scheduler => Off => Off
+swoole.display_errors => On => On
+swoole.use_shortname => On => On
+swoole.unixsock_buffer_size => 8388608 => 8388608
+root@a0c75b4db3a6:/usr/src#
 ```
 
 ### Redis拓展安装
@@ -2514,3 +2568,7 @@ Centos7 系列：磁盘挂载和磁盘扩容(新加硬盘方式) <https://blog.c
 VirtualBox虚拟机中Centos7系统如何设置共享文件夹 <https://zhuanlan.zhihu.com/p/633877183>
 
 docker php安装redis扩展 <https://blog.csdn.net/longfeng995/article/details/130557612>
+
+Failed to open/create the internal network 'HostInterfaceNetworking-VirtualBox Host-Only Ethernet Adapter'
+<https://www.jianshu.com/p/4bee5f609d01>
+
