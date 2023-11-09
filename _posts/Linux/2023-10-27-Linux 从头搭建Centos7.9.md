@@ -2553,6 +2553,400 @@ server {
 }
 ```
 
+## 问题集合
+
+### 网络接口配置文件
+
+虽然我们 SSH 可以连接虚拟机了，但发现在`/etc/sysconfig/network-scripts`下并没有网络接口配置文件 `ifcfg-enp0s8` ：
+
+```
+[root@10 ~]# cd /etc/sysconfig/network-scripts/
+[root@10 network-scripts]#
+[root@10 network-scripts]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 85923sec preferred_lft 85923sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 594sec preferred_lft 594sec
+    inet6 fe80::90bb:7c4e:f558:7881/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@10 network-scripts]#
+[root@10 network-scripts]# ls
+ifcfg-enp0s3  ifdown-isdn      ifdown-tunnel  ifup-isdn    ifup-Team
+ifcfg-lo      ifdown-post      ifup           ifup-plip    ifup-TeamPort
+ifdown        ifdown-ppp       ifup-aliases   ifup-plusb   ifup-tunnel
+ifdown-bnep   ifdown-routes    ifup-bnep      ifup-post    ifup-wireless
+ifdown-eth    ifdown-sit       ifup-eth       ifup-ppp     init.ipv6-global
+ifdown-ippp   ifdown-Team      ifup-ippp      ifup-routes  network-functions
+ifdown-ipv6   ifdown-TeamPort  ifup-ipv6      ifup-sit     network-functions-ipv6
+[root@10 network-scripts]#
+[root@10 network-scripts]# nmcli connection show
+NAME        UUID                                  TYPE      DEVICE
+enp0s3      c7c6c14c-c2c1-424f-9367-621a3c0a36c7  ethernet  enp0s3
+有线连接 1  67578541-4773-32e0-9b24-baa234af0548  ethernet  enp0s8
+[root@10 network-scripts]#
+```
+
+我们可以使用 NetworkManager管理工具 的nmcli命令生成该文件（建议最好不要执行，会影响到其他网卡的选择，如桥接的搭建）：
+
+> nmcli connection add type ethernet con-name enp0s8 ifname enp0s8
+
+明细：
+```
+[root@10 network-scripts]# nmcli connection add type ethernet con-name enp0s8 ifname enp0s8
+连接 "enp0s8" (b1687624-6940-41e2-810a-f0de39b6a51b) 已成功添加。
+[root@10 network-scripts]#
+[root@10 network-scripts]# ls
+ifcfg-enp0s3  ifdown-ippp    ifdown-sit       ifup-bnep  ifup-plusb   ifup-TeamPort
+ifcfg-enp0s8  ifdown-ipv6    ifdown-Team      ifup-eth   ifup-post    ifup-tunnel
+ifcfg-lo      ifdown-isdn    ifdown-TeamPort  ifup-ippp  ifup-ppp     ifup-wireless
+ifdown        ifdown-post    ifdown-tunnel    ifup-ipv6  ifup-routes  init.ipv6-global
+ifdown-bnep   ifdown-ppp     ifup             ifup-isdn  ifup-sit     network-functions
+ifdown-eth    ifdown-routes  ifup-aliases     ifup-plip  ifup-Team    network-functions-ipv6
+[root@10 network-scripts]#
+[root@10 network-scripts]# cat ifcfg-enp0s8
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s8
+UUID=b1687624-6940-41e2-810a-f0de39b6a51b
+DEVICE=enp0s8
+ONBOOT=yes
+[root@10 network-scripts]#
+[root@10 network-scripts]# systemctl start network
+[root@10 network-scripts]#
+[root@10 network-scripts]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 84743sec preferred_lft 84743sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 432sec preferred_lft 432sec
+    inet6 fe80::90bb:7c4e:f558:7881/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@10 network-scripts]#
+[root@10 network-scripts]# cat ifcfg-enp0s3
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s3
+UUID=c7c6c14c-c2c1-424f-9367-621a3c0a36c7
+DEVICE=enp0s3
+ONBOOT=yes
+[root@10 network-scripts]#
+```
+
+### 局域网内其他电脑访问本机虚拟机
+
+项目开发过程中碰到一个问题，团队没有测试服务器，同事想直接使用我的虚拟机提供的服务。
+这里就需要关闭 “仅主机(Host-0nly)网络” 网卡，不然只有本地主机可以访问虚拟机而其他电脑无法访问。
+然后 连接方式 选择 “桥接网卡”， 混杂模式 中选择 “全部允许”。
+
+原本想的是同时开启 “仅主机(Host-0nly)网络” 网卡 和 “桥接网卡”，结果各种意外情况发生，调试了好长时间。
+这也是为什么在上面说到的 ——网络接口配置文件 中最好不要手动生成 enp0s8 的原因，手动生成意味着配置会写死，
+写死后 VirtualBox 选择各类型网卡时的配置灵活性就丧失了。
+
+我们在 VirtualBox 中指定虚拟机的 网络 配置页面中：保留 “网络地址转换(NAT)”，因为该网卡使虚拟机内可以访问外网；
+另外取消 “仅主机(Host-0nly)网络” 的选择，该网卡的作用是只允许本地主机可以访问虚拟机；
+接下来新建 “桥接网卡” 的选择，混杂模式 中选择 “全部允许”。
+
+现在 VirtualBox 配置部分完成，我们需要知道其他电脑通过哪个IP地址访问本机虚拟机。
+我们在VirtualBox中选择 非后台模式 启动虚拟机，登录虚拟机，然后使用下面命令查看虚拟机在局域网内的IP地址：
+
+> ip addr
+
+明细：
+```
+[root@10 ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 77498sec preferred_lft 77498sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:46:43:7b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.149/24 brd 192.168.0.255 scope global noprefixroute dynamic enp0s9
+       valid_lft 34787sec preferred_lft 34787sec
+    inet6 fe80::c932:de89:9774:d265/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:5a:e4:7c:6f brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:5aff:fee4:7c6f/64 scope link
+       valid_lft forever preferred_lft forever
+6: veth254318c@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
+    link/ether 9a:c5:c6:2b:12:2a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::98c5:c6ff:fe2b:122a/64 scope link
+       valid_lft forever preferred_lft forever
+14: veth77161c9@if13: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
+    link/ether 06:8b:c1:0b:86:ba brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::48b:c1ff:fe0b:86ba/64 scope link
+       valid_lft forever preferred_lft forever
+[root@10 ~]#
+```
+
+可以看到该虚拟机在局域网中的IP是 192.168.0.149，局域网内的电脑都可以通过该IP访问虚拟机：
+
+```
+C:\Users>ping 192.168.0.149
+
+正在 Ping 192.168.0.149 具有 32 字节的数据:
+来自 192.168.0.149 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.0.149 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.0.149 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.0.149 的回复: 字节=32 时间<1ms TTL=64
+
+192.168.0.149 的 Ping 统计信息:
+    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，
+往返行程的估计时间(以毫秒为单位):
+    最短 = 0ms，最长 = 0ms，平均 = 0ms
+
+C:\Users>
+```
+
+
+
+
+
+
+```
+[root@10 ~]# ls
+ifcfg-enp0s3  ifdown-ippp    ifdown-sit       ifup-bnep  ifup-plusb   ifup-TeamPort
+ifcfg-enp0s8  ifdown-ipv6    ifdown-Team      ifup-eth   ifup-post    ifup-tunnel
+ifcfg-lo      ifdown-isdn    ifdown-TeamPort  ifup-ippp  ifup-ppp     ifup-wireless
+ifdown        ifdown-post    ifdown-tunnel    ifup-ipv6  ifup-routes  init.ipv6-global
+ifdown-bnep   ifdown-ppp     ifup             ifup-isdn  ifup-sit     network-functions
+ifdown-eth    ifdown-routes  ifup-aliases     ifup-plip  ifup-Team    network-functions-ipv6
+[root@10 ~]#
+[root@10 ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group defaul       t qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP        group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 86319sec preferred_lft 86319sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP        group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic        enp0s8
+       valid_lft 519sec preferred_lft 519sec
+    inet6 fe80::855a:f81e:c405:a566/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: enp0s9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP        group default qlen 1000
+    link/ether 08:00:27:46:43:7b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.149/24 brd 192.168.0.255 scope global noprefixroute dynamic e       np0s9
+       valid_lft 43119sec preferred_lft 43119sec
+    inet6 fe80::c932:de89:9774:d265/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@10 ~]#
+[root@10 ~]# nmcli connection show
+NAME        UUID                                  TYPE      DEVICE
+enp0s3      c7c6c14c-c2c1-424f-9367-621a3c0a36c7  ethernet  enp0s3
+enp0s8      b1687624-6940-41e2-810a-f0de39b6a51b  ethernet  enp0s8
+有线连接 1  daeff1ab-9633-37c4-8b9a-202beb53a70e  ethernet  enp0s9
+[root@10 ~]#
+[root@10 ~]# nmcli connection add type ethernet con-name enp0s9 ifname enp0s9
+连接 "enp0s9" (3190d018-e47b-4371-94f2-cd5fcbc75eac) 已成功添加。
+[root@10 ~]#
+[root@10 ~]# nmcli connection show
+NAME        UUID                                  TYPE      DEVICE
+enp0s3      c7c6c14c-c2c1-424f-9367-621a3c0a36c7  ethernet  enp0s3
+enp0s8      b1687624-6940-41e2-810a-f0de39b6a51b  ethernet  enp0s8
+有线连接 1  daeff1ab-9633-37c4-8b9a-202beb53a70e  ethernet  enp0s9
+enp0s9      3190d018-e47b-4371-94f2-cd5fcbc75eac  ethernet  --
+[root@10 ~]#
+[root@10 ~]# ls /etc/sysconfig/network-scripts/
+ifcfg-enp0s3  ifdown-ipv6      ifdown-tunnel  ifup-plip      ifup-tunnel
+ifcfg-enp0s8  ifdown-isdn      ifup           ifup-plusb     ifup-wireless
+ifcfg-enp0s9  ifdown-post      ifup-aliases   ifup-post      init.ipv6-global
+ifcfg-lo      ifdown-ppp       ifup-bnep      ifup-ppp       network-functions
+ifdown        ifdown-routes    ifup-eth       ifup-routes    network-functions-ipv6
+ifdown-bnep   ifdown-sit       ifup-ippp      ifup-sit
+ifdown-eth    ifdown-Team      ifup-ipv6      ifup-Team
+ifdown-ippp   ifdown-TeamPort  ifup-isdn      ifup-TeamPort
+[root@10 ~]#
+[root@10 ~]# ls /etc/sysconfig/network-scripts/
+ifcfg-enp0s3  ifdown-isdn      ifup          ifup-plusb     ifup-wireless
+ifcfg-enp0s8  ifdown-post      ifup-aliases  ifup-post      init.ipv6-global
+ifcfg-lo      ifdown-ppp       ifup-bnep     ifup-ppp       network-functions
+ifdown        ifdown-routes    ifup-eth      ifup-routes    network-functions-ipv6
+ifdown-bnep   ifdown-sit       ifup-ippp     ifup-sit
+ifdown-eth    ifdown-Team      ifup-ipv6     ifup-Team
+ifdown-ippp   ifdown-TeamPort  ifup-isdn     ifup-TeamPort
+ifdown-ipv6   ifdown-tunnel    ifup-plip     ifup-tunnel
+[root@10 ~]#
+[root@10 ~]# nmcli connection show
+NAME        UUID                                  TYPE      DEVICE
+enp0s3      c7c6c14c-c2c1-424f-9367-621a3c0a36c7  ethernet  enp0s3
+enp0s8      b1687624-6940-41e2-810a-f0de39b6a51b  ethernet  enp0s8
+有线连接 1  daeff1ab-9633-37c4-8b9a-202beb53a70e  ethernet  enp0s9
+[root@10 ~]#
+[root@10 network-scripts]# cp ifcfg-enp0s8 ifcfg-enp0s9
+[root@10 network-scripts]#
+[root@10 network-scripts]# ls
+ifcfg-enp0s3  ifdown-ipv6      ifdown-tunnel  ifup-plip      ifup-tunnel
+ifcfg-enp0s8  ifdown-isdn      ifup           ifup-plusb     ifup-wireless
+ifcfg-enp0s9  ifdown-post      ifup-aliases   ifup-post      init.ipv6-global
+ifcfg-lo      ifdown-ppp       ifup-bnep      ifup-ppp       network-functions
+ifdown        ifdown-routes    ifup-eth       ifup-routes    network-functions-ipv6
+ifdown-bnep   ifdown-sit       ifup-ippp      ifup-sit
+ifdown-eth    ifdown-Team      ifup-ipv6      ifup-Team
+ifdown-ippp   ifdown-TeamPort  ifup-isdn      ifup-TeamPort
+[root@10 network-scripts]#
+[root@10 network-scripts]# vi ifcfg-enp0s9
+```
+
+```
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s8
+UUID=b1687624-6940-41e2-810a-f0de39b6a51b
+DEVICE=enp0s8
+ONBOOT=yes
+```
+
+```
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=static
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s9
+UUID=daeff1ab-9633-37c4-8b9a-202beb53a70e
+DEVICE=enp09
+ONBOOT=yes
+IPADDR=192.168.0.149
+PREFIX=24
+IPV6_PRIVACY=no
+```
+
+```
+[root@10 network-scripts]# nmcli connection show
+NAME        UUID                                  TYPE      DEVICE
+enp0s3      c7c6c14c-c2c1-424f-9367-621a3c0a36c7  ethernet  enp0s3
+enp0s8      b1687624-6940-41e2-810a-f0de39b6a51b  ethernet  enp0s8
+有线连接 1  daeff1ab-9633-37c4-8b9a-202beb53a70e  ethernet  enp0s9
+[root@10 network-scripts]#
+[root@10 network-scripts]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 85217sec preferred_lft 85217sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:77:ee:38 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 467sec preferred_lft 467sec
+    inet6 fe80::855a:f81e:c405:a566/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: enp0s9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:46:43:7b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.149/24 brd 192.168.0.255 scope global noprefixroute dynamic enp0s9
+       valid_lft 42017sec preferred_lft 42017sec
+    inet6 fe80::c932:de89:9774:d265/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@10 network-scripts]#
+[root@10 network-scripts]# systemctl restart network
+Job for network.service failed because the control process exited with error code. See "systemctl status network.service" and "journalctl -xe" for details.
+[root@10 network-scripts]#
+[root@10 network-scripts]# systemctl status network
+● network.service - LSB: Bring up/down networking
+   Loaded: loaded (/etc/rc.d/init.d/network; bad; vendor preset: disabled)
+   Active: failed (Result: exit-code) since 四 2023-11-09 14:00:52 CST; 24s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 1819 ExecStop=/etc/rc.d/init.d/network stop (code=exited, status=0/SUCCESS)
+  Process: 2022 ExecStart=/etc/rc.d/init.d/network start (code=exited, status=1/FAILURE)
+
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: 正在打开接口 enp0s3： 连接已成功激…4）
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: [  确定  ]
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: 正在打开接口 enp0s8： 连接已成功激…5）
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: [  确定  ]
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: 正在打开接口 enp0s9： 错误：连接激…)).
+11月 09 14:00:52 MiWiFi-RA72-srv network[2022]: [失败]
+11月 09 14:00:52 MiWiFi-RA72-srv systemd[1]: network.service: control process exi...=1
+11月 09 14:00:52 MiWiFi-RA72-srv systemd[1]: Failed to start LSB: Bring up/down n...g.
+11月 09 14:00:52 MiWiFi-RA72-srv systemd[1]: Unit network.service entered failed ...e.
+11月 09 14:00:52 MiWiFi-RA72-srv systemd[1]: network.service failed.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@10 network-scripts]#
+```
+
+
+
+
+
 
 
 
