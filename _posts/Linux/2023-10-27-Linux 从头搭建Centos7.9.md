@@ -1234,7 +1234,7 @@ php           7.4-fpm   38f2b691dcb8   11 months ago   443MB
 
 命令：
 ```
-docker run --name php_7.4-fpm -p 9000:9000 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php_7.4-fpm
+docker run --name php_7.4-fpm -p 9000:9000 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php:7.4-fpm
 ```
 
 明细：
@@ -2188,6 +2188,263 @@ e386a696ef90   hello-world   "/hello"                  7 hours ago   Exited (0) 
 9501/tcp -> [::]:9501
 [root@10 ~]#
 ```
+
+### 提交仓库
+
+我们可以把上面配置好的容器做成一个包发布到Docker仓库中，下次直接从仓库中拉取就可以了，不用再一步步敲击配置了。
+
+一、生成镜像
+
+从容器Container生成image镜像。
+
+```
+> docker commit -a "baiyang" -m "php:7.4-fpm add vi\ext_swoole-4.8.13\ext_redis-6.0.2" php_7.4-fpm php-7.4:1.0
+```
+
+-a :镜像作者；   -m :备注文字；      容器名；       镜像名:标签。
+
+明细：
+```
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   latest    9c7a54a9a43c   6 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+[root@10 ~]# docker ps
+CONTAINER ID   IMAGE         COMMAND                   CREATED       STATUS        PORTS                                                                                 NAMES
+a0c75b4db3a6   php:7.4-fpm   "docker-php-entrypoi…"   2 weeks ago   Up 21 hours   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp,  0.0.0.0:9501->9501/tcp, :::9501->9501/tcp php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# docker commit -a "baiyang" -m "php:7.4-fpm add vi\ext_swoole-4.8.13\ext_redis-6.0.2" php_7.4-fpm php-7.4:1.0
+sha256:2a7836ecd1a300b1fb14bd2483f082272f625e0dec5d656aace1c4477ac7f2e8
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+php-7.4       1.0       2a7836ecd1a3   44 seconds ago   885MB
+hello-world   latest    9c7a54a9a43c   6 months ago     13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago    443MB
+[root@10 ~]#
+[root@10 ~]# docker inspect php-7.4:1.0
+[
+    {
+        "Id": "sha256:2a7836ecd1a300b1fb14bd2483f082272f625e0dec5d656aace1c4477ac7f2e8",
+        "RepoTags": [
+            "php-7.4:1.0"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:38f2b691dcb8c6d4630caa2999173e35be341f2f1264164ae045d9bfb3906c28",
+        "Comment": "php:7.4-fpm add vi\\ext_swoole-4.8.13\\ext_redis-6.0.2",
+        "Created": "2023-11-14T03:38:26.271139554Z",
+        "Container": "a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059",
+        "ContainerConfig": {
+            "Hostname": "a0c75b4db3a6",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "9000/tcp": {},
+                "9501/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PHPIZE_DEPS=autoconf \t\tdpkg-dev \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config \t\tre2c",
+                "PHP_INI_DIR=/usr/local/etc/php",
+                "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_LDFLAGS=-Wl,-O1 -pie",
+                "GPG_KEYS=42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312",
+                "PHP_VERSION=7.4.33",
+                "PHP_URL=https://www.php.net/distributions/php-7.4.33.tar.xz",
+                "PHP_ASC_URL=https://www.php.net/distributions/php-7.4.33.tar.xz.asc",
+                "PHP_SHA256=924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+            ],
+            "Cmd": [
+                "php-fpm"
+            ],
+            "Image": "php:7.4-fpm",
+            "Volumes": null,
+            "WorkingDir": "/var/www/html",
+            "Entrypoint": [
+                "docker-php-entrypoint"
+            ],
+            "OnBuild": null,
+            "Labels": {},
+            "StopSignal": "SIGQUIT"
+        },
+        "DockerVersion": "24.0.7",
+        "Author": "baiyang",
+        "Config": {
+            "Hostname": "a0c75b4db3a6",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "9000/tcp": {},
+                "9501/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PHPIZE_DEPS=autoconf \t\tdpkg-dev \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config \t\tre2c",
+                "PHP_INI_DIR=/usr/local/etc/php",
+                "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_LDFLAGS=-Wl,-O1 -pie",
+                "GPG_KEYS=42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312",
+                "PHP_VERSION=7.4.33",
+                "PHP_URL=https://www.php.net/distributions/php-7.4.33.tar.xz",
+                "PHP_ASC_URL=https://www.php.net/distributions/php-7.4.33.tar.xz.asc",
+                "PHP_SHA256=924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+            ],
+            "Cmd": [
+                "php-fpm"
+            ],
+            "Image": "php:7.4-fpm",
+            "Volumes": null,
+            "WorkingDir": "/var/www/html",
+            "Entrypoint": [
+                "docker-php-entrypoint"
+            ],
+            "OnBuild": null,
+            "Labels": {},
+            "StopSignal": "SIGQUIT"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 885362596,
+        "VirtualSize": 885362596,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/fc5c96e6b9dbf58328d71feeefa75870a9838477e980de58cd4fbe9d3214ff44/diff:/var/lib/docker/overlay2/b6e3fd48125609ecea4a80b45a82a76c4b68be0cbd2b33d713fbe088322f3122/diff:/var/lib/docker/overlay2/740e2302d083a923d551f5a3cba278f60475c29cf321071b5fe99edda7009b20/diff:/var/lib/docker/overlay2/16d688c5615942a2d0d0ddb63418957a7c3fe49195b237a46e09e167292ef1eb/diff:/var/lib/docker/overlay2/79eda0d06bb282f6f9c844379059b98da6bf3460f26510464935a8c70cea3cf9/diff:/var/lib/docker/overlay2/9f26f4db2b79c55dabe01d8a5a2d73c9e3a55e0ef3016a09245c3d08ea678690/diff:/var/lib/docker/overlay2/43cf2bfacd4fd1a2e183d138b73586de49f3f1bf8a3da988a3048af9a1eb4ad2/diff:/var/lib/docker/overlay2/f2b5e9dd2deec3febc49b305e6dfcf3f8349bdf066c2448068f1b3d57df62594/diff:/var/lib/docker/overlay2/071f0d1ae9a19d24101d691e1fc694745e69c908dfe99ebc781b436cca1de318/diff:/var/lib/docker/overlay2/7dc269bd6d2a5787850d8578223347320775916c8073e4af7b9be7d6afadd647/diff",
+                "MergedDir": "/var/lib/docker/overlay2/80bac22e14a498192b3ba1ef85aba9fc2a902c61815c98a6d06b9f038d5d7c15/merged",
+                "UpperDir": "/var/lib/docker/overlay2/80bac22e14a498192b3ba1ef85aba9fc2a902c61815c98a6d06b9f038d5d7c15/diff",
+                "WorkDir": "/var/lib/docker/overlay2/80bac22e14a498192b3ba1ef85aba9fc2a902c61815c98a6d06b9f038d5d7c15/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:ec4a38999118b78eab6899b913a548cb0b2c9b68fd05aff846a56b628b597f38",
+                "sha256:f6011769641091803058f3d7f21ae44fe06946be14914ff729844e7ef94ab15c",
+                "sha256:797a7c0590e0dd31ea2f40f5139ced40ad710a2db563718e77595c615ca0ae1a",
+                "sha256:44148371c697ea6420ffeca0559033fbfe1a0e59e4b83edba4768342238b2782",
+                "sha256:08cc615b0242bb13dd9b7f009b58207bd1503abdab48e4331502aff96e68e05a",
+                "sha256:91fd2792fa749b55021a242357fb011906acc3a1700f0c3a69aaa3528a28ed2a",
+                "sha256:89982c6135ad7dc8c363ff2ca816ef1f164e790fa8203de928ccb6acd01eeeb1",
+                "sha256:7c314756ee72cc25be6bed25e57bb53379a304d1540a4119ae72f916e951ef91",
+                "sha256:d78098596d788ff699ab6c79ecec1f1778b3deb1f217e5538c02d860ce4dd2be",
+                "sha256:5e65a6c61859cb1afa8653262ac22b702f88d061d2aa5a6f9d6d4d767871d31b",
+                "sha256:1b4e8aaa034fd93cadc90918af1ef7629dcafeaaf6bc14d45b0a362846134ca1"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2023-11-14T11:50:33.050616374+08:00"
+        }
+    }
+]
+[root@10 ~]#
+```
+
+镜像 php-7.4:1.0 生成成功。
+
+当我们把本地的容器弄得很乱时，我们可以删除该容器，
+
+> docker stop php_7.4-fpm
+> 
+> docker rm php_7.4-fpm
+
+也可以删除原来的镜像：
+
+> docker rmi php:7.4-fpm
+
+然后直接从该镜像重新生成一个新的容器，生成时指定映射端口和映射目录：
+
+```
+> docker run --name php-7.4 -p 9000:9000 -p 9501:9501 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php-7.4:1.0
+```
+
+明细：
+```
+[root@10 ~]# docker run --name php-7.4 -p 9000:9000 -p 9501:9501 -v /media/sf_develop:/var/www/html -v /etc/localtime:/etc/localtime:ro --privileged=true -d php-7.4:1.0
+ddc612af48f88c8ee6a6bf07e9e69274b88a8e2da1eef615779f05b427da444a
+[root@10 ~]#
+[root@10 ~]# docker ps
+CONTAINER ID   IMAGE         COMMAND                   CREATED          STATUS         PORTS                                                                                                 NAMES
+ddc612af48f8   php-7.4:1.0   "docker-php-entrypoi…"   10 seconds ago   Up 9 seconds   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp, 0.0.0.0:9501->9501/tcp, :::9501->9501/tcp, 9250-9269/tcp   php-7.4
+[root@10 ~]#
+```
+
+二、提交仓库
+
+我们可以把生成的镜像提交到Docker仓库中，以备日后直接使用。
+
+首先在Docker仓库官网 <https://hub.docker.com> 申请账号，如用户名是 ibaiyang 。
+
+然后本地命令行登录：
+```
+[root@10 ~]# docker login --username ibaiyang
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@10 ~]#
+```
+
+给镜像打标签(2a7836ecd1a3是镜像的ID)，然后推送到远程Docker仓库：
+
+> docker tag 2a7836ecd1a3 ibaiyang/php-7.4:1.0
+>
+> docker push ibaiyang/php-7.4:1.0
+
+```
+[root@10 ~]# docker images
+REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
+php-7.4            1.0       2a7836ecd1a3   12 minutes ago   885MB
+hello-world        latest    9c7a54a9a43c   6 months ago     13.3kB
+php                7.4-fpm   38f2b691dcb8   12 months ago    443MB
+[root@10 ~]#
+[root@10 ~]# docker tag 2a7836ecd1a3 ibaiyang/php-7.4:1.0
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
+ibaiyang/php-7.4   1.0       2a7836ecd1a3   12 minutes ago   885MB
+php-7.4            1.0       2a7836ecd1a3   12 minutes ago   885MB
+hello-world        latest    9c7a54a9a43c   6 months ago     13.3kB
+php                7.4-fpm   38f2b691dcb8   12 months ago    443MB
+[root@10 ~]#
+[root@10 ~]# docker push ibaiyang/php-7.4:1.0
+The push refers to repository [docker.io/ibaiyang/php-7.4]
+1b4e8aaa034f: Pushed
+5e65a6c61859: Pushed
+d78098596d78: Pushed
+7c314756ee72: Pushed
+89982c6135ad: Pushed
+91fd2792fa74: Pushed
+08cc615b0242: Pushed
+44148371c697: Pushed
+797a7c0590e0: Pushed
+f60117696410: Pushed
+ec4a38999118: Pushed
+1.0: digest: sha256:73635d95e50c44d50d0bb11cca5f4fa9a4454622bf63d1ed8965e13715939355 size: 2623
+[root@10 ~]#
+```
+
+在Docker仓库官网的个人中心中就可以看到自己提交的镜像包了。
+
+下次使用时，直接从仓库用Docker下载该imgae镜像：
+
+> docker pull ibaiyang/php-7.4:1.0
 
 ## Nginx安装
 
