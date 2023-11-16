@@ -2477,6 +2477,7 @@ docker run --name nginx_php_7.4-fpm -p 80:80 -v /media/sf_develop/virtualbox/doc
 
 `--link php_7.4-fpm:php` 可以不写，这个是docker内跨容器访问的配置。如果不写，Nginx容器 可以通过 宿主主机 中转访问 PHP容器，
 在下面项目的conf配置中把 `fastcgi_pass   php:9000;` 改为 `fastcgi_pass   192.168.56.102:9000;` 。
+这里需要注意一个问题，容器使用的是虚拟ip，每次启动，ip都会变化，只有不变化时，这里才方便使用，不然每次启动都要修改conf配置。
 
 明细：
 ```
@@ -3033,6 +3034,8 @@ passwd：所有的身份验证令牌已经成功更新。
 三、虚拟机内桥接网络
 
 这里所说的桥接是虚拟机内的桥接，与上面局域网内与虚拟机的桥接不是一个东西。
+
+这里可以先看下 <https://ibaiyang.github.io/blog/docker/2022/10/11/深入理解-Docker-网络原理.html>
 
 Docker提供了三种网络模式：
 
