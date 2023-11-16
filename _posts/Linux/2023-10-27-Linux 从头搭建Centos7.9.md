@@ -2932,6 +2932,8 @@ ONBOOT=yes
 
 ### 局域网内其他电脑访问本机虚拟机
 
+一、开启桥接模式
+
 项目开发过程中碰到一个问题，团队没有测试服务器，同事想直接使用我的虚拟机提供的服务。
 这里就需要关闭 “仅主机(Host-0nly)网络” 网卡，不然只有本地主机可以访问虚拟机而其他电脑无法访问。
 然后 连接方式 选择 “桥接网卡”， 混杂模式 中选择 “全部允许”。
@@ -2976,14 +2978,6 @@ ONBOOT=yes
        valid_lft forever preferred_lft forever
     inet6 fe80::42:5aff:fee4:7c6f/64 scope link
        valid_lft forever preferred_lft forever
-6: veth254318c@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
-    link/ether 9a:c5:c6:2b:12:2a brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet6 fe80::98c5:c6ff:fe2b:122a/64 scope link
-       valid_lft forever preferred_lft forever
-14: veth77161c9@if13: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
-    link/ether 06:8b:c1:0b:86:ba brd ff:ff:ff:ff:ff:ff link-netnsid 1
-    inet6 fe80::48b:c1ff:fe0b:86ba/64 scope link
-       valid_lft forever preferred_lft forever
 [root@10 ~]#
 ```
 
@@ -3005,6 +2999,8 @@ C:\Users>ping 192.168.0.149
 
 C:\Users>
 ```
+
+二、修改账号密码
 
 既然局域网内的电脑都可以访问该虚拟机，为了安全，我们就要修改下管理员的账户密码：
 
@@ -3034,8 +3030,304 @@ passwd：所有的身份验证令牌已经成功更新。
 [admin@10 ~]$
 ```
 
+三、虚拟机内桥接网络
 
+这里所说的桥接是虚拟机内的桥接，与上面局域网内与虚拟机的桥接不是一个东西。
 
+Docker提供了三种网络模式：
+
+```
+[root@10 ~]# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+2217f1eafbc0   bridge    bridge    local
+707c2e449547   host      host      local
+60bec5c05037   none      null      local
+[root@10 ~]#
+```
+
+看一下虚拟机内的ip地址信息：
+
+```
+[root@10 ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 81950sec preferred_lft 81950sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:46:43:7b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.149/24 brd 192.168.0.255 scope global noprefixroute dynamic enp0s9
+       valid_lft 38750sec preferred_lft 38750sec
+    inet6 fe80::c932:de89:9774:d265/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:c2:41:a8:11 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:c2ff:fe41:a811/64 scope link
+       valid_lft forever preferred_lft forever
+[root@10 ~]#
+```
+
+虚拟机内默认使用的网络模式是bridge，也就是我们的 docker0 网卡，通过inspect查看：
+
+```
+[root@10 ~]# docker inspect 2217f1eafbc0
+[
+    {
+        "Name": "bridge",
+        "Id": "2217f1eafbc0c986c7d63e19b73a7ae442f53414ec35c7001e7ab05018d752e3",
+        "Created": "2023-11-16T09:00:50.601003227+08:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+[root@10 ~]#
+```
+
+docker0 相当于一个路由器的作用，任何一个容器启动默认都是 docker0 网络。 Docker默认会给容器分配一个可用ip，并把它同docke0相连。
+
+看下下面两个：
+
+```
+[root@10 ~]# docker start php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# docker start nginx_php_7.4-fpm
+nginx_php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:2e:7d:8e brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 81869sec preferred_lft 81869sec
+    inet6 fe80::ebac:d904:2f88:6288/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:46:43:7b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.149/24 brd 192.168.0.255 scope global noprefixroute dynamic enp0s9
+       valid_lft 38670sec preferred_lft 38670sec
+    inet6 fe80::c932:de89:9774:d265/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:c2:41:a8:11 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:c2ff:fe41:a811/64 scope link
+       valid_lft forever preferred_lft forever
+10: veth0c9ecab@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
+    link/ether 5a:60:41:aa:75:76 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::5860:41ff:feaa:7576/64 scope link
+       valid_lft forever preferred_lft forever
+12: veth37e3437@if11: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
+    link/ether 62:13:be:99:44:61 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::6013:beff:fe99:4461/64 scope link
+       valid_lft forever preferred_lft forever
+[root@10 ~]#
+[root@10 ~]# docker inspect 2217f1eafbc0
+[
+    {
+        "Name": "bridge",
+        "Id": "2217f1eafbc0c986c7d63e19b73a7ae442f53414ec35c7001e7ab05018d752e3",
+        "Created": "2023-11-16T09:00:50.601003227+08:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059": {
+                "Name": "php_7.4-fpm",
+                "EndpointID": "01ccbf12bed3d6951c6db61a0b89c2abb6133befb0d05c97cf3636ac5bb7a537",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            },
+            "f2d344418b9fb0dfcc75da53a6bfdaf5b7d722dab1c2edc0f06ad770c2143571": {
+                "Name": "nginx_php_7.4-fpm",
+                "EndpointID": "42a48cba3f1f0997943d7a4bf958b87d2d197dcfbb40bdce07443fb084a71695",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+[root@10 ~]#
+```
+
+这是 host 和 none 网络模式的内容：
+
+```
+[root@10 ~]# docker inspect 707c2e449547
+[
+    {
+        "Name": "host",
+        "Id": "707c2e449547f569aad79dbbafbfab6f30252f974c34c37b42c2af29de84b5ae",
+        "Created": "2023-10-30T11:31:54.973527817+08:00",
+        "Scope": "local",
+        "Driver": "host",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": []
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+[root@10 ~]#
+[root@10 ~]# docker inspect 60bec5c05037
+[
+    {
+        "Name": "none",
+        "Id": "60bec5c050379035ba1926ba5ca70f8ea16b682d34aef81d07f28954d07782eb",
+        "Created": "2023-10-30T11:31:54.892502216+08:00",
+        "Scope": "local",
+        "Driver": "null",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": []
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+[root@10 ~]#
+```
+
+看一下各容器的 hosts ：
+```
+[root@10 ~]# docker exec -it php_7.4-fpm cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2      a0c75b4db3a6
+[root@10 ~]#
+[root@10 ~]# docker exec -it nginx_php_7.4-fpm cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2      php a0c75b4db3a6 php_7.4-fpm
+172.17.0.3      f2d344418b9f
+[root@10 ~]#
+```
+
+`--link` 实现 nginx_php_7.4-fpm 容器和 php_7.4-fpm 容器之间的连通，`--link`是单向的。
+
+在宿主机上 ping 一下容器：
+```
+[root@10 ~]# ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
+64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.150 ms
+64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.031 ms
+^C
+--- 172.17.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1013ms
+rtt min/avg/max/mdev = 0.031/0.090/0.150/0.060 ms
+[root@10 ~]#
+[root@10 ~]# ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.141 ms
+64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.038 ms
+^C
+--- 172.17.0.3 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1008ms
+rtt min/avg/max/mdev = 0.038/0.089/0.141/0.052 ms
+[root@10 ~]#
+```
+
+四、可删内容
 
 ```
 [root@10 ~]# ls
