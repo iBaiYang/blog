@@ -114,6 +114,69 @@ $task = \EasySwoole\EasySwoole\Task\TaskManager::getInstance();
 $task->async(new CustomTask(['user' => 'custom']));
 ```
 
+## 客户端fd链接
+
+如何获取客户端fd链接，这里说一下。
+
+服务通过单例模式启动，我们在项目中可以随时获取该服务：
+```
+$server = \EasySwoole\EasySwoole\ServerManager::getInstance()->getSwooleServer();
+```
+
+服务监听和管理客户端fd链接，我们可以在该服务中获取客户端fd链接的信息。
+
+一、获取服务中的所有fd链接并群发信息
+
+```
+$server = \EasySwoole\EasySwoole\ServerManager::getInstance()->getSwooleServer();
+
+$start_fd = 0;
+while(true)
+{
+    $conn_list = $server->getClientList($start_fd, 10);
+    if ($conn_list === false or count($conn_list) === 0) {
+        echo "finish\n";
+        break;
+    }
+
+    $start_fd = end($conn_list);
+
+    foreach($conn_list as $fd) {
+        $server->send($fd, "broadcast");
+    }
+}
+```
+
+二、获取一个fd链接的信息
+
+```
+$server = \EasySwoole\EasySwoole\ServerManager::getInstance()->getSwooleServer();
+$fdinfo = $server->getClientInfo($fd);  
+```
+
+输出信息看一下：
+```
+Array
+(
+    [server_port] => 9252
+    [server_fd] => 3
+    [socket_fd] => 63
+    [socket_type] => 1
+    [remote_port] => 14575
+    [remote_ip] => 192.168.0.143
+    [reactor_id] => 3
+    [connect_time] => 1700624918
+    [last_time] => 1700624924
+    [last_recv_time] => 1700624924.2119
+    [last_send_time] => 1700624922.3476
+    [last_dispatch_time] => 1700624924.2119
+    [close_errno] => 0
+    [recv_queued_bytes] => 0
+    [send_queued_bytes] => 0
+)
+```
+
+## Timer定时器
 
 
 
