@@ -96,7 +96,7 @@ class CustomTask implements TaskInterface
     public function run(int $taskId, int $workerIndex)
     {
         // 执行逻辑
-        // echo $this->data['user'];
+        echo $this->data['user'];  // 运行在Task进程中，主进程看不到输出
     }
 
     public function onException(\Throwable $throwable, int $taskId, int $workerIndex)
@@ -113,6 +113,11 @@ $task = \EasySwoole\EasySwoole\Task\TaskManager::getInstance();
 // 投递异步任务
 $task->async(new CustomTask(['user' => 'custom']));
 ```
+
+注意点：
+* Task任务运行在Task进程上，在主进程无法追踪运行过程（如echo在主进程看不到输出）。
+
+
 
 ## 客户端fd链接
 
