@@ -117,8 +117,6 @@ $task->async(new CustomTask(['user' => 'custom']));
 注意点：
 * Task任务运行在Task进程上，在主进程无法追踪运行过程（如echo在主进程看不到输出）。
 
-
-
 ## 客户端fd链接
 
 如何获取客户端fd链接，这里说一下。
@@ -183,8 +181,81 @@ Array
 
 ## Timer定时器
 
+一、循环执行
 
+```
+// 每隔 10 秒执行一次
+\EasySwoole\Component\Timer::getInstance()->loop(10 * 1000, function () {
+    echo "this timer runs at intervals of 10 seconds\n";
+});
+```
 
+二、延时执行
+
+```
+// 10 秒后执行一次
+\EasySwoole\Component\Timer::getInstance()->after(10 * 1000, function () {
+    echo "ten seconds later\n";
+});
+```
+
+三、清除定时器
+
+```
+$timerId = \EasySwoole\Component\Timer::getInstance()->loop(2 * 1000, function () {
+    echo "timeout\n";
+},'time_name');
+
+var_dump($timerId); // int(1)
+
+// 清除该定时器
+$ret = \EasySwoole\Component\Timer::getInstance()->clear($timerId);
+var_dump($ret); // bool(true)
+
+// 定时器得不到执行 不输出：timeout
+```
+
+四、注意点一
+
+在定时器循环执行中为了防止因为任务阻塞，引起定时器不准确，把任务给异步进程处理：
+```
+// 每隔 10 秒执行一次
+\EasySwoole\Component\Timer::getInstance()->loop(10 * 1000, function () {
+    // 把任务给异步进程处理
+    \EasySwoole\EasySwoole\Task\TaskManager::getInstance()->async(function () {
+        echo 'async';
+    }, function ($reply, $taskId, $workerIndex) {
+        // $reply 返回的执行结果
+        // $taskId 任务id
+        echo 'async success';
+    });
+});
+```
+
+五、注意点二
+
+当定时器在类的方法中时，可以在定时器内直接使用类中的变量：
+```
+Class A 
+{
+    pretected $x;
+
+    public function abc () 
+    {
+        $this->x = 1;
+        $y = 2;
+        
+        \EasySwoole\Component\Timer::getInstance()->after(10 * 1000, function () use ($y) {
+            echo $this->x . PHP_EOL;  // 类变量可以直接使用
+            echo $y . PHP_EOL;  // 这个变量必须要 use 引入
+        });
+    }
+}
+
+// 输出结果
+1
+2
+```
 
 
 
