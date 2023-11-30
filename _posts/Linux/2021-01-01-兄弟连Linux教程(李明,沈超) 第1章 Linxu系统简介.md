@@ -45,7 +45,7 @@ linux系统诞生于1991年，由芬兰大学生李纳斯（Linus Torvalds）和
 
 Linux是开源软件，源码开放的UNIX。
 
-Linux内核官网：www.kernel.org
+Linux内核官网：<www.kernel.org>
 
 版本号如  2.6.18
 
@@ -92,7 +92,7 @@ LNMP
 
 1、基于Linux的企业服务
 
-www.netcraft.com 扫描和踩点网站
+<www.netcraft.com> 扫描和踩点网站
 
 2、嵌入式应用
 
@@ -130,13 +130,13 @@ www.netcraft.com 扫描和踩点网站
 
 课件地址：
 
-https://www.docin.com/mydoc-107542902-11.html&folderId=0
+<https://www.docin.com/mydoc-107542902-11.html&folderId=0>
 
-https://www.docin.com/app/user/searchuserproduct?userid=107542902&myKeyword=Linux教程&bh=&currentPage=1
+<https://www.docin.com/app/user/searchuserproduct?userid=107542902&myKeyword=Linux教程&bh=&currentPage=1>
 
-`Linux教程`
+《Linux教程》
 
-https://wenku.baidu.com/shop/bd095dbfc77da26925c5b0cb#doc
+<https://wenku.baidu.com/shop/bd095dbfc77da26925c5b0cb#doc>
 
 `[Linux教程 李明 沈超 兄弟连]9.1 文件系统管理-回顾分区和文件系统`
 
