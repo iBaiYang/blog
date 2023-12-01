@@ -2854,7 +2854,8 @@ php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
 docker run \
   --name mysql_8.0.35 \
   -p 3306:3306 \
-  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_ROOT_PASSWORD=123456 \
+  -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
   -v /etc/localtime:/etc/localtime:ro \
   --privileged=true \
   -d mysql:8.0.35
@@ -2865,6 +2866,7 @@ docker run \
 --name：容器名，此处命名为mysql_8.0.35
 -p：端口映射，此处映射 主机3306端口 到 容器的3306端口
 -e：配置信息，此处配置mysql的root用户的登陆密码
+-v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d：服务配置目录
 -v /etc/localtime:/etc/localtime:ro：映射这个目录是为了校正容器内的时间跟宿主机时间一致
 --privileged=true：表示容器内的root用户拥有真正的root权限，而不是外部普通用户的权限
 -d：后台运行容器，保证在退出终端后容器继续运行
@@ -2875,18 +2877,19 @@ docker run \
 [root@10 ~]# docker run \
 >   --name mysql_8.0.35 \
 >   -p 3306:3306 \
->   -e MYSQL_ROOT_PASSWORD=root \
+>   -e MYSQL_ROOT_PASSWORD=123456 \
+>   -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
 >   -v /etc/localtime:/etc/localtime:ro \
 >   --privileged=true \
 >   -d mysql:8.0.35
-872a203c61893ca0e97e1ac2e6fb577eda879f0c3d5b7d4b22b026927beadd48
+a75c23af4150953c59afcba8f5f19b351b82054493caed49b56cd385260b1346
 [root@10 ~]#
 [root@10 ~]# docker ps -a
-CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                     PORTS                                      NAMES
-872a203c6189   mysql:8.0.35   "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes               0.0.0.0:3306->3306                         mysql_8.0.35
-f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Up 6 hours                 0.0.0.0:80->80/tcp, :::80->80/tcp          nginx_php_7.4-fpm
-a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Up 6 hours                 0.0.0.0:9000->9000/tcp, :::9000->9000/tcp  php_7.4-fpm
-e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago                                                confident_pike
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                    PORTS                                                  NAMES
+a75c23af4150   mysql:8.0.35   "docker-entrypoint.s…"   8 seconds ago   Up 6 seconds              0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Exited (0) 25 hours ago                                                          nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Exited (0) 25 hours ago                                                          php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago                                                           confident_pike
 [root@10 ~]#
 ```
 
@@ -2913,7 +2916,27 @@ GRANT ALL ON *.* TO 'root'@'%';
 
 上面提到Nginx容器与PHP容器通信的方式，使用了硬连接，这是一种过时的连接方式，最好使用容器内桥接方式实现。
 
+### 内容三
 
+docker容器创建时，`-v` 目录映射有两个方向，分为左侧和右侧。
+当左侧目录存在时，会覆盖右侧的目录。当左侧目录不存在时，右侧的目录会复制到左侧目录下。
+具体使用时，需要分清楚场景。
+
+有时右侧容器中的目录下是有文件的，如 `mysql:8.0.35` 的 `/var/lib/mysql` 目录下：
+```
+bash-4.4# ls /var/lib/mysql
+'#ib_16384_0.dblwr'   binlog.index      ibtmp1               server-cert.pem
+'#ib_16384_1.dblwr'   ca-key.pem        mysql                server-key.pem
+'#innodb_redo'        ca.pem            mysql.ibd            sys
+'#innodb_temp'        client-cert.pem   mysql.sock           undo_001
+ auto.cnf             client-key.pem    performance_schema   undo_002
+ binlog.000001        ib_buffer_pool    private_key.pem
+ binlog.000002        ibdata1           public_key.pem
+bash-4.4#
+```
+
+当左侧目录存在时，创建容器时用`-v` 映射就会把右侧容器中的文件覆盖掉。
+这种情况下左侧目录不应该提前创建好。
 
 ## 问题集合
 
@@ -3627,10 +3650,14 @@ Hint: Some lines were ellipsized, use -l to show in full.
 
 ## MySQL安装过程报错
 
-### 基础安装
+在虚拟机中使用docker安装MySQL时，想打通宿主机与容器的数据共享，这样在win10宿主机中就可以很方便的操作和查看MySQL了。
+但各种思路操作下来都是报错，下面记录下，作为以后的参考。
+
+### 思路一
+
+常见方式，直接把宿主机目录与容器目录进行映射。
 
 下载现在最新的8.0.35版本：
-
 > docker pull mysql:8.0.35
 
 明细：
@@ -3665,13 +3692,10 @@ php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
 
 在创建容器前，先把要与容器挂载的目录创建好：
 ```
-mkdir -p \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/data \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/log
+mkdir -p /media/sf_develop/virtualbox/docker/mysql_8.0.35
 ```
 
-conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
+下面mysql_8.0.35目录下的conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
 data 目录里为数据文件；log 目录里为日志文件。
 
 创建容器：
@@ -3771,44 +3795,20 @@ drwxrwx---. 1 root vboxsf 0 11月 30 15:53 log
 这种方式无法进行下去。
 
 原想的是宿主机中先放开权限，这样容器中也可以直接操作宿主机中的文件了；
-或者启动后，在容器内修改需要操作的文件的权限。该思路宣告失败。
+或者启动后，在容器内修改需要操作的文件的权限，现在是容器都启动不起来。
+该思路宣告失败。
 
 ### 思路二
 
-避开宿主机目录，用虚拟机中的目录去映射容器的目录。
-
-为了与虚拟机中直接编译安装的MySQL区分开，在虚拟机中新建目录：
-```
-mkdir -p \
-  /user/local/docker/mysql_8.0.35/conf.d \
-  /user/local/docker/mysql_8.0.35/data \
-  /user/local/docker/mysql_8.0.35/log
-```
-
-创建容器：
-```
-docker run \
-  --name mysql_8.0.35 \
-  -p 3306:3306 \
-  -e MYSQL_ROOT_PASSWORD=root \
-  -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
-  -v /user/local/docker/mysql_8.0.35/data:/var/lib/mysql \
-  -v /user/local/docker/mysql_8.0.35/log:/var/log/mysql \
-  -v /etc/localtime:/etc/localtime:ro \
-  --privileged=true \
-  -d mysql:8.0.35
-```
-
-虽然这样容器可以创建和启动成功，而且目录也映射成功，但没有意义，相关的文件还在虚拟机中，
-和去容器中进行配置、查看日志没有什么区别，而且数据文件还是在虚拟机中，
-再者使用 `docker cp` 也可以把容器中的数据文件复制到虚拟机中，
-可能最后值得一提的也就是再把虚拟机中复制出来的MySQL数据文件再复制到宿主机的共享文件夹中。
-
-后记：经过后续一些思考，意义还是存在的，试想如果容器启动失败时，你的数据文件怎么从容器中取出来呢。
-
-### 思路三
-
 先把虚拟机的一个目录映射到MySQL容器中，再在MySQL容器中把虚拟机映射的目录下的各个文件夹配置到MySQL服务中。
+
+下载现在最新的8.0.35版本：
+> docker pull mysql:8.0.35
+
+在创建容器前，先把要与容器挂载的目录创建好：
+```
+mkdir -p  /media/sf_develop/virtualbox/docker/mysql_8.0.35
+```
 
 创建并启动容器：
 ```
@@ -4081,7 +4081,7 @@ bash: systemctl: command not found
 bash-4.4#
 ```
 
-### 思路四
+### 思路三
 
 上面操作下来，MySQL容器启动不了的原因应该是MySQL容器启动时没有读权限加载宿主机中的配置文件导致的，
 可以先让MySQL容器启动时不要去加载宿主机中的配置文件，启动成功后再去修改配置文件。
@@ -4090,15 +4090,15 @@ bash-4.4#
 接下来再在虚拟机写一个MySQL的配置文件`my.cnf`， 在这个配置文件中把虚拟机映射的目录下的各个文件夹配置到MySQL服务中，
 然后`docker cp`把该配置文件复制到容器中，重启容器。
 
+下载现在最新的8.0.35版本：
+> docker pull mysql:8.0.35
+
 在创建容器前，先把要与容器挂载的目录创建好：
 ```
-mkdir -p \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/data \
-  /media/sf_develop/virtualbox/docker/mysql_8.0.35/log
+mkdir -p /media/sf_develop/virtualbox/docker/mysql_8.0.35
 ```
 
-conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
+到时mysql_8.0.35目录下的conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
 data 目录里为数据文件；log 目录里为日志文件。
 
 创建容器：
@@ -4123,6 +4123,7 @@ docker run \
 -d：后台运行容器，保证在退出终端后容器继续运行
 ```
 
+明细：
 ```
 [root@10 ~]# docker run \
 >   --name mysql_8.0.35 \
@@ -4142,6 +4143,13 @@ a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago      Exited
 e386a696ef90   hello-world    "/hello"                  4 weeks ago      Exited (0) 4 weeks ago                                                           confident_pike
 [root@10 ~]#
 ```
+
+进入容器，新建组，赋权：
+> docker exec -it mysql_8.0.35 /bin/bash
+>
+> groupadd -g 995 docker
+>
+> usermod -aG docker mysql
 
 明细：
 ```
@@ -4227,7 +4235,7 @@ ln: failed to create symbolic link '/usr/local/docker/mysql/data/mysql.sock': Op
 bash-4.4#
 ```
 
-退出容器，新建`/etc/my.cnf` 并编辑：
+退出容器，新建`/etc/my.cnf`并编辑：
 ```
 bash-4.4#exit
 [root@10 ~]#
@@ -4336,6 +4344,9 @@ socket=/var/run/mysqld/mysqld.sock
 bash-4.4#
 ```
 
+删除`my.cnf`文件，防止MySQL启动时循环加载：
+> rm /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d/my.cnf
+
 重新启动，启动失败：
 ```
 [root@10 ~]# docker restart mysql_8.0.35
@@ -4351,6 +4362,51 @@ e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (
 ```
 
 这么多思路操作下来，原因应该是容器可以与虚拟机进行文件映射，但容器无法操作宿主机文件。
+
+### 思路四
+
+避开宿主机目录，用虚拟机中的目录去映射容器的目录。
+
+下载现在最新的8.0.35版本：
+> docker pull mysql:8.0.35
+
+为了与虚拟机中直接编译安装的MySQL区分开，在虚拟机中新建目录：
+> mkdir -p /user/local/docker/mysql_8.0.35
+
+创建容器：
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
+  -v /user/local/docker/mysql_8.0.35/data:/var/lib/mysql \
+  -v /user/local/docker/mysql_8.0.35/log:/var/log/mysql \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
+虽然这样容器可以创建和启动成功，而且目录也映射成功，但没有意义，相关的文件还是在虚拟机中，不是在宿主机中，
+和去容器中进行配置、查看日志没有什么区别，而且数据文件也还是在虚拟机中，不是在宿主机中，
+再者使用 `docker cp` 也可以把容器中的数据文件直接复制到宿主机中，即使容器没用启动，
+如`docker cp mysql_8.0.35:/var/lib/mysql  /media/sf_develop/virtualbox/docker/mysql_8.0.35/data`。
+
+后记：
+
+* 容器内是没有文本编辑器的，我们需要借用虚拟机的vi编辑器，所以配置目录需要映射
+
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
 
 
 
