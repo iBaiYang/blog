@@ -2811,6 +2811,110 @@ server {
 }
 ```
 
+## MySQL安装
+
+### 基础安装
+
+下载现在最新的8.0.35版本：
+
+> docker pull mysql:8.0.35
+
+明细：
+```
+[root@10 ~]# docker pull mysql:8.0.35
+8.0.35: Pulling from library/mysql
+8e0176adc18c: Pull complete
+a6b6bf6e5d0f: Pull complete
+c17b83f8620f: Pull complete
+b2e259cd9b6c: Pull complete
+366131ab00d1: Pull complete
+2f99ba83a3cb: Pull complete
+f7c88955f01f: Pull complete
+577fb415d7f8: Pull complete
+29160ed46eb1: Pull complete
+69ce9884ce5d: Pull complete
+848f0dceb14c: Pull complete
+Digest: sha256:974cac08fff819ea2dfeb83fed4d2eb5100bb79603aff6148bdc53d8be4895f3
+Status: Downloaded newer image for mysql:8.0.35
+docker.io/library/mysql:8.0.35
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+php-7.4       1.0       2a7836ecd1a3   2 weeks ago     885MB
+nginx-vim     latest    19c8bf579203   4 weeks ago     248MB
+nginx         latest    593aee2afb64   5 weeks ago     187MB
+mysql         8.0.35    96bc8cf3633b   5 weeks ago     582MB
+hello-world   latest    9c7a54a9a43c   6 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+```
+
+创建容器：
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
+说明：
+```
+--name：容器名，此处命名为mysql_8.0.35
+-p：端口映射，此处映射 主机3306端口 到 容器的3306端口
+-e：配置信息，此处配置mysql的root用户的登陆密码
+-v /etc/localtime:/etc/localtime:ro：映射这个目录是为了校正容器内的时间跟宿主机时间一致
+--privileged=true：表示容器内的root用户拥有真正的root权限，而不是外部普通用户的权限
+-d：后台运行容器，保证在退出终端后容器继续运行
+```
+
+明细：
+```
+[root@10 ~]# docker run \
+>   --name mysql_8.0.35 \
+>   -p 3306:3306 \
+>   -e MYSQL_ROOT_PASSWORD=root \
+>   -v /etc/localtime:/etc/localtime:ro \
+>   --privileged=true \
+>   -d mysql:8.0.35
+872a203c61893ca0e97e1ac2e6fb577eda879f0c3d5b7d4b22b026927beadd48
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                     PORTS                                      NAMES
+872a203c6189   mysql:8.0.35   "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes               0.0.0.0:3306->3306                         mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Up 6 hours                 0.0.0.0:80->80/tcp, :::80->80/tcp          nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Up 6 hours                 0.0.0.0:9000->9000/tcp, :::9000->9000/tcp  php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago                                                confident_pike
+[root@10 ~]#
+```
+
+GRANT ALL ON *.* TO 'root'@'%';
+
+## 小结
+
+### 内容一
+
+通过上面一步步的操作，发现目录结构可以再优化下：
+```
+/media/sf_develop/www     -作为web项目开发目录，各个web项目放在该目录下
+/media/sf_develop/www/html     -作为纯静态HTML项目开发目录，各个HTML项目放在该目录下
+/media/sf_develop/www/php     -作为PHP项目开发目录，各个PHP的web项目放在该目录下
+/media/sf_develop/www/nodejs     -作为NodeJs项目开发目录，各个NodeJs项目放在该目录下
+/media/sf_develop/golang     -作为Go项目开发目录，各个Go项目放在该目录下
+/media/sf_develop/golang/www     -作为Go的web项目开发目录，各个Go的web项目在该目录下
+/media/sf_develop/virtualbox/docker     -作为docker部署的相关软件目录
+/media/sf_develop/virtualbox/docker/nginx_1.25.3    -作为docker部署的nginx:1.25.3容器的相关目录
+/media/sf_develop/virtualbox/docker/mysql_8.0.35    -作为docker部署的mysql:8.0.35容器的相关目录
+```
+
+### 内容二
+
+上面提到Nginx容器与PHP容器通信的方式，使用了硬连接，这是一种过时的连接方式，最好使用容器内桥接方式实现。
+
+
+
 ## 问题集合
 
 ### 网络接口配置文件
@@ -3521,8 +3625,732 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [root@10 network-scripts]#
 ```
 
+## MySQL安装过程报错
 
+### 基础安装
 
+下载现在最新的8.0.35版本：
+
+> docker pull mysql:8.0.35
+
+明细：
+```
+[root@10 ~]# docker pull mysql:8.0.35
+8.0.35: Pulling from library/mysql
+8e0176adc18c: Pull complete
+a6b6bf6e5d0f: Pull complete
+c17b83f8620f: Pull complete
+b2e259cd9b6c: Pull complete
+366131ab00d1: Pull complete
+2f99ba83a3cb: Pull complete
+f7c88955f01f: Pull complete
+577fb415d7f8: Pull complete
+29160ed46eb1: Pull complete
+69ce9884ce5d: Pull complete
+848f0dceb14c: Pull complete
+Digest: sha256:974cac08fff819ea2dfeb83fed4d2eb5100bb79603aff6148bdc53d8be4895f3
+Status: Downloaded newer image for mysql:8.0.35
+docker.io/library/mysql:8.0.35
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+php-7.4       1.0       2a7836ecd1a3   2 weeks ago     885MB
+nginx-vim     latest    19c8bf579203   4 weeks ago     248MB
+nginx         latest    593aee2afb64   5 weeks ago     187MB
+mysql         8.0.35    96bc8cf3633b   5 weeks ago     582MB
+hello-world   latest    9c7a54a9a43c   6 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+```
+
+在创建容器前，先把要与容器挂载的目录创建好：
+```
+mkdir -p \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/data \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/log
+```
+
+conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
+data 目录里为数据文件；log 目录里为日志文件。
+
+创建容器：
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
+  -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/data:/var/lib/mysql \
+  -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/log:/var/log/mysql \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
+```
+--name：容器名，此处命名为mysql_8.0.35
+-p：端口映射，此处映射 主机3306端口 到 容器的3306端口
+-e：配置信息，此处配置mysql的root用户的登陆密码
+-v：主机和容器的目录映射关系，":"前为主机目录，之后为容器目录
+-v /etc/localtime:/etc/localtime:ro：映射这个目录是为了校正容器内的时间跟宿主机时间一致
+--privileged=true：表示容器内的root用户拥有真正的root权限，而不是外部普通用户的权限
+-d：后台运行容器，保证在退出终端后容器继续运行
+```
+
+明细：
+```
+[root@10 ~]# mkdir -p \
+>   /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d \
+>   /media/sf_develop/virtualbox/docker/mysql_8.0.35/data \
+>   /media/sf_develop/virtualbox/docker/mysql_8.0.35/log
+[root@10 ~]#
+[root@10 ~]# docker run \
+>   --name mysql_8.0.35 \
+>   -p 3306:3306 \
+>   -e MYSQL_ROOT_PASSWORD=root \
+>   -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
+>   -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/data:/var/lib/mysql \
+>   -v /media/sf_develop/virtualbox/docker/mysql_8.0.35/log:/var/log/mysql \
+>   -v /etc/localtime:/etc/localtime:ro \
+>   --privileged=true \
+>   -d mysql:8.0.35
+673c5fcc483c122ac3bb95e6d3be4551bd8cdefe717f8a1eb0e03f0b4abe7a36
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                     PORTS                                      NAMES
+673c5fcc483c   mysql:8.0.35   "docker-entrypoint.s…"   5 minutes ago   Exited (1) 5 minutes ago                                              mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Up 6 hours                 0.0.0.0:80->80/tcp, :::80->80/tcp          nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Up 6 hours                 0.0.0.0:9000->9000/tcp, :::9000->9000/tcp  php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago                                                confident_pike
+[root@10 ~]#
+```
+
+看到上面启动失败，查看原因：
+```
+[root@10 ~]# docker logs  mysql_8.0.35
+2023-11-30 15:56:52+08:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.35-1.el8 started.
+2023-11-30 15:56:52+08:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2023-11-30 15:56:52+08:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.35-1.el8 started.
+2023-11-30 15:56:52+08:00 [ERROR] [Entrypoint]: mysqld failed while attempting to check config
+        command was: mysqld --verbose --help --log-bin-index=/tmp/tmp.YUVn5nAiWS
+        mysqld: Can't read dir of '/etc/mysql/conf.d/' (OS errno 13 - Permission denied)
+mysqld: [ERROR] Stopped processing the 'includedir' directive in file /etc/my.cnf at line 36.
+mysqld: [ERROR] Fatal error in defaults handling. Program aborted!
+2023-11-30 16:05:42+08:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.35-1.el8 started.
+2023-11-30 16:05:42+08:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2023-11-30 16:05:42+08:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.35-1.el8 started.
+2023-11-30 16:05:42+08:00 [ERROR] [Entrypoint]: mysqld failed while attempting to check config
+        command was: mysqld --verbose --help --log-bin-index=/tmp/tmp.x32HKKcF9D
+        mysqld: Can't read dir of '/etc/mysql/conf.d/' (OS errno 13 - Permission denied)
+mysqld: [ERROR] Stopped processing the 'includedir' directive in file /etc/my.cnf at line 36.
+mysqld: [ERROR] Fatal error in defaults handling. Program aborted!
+[root@10 ~]#
+```
+
+`/etc/my.cnf` 读取 `/etc/mysql/conf.d/` 目录时权限不足。
+
+修改权限没有奏效：
+```
+[root@10 ~]# ll  /media/sf_develop/virtualbox/docker/mysql_8.0.35
+总用量 0
+drwxrwx---. 1 root vboxsf 0 11月 30 15:53 conf.d
+drwxrwx---. 1 root vboxsf 0 11月 30 16:17 data
+drwxrwx---. 1 root vboxsf 0 11月 30 15:53 log
+[root@10 ~]#
+[root@10 ~]# chmod -R 777 /media/sf_develop/virtualbox/docker/mysql_8.0.35
+[root@10 ~]#
+[root@10 ~]# ll  /media/sf_develop/virtualbox/docker/mysql_8.0.35
+总用量 0
+drwxrwx---. 1 root vboxsf 0 11月 30 15:53 conf.d
+drwxrwx---. 1 root vboxsf 0 11月 30 16:17 data
+drwxrwx---. 1 root vboxsf 0 11月 30 15:53 log
+[root@10 ~]#
+```
+
+这种方式无法进行下去。
+
+原想的是宿主机中先放开权限，这样容器中也可以直接操作宿主机中的文件了；
+或者启动后，在容器内修改需要操作的文件的权限。该思路宣告失败。
+
+### 思路二
+
+避开宿主机目录，用虚拟机中的目录去映射容器的目录。
+
+为了与虚拟机中直接编译安装的MySQL区分开，在虚拟机中新建目录：
+```
+mkdir -p \
+  /user/local/docker/mysql_8.0.35/conf.d \
+  /user/local/docker/mysql_8.0.35/data \
+  /user/local/docker/mysql_8.0.35/log
+```
+
+创建容器：
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /user/local/docker/mysql_8.0.35/conf.d:/etc/mysql/conf.d \
+  -v /user/local/docker/mysql_8.0.35/data:/var/lib/mysql \
+  -v /user/local/docker/mysql_8.0.35/log:/var/log/mysql \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
+虽然这样容器可以创建和启动成功，而且目录也映射成功，但没有意义，相关的文件还在虚拟机中，
+和去容器中进行配置、查看日志没有什么区别，而且数据文件还是在虚拟机中，
+再者使用 `docker cp` 也可以把容器中的数据文件复制到虚拟机中，
+可能最后值得一提的也就是再把虚拟机中复制出来的MySQL数据文件再复制到宿主机的共享文件夹中。
+
+后记：经过后续一些思考，意义还是存在的，试想如果容器启动失败时，你的数据文件怎么从容器中取出来呢。
+
+### 思路三
+
+先把虚拟机的一个目录映射到MySQL容器中，再在MySQL容器中把虚拟机映射的目录下的各个文件夹配置到MySQL服务中。
+
+创建并启动容器：
+```
+[root@10 ~]# docker run \
+>   --name mysql_8.0.35 \
+>   -p 3306:3306 \
+>   -e MYSQL_ROOT_PASSWORD=root \
+>   -v /media/sf_develop/virtualbox/docker/mysql_8.0.35:/home/mysql/docker \
+>   -v /etc/localtime:/etc/localtime:ro \
+>   --privileged=true \
+>   -d mysql:8.0.35
+327c430e53cbaf34c11e97da999cec8f0e785407f5c01749914314f46089953e
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                    PORTS                                                  NAMES
+327c430e53cb   mysql:8.0.35   "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds              0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Exited (0) 17 hours ago                                                          nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Exited (0) 17 hours ago                                                          php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago                                                           confident_pike
+[root@10 ~]#
+```
+
+进入容器，想到用链接的方式打通宿主机与虚拟机：
+```
+[root@10 ~]# docker exec -it mysql_8.0.35 /bin/bash
+bash-4.4#
+bash-4.4# ls /var/lib/mysql
+'#ib_16384_0.dblwr'   binlog.000002     ib_buffer_pool   performance_schema   undo_001
+'#ib_16384_1.dblwr'   binlog.index      ibdata1          private_key.pem      undo_002
+'#innodb_redo'        ca-key.pem        ibtmp1           public_key.pem
+'#innodb_temp'        ca.pem            mysql            server-cert.pem
+ auto.cnf             client-cert.pem   mysql.ibd        server-key.pem
+ binlog.000001        client-key.pem    mysql.sock       sys
+bash-4.4#
+bash-4.4# ln -s /var/lib/mysql /home/mysql/docker/data
+ln: failed to create symbolic link '/home/mysql/docker/data': Operation not permitted
+bash-4.4#
+```
+
+没成功，还是按照原思路来吧，给文件夹授权让mysql用户可以操作：
+```
+bash-4.4# ls -l /home/mysql
+total 0
+drwxrwx---. 1 root 995 0 Dec  1 10:12 docker
+bash-4.4#
+bash-4.4# ls /home/mysql/docker/
+conf.d  data  log
+bash-4.4#
+bash-4.4# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
+mysql:x:999:999::/var/lib/mysql:/bin/bash
+bash-4.4#
+bash-4.4# cat /etc/group
+root:x:0:
+bin:x:1:
+daemon:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mem:x:8:
+kmem:x:9:
+wheel:x:10:
+cdrom:x:11:
+mail:x:12:
+man:x:15:
+dialout:x:18:
+floppy:x:19:
+games:x:20:
+tape:x:33:
+video:x:39:
+ftp:x:50:
+lock:x:54:
+audio:x:63:
+users:x:100:
+nobody:x:65534:
+mysql:x:999:
+bash-4.4#
+bash-4.4# groupadd -g 995 docker
+bash-4.4#
+bash-4.4# usermod -aG docker mysql
+bash-4.4#
+bash-4.4# cat /etc/group | grep docker
+docker:x:995:mysql
+bash-4.4#
+bash-4.4# cat /etc/passwd | grep mysql
+mysql:x:999:999::/var/lib/mysql:/bin/bash
+bash-4.4#
+bash-4.4# ls -l /home/mysql/docker
+total 0
+drwxrwx---. 1 root docker 0 Dec  1 10:21 conf.d
+drwxrwx---. 1 root docker 0 Dec  1 10:21 data
+drwxrwx---. 1 root docker 0 Dec  1 10:21 log
+bash-4.4#
+bash-4.4# ln -s /var/lib/mysql /home/mysql/docker/data
+ln: failed to create symbolic link '/home/mysql/docker/data': Operation not permitted
+bash-4.4#
+```
+
+mysql用户可以操作`/home/mysql/docker`文件夹了，不过链接时还是报无权限，链接的方式行不通。
+
+原思路，修改相关配置：
+```
+bash-4.4# ls -l /etc | grep my
+-rw-r--r--.  1 root root   1317 Oct 28 00:51 my.cnf
+drwxr-xr-x.  2 root root      6 Oct 12 20:50 my.cnf.d
+drwxr-xr-x.  3 root root     20 Oct 28 00:51 mysql
+bash-4.4#
+bash-4.4# cat /etc/my.cnf
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.0/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+
+# Remove leading # to revert to previous value for default_authentication_plugin,
+# this will increase compatibility with older clients. For background, see:
+# https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_default_authentication_plugin
+# default-authentication-plugin=mysql_native_password
+skip-host-cache
+skip-name-resolve
+datadir=/var/lib/mysql
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/var/run/mysqld/mysqld.sock
+
+!includedir /etc/mysql/conf.d/
+bash-4.4#
+bash-4.4#
+bash-4.4# ls -l /etc/my.cnf.d
+total 0
+bash-4.4#
+bash-4.4# ls -l /etc/mysql
+total 0
+drwxr-xr-x. 2 root root 6 Oct 28 00:51 conf.d
+bash-4.4#
+bash-4.4# ls -l /etc/mysql/conf.d
+total 0
+bash-4.4#
+bash-4.4# vi -v
+bash: vi: command not found
+bash-4.4#
+bash-4.4# vim -h
+bash: vim: command not found
+bash-4.4#
+```
+
+容器中没有文本编辑器，也下载不了：
+```
+bash-4.4# yum -v
+bash: yum: command not found
+bash-4.4#
+bash-4.4# apt -h
+bash: apt: command not found
+bash-4.4#
+bash-4.4# dnf -h
+bash: dnf: command not found
+bash-4.4#
+```
+
+想着下载一个现成的AppImage使用，结果依赖fuse库，运行失败：
+```
+bash-4.4# mv /home/mysql/docker/soft/Vim-v9.0.2138.glibc2.29-x86_64.AppImage /usr/local/bin/vim
+bash-4.4#
+bash-4.4# ls -l /usr/local/bin
+total 21492
+-rwxr-xr-x. 1 root root      14189 Oct 28 00:50 docker-entrypoint.sh
+-rwxr-xr-x. 1 root root    2355690 Oct 28 00:50 gosu
+-rwxrwx---. 1 root docker 19629248 Dec  1 11:54 vim
+bash-4.4#
+bash-4.4# chmod +x /usr/local/bin/vim
+bash-4.4#
+bash-4.4# vim -v
+dlopen(): error loading libfuse.so.2
+
+AppImages require FUSE to run.
+You might still be able to extract the contents of this AppImage
+if you run it with the --appimage-extract option.
+See https://github.com/AppImage/AppImageKit/wiki/FUSE
+for more information
+bash-4.4#
+```
+
+想着把vim源码git下载后移动到了容器中，编译时发现无法编译：
+```
+bash-4.4# ls /home/mysql/docker/soft/vim
+CONTRIBUTING.md  README.md       SECURITY.md  pixmaps  uninstall.txt
+Filelist         README.txt      ci           runtime  vimtutor.bat
+LICENSE          README_VIM9.md  configure    src      vimtutor.com
+Makefile         READMEdir       nsis         tools
+bash-4.4#
+bash-4.4# cd /home/mysql/docker/soft/vim/src
+bash-4.4#
+bash-4.4# make && make install
+bash: make: command not found
+bash-4.4#
+bash-4.4# make -h
+bash: make: command not found
+bash-4.4#
+```
+
+该思路折戟沉沙，宣告失败。
+
+在容器中，没有mysql服务重启的命令，需要退出容器，在虚拟机中重启：
+```
+bash-4.4# uname
+Linux
+bash-4.4#
+bash-4.4# uname -a
+Linux 327c430e53cb 3.10.0-1160.102.1.el7.x86_64 #1 SMP Tue Oct 17 15:42:21 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+bash-4.4#
+bash-4.4# cat /etc/issue
+\S
+Kernel \r on an \m
+
+bash-4.4#
+bash-4.4# cat /etc/os-release
+NAME="Oracle Linux Server"
+VERSION="8.8"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="8.8"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Oracle Linux Server 8.8"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:oracle:linux:8:8:server"
+HOME_URL="https://linux.oracle.com/"
+BUG_REPORT_URL="https://github.com/oracle/oracle-linux"
+
+ORACLE_BUGZILLA_PRODUCT="Oracle Linux 8"
+ORACLE_BUGZILLA_PRODUCT_VERSION=8.8
+ORACLE_SUPPORT_PRODUCT="Oracle Linux"
+ORACLE_SUPPORT_PRODUCT_VERSION=8.8
+bash-4.4#
+bash-4.4# systemctl status mysql
+bash: systemctl: command not found
+bash-4.4#
+```
+
+### 思路四
+
+上面操作下来，MySQL容器启动不了的原因应该是MySQL容器启动时没有读权限加载宿主机中的配置文件导致的，
+可以先让MySQL容器启动时不要去加载宿主机中的配置文件，启动成功后再去修改配置文件。
+
+在容器启动时先把虚拟机关联的宿主机的一个目录映射到MySQL容器中，启动成功后进入容器让mysql用户可以操作映射目录下的文件。
+接下来再在虚拟机写一个MySQL的配置文件`my.cnf`， 在这个配置文件中把虚拟机映射的目录下的各个文件夹配置到MySQL服务中，
+然后`docker cp`把该配置文件复制到容器中，重启容器。
+
+在创建容器前，先把要与容器挂载的目录创建好：
+```
+mkdir -p \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/data \
+  /media/sf_develop/virtualbox/docker/mysql_8.0.35/log
+```
+
+conf.d 目录里为配置文件，MySQL运行时 `/etc/my.cnf` 会读取该目录下的所有后缀为 `.cnf` 的文件；
+data 目录里为数据文件；log 目录里为日志文件。
+
+创建容器：
+```
+docker run \
+  --name mysql_8.0.35 \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v /media/sf_develop/virtualbox/docker/mysql_8.0.35:/usr/local/docker/mysql \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d mysql:8.0.35
+```
+
+```
+--name：容器名，此处命名为mysql_8.0.35
+-p：端口映射，此处映射 主机3306端口 到 容器的3306端口
+-e：配置信息，此处配置mysql的root用户的登陆密码
+-v：主机和容器的目录映射关系，":"前为主机目录，之后为容器目录
+-v /etc/localtime:/etc/localtime:ro：映射这个目录是为了校正容器内的时间跟宿主机时间一致
+--privileged=true：表示容器内的root用户拥有真正的root权限，而不是外部普通用户的权限
+-d：后台运行容器，保证在退出终端后容器继续运行
+```
+
+```
+[root@10 ~]# docker run \
+>   --name mysql_8.0.35 \
+>   -p 3306:3306 \
+>   -e MYSQL_ROOT_PASSWORD=root \
+>   -v /media/sf_develop/virtualbox/docker/mysql_8.0.35:/usr/local/docker/mysql \
+>   -v /etc/localtime:/etc/localtime:ro \
+>   --privileged=true \
+>   -d mysql:8.0.35
+690b39429e8eabb2803184fea34055b904943eff63cc83a24ee3a324e401b79b
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS                    PORTS                                                  NAMES
+690b39429e8e   mysql:8.0.35   "docker-entrypoint.s…"   16 seconds ago   Up 14 seconds             0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago      Exited (0) 21 hours ago                                                          nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago      Exited (0) 21 hours ago                                                          php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago      Exited (0) 4 weeks ago                                                           confident_pike
+[root@10 ~]#
+```
+
+明细：
+```
+[root@10 ~]# docker exec -it mysql_8.0.35 /bin/bash
+bash-4.4#
+bash-4.4# ls -l /usr/local
+total 0
+drwxr-xr-x. 1 root root 34 Oct 28 00:52 bin
+drwxr-xr-x. 3 root root 19 Dec  1 14:16 docker
+drwxr-xr-x. 2 root root  6 Oct  9  2021 etc
+drwxr-xr-x. 2 root root  6 Oct  9  2021 games
+drwxr-xr-x. 2 root root  6 Oct  9  2021 include
+drwxr-xr-x. 2 root root  6 Oct  9  2021 lib
+drwxr-xr-x. 3 root root 17 Oct 20 06:17 lib64
+drwxr-xr-x. 2 root root  6 Oct  9  2021 libexec
+drwxr-xr-x. 2 root root  6 Oct  9  2021 sbin
+drwxr-xr-x. 5 root root 49 Oct 20 06:17 share
+drwxr-xr-x. 2 root root  6 Oct  9  2021 src
+bash-4.4#
+bash-4.4# ls -l /usr/local/docker
+total 0
+drwxrwx---. 1 root 995 0 Dec  1 14:06 mysql
+bash-4.4#
+bash-4.4# ls -l /usr/local/docker/mysql
+total 0
+drwxrwx---. 1 root 995 0 Dec  1 14:01 conf.d
+drwxrwx---. 1 root 995 0 Dec  1 10:22 data
+drwxrwx---. 1 root 995 0 Dec  1 10:24 log
+bash-4.4#
+bash-4.4# cat /etc/passwd | grep mysql
+mysql:x:999:999::/var/lib/mysql:/bin/bash
+bash-4.4#
+bash-4.4# cat /etc/group | grep mysql
+mysql:x:999:
+bash-4.4#
+bash-4.4# groupadd -g 995 docker
+bash-4.4#
+bash-4.4# usermod -aG docker mysql
+bash-4.4#
+bash-4.4# cat /etc/passwd | grep mysql
+mysql:x:999:999::/var/lib/mysql:/bin/bash
+bash-4.4#
+bash-4.4# cat /etc/group | grep mysql
+mysql:x:999:
+docker:x:995:mysql
+bash-4.4#
+bash-4.4# ls -l /usr/local/docker/mysql
+total 0
+drwxrwx---. 1 root docker 0 Dec  1 14:01 conf.d
+drwxrwx---. 1 root docker 0 Dec  1 10:22 data
+drwxrwx---. 1 root docker 0 Dec  1 10:24 log
+bash-4.4#
+```
+
+把数据目录复制过去：
+```
+bash-4.4# ls /var/lib/mysql
+'#ib_16384_0.dblwr'   binlog.index      ibtmp1               server-cert.pem
+'#ib_16384_1.dblwr'   ca-key.pem        mysql                server-key.pem
+'#innodb_redo'        ca.pem            mysql.ibd            sys
+'#innodb_temp'        client-cert.pem   mysql.sock           undo_001
+ auto.cnf             client-key.pem    performance_schema   undo_002
+ binlog.000001        ib_buffer_pool    private_key.pem
+ binlog.000002        ibdata1           public_key.pem
+bash-4.4#
+bash-4.4# cp -r /var/lib/mysql/* /usr/local/docker/mysql/data
+cp: cannot create symbolic link '/usr/local/docker/mysql/data/mysql.sock': Operation not permitted
+bash-4.4#
+bash-4.4# ls /usr/local/docker/mysql/data
+'#ib_16384_0.dblwr'   binlog.index      ibtmp1               server-key.pem
+'#ib_16384_1.dblwr'   ca-key.pem        mysql                sys
+'#innodb_redo'        ca.pem            mysql.ibd            undo_001
+'#innodb_temp'        client-cert.pem   performance_schema   undo_002
+ auto.cnf             client-key.pem    private_key.pem
+ binlog.000001        ib_buffer_pool    public_key.pem
+ binlog.000002        ibdata1           server-cert.pem
+bash-4.4#
+bash-4.4# ls -l /var/lib/mysql | grep mysql.sock
+lrwxrwxrwx. 1 mysql mysql       27 Dec  1 15:02 mysql.sock -> /var/run/mysqld/mysqld.sock
+bash-4.4#
+bash-4.4# ln -s /var/run/mysqld/mysqld.sock /usr/local/docker/mysql/data/mysql.sock
+ln: failed to create symbolic link '/usr/local/docker/mysql/data/mysql.sock': Operation not permitted
+bash-4.4#
+```
+
+退出容器，新建`/etc/my.cnf` 并编辑：
+```
+bash-4.4#exit
+[root@10 ~]#
+[root@10 ~]# cd /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d
+[root@10 conf.d]#
+[root@10 conf.d]# touch my.cnf
+[root@10 conf.d]#
+[root@10 conf.d]# vi my.cnf
+[root@10 conf.d]#
+```
+
+写入内容并保存：
+```
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.0/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+
+# Remove leading # to revert to previous value for default_authentication_plugin,
+# this will increase compatibility with older clients. For background, see:
+# https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_default_authentication_plugin
+# default-authentication-plugin=mysql_native_password
+skip-host-cache
+skip-name-resolve
+datadir=/usr/local/docker/mysql/data
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/var/run/mysqld/mysqld.sock
+
+!includedir /usr/local/docker/mysql/conf.d/
+```
+
+从虚拟机复制到容器中：
+> docker cp /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d/my.cnf mysql_8.0.35:/etc/
+
+明细：
+```
+[root@10 conf.d]# cd ~
+[root@10 ~]# 
+[root@10 ~]# docker cp /media/sf_develop/virtualbox/docker/mysql_8.0.35/conf.d/my.cnf mysql_8.0.35:/etc/
+Successfully copied 3.07kB to mysql_8.0.35:/etc/
+[root@10 ~]#
+[root@10 ~]# docker exec -it mysql_8.0.35 /bin/bash
+bash-4.4#
+bash-4.4# ls -l /etc | grep my
+-rwxrwx---.  1 root docker   1380 Dec  1 14:46 my.cnf
+drwxr-xr-x.  2 root root        6 Oct 12 20:50 my.cnf.d
+drwxr-xr-x.  3 root root       20 Oct 28 00:51 mysql
+bash-4.4#
+bash-4.4# cat /etc/my.cnf
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.0/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+
+# Remove leading # to revert to previous value for default_authentication_plugin,
+# this will increase compatibility with older clients. For background, see:
+# https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_default_authentication_plugin
+# default-authentication-plugin=mysql_native_password
+skip-host-cache
+skip-name-resolve
+datadir=/usr/local/docker/mysql/data
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/var/run/mysqld/mysqld.sock
+
+!includedir /usr/local/docker/mysql/conf.d/
+bash-4.4#
+```
+
+重新启动，启动失败：
+```
+[root@10 ~]# docker restart mysql_8.0.35
+mysql_8.0.35
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                     PORTS     NAMES
+f0435d049aeb   mysql:8.0.35   "docker-entrypoint.s…"   7 minutes ago   Exited (1) 6 seconds ago             mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago     Exited (0) 23 hours ago              nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago     Exited (0) 23 hours ago              php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (0) 4 weeks ago               confident_pike
+[root@10 ~]#
+```
+
+这么多思路操作下来，原因应该是容器可以与虚拟机进行文件映射，但容器无法操作宿主机文件。
 
 
 
