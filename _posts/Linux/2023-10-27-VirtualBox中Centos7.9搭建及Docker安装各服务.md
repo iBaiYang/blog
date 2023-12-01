@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: Linux
-title: VirtualBox 从头搭建Centos7.9
-meta: VirtualBox 从头搭建Centos7.9
+title: VirtualBox中Centos7.9搭建及Docker安装各服务
+meta: VirtualBox中Centos7.9搭建及Docker安装各服务
 ---
 * content
 {:toc}
