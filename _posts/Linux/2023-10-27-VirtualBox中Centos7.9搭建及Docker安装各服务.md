@@ -3073,8 +3073,16 @@ requirepass redis6379
 appendonly yes
 ```
 
-
-
+命令行客户端：
+```
+[root@10 ~]# docker exec -it redis_7.2.3 redis-cli
+127.0.0.1:6379>
+127.0.0.1:6379> auth redis 6379
+(error) WRONGPASS invalid username-password pair or user is disabled.
+127.0.0.1:6379>
+127.0.0.1:6379> set name 123
+127.0.0.1:6379> get name
+```
 
 
 ## 小结
