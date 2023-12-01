@@ -2816,7 +2816,6 @@ server {
 ### 基础安装
 
 下载现在最新的8.0.35版本：
-
 > docker pull mysql:8.0.35
 
 明细：
@@ -2893,7 +2892,10 @@ e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (
 [root@10 ~]#
 ```
 
-GRANT ALL ON *.* TO 'root'@'%';
+远程登录授权：
+> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+
+然后在MySQL管理客户端就可以连接了，如 Navicat for MySQL。
 
 ## 小结
 
