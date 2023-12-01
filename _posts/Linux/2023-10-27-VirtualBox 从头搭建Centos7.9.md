@@ -2892,10 +2892,81 @@ e386a696ef90   hello-world    "/hello"                  4 weeks ago     Exited (
 [root@10 ~]#
 ```
 
-远程登录授权：
+进入容器，输入账户密码进人管理，远程登录授权：
+> docker exec -it mysql_8.0.35 /bin/bash
+> 
+> mysql -u root -p
+>
 > ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
 
+`%` 表示可以远程登录，`localhost` 表示只允许本地登录，也可以是具体IP地址。
+
+明细：
+```
+[root@10 ~]# docker exec -it mysql_8.0.35 /bin/bash
+bash-4.4#
+bash-4.4# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.35 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+```
+
 然后在MySQL管理客户端就可以连接了，如 Navicat for MySQL。
+
+### 新建数据库和用户
+
+新建数据库：
+> CREATE DATABASE IF NOT EXISTS test DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+
+新建用户：
+> CREATE USER 'test'@'%' IDENTIFIED BY '123456';
+
+用户数据库赋权：
+> GRANT ALL ON test.* TO 'test'@'%';
+>
+> flush privileges;
+
+远程登录授权：
+> ALTER USER 'test'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+
+明细：
+```
+mysql> CREATE DATABASE IF NOT EXISTS test DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> CREATE USER 'test'@'%' IDENTIFIED BY '123456';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> GRANT ALL ON test.* TO 'test'@'%';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+mysql> flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> ALTER USER 'test'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+```
 
 ## 小结
 
