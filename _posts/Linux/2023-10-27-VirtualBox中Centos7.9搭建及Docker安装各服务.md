@@ -3013,6 +3013,16 @@ docker run \
 ```
 
 ```
+--name：容器名，此处命名为redis_7.2.3
+-p：端口映射，此处映射 主机6379端口 到 容器的6379端口
+-v /user/local/docker/redis_7.2.3/conf:/usr/local/etc/redis：服务配置目录，里面文件为 redis.conf
+-v /etc/localtime:/etc/localtime:ro：映射这个目录是为了校正容器内的时间跟宿主机时间一致
+--privileged=true：表示容器内的root用户拥有真正的root权限，而不是外部普通用户的权限
+-d：后台运行容器，保证在退出终端后容器继续运行
+```
+
+明细：
+```
 [root@10 ~]# docker run \
 >   --name redis_7.2.3 \
 >   -p 6379:6379 \
