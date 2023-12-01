@@ -2968,6 +2968,105 @@ Query OK, 0 rows affected (0.00 sec)
 mysql>
 ```
 
+## Redis安装
+
+下载现在最新的7.2.3版本：
+> docker pull redis:7.2.3
+
+明细：
+```
+root@10 ~]# docker pull redis:7.2.3
+7.2.3: Pulling from library/redis
+1f7ce2fa46ab: Pull complete
+3c6368585bf1: Pull complete
+3911d271d7d8: Pull complete
+ac88aa9d4021: Pull complete
+127cd75a68a2: Pull complete
+4f4fb700ef54: Pull complete
+f3993c1104fc: Pull complete
+Digest: sha256:2976bc0437deff693af2dcf081a1d1758de8b413e6de861151a5a136c25eb9e4
+Status: Downloaded newer image for redis:7.2.3
+docker.io/library/redis:7.2.3
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+php-7.4       1.0       2a7836ecd1a3   2 weeks ago     885MB
+redis         7.2.3     961dda256baa   2 weeks ago     138MB
+nginx-vim     latest    19c8bf579203   4 weeks ago     248MB
+nginx         latest    593aee2afb64   5 weeks ago     187MB
+mysql         8.0.35    96bc8cf3633b   5 weeks ago     582MB
+hello-world   latest    9c7a54a9a43c   7 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+mysql         8.0.28    f2ad9f23df82   19 months ago   521MB
+[root@10 ~]#
+```
+
+创建容器：
+```
+docker run \
+  --name redis_7.2.3 \
+  -p 6379:6379 \
+  -v /user/local/docker/redis_7.2.3/conf:/usr/local/etc/redis \
+  -v /etc/localtime:/etc/localtime:ro \
+  --privileged=true \
+  -d redis:7.2.3
+```
+
+```
+[root@10 ~]# docker run \
+>   --name redis_7.2.3 \
+>   -p 6379:6379 \
+>   -v /user/local/docker/redis_7.2.3/conf:/usr/local/etc/redis \
+>   -v /etc/localtime:/etc/localtime:ro \
+>   --privileged=true \
+>   -d redis:7.2.3
+ecc3dee15f76323b71eba10cc2b7d39ca65db200c88547f7731d81945c8a0fb4
+[root@10 ~]#
+[root@10 ~]# docker ps -a
+CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS                    PORTS                                       NAMES
+ecc3dee15f76   redis:7.2.3    "docker-entrypoint.s…"   38 seconds ago   Up 37 seconds             0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis_7.2.3
+a75c23af4150   mysql:8.0.35   "docker-entrypoint.s…"   54 minutes ago   Exited (0) 1 second ago                                               mysql_8.0.35
+f2d344418b9f   nginx          "/docker-entrypoint.…"   4 weeks ago      Exited (0) 26 hours ago                                               nginx_php_7.4-fpm
+a0c75b4db3a6   php:7.4-fpm    "docker-php-entrypoi…"   4 weeks ago      Exited (0) 26 hours ago                                               php_7.4-fpm
+e386a696ef90   hello-world    "/hello"                  4 weeks ago      Exited (0) 4 weeks ago                                                confident_pike
+[root@10 ~]#
+[root@10 ~]# ls -l /user/local/docker/redis_7.2.3/conf
+总用量 0
+[root@10 ~]#
+[root@10 ~]# docker exec -it redis_7.2.3 /bin/bash
+root@ecc3dee15f76:/data#
+root@ecc3dee15f76:/data# ls -l /usr/local/etc/redis
+total 0
+root@ecc3dee15f76:/data#
+```
+
+配置文件/user/local/docker/redis_7.2.3/conf/redis.conf，待研究：
+```
+#编辑redis.c0nf文件
+#注释掉这部分就表示允许任何IP地址都能涟接，类似bind0.0.0.0
+#bind127.0.0.1-::1
+bind0.0.0.0
+
+#默认yes,开启保护模式，限制为本地访问
+protected-mode no
+
+#默认n0,改为yes意为以守护进程方式启动，可后台运行，除非kill进程，改成yes会使配置文件方式启动redis:失败
+daemonize no
+
+#数据库个数
+databases 16
+
+#配置密码
+requirepass redis6379
+
+#reids持久化（可选），默认no
+appendonly yes
+```
+
+
+
+
+
 ## 小结
 
 ### 内容一
@@ -2988,6 +3087,8 @@ mysql>
 ### 内容二
 
 上面提到Nginx容器与PHP容器通信的方式，使用了硬连接，这是一种过时的连接方式，最好使用容器内桥接方式实现。
+
+<https://ibaiyang.github.io/blog/docker/2022/10/11/深入理解-Docker-网络原理.html>
 
 ### 内容三
 
