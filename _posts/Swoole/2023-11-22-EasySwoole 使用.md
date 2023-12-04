@@ -96,7 +96,7 @@ class CustomTask implements TaskInterface
     public function run(int $taskId, int $workerIndex)
     {
         // 执行逻辑
-        echo $this->data['user'];  // 运行在Task进程中，主进程看不到输出
+        echo $this->data['user'];  // 运行在Task进程中，命令行查看输出
     }
 
     public function onException(\Throwable $throwable, int $taskId, int $workerIndex)
@@ -115,7 +115,7 @@ $task->async(new CustomTask(['user' => 'custom']));
 ```
 
 注意点：
-* Task任务运行在Task进程上，在主进程无法追踪运行过程（如echo在主进程看不到输出）。
+* Task任务运行在Task进程上，与主进程共用同一个命令行客户端，可以使用输出命令很方便的进行调试。
 
 ## 客户端fd链接
 
