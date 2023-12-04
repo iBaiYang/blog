@@ -3042,7 +3042,7 @@ requirepass 123456
 # appendonly no
 ```
 
-配置文件要有写的权限，不然会启动不成功：
+配置文件其他用户要有读的权限（至少要是004），不然会启动失败：
 ```
 [root@10 ~]# ls -l /user/local/docker/redis_7.2.3/conf
 总用量 4
