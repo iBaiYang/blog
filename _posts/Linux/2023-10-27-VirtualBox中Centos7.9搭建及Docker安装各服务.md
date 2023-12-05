@@ -2520,9 +2520,6 @@ root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# php -m | grep gd
 gd
 root@a0c75b4db3a6:/usr/src#
-root@a0c75b4db3a6:/usr/src# php -m | grep gd
-gd
-root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# php -m
 [PHP Modules]
 bcmath
@@ -2844,6 +2841,224 @@ root@a0c75b4db3a6:/var/www/html#
 root@a0c75b4db3a6:/var/www/html# php -m | grep zip
 zip
 root@a0c75b4db3a6:/var/www/html#
+```
+
+### 打新镜像
+
+上面安装gd拓展和zip拓展的过程很复杂，最好能打个包出来，下面具体操作下。
+
+一、生成镜像
+
+从容器Container生成image镜像：
+
+> docker commit -a "baiyang" -m "php:7.4-fpm add new ext: gd,zip-1.22.3 on base of vi,ext_swoole-4.8.13,ext_redis-6.0.2" php_7.4-fpm php-7.4:1.1
+
+明细：
+```
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+php-7.4       1.0       2a7836ecd1a3   3 weeks ago     885MB
+hello-world   latest    9c7a54a9a43c   7 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+[root@10 ~]#
+[root@10 ~]#
+[root@10 ~]# docker commit -a "baiyang" -m "php:7.4-fpm add new ext: gd,zip-1.22.3 on base of vi,ext_swoole-4.8.13,ext_redis-6.0.2" php_7.4-fpm php-7.4:1.1
+sha256:fea7b20a4a27568b1772b87d48d4033a13907b47776edda757becdc8a884010b
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+php-7.4       1.1       fea7b20a4a27   3 seconds ago   802MB
+php-7.4       1.0       2a7836ecd1a3   3 weeks ago     885MB
+hello-world   latest    9c7a54a9a43c   7 months ago    13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+[root@10 ~]# docker inspect php-7.4:1.1
+[
+    {
+        "Id": "sha256:fea7b20a4a27568b1772b87d48d4033a13907b47776edda757becdc8a884010b",
+        "RepoTags": [
+            "php-7.4:1.1"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:38f2b691dcb8c6d4630caa2999173e35be341f2f1264164ae045d9bfb3906c28",
+        "Comment": "php:7.4-fpm add new ext: gd, zip-1.22.3 on base of vi,ext_swoole-4.8.13,ext_redis-6.0.2",
+        "Created": "2023-12-05T06:29:17.071771107Z",
+        "Container": "a0c75b4db3a63ec76e1319333f36ec5865adceaf9048f2714bc1bdb8e67df059",
+        "ContainerConfig": {
+            "Hostname": "a0c75b4db3a6",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "9000/tcp": {},
+                "9501/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PHPIZE_DEPS=autoconf \t\tdpkg-dev \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config \t\tre2c",
+                "PHP_INI_DIR=/usr/local/etc/php",
+                "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_LDFLAGS=-Wl,-O1 -pie",
+                "GPG_KEYS=42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312",
+                "PHP_VERSION=7.4.33",
+                "PHP_URL=https://www.php.net/distributions/php-7.4.33.tar.xz",
+                "PHP_ASC_URL=https://www.php.net/distributions/php-7.4.33.tar.xz.asc",
+                "PHP_SHA256=924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+            ],
+            "Cmd": [
+                "php-fpm"
+            ],
+            "Image": "php:7.4-fpm",
+            "Volumes": null,
+            "WorkingDir": "/var/www/html",
+            "Entrypoint": [
+                "docker-php-entrypoint"
+            ],
+            "OnBuild": null,
+            "Labels": {},
+            "StopSignal": "SIGQUIT"
+        },
+        "DockerVersion": "24.0.7",
+        "Author": "baiyang",
+        "Config": {
+            "Hostname": "a0c75b4db3a6",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "9000/tcp": {},
+                "9501/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PHPIZE_DEPS=autoconf \t\tdpkg-dev \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config \t\tre2c",
+                "PHP_INI_DIR=/usr/local/etc/php",
+                "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64",
+                "PHP_LDFLAGS=-Wl,-O1 -pie",
+                "GPG_KEYS=42670A7FE4D0441C8E4632349E4FDC074A4EF02D 5A52880781F755608BF815FC910DEB46F53EA312",
+                "PHP_VERSION=7.4.33",
+                "PHP_URL=https://www.php.net/distributions/php-7.4.33.tar.xz",
+                "PHP_ASC_URL=https://www.php.net/distributions/php-7.4.33.tar.xz.asc",
+                "PHP_SHA256=924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+            ],
+            "Cmd": [
+                "php-fpm"
+            ],
+            "Image": "php:7.4-fpm",
+            "Volumes": null,
+            "WorkingDir": "/var/www/html",
+            "Entrypoint": [
+                "docker-php-entrypoint"
+            ],
+            "OnBuild": null,
+            "Labels": {},
+            "StopSignal": "SIGQUIT"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 801912394,
+        "VirtualSize": 801912394,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/fc5c96e6b9dbf58328d71feeefa75870a9838477e980de58cd4fbe9d3214ff44/diff:/var/lib/docker/overlay2/b6e3fd48125609ecea4a80b45a82a76c4b68be0cbd2b33d713fbe088322f3122/diff:/var/lib/docker/overlay2/740e2302d083a923d551f5a3cba278f60475c29cf321071b5fe99edda7009b20/diff:/var/lib/docker/overlay2/16d688c5615942a2d0d0ddb63418957a7c3fe49195b237a46e09e167292ef1eb/diff:/var/lib/docker/overlay2/79eda0d06bb282f6f9c844379059b98da6bf3460f26510464935a8c70cea3cf9/diff:/var/lib/docker/overlay2/9f26f4db2b79c55dabe01d8a5a2d73c9e3a55e0ef3016a09245c3d08ea678690/diff:/var/lib/docker/overlay2/43cf2bfacd4fd1a2e183d138b73586de49f3f1bf8a3da988a3048af9a1eb4ad2/diff:/var/lib/docker/overlay2/f2b5e9dd2deec3febc49b305e6dfcf3f8349bdf066c2448068f1b3d57df62594/diff:/var/lib/docker/overlay2/071f0d1ae9a19d24101d691e1fc694745e69c908dfe99ebc781b436cca1de318/diff:/var/lib/docker/overlay2/7dc269bd6d2a5787850d8578223347320775916c8073e4af7b9be7d6afadd647/diff",
+                "MergedDir": "/var/lib/docker/overlay2/835377fa0cf2a443174ae0187bd90996bb9b35612d5809e0084d1f605c97615e/merged",
+                "UpperDir": "/var/lib/docker/overlay2/835377fa0cf2a443174ae0187bd90996bb9b35612d5809e0084d1f605c97615e/diff",
+                "WorkDir": "/var/lib/docker/overlay2/835377fa0cf2a443174ae0187bd90996bb9b35612d5809e0084d1f605c97615e/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:ec4a38999118b78eab6899b913a548cb0b2c9b68fd05aff846a56b628b597f38",
+                "sha256:f6011769641091803058f3d7f21ae44fe06946be14914ff729844e7ef94ab15c",
+                "sha256:797a7c0590e0dd31ea2f40f5139ced40ad710a2db563718e77595c615ca0ae1a",
+                "sha256:44148371c697ea6420ffeca0559033fbfe1a0e59e4b83edba4768342238b2782",
+                "sha256:08cc615b0242bb13dd9b7f009b58207bd1503abdab48e4331502aff96e68e05a",
+                "sha256:91fd2792fa749b55021a242357fb011906acc3a1700f0c3a69aaa3528a28ed2a",
+                "sha256:89982c6135ad7dc8c363ff2ca816ef1f164e790fa8203de928ccb6acd01eeeb1",
+                "sha256:7c314756ee72cc25be6bed25e57bb53379a304d1540a4119ae72f916e951ef91",
+                "sha256:d78098596d788ff699ab6c79ecec1f1778b3deb1f217e5538c02d860ce4dd2be",
+                "sha256:5e65a6c61859cb1afa8653262ac22b702f88d061d2aa5a6f9d6d4d767871d31b",
+                "sha256:96ae5e3fd0b9d2d61e6768bedcf8b8e0173c19705614151931039233ddeaa5c1"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2023-12-05T14:29:17.084946899+08:00"
+        }
+    }
+]
+[root@10 ~]#
+```
+
+二、提交仓库
+
+我们把生成的镜像提交到Docker仓库中，以备日后直接使用。
+
+本地命令行登录：
+```
+[root@10 ~]# docker login --username ibaiyang
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@10 ~]#
+```
+
+给镜像打标签(2a7836ecd1a3是镜像的ID)，然后推送到远程Docker仓库：
+
+> docker tag fea7b20a4a27 ibaiyang/php-7.4:1.1
+>
+> docker push ibaiyang/php-7.4:1.1
+
+```
+[root@10 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+php-7.4       1.1       fea7b20a4a27   17 minutes ago   802MB
+php-7.4       1.0       2a7836ecd1a3   3 weeks ago      885MB
+hello-world   latest    9c7a54a9a43c   7 months ago     13.3kB
+php           7.4-fpm   38f2b691dcb8   12 months ago    443MB
+[root@10 ~]#
+[root@10 ~]# docker tag fea7b20a4a27 ibaiyang/php-7.4:1.1
+[root@10 ~]#
+[root@10 ~]# docker images
+REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
+php-7.4            1.1       fea7b20a4a27   19 minutes ago   802MB
+ibaiyang/php-7.4   1.1       fea7b20a4a27   19 minutes ago   802MB
+php-7.4            1.0       2a7836ecd1a3   3 weeks ago      885MB
+hello-world        latest    9c7a54a9a43c   7 months ago     13.3kB
+php                7.4-fpm   38f2b691dcb8   12 months ago    443MB
+[root@10 ~]#
+[root@10 ~]# docker push ibaiyang/php-7.4:1.1
+The push refers to repository [docker.io/ibaiyang/php-7.4]
+96ae5e3fd0b9: Pushed
+5e65a6c61859: Layer already exists
+d78098596d78: Layer already exists
+7c314756ee72: Layer already exists
+89982c6135ad: Layer already exists
+91fd2792fa74: Layer already exists
+08cc615b0242: Layer already exists
+44148371c697: Layer already exists
+797a7c0590e0: Layer already exists
+f60117696410: Layer already exists
+ec4a38999118: Layer already exists
+1.1: digest: sha256:f653fb2a52cdb0ba6166d17a1356047ef4a025e442ac5d23c0e0df546e4b3bd0 size: 2623
+[root@10 ~]#
 ```
 
 ## Nginx安装
