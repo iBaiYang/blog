@@ -2446,6 +2446,406 @@ ec4a38999118: Pushed
 
 > docker pull ibaiyang/php-7.4:1.0
 
+### gd拓展安装
+
+gd拓展安装依赖于zlib库、libpng库。我们需要先zlib库、libpng库，在安装gd拓展：
+
+> apt-get install zlib1g-dev
+>
+> apt-get install libpng-dev
+> 
+> docker-php-ext-install gd
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# apt-get install zlib1g-dev
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  zlib1g-dev
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 191 kB of archives.
+After this operation, 592 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bullseye/main amd64 zlib1g-dev amd64 1:1.2.11.dfsg-2+deb11u2 [191 kB]
+Fetched 191 kB in 19s (10.2 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package zlib1g-dev:amd64.
+(Reading database ... 16744 files and directories currently installed.)
+Preparing to unpack .../zlib1g-dev_1%3a1.2.11.dfsg-2+deb11u2_amd64.deb ...
+Unpacking zlib1g-dev:amd64 (1:1.2.11.dfsg-2+deb11u2) ...
+Setting up zlib1g-dev:amd64 (1:1.2.11.dfsg-2+deb11u2) ...
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# apt-get install libpng-dev
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libpng-tools libpng16-16
+..............
+Setting up libpng-dev:amd64 (1.6.37-3) ...
+Processing triggers for libc-bin (2.31-13+deb11u5) ...
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# docker-php-ext-install gd
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+......
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+
+Build complete.
+Don't forget to run 'make test'.
+
++ strip --strip-all modules/gd.so
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+Installing header files:          /usr/local/include/php/
+find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+find . -name \*.lo -o -name \*.o | xargs rm -f
+find . -name \*.la -o -name \*.a | xargs rm -f
+find . -name \*.so | xargs rm -f
+find . -name .libs -a -type d|xargs rm -rf
+rm -f libphp.la      modules/* libs/*
+root@a0c75b4db3a6:/usr/src#
+```
+
+查看拓展：
+> php -m
+
+```
+root@a0c75b4db3a6:/usr/src# php -m | grep gd
+gd
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php -m | grep gd
+gd
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php -m
+[PHP Modules]
+bcmath
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+gd
+hash
+iconv
+json
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+posix
+readline
+redis
+Reflection
+session
+SimpleXML
+sodium
+SPL
+sqlite3
+standard
+swoole
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]
+
+root@a0c75b4db3a6:/usr/src#
+```
+
+### zib拓展安装
+
+`composer install` 安装过程中报错：
+```
+error: /usr/src/php/ext/ext-zip does not exist
+
+usage: /usr/local/bin/docker-php-ext-install [-jN] [--ini-name file.ini] ext-name [ext-name ...]
+   ie: /usr/local/bin/docker-php-ext-install gd mysqli
+       /usr/local/bin/docker-php-ext-install pdo pdo_mysql
+       /usr/local/bin/docker-php-ext-install -j5 gd mbstring mysqli pdo pdo_mysql shmop
+
+if custom ./configure arguments are necessary, see docker-php-ext-configure
+
+Possible values for ext-name:
+bcmath bz2 calendar ctype curl dba dom enchant exif ffi fileinfo filter ftp gd gettext gmp hash iconv imap 
+intl json ldap mbstring mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci 
+pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline reflection session shmop simplexml snmp 
+soap sockets sodium spl standard sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlrpc xmlwriter 
+xsl zend_test zip
+
+Some of the above modules are already compiled into PHP; please check
+the output of "php -i" to see which modules are already loaded.
+```
+
+提示 ext-zip 不存在，我们需要安装 zip 拓展。
+
+推荐使用拓展包源码进行编译安装。
+
+做好准备工作，先给容器安装好cmake：
+> apt-get update
+>
+> apt-get install cmake
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# apt-get update
+Hit:1 http://deb.debian.org/debian bullseye InRelease
+Get:2 http://deb.debian.org/debian-security bullseye-security InRelease [48.4 kB]
+Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.1 kB]
+Get:4 http://deb.debian.org/debian-security bullseye-security/main amd64 Packages [260 kB]
+Get:5 http://deb.debian.org/debian bullseye-updates/main amd64 Packages.diff/Index [22.9 kB]
+Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-11-13-2005.21-F-2023-11-13-2005.21.pdiff [474 B]
+Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-11-13-2005.21-F-2023-11-13-2005.21.pdiff [474 B]
+Fetched 376 kB in 37s (10.1 kB/s)
+Reading package lists... Done
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# apt-get install cmake
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  cmake-data libarchive13 libjsoncpp24 libncurses6 libncursesw6 libprocps8 librhash0 libtinfo6 libuv1
+  procps psmisc
+Suggested packages:
+  cmake-doc ninja-build lrzip
+The following NEW packages will be installed:
+  cmake cmake-data libarchive13 libjsoncpp24 libncurses6 libncursesw6 libprocps8 librhash0 libuv1
+  procps psmisc
+The following packages will be upgraded:
+  libtinfo6
+1 upgraded, 11 newly installed, 0 to remove and 31 not upgraded.
+Need to get 9340 kB of archives.
+After this operation, 37.7 MB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bullseye/main amd64 libtinfo6 amd64 6.2+20201114-2+deb11u2 [342 kB]
+..........
+Setting up procps (2:3.3.17-5) ...
+Setting up cmake (3.18.4-2+deb11u1) ...
+Processing triggers for libc-bin (2.31-13+deb11u5) ...
+root@a0c75b4db3a6:/usr/src#
+```
+
+再安装好zip拓展依赖的libzip包：
+
+> cd /tmp
+>
+> curl https://libzip.org/download/libzip-1.10.1.tar.gz -O
+>
+> tar -zxf libzip-1.10.1.tar.gz
+>
+> cd libzip-1.10.1
+>
+> mkdir build
+>
+> cd build
+>
+> cmake ..
+>
+> make && make install
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# cd /tmp
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# curl https://libzip.org/download/libzip-1.10.1.tar.gz -O
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 1242k  100 1242k    0     0  87313      0  0:00:14  0:00:14 --:--:-- 40669
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+libzip-1.10.1.tar.gz  package.xml
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# tar -zxf libzip-1.10.1.tar.gz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+libzip-1.10.1  libzip-1.10.1.tar.gz  package.xml
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# cd libzip-1.10.1
+root@a0c75b4db3a6:/tmp/libzip-1.10.1#
+root@a0c75b4db3a6:/tmp/libzip-1.10.1# ls
+API-CHANGES.md  LICENSE      THANKS        cmake               examples                man
+AUTHORS         NEWS.md      TODO.md       cmake-compat        lib                     regress
+CMakeLists.txt  README.md    android       cmake-config.h.in   libzip-config.cmake.in  src
+INSTALL.md      SECURITY.md  appveyor.yml  cmake-zipconf.h.in  libzip.pc.in
+root@a0c75b4db3a6:/tmp/libzip-1.10.1#
+root@a0c75b4db3a6:/tmp/libzip-1.10.1# mkdir build
+root@a0c75b4db3a6:/tmp/libzip-1.10.1#
+root@a0c75b4db3a6:/tmp/libzip-1.10.1# cd build
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build#
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build# cmake ..
+-- The C compiler identification is GNU 10.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+..........
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/libzip-1.10.1/build
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build#
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build# make && make install
+[  0%] Generating zip_err_str.c
+Scanning dependencies of target zip
+[  0%] Building C object lib/CMakeFiles/zip.dir/zip_add.c.o
+..........
+-- Installing: /usr/local/share/doc/libzip/libzip/zip_stat_index.html
+-- Installing: /usr/local/bin/zipcmp
+-- Set runtime path of "/usr/local/bin/zipcmp" to ""
+-- Installing: /usr/local/bin/zipmerge
+-- Set runtime path of "/usr/local/bin/zipmerge" to ""
+-- Installing: /usr/local/bin/ziptool
+-- Set runtime path of "/usr/local/bin/ziptool" to ""
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build#
+```
+
+现在开始安装PHP的zip拓展。在容器中的 /tmp 目录下下载 zip-1.22.3.tgz 包，解压缩然后进入解压包，phpize 生成 configure文件：
+
+> cd /tmp
+>
+> curl https://pecl.php.net/get/zip-1.22.3.tgz -O
+>
+> tar -zxf redis-6.0.2.tgz
+>
+> cd redis-6.0.2
+>
+> /usr/local/bin/phpize
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/libzip-1.10.1/build# cd /tmp
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# curl https://pecl.php.net/get/zip-1.22.3.tgz -O
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  355k  100  355k    0     0   224k      0  0:00:01  0:00:01 --:--:--  224k
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# tar -zxf zip-1.22.3.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+libzip-1.10.1  libzip-1.10.1.tar.gz  package.xml    zip-1.22.3    zip-1.22.3.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# cd zip-1.22.3
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+root@a0c75b4db3a6:/tmp/zip-1.22.3# /usr/local/bin/phpize
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+```
+
+查看 php-config 地址，编译redis扩展：
+```
+> whereis php-config
+>
+> ./configure --with-php-config=/usr/local/bin/php-config
+```
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/zip-1.22.3# whereis php-config
+php-config: /usr/local/bin/php-config
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+root@a0c75b4db3a6:/tmp/zip-1.22.3# ./configure --with-php-config=/usr/local/bin/php-config
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+.........
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: patching config.h.in
+configure: creating ./config.status
+config.status: creating config.h
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+```
+
+编译并安装源代码：
+> make && make install
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/zip-1.22.3# make && make install
+/bin/bash /tmp/zip-1.22.3/libtool --mode=compile cc -I/usr/local/include -I. -I/tmp/zip-1.22.3 -DPHP_ATOM_INC 
+-I/tmp/zip-1.22.3/include -I/tmp/zip-1.22.3/main -I/tmp/zip-1.22.3 -I/usr/local/include/php 
+-I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend 
+-I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -I/tmp/zip-1.22.3/php74  
+-DHAVE_CONFIG_H  -g -O2   -c /tmp/zip-1.22.3/php74/php_zip.c -o php74/php_zip.lo
+mkdir php74/.libs
+.........
+----------------------------------------------------------------------
+
+Build complete.
+Don't forget to run 'make test'.
+
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+root@a0c75b4db3a6:/tmp/zip-1.22.3# ls /usr/local/lib/php/extensions/no-debug-non-zts-20190902
+bcmath.so  gd.so  opcache.so  pdo_mysql.so  redis.so  sodium.so  swoole.so  zip.so
+root@a0c75b4db3a6:/tmp/zip-1.22.3#
+```
+
+开启zip拓展（新建文件并写入内容）：
+```
+> cd /usr/local/etc/php/conf.d
+>
+> touch docker-php-ext-zip.ini
+>
+> echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/zip.so" >> docker-php-ext-zip.ini
+```
+
+明细：
+```
+root@a0c75b4db3a6:/var/www/html# cd /usr/local/etc/php/conf.d
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# ls
+docker-php-ext-bcmath.ini     docker-php-ext-redis.ini  
+docker-php-ext-gd.ini         docker-php-ext-sodium.ini
+docker-php-ext-pdo_mysql.ini  docker-php-ext-swoole.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# touch docker-php-ext-zip.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/zip.so" >> docker-php-ext-zip.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+```
+
+退出容器，重新启动，再查看一下：
+> exit
+>
+> docker restart php_7.4-fpm
+
+明细：
+```
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# exit
+exit
+[root@10 ~]#
+[root@10 ~]# docker restart php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+[root@10 ~]# docker exec -it php_7.4-fpm /bin/bash
+root@a0c75b4db3a6:/var/www/html#
+root@a0c75b4db3a6:/var/www/html# php -m | grep zip
+zip
+root@a0c75b4db3a6:/var/www/html#
+```
+
 ## Nginx安装
 
 ### 基础安装
