@@ -2969,6 +2969,137 @@ zip
 root@a0c75b4db3a6:/var/www/html#
 ```
 
+### msgpack拓展安装
+
+使用msgpack拓展包源码进行安装。在容器中的 /tmp 目录下下载 msgpack-2.2.0.tgz 包，解压缩然后进入解压包，phpize 生成 configure文件：
+
+> cd /tmp
+> 
+> curl https://pecl.php.net/get/redis-6.0.2.tgz -O
+> 
+> tar -zxf redis-6.0.2.tgz
+> 
+> cd redis-6.0.2
+> 
+> /usr/local/bin/phpize
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# cd /tmp
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# curl https://pecl.php.net/get/msgpack-2.2.0.tgz -O
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  124k  100  124k    0     0  88524      0  0:00:01  0:00:01 --:--:-- 88463
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+msgpack-2.2.0.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# tar -zxf msgpack-2.2.0.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# ls
+package.xml  msgpack-2.2.0  msgpack-2.2.0.tgz
+root@a0c75b4db3a6:/tmp#
+root@a0c75b4db3a6:/tmp# cd msgpack-2.2.0
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# /usr/local/bin/phpize
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+```
+
+查看 php-config 地址，编译redis扩展：
+```
+> whereis php-config
+>
+> ./configure --with-php-config=/usr/local/bin/php-config
+```
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# ls
+CREDITS         config.m4        msgpack_class.h    msgpack_unpack.h
+EXPERIMENTAL    config.w32       msgpack_convert.c  php_msgpack.h
+LICENSE         configure        msgpack_convert.h  run-tests.php
+README.md       configure.ac     msgpack_errors.h   tests
+autom4te.cache  msgpack          msgpack_pack.c
+build           msgpack.c        msgpack_pack.h
+config.h.in     msgpack_class.c  msgpack_unpack.c
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# whereis php-config
+php-config: /usr/local/bin/php-config
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# ./configure --with-php-config=/usr/local/bin/php-config
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+..........................
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: patching config.h.in
+configure: creating ./config.status
+config.status: creating config.h
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+```
+
+编译并安装源代码：
+> make && make install
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# make && make install
+/bin/bash /tmp/msgpack-2.2.0/libtool --mode=compile cc  -I. -I/tmp/msgpack-2.2.0 -DPHP_ATOM_INC
+..............................
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+Installing header files:          /usr/local/include/php/
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# ls /usr/local/lib/php/extensions/no-debug-non-zts-20190902
+bcmath.so  msgpack.so  pdo_mysql.so  sodium.so  zip.so
+gd.so      opcache.so  redis.so      swoole.so
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# ls /usr/local/include/php
+TSRM  Zend  ext  include  main  sapi
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# ls /usr/local/include/php/ext
+date    gd     json      msgpack  pdo      simplexml  swoole
+dom     hash   libxml    mysqlnd  phar     spl        xml
+filter  iconv  mbstring  pcre     session  standard
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0#
+```
+
+开启msgpack拓展（新建文件并写入内容）：
+
+```
+> cd /usr/local/etc/php/conf.d
+>
+> touch docker-php-ext-msgpack.ini
+>
+> echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/msgpack.so" >> docker-php-ext-msgpack.ini
+```
+
+明细：
+```
+root@a0c75b4db3a6:/tmp/msgpack-2.2.0# cd /usr/local/etc/php/conf.d
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# touch docker-php-ext-msgpack.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/msgpack.so" >> docker-php-ext-msgpack.ini
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d# php -m | grep msgpack
+msgpack
+root@a0c75b4db3a6:/usr/local/etc/php/conf.d#
+```
+
+退出容器，重新启动：
+
+> exit
+>
+> docker restart php_7.4-fpm
+
 ### 打新镜像
 
 上面安装gd拓展和zip拓展的过程很复杂，最好能打个包出来，下面具体操作下。
