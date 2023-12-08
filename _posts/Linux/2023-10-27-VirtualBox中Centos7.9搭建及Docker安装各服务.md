@@ -2223,6 +2223,9 @@ php-7.4       1.0       2a7836ecd1a3   44 seconds ago   885MB
 hello-world   latest    9c7a54a9a43c   6 months ago     13.3kB
 php           7.4-fpm   38f2b691dcb8   12 months ago    443MB
 [root@10 ~]#
+[root@10 ~]# docker inspect --format='{{.Comment}}' php-7.4:1.0
+php's 7.4-fpm add vi\ext_swoole-4.8.13\ext_redis-6.0.2
+[root@10 ~]#
 [root@10 ~]# docker inspect php-7.4:1.0
 [
     {
@@ -3130,6 +3133,9 @@ php-7.4       1.1       fea7b20a4a27   3 seconds ago   802MB
 php-7.4       1.0       2a7836ecd1a3   3 weeks ago     885MB
 hello-world   latest    9c7a54a9a43c   7 months ago    13.3kB
 php           7.4-fpm   38f2b691dcb8   12 months ago   443MB
+[root@10 ~]#
+[root@10 ~]# docker inspect --format='{{.Comment}}' php-7.4:1.1
+php:7.4-fpm add new ext: gd, zip-1.22.3 on base of vi,ext_swoole-4.8.13,ext_redis-6.0.2
 [root@10 ~]#
 [root@10 ~]# docker inspect php-7.4:1.1
 [
