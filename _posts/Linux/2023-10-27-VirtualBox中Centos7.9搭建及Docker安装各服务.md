@@ -2976,8 +2976,9 @@ root@a0c75b4db3a6:/var/www/html#
 一、生成镜像
 
 从容器Container生成image镜像：
-
+```
 > docker commit -a "baiyang" -m "php:7.4-fpm add new ext: gd,zip-1.22.3 on base of vi,ext_swoole-4.8.13,ext_redis-6.0.2" php_7.4-fpm php-7.4:1.1
+```
 
 明细：
 ```
