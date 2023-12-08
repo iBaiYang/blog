@@ -1654,17 +1654,19 @@ PECL，The PHP Extension Community Library，PHP拓展社区库（PEAR拓展版�
 明细：
 ```
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
-bcmath      ext_skel.php  intl      pcntl         phar        sockets    xmlreader
-bz2         ffi           json      pcre          posix       sodium     xmlrpc
-calendar    fileinfo      ldap      pdo           pspell      spl        xmlwriter
-com_dotnet  filter        libxml    pdo_dblib     readline    sqlite3    xsl
-ctype       ftp           mbstring  pdo_firebird  reflection  standard   zend_test
-curl        gd            mysqli    pdo_mysql     session     sysvmsg    zip
-date        gettext       mysqlnd   pdo_oci       shmop       sysvsem    zlib
-dba         gmp           oci8      pdo_odbc      simplexml   sysvshm
-dom         hash          odbc      pdo_pgsql     skeleton    tidy
-enchant     iconv         opcache   pdo_sqlite    snmp        tokenizer
-exif        imap          openssl   pgsql         soap        xml
+bcmath        fileinfo  mbstring      pdo_oci     skeleton   xml
+bz2           filter    mysqli        pdo_odbc    snmp       xmlreader
+calendar      ftp       mysqlnd       pdo_pgsql   soap       xmlrpc
+com_dotnet    gd        oci8          pdo_sqlite  sockets    xmlwriter
+ctype         gettext   odbc          pgsql       sodium     xsl
+curl          gmp       opcache       phar        spl        zend_test
+date          hash      openssl       posix       sqlite3    zip
+dba           iconv     pcntl         pspell      standard   zlib
+dom           imap      pcre          readline    sysvmsg
+enchant       intl      pdo           reflection  sysvsem
+exif          json      pdo_dblib     session     sysvshm
+ext_skel.php  ldap      pdo_firebird  shmop       tidy
+ffi           libxml    pdo_mysql     simplexml   tokenizer
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# pecl version
 PEAR Version: 1.10.13
@@ -1701,17 +1703,19 @@ configuration option "php_ini" is not set to php.ini location
 You should add "extension=swoole.so" to php.ini
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
-bcmath      ext_skel.php  intl      pcntl         phar        sockets    xmlreader
-bz2         ffi           json      pcre          posix       sodium     xmlrpc
-calendar    fileinfo      ldap      pdo           pspell      spl        xmlwriter
-com_dotnet  filter        libxml    pdo_dblib     readline    sqlite3    xsl
-ctype       ftp           mbstring  pdo_firebird  reflection  standard   zend_test
-curl        gd            mysqli    pdo_mysql     session     sysvmsg    zip
-date        gettext       mysqlnd   pdo_oci       shmop       sysvsem    zlib
-dba         gmp           oci8      pdo_odbc      simplexml   sysvshm
-dom         hash          odbc      pdo_pgsql     skeleton    tidy
-enchant     iconv         opcache   pdo_sqlite    snmp        tokenizer
-exif        imap          openssl   pgsql         soap        xml
+bcmath        fileinfo  mbstring      pdo_oci     skeleton   xml
+bz2           filter    mysqli        pdo_odbc    snmp       xmlreader
+calendar      ftp       mysqlnd       pdo_pgsql   soap       xmlrpc
+com_dotnet    gd        oci8          pdo_sqlite  sockets    xmlwriter
+ctype         gettext   odbc          pgsql       sodium     xsl
+curl          gmp       opcache       phar        spl        zend_test
+date          hash      openssl       posix       sqlite3    zip
+dba           iconv     pcntl         pspell      standard   zlib
+dom           imap      pcre          readline    sysvmsg
+enchant       intl      pdo           reflection  sysvsem
+exif          json      pdo_dblib     session     sysvshm
+ext_skel.php  ldap      pdo_firebird  shmop       tidy
+ffi           libxml    pdo_mysql     simplexml   tokenizer
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# php -m
 [PHP Modules]
