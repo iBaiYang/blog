@@ -2448,7 +2448,7 @@ ec4a38999118: Pushed
 
 ### gd拓展安装
 
-gd拓展安装依赖于zlib库、libpng库。我们需要先zlib库、libpng库，在安装gd拓展：
+gd拓展安装依赖于zlib库、libpng库。我们需要先zlib库、libpng库，再安装gd拓展：
 
 > apt-get install zlib1g-dev
 >
@@ -2564,6 +2564,132 @@ zlib
 [Zend Modules]
 
 root@a0c75b4db3a6:/usr/src#
+```
+
+但上面gd拓展支持的格式比较少：
+```
+GD Support 	enabled
+GD Version 	bundled (2.1.0 compatible)
+GIF Read Support 	enabled
+GIF Create Support 	enabled
+PNG Support 	enabled
+libPNG Version 	1.6.37
+WBMP Support 	enabled
+XBM Support 	enabled
+BMP Support 	enabled
+TGA Read Support 	enabled 
+```
+
+开发过程中碰到其他格式需求时会报错，我们这里把常用的webp、jpeg、freetype也安装一下。
+
+先卸载gd拓展，再安装webp、jpeg、freetype包，最后重新安装gd拓展，安装完成后退出并重启容器：
+
+```
+> rm -f /usr/local/etc/php/conf.d/docker-php-ext-gd.ini
+>
+> apt-get install -y libwebp-dev libjpeg-dev libfreetype6-dev
+>
+> docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2
+>
+> docker-php-ext-install gd
+>
+> exit
+>
+> docker restart php_7.4-fpm
+```
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# ls /usr/local/etc/php/conf.d
+docker-php-ext-bcmath.ini     docker-php-ext-redis.ini   docker-php-ext-zip.ini
+docker-php-ext-gd.ini         docker-php-ext-sodium.ini
+docker-php-ext-pdo_mysql.ini  docker-php-ext-swoole.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# rm -f /usr/local/etc/php/conf.d/docker-php-ext-gd.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# apt-get install -y libwebp-dev libjpeg-dev libfreetype6-dev 
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libbrotli-dev libfreetype-dev libfreetype6 libjpeg62-turbo libjpeg62-turbo-dev
+  libwebp6 libwebpdemux2 libwebpmux3
+...........
+Setting up libjpeg62-turbo:amd64 (1:2.0.6-4) ...
+Setting up libfreetype6:amd64 (2.10.4+dfsg-1+deb11u1) ...
+Setting up libjpeg62-turbo-dev:amd64 (1:2.0.6-4) ...
+Setting up libwebp6:amd64 (0.6.1-2.1+deb11u2) ...
+Setting up libwebpmux3:amd64 (0.6.1-2.1+deb11u2) ...
+Setting up libbrotli-dev:amd64 (1.0.9-2+b2) ...
+Setting up libwebpdemux2:amd64 (0.6.1-2.1+deb11u2) ...
+Setting up libjpeg-dev:amd64 (1:2.0.6-4) ...
+Setting up libfreetype-dev:amd64 (2.10.4+dfsg-1+deb11u1) ...
+Setting up libwebp-dev:amd64 (0.6.1-2.1+deb11u2) ...
+Setting up libfreetype6-dev:amd64 (2.10.4+dfsg-1+deb11u1) ...
+Processing triggers for libc-bin (2.31-13+deb11u5) ...
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2
+Configuring for:
+PHP Api Version:         20190902
+Zend Module Api No:      20190902
+Zend Extension Api No:   320190902
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+...........
+creating libtool
+appending configuration tag "CXX" to libtool
+configure: patching config.h.in
+configure: creating ./config.status
+config.status: creating config.h
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# 
+root@a0c75b4db3a6:/usr/src# docker-php-ext-install gd
+/bin/bash /usr/src/php/ext/gd/libtool --mode=compile cc 
+-I/usr/src/php/ext/gd/libgd -I. 
+-I/usr/src/php/ext/gd -DPHP_ATOM_INC
+...........
+Build complete.
+Don't forget to run 'make test'.
+
++ strip --strip-all modules/gd.so
+Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20190902/
+Installing header files:          /usr/local/include/php/
+find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+find . -name \*.lo -o -name \*.o | xargs rm -f
+find . -name \*.la -o -name \*.a | xargs rm -f
+find . -name \*.so | xargs rm -f
+find . -name .libs -a -type d|xargs rm -rf
+rm -f libphp.la      modules/* libs/*
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# php -m | grep gd
+gd
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# exit
+exit
+[root@10 ~]#
+[root@10 ~]# docker restart php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+```
+
+输出`phpinfo()`可以看到gd拓展相关的包：
+```
+GD Support 	enabled
+GD Version 	bundled (2.1.0 compatible)
+FreeType Support 	enabled
+FreeType Linkage 	with freetype
+FreeType Version 	2.10.4
+GIF Read Support 	enabled
+GIF Create Support 	enabled
+JPEG Support 	enabled
+libJPEG Version 	6b
+PNG Support 	enabled
+libPNG Version 	1.6.37
+WBMP Support 	enabled
+XBM Support 	enabled
+WebP Support 	enabled
+BMP Support 	enabled
+TGA Read Support 	enabled 
 ```
 
 ### zib拓展安装

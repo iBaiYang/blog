@@ -135,6 +135,42 @@ server {
 # If you want to use SSL, enable it at: Menu > Nginx > SSL > Enabled
 ```
 
+文档中说到FastAdmin的后台模块禁用了路由功能，因此在docker环境下，后台模块不能和前台、API模块共有同一个Nginx伪静态，
+我们可以像下面这样写：
+```
+server {
+    listen       80;
+    server_name fastadmin_test_231207.test;
+    root   /usr/share/nginx/www/fastadmin_test_231207/public;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        index  index.php;
+        if (!-e $request_filename) {
+               rewrite  ^(.*)$  /index.php?s=/$1  last;
+               break;
+         }
+    }
+
+    error_page  404              /404.html;
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php(.*)$ {
+        fastcgi_pass   php:9000;
+        root   /var/www/html/fastadmin_test_231207/public;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param  PATH_INFO  $1;
+        include        fastcgi_params;
+    }
+}
+```
+
 ### 架构
 
 #### 功能模块
