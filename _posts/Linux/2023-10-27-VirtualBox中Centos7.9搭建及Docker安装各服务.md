@@ -2982,7 +2982,7 @@ root@a0c75b4db3a6:/var/www/html#
 
 明细：
 ```
-[root@10 ~]# docker images
+[root@10 ~]# docker images宿主机中配置Redis容器的服务参
 REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
 php-7.4       1.0       2a7836ecd1a3   3 weeks ago     885MB
 hello-world   latest    9c7a54a9a43c   7 months ago    13.3kB
@@ -7691,7 +7691,8 @@ docker run \
 ```
 
 查看下状态：
-```[root@10 ~]# docker ps -a
+```
+[root@10 ~]# docker ps -a
 CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS                      PORTS     NAMES
 3eb2af5dcedd   redis:7.2.3    "docker-entrypoint.s…"   9 minutes ago   Exited (1) 9 minutes ago              redis_7.2.3
 [root@10 ~]#
