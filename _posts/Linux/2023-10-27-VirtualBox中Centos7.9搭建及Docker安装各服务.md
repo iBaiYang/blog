@@ -7044,6 +7044,59 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [root@10 network-scripts]#
 ```
 
+### 增加PHP运行内存
+
+在有些PHP项目的运行中会报错：Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to 
+allocate 20480 bytes) in /var/www/html/*** on line ***。指出PHP默认内存是 134217728 bytes 即128M，
+额外需要 20480 bytes 即20KB。我们需要修改PHP的 `php.ini` 配置文件，增加PHP运行内存。
+
+```
+root@a0c75b4db3a6:/usr/src# php --ini
+Configuration File (php.ini) Path: /usr/local/etc/php
+Loaded Configuration File:         (none)
+Scan for additional .ini files in: /usr/local/etc/php/conf.d
+Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-bcmath.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-gd.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-msgpack.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-pdo_mysql.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-redis.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-sodium.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-swoole.ini,
+/usr/local/etc/php/conf.d/docker-php-ext-zip.ini
+
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# ls -l /usr/local/etc/php
+total 148
+drwxr-xr-x. 1 root root  4096 Dec  8 14:46 conf.d
+-rw-r--r--. 1 root root 72554 Nov 15  2022 php.ini-development
+-rw-r--r--. 1 root root 72584 Nov 15  2022 php.ini-production
+root@a0c75b4db3a6:/usr/src#
+```
+
+conf.d 是PHP拓展配置目录。
+php.ini-development 是PHP测试环境配置；
+php.ini-production 是PHP生产环境配置。
+
+现在 `php.ini` 在这里未启用，为了方便，我们直接新建一个 `php.ini` ，然后写入最大内存配置（这里按照需求设置具体大小），
+然后退出容器，重启容器：
+
+> touch /usr/local/etc/php/php.ini
+>
+> echo "memory_limit = 512M" >> /usr/local/etc/php/php.ini
+
+```
+root@a0c75b4db3a6:/usr/src# touch /usr/local/etc/php/php.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# echo "memory_limit = 512M" >> /usr/local/etc/php/php.ini
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# exit
+exit
+[root@10 ~]#
+[root@10 ~]# docker restart php_7.4-fpm
+php_7.4-fpm
+[root@10 ~]#
+```
+
 ## MySQL安装过程报错
 
 在虚拟机中使用docker安装MySQL时，想打通宿主机与容器的数据共享，这样在win10宿主机中就可以很方便的操作和查看MySQL了。
