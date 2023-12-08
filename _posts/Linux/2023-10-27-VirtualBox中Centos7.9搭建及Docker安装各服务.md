@@ -1556,22 +1556,37 @@ root@a0c75b4db3a6:/usr/src#
 看一下放在`/usr/src/php/ext`目录下的拓展包有哪些：
 ```
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php
-CODING_STANDARDS.md  README.md            azure                configure.ac         php.ini-production  win32
-CONTRIBUTING.md      TSRM                 azure-pipelines.yml  docs                 run-tests.php
-EXTENSIONS           UPGRADING            build                ext                  sapi
-LICENSE              UPGRADING.INTERNALS  buildconf            main                 scripts
-NEWS                 Zend                 buildconf.bat        pear                 tests
-README.REDIST.BINS   appveyor             configure            php.ini-development  travis
+CODING_STANDARDS.md  buildconf.bat
+CONTRIBUTING.md      configure
+EXTENSIONS           configure.ac
+LICENSE              docs
+NEWS                 ext
+README.REDIST.BINS   main
+README.md            pear
+TSRM                 php.ini-development
+UPGRADING            php.ini-production
+UPGRADING.INTERNALS  run-tests.php
+Zend                 sapi
+appveyor             scripts
+azure                tests
+azure-pipelines.yml  travis
+build                win32
+buildconf
 root@a0c75b4db3a6:/usr/src#
 root@a0c75b4db3a6:/usr/src# ls /usr/src/php/ext
-bcmath      dom           gd       ldap      openssl       pdo_odbc    reflection  sodium    tokenizer  zlib
-bz2         enchant       gettext  libxml    pcntl         pdo_pgsql   session     spl       xml
-calendar    exif          gmp      mbstring  pcre          pdo_sqlite  shmop       sqlite3   xmlreader
-com_dotnet  ext_skel.php  hash     mysqli    pdo           pgsql       simplexml   standard  xmlrpc
-ctype       ffi           iconv    mysqlnd   pdo_dblib     phar        skeleton    sysvmsg   xmlwriter
-curl        fileinfo      imap     oci8      pdo_firebird  posix       snmp        sysvsem   xsl
-date        filter        intl     odbc      pdo_mysql     pspell      soap        sysvshm   zend_test
-dba         ftp           json     opcache   pdo_oci       readline    sockets     tidy      zip
+bcmath        fileinfo  mbstring      pdo_oci     skeleton   xml
+bz2           filter    mysqli        pdo_odbc    snmp       xmlreader
+calendar      ftp       mysqlnd       pdo_pgsql   soap       xmlrpc
+com_dotnet    gd        oci8          pdo_sqlite  sockets    xmlwriter
+ctype         gettext   odbc          pgsql       sodium     xsl
+curl          gmp       opcache       phar        spl        zend_test
+date          hash      openssl       posix       sqlite3    zip
+dba           iconv     pcntl         pspell      standard   zlib
+dom           imap      pcre          readline    sysvmsg
+enchant       intl      pdo           reflection  sysvsem
+exif          json      pdo_dblib     session     sysvshm
+ext_skel.php  ldap      pdo_firebird  shmop       tidy
+ffi           libxml    pdo_mysql     simplexml   tokenizer
 root@a0c75b4db3a6:/usr/src#
 ```
 
