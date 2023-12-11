@@ -3601,7 +3601,7 @@ server {
     #access_log  /var/log/nginx/host.access.log  main;
 
     location / {
-        root   /usr/share/nginx/html/test;
+        root   /usr/share/nginx/www/test;
         index  index.php;
         if (!-e $request_filename) {
                rewrite  ^(.*)$  /index.php?s=/$1  last;
