@@ -7105,10 +7105,13 @@ php.ini-production 是PHP生产环境配置。
 现在 `php.ini` 在这里未启用，为了方便，我们直接新建一个 `php.ini` ，然后写入最大内存配置（这里按照需求设置具体大小），
 然后退出容器，重启容器：
 
+```
 > touch /usr/local/etc/php/php.ini
 >
 > echo "memory_limit = 512M" >> /usr/local/etc/php/php.ini
+```
 
+明细：
 ```
 root@a0c75b4db3a6:/usr/src# touch /usr/local/etc/php/php.ini
 root@a0c75b4db3a6:/usr/src#

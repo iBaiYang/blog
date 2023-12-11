@@ -67,7 +67,7 @@ public function handle()
     }
     
     /获取任务结果
-    Sresult = $taskService->getResult();
+    $result = $taskService->getResult();
 }
 ```
 
