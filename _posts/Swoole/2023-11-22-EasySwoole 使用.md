@@ -684,9 +684,19 @@ class EasySwooleEvent implements Event
 }
 ```
 
+## 批量更新数据表数据
 
+EasySwoole中ORM没有批量更新的方法，我们需要自己写sql语句，如下：
 
+```
+$queryBuild = (new \EasySwoole\Mysqli\QueryBuilder())->where('id', [2, 3], 'IN')->update('mails', [
+    'status' => 1,
+    'updated_time' => date('Y-m-d H:i:s'),
+]);
+\EasySwoole\ORM\DbManager::getInstance()->query($queryBuild);
+```
 
+QueryBuilder 用来构建 SQL 语句，DbManager 进行执行。
 
 ## 问题
 
@@ -711,6 +721,15 @@ in the script in /var/www/html/easyswoole_test/vendor/bin/easyswoole on line 14
 <?php
 //#!/usr/bin/env php
 ```
+
+
+
+
+
+
+
+
+
 
 
 
