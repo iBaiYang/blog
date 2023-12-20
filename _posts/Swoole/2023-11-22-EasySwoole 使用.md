@@ -698,6 +698,32 @@ $queryBuild = (new \EasySwoole\Mysqli\QueryBuilder())->where('id', [2, 3], 'IN')
 
 QueryBuilder 用来构建 SQL 语句，DbManager 进行执行。
 
+## join查询
+
+有一个ORM的join示例：
+```
+$join_data = TestUserListModel::create()->alias('list')->join('table2 as t2','t2.col1 = list.col2')->all();
+```
+
+如何访问返回的join关联表的数据呢？
+
+可以使用`toArray($notNul = false, $strict = true)`结果转换数组方法。
+
+* $notNul 	是否过滤空，bool类型 默认false，当为true时，只返回非空字段
+* $strict 	严格模式，bool类型 默认true，当为true时，只返回当前模型对应数据表的字段，其他field别名等不返回。
+
+这里的查询可以有下面两种访问join关联表数据的方式：
+```
+// 方式1，针对返回Collection的（$config->setReturnCollection(true);）
+$join_data = TestUserListModel::create()->alias('list')->join('table2 as t2','t2.col1 = list.col2')->all()->toArray(false, false);
+
+// 方式2
+$join_data = TestUserListModel::create()->alias('list')->join('table2 as t2','t2.col1 = list.col2')->all();
+foreach ($join_data as $one) {
+    $data = $one->toArray(false, false);
+}
+```
+
 ## 问题
 
 ### 报错
