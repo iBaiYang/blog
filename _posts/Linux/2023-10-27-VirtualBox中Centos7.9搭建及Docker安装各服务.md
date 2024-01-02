@@ -3344,6 +3344,213 @@ ec4a38999118: Layer already exists
 [root@10 ~]#
 ```
 
+### Crontab安装
+
+一、查看apt源文件并备份
+
+```
+root@a0c75b4db3a6:/usr/src# ls -l /etc/apt
+total 12
+drwxr-xr-x. 2 root root  151 Nov 14  2022 apt.conf.d
+drwxr-xr-x. 2 root root    6 Jun 10  2021 auth.conf.d
+drwxr-xr-x. 1 root root   27 Nov 15  2022 preferences.d
+-rw-r--r--. 1 root root  430 Oct 31 16:41 sources.list
+-rw-r--r--. 1 root root  430 Nov 14  2022 sources.list.bak
+drwxr-xr-x. 2 root root    6 Jun 10  2021 sources.list.d
+drwxr-xr-x. 2 root root 4096 Nov 14  2022 trusted.gpg.d
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# cat /etc/apt/sources.list
+# deb http://snapshot.debian.org/archive/debian/20221114T000000Z bullseye main
+deb http://deb.debian.org/debian bullseye main
+# deb http://snapshot.debian.org/archive/debian-security/20221114T000000Z bullseye-security main
+deb http://deb.debian.org/debian-security bullseye-security main
+# deb http://snapshot.debian.org/archive/debian/20221114T000000Z bullseye-updates main
+deb http://deb.debian.org/debian bullseye-updates main
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# cat /etc/apt/sources.list.bak
+# deb http://snapshot.debian.org/archive/debian/20221114T000000Z bullseye main
+deb http://deb.debian.org/debian bullseye main
+# deb http://snapshot.debian.org/archive/debian-security/20221114T000000Z bullseye-security main
+deb http://deb.debian.org/debian-security bullseye-security main
+# deb http://snapshot.debian.org/archive/debian/20221114T000000Z bullseye-updates main
+deb http://deb.debian.org/debian bullseye-updates main
+root@a0c75b4db3a6:/usr/src#
+```
+
+二、下载apt的https证书
+
+> apt-get install apt-transport-https ca-certificates
+
+```
+root@a0c75b4db3a6:/usr/src# apt-get install apt-transport-https ca-certificates
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+ca-certificates is already the newest version (20210119).
+The following NEW packages will be installed:
+  apt-transport-https
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 160 kB of archives.
+After this operation, 166 kB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bullseye/main amd64 apt-transport-https all 2.2.4 [160 kB]
+Fetched 152 kB in 6s (26.9 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package apt-transport-https.
+(Reading database ... 20120 files and directories currently installed.)
+Preparing to unpack .../apt-transport-https_2.2.4_all.deb ...
+Unpacking apt-transport-https (2.2.4) ...
+Setting up apt-transport-https (2.2.4) ...
+root@a0c75b4db3a6:/usr/src#
+```
+
+三、更新apt源
+
+查看系统版本：
+> cat /etc/*release
+
+编辑apt源文件：
+> vi /etc/apt/sources.list
+
+写入内容：
+```
+# 默认注释了源码镜像以提高 apt update 速度
+# 清华大学的软件源
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free 
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free 
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free 
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free 
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free 
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free 
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free 
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+
+# 阿里云的软件源
+# deb https://mirrors.aliyun.com/debian/ bullseye main non-free contrib
+# deb-src https://mirrors.aliyun.com/debian/ bullseye main non-free contrib
+# deb https://mirrors.aliyun.com/debian-security/ bullseye-security main
+# deb-src https://mirrors.aliyun.com/debian-security/ bullseye-security main
+# deb https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib
+# deb-src https://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib
+# deb https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib
+# deb-src https://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib
+
+# 中科大的软件源
+# deb https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free 
+# deb-src https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free 
+# deb https://mirrors.ustc.edu.cn/debian/ bullseye-updates main contrib non-free 
+# deb-src https://mirrors.ustc.edu.cn/debian/ bullseye-updates main contrib non-free 
+# deb https://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free 
+# deb-src https://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free 
+# deb https://mirrors.ustc.edu.cn/debian-security bullseye-security main contrib non-free 
+# deb-src https://mirrors.ustc.edu.cn/debian-security bullseye-security main contrib non-free
+```
+
+更新apt：
+> apt-get update
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# cat /etc/*release
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+NAME="Debian GNU/Linux"
+VERSION_ID="11"
+VERSION="11 (bullseye)"
+VERSION_CODENAME=bullseye
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# vi /etc/apt/sources.list
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# apt-get update
+Get:1 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye InRelease [116 kB]
+Get:2 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-updates InRelease [44.1 kB]
+Get:3 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports InRelease [49.0 kB]
+Get:4 https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security InRelease [48.4 kB]
+Get:5 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye/main amd64 Packages [8062 kB]
+Get:6 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye/contrib amd64 Packages [50.4 kB]
+Get:7 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye/non-free amd64 Packages [96.3 kB]
+Get:8 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-updates/main amd64 Packages [18.8 kB]
+Get:9 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports/non-free amd64 Packages [13.9 kB]
+Get:10 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports/main amd64 Packages [402 kB]
+Get:11 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports/contrib amd64 Packages [5968 B]
+Get:12 https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security/main amd64 Packages [263 kB]
+Get:13 https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security/non-free amd64 Packages [680 B]
+Fetched 9170 kB in 2s (3909 kB/s)
+Reading package lists... Done
+root@a0c75b4db3a6:/usr/src#
+```
+
+四、安装Crontab
+
+> apt-get install cron
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# apt-get install cron
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+............
+tils.1.gz (of link group mailx) doesn't exist
+Processing triggers for libc-bin (2.31-13+deb11u5) ...
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# which -a crontab
+/usr/bin/crontab
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# which is crontab
+/usr/bin/crontab
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# crontab -v
+crontab: invalid option -- 'v'
+crontab: usage error: unrecognized option
+usage:  crontab [-u user] file
+        crontab [ -u user ] [ -i ] { -e | -l | -r }
+                (default operation is replace, per 1003.2)
+        -e      (edit user's crontab)
+        -l      (list user's crontab)
+        -r      (delete user's crontab)
+        -i      (prompt before deleting user's crontab)
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# crontab -l
+no crontab for root
+root@a0c75b4db3a6:/usr/src#
+```
+
+五、定时任务执行
+
+编辑定时任务：
+> crontab -e
+
+写入内容，如：
+```
+*/30 * * * * php /var/www/html/test/crontab/join.php
+```
+
+重启crontab：
+> /usr/sbin/service cron restart
+
+明细：
+```
+root@a0c75b4db3a6:/usr/src# crontab -e
+no crontab for root - using an empty one
+No modification made
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# which is service
+/usr/sbin/service
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# /usr/sbin/service cron restart
+Restarting periodic command scheduler: cronStopping periodic command scheduler: cron.
+Starting periodic command scheduler: cron.
+root@a0c75b4db3a6:/usr/src#
+root@a0c75b4db3a6:/usr/src# /usr/sbin/service cron status
+cron is running.
+root@a0c75b4db3a6:/usr/src#
+```
+
 ## Nginx安装
 
 ### 基础安装
