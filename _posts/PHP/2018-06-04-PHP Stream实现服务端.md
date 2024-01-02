@@ -188,6 +188,8 @@ PHP有基本的`php://stdin`，`php://stdout`，`php://stderr`包装器对应默
 3. `php://input`读取不到 GET 数据。是因为`$_GET`数据作为query_path写在http请求头部(header)的PATH字段，
 而不是写在http请求的body部分。
 
+参见 <https://www.php20.cn/article/156>
+
 #### 其他流封装协议
 
 ```
