@@ -179,6 +179,23 @@ Array
 )
 ```
 
+三、Socket控制器 的 自定义解析器 中获取fd链接
+
+```
+class TestParser implements \EasySwoole\Socket\AbstractInterface\ParserInterface 
+{
+    public function decode($raw,$client) : ?\EasySwoole\Socket\Bean\Caller
+    {
+        $fd = $client->getFd();
+    }
+
+    public function encode(\EasySwoole\Socket\Bean\Response $response,$client) : ?string
+    {
+        $fd = $client->getFd();
+    }
+}
+```
+
 ## IOC 容器
 
 Dependency Injection 依赖注入。EasySwoole 实现了简单版的 IOC 容器。
