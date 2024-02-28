@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: PHP
+categories: Laravel
 title: Laravel env配置文件加载分析
 meta: Laravel env配置文件加载分析
 ---

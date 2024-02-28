@@ -748,6 +748,44 @@ foreach ($join_data as $one) {
 }
 ```
 
+## Redis事务
+
+EasySwoole的官方文档中对Redis事务的使用说明，参阅 <https://www.easyswoole.com/Components/Redis/transaction.html> ，不过内容并不详细。
+具体Redis事务的文档，可以参阅 <http://doc.redisfans.com/topic/transaction.html> 。
+
+这里举一个例子：
+```
+use EasySwoole\Component\Di;  
+use Swoole\Coroutine\Redis;  
+
+......
+
+ // 获取Redis实例  
+$redis = Di::getInstance()->getBean('redis');  
+
+// 开启事务  
+$redis->multi();  
+
+try {  
+    // 执行一系列Redis命令  
+    $redis->set('key1', 'value1');  
+    $redis->set('key2', 'value2');  
+    $redis->incr('counter');  
+
+    // 提交事务  
+    $redis->exec();  
+
+    // 事务执行成功  
+    echo "事务执行成功！";  
+} catch (\Exception $e) {  
+    // 发生异常，回滚事务  
+    $redis->discard();  
+
+    // 事务执行失败  
+    echo "事务执行失败：{$e->getMessage()}";  
+}  
+```
+
 ## 进程查看
 
 查看项目服务状态（粘贴下面命令行输出时注意下半角全角）：
