@@ -196,7 +196,7 @@ $('#pagination-box').jqPaginator({
 
 看一个最简单的使用实例：
 
-```javascript
+```
 <div id="text"></div>
 <div id="pagination-box" class="pagination"></div>
 
@@ -216,7 +216,7 @@ $('#pagination-box').jqPaginator({
 
 还有这种：
 
-```javascript
+```
 <div class="list-box"></div>
 <div class="page-box">
     <ul class="pagination pull-left">
