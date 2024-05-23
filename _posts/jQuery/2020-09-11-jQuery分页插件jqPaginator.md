@@ -85,7 +85,7 @@ $('#id').jqPaginator('option', {
             for (var b = [], c = d.getPages(), e = 0, f = c.length; f > e; e++) b.push(d.buildItem("page", c[e]));
             d.isEnable("prev") && b.unshift(d.buildItem("prev", d.options.currentPage - 1)), d.isEnable("first") && b.unshift(d.buildItem("first", 1)), d.isEnable("statistics") && b.unshift(d.buildItem("statistics")), d.isEnable("next") && b.push(d.buildItem("next", d.options.currentPage + 1)), d.isEnable("last") && b.push(d.buildItem("last", d.options.totalPages)), d.options.wrapper ? d.$container.html(a(d.options.wrapper).html(b.join("")).jqPaginatorHTML()) : d.$container.html(b.join(""))
         }, d.buildItem = function (b, c) {
-            var e = d.options[b].replace(/{{page}}/g, c).replace(/{{totalPages}}/g, d.options.totalPages).replace(/{{totalCounts}}/g, d.options.totalCounts);
+            var e = d.options[b].replace(/{{page}}/g, c).replace(/\{{totalPages\}}/g, d.options.totalPages).replace(/\{{totalCounts\}}/g, d.options.totalCounts);
             return a(e).attr({"jp-role": b, "jp-data": c}).jqPaginatorHTML()
         }, d.setStatus = function () {
             var b = d.options;
