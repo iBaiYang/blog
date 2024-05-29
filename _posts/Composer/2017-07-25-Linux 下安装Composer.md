@@ -107,9 +107,13 @@ Composer version 2.0.8 2020-12-03 17:20:38
 这个包源虽然是中国区的，但服务可能不稳定，可以换成阿里云的（但不支持Composer2）：
 > composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
+国内的composer包源有：
+* 阿里云镜像  https://mirrors.aliyun.com/composer/
+* 腾讯云镜像 https://mirrors.cloud.tencent.com/composer/
+* 华为云镜像  https://repo.huaweicloud.com/repository/php/
+
 查看当前源地址：
 > composer config -g -l repo.packagist
-
 
 ### 其他问题
 
