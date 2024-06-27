@@ -602,6 +602,10 @@ Hint: Some lines were ellipsized, use -l to show in full.
 
 安装完成后，浏览器访问 192.168.56.101:32283/94693025 ，发现无法访问，折腾了好长时间，无奈放弃。
 
+## phpStudy
+
+最后放弃虚拟机和宝塔，使用了phpStudy。在Windows环境使用phpStudy用来快速搭建开发环境是个不错的选择。
+不过只有Nginx、MySQL、PHP、Composer，对于一般开发来说够用了。
 
 
 
