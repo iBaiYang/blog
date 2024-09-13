@@ -1077,7 +1077,8 @@ cat > /etc/docker/daemon.json <<EOF
         "https://docker.mirrors.ustc.edu.cn",
         "https://registry.docker-cn.com",
         "https://mirror.ccs.tencentyun.com",
-        "https://5y6m9ocy.mirror.aliyuncs.com"
+        "https://5y6m9ocy.mirror.aliyuncs.com",
+        "https://hub.docker.com"
     ]
 }
 EOF
@@ -8165,9 +8166,128 @@ CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS  
 [root@10 ~]#
 ```
 
+## 访问外网
 
+全局代理工具proxychains <https://www.jianshu.com/p/636a5548f032>
 
+浅谈代理神器proxychains <https://zhuanlan.zhihu.com/p/427655655>
 
+代理服务器proxychains 编译安装和使用 <https://zhuanlan.zhihu.com/p/470555571>
+
+<https://ww9510.com/portal/page/download?client=linux>
+
+参考：
+```
+[root@localhost ~]# ls /usr/src/
+debug  kernels  trojan  trojan-1.15.1-linux-amd64.tar.xz
+[root@localhost ~]#
+[root@localhost ~]# ls /media/
+cdrom  sf_develop
+[root@localhost ~]#
+[root@localhost ~]# ls /media/sf_develop/
+proxychains-ng-4.16.tar.xz  test
+[root@localhost ~]#
+[root@localhost ~]# mv /media/sf_develop/proxychains-ng-4.16.tar.xz /usr/src/proxychains-ng-4.16.tar.xz
+[root@localhost ~]#
+[root@localhost ~]# cd /usr/src/
+[root@localhost src]#
+[root@localhost src]# tar xf proxychains-ng-4.16.tar.xz
+[root@localhost src]#
+[root@localhost src]# ls
+debug    proxychains-ng-4.16         trojan
+kernels  proxychains-ng-4.16.tar.xz  trojan-1.15.1-linux-amd64.tar.xz
+[root@localhost src]#
+[root@localhost src]# cd proxychains-ng-4.16
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# ./configure --prefix=/usr --sysconfdir=/etc
+checking whether C compiler works ... yes
+checking whether we have GNU-style getservbyname_r() ... yes
+checking whether we have pipe2() and O_CLOEXEC ... yes
+checking whether we have SOCK_CLOEXEC ... yes
+checking whether we have clock_gettime ... yes
+checking whether $CC defines __APPLE__ ... no
+checking whether $CC defines __FreeBSD__ ... no
+checking whether $CC defines __OpenBSD__ ... no
+checking whether $CC defines __sun ... no
+checking whether $CC defines __HAIKU__ ... no
+checking whether we can use -Wl,--no-as-needed ... yes
+checking what's the option to use in linker to set library name ... --soname
+checking checking whether we can use -ldl ... yes
+checking checking whether we can use -lpthread ... yes
+Done, now run make && make install
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# make && make install
+printf '#define VERSION "%s"\n' "$(sh tools/version.sh)" > src/version.h
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/version.o src/version.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/core.o src/core.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/common.o src/common.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/libproxychains.o src/libproxychains.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/allocator_thread.o src/allocator_thread.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/rdns.o src/rdns.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/hostsreader.o src/hostsreader.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/hash.o src/hash.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/debug.o src/debug.c
+cc -fPIC -Wl,--no-as-needed -ldl -lpthread -Wl,--soname,libproxychains4.so  \
+        -shared -o libproxychains4.so src/version.o src/core.o src/common.o src/libproxychains.o src/allocator_thread.o src/rdns.o src/hostsreader.o src/hash.o src/debug.o
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/main.o src/main.c
+cc src/common.o src/main.o  -ldl -o proxychains4
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/daemon/hsearch.o src/daemon/hsearch.c
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/daemon/sblist.o src/daemon/sblist.c
+In file included from src/daemon/sblist.c:3:0:
+src/daemon/sblist.h:90:0: 警告：忽略 #pragma RcB2 DEP [-Wunknown-pragmas]
+ #pragma RcB2 DEP "sblist.c" "sblist_delete.c"
+ ^
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/daemon/sblist_delete.o src/daemon/sblist_delete.c
+In file included from src/daemon/sblist_delete.c:1:0:
+src/daemon/sblist.h:90:0: 警告：忽略 #pragma RcB2 DEP [-Wunknown-pragmas]
+ #pragma RcB2 DEP "sblist.c" "sblist_delete.c"
+ ^
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/daemon/daemon.o src/daemon/daemon.c
+src/daemon/daemon.c:8:0: 警告：“_GNU_SOURCE”重定义 [默认启用]
+ #define _GNU_SOURCE
+ ^
+<命令行>:0:0: 附注：这是先前定义的位置
+In file included from src/daemon/daemon.c:20:0:
+src/daemon/udpserver.h:11:0: 警告：忽略 #pragma RcB2 DEP [-Wunknown-pragmas]
+ #pragma RcB2 DEP "udpserver.c"
+ ^
+In file included from src/daemon/daemon.c:21:0:
+src/daemon/sblist.h:90:0: 警告：忽略 #pragma RcB2 DEP [-Wunknown-pragmas]
+ #pragma RcB2 DEP "sblist.c" "sblist_delete.c"
+ ^
+cc -DSUPER_SECURE -DHAVE_GNU_GETSERVBYNAME_R -DHAVE_PIPE2 -DHAVE_SOCK_CLOEXEC -DHAVE_CLOCK_GETTIME -Wall -O0 -g -std=c99 -D_GNU_SOURCE -pipe   -DLIB_DIR=\"/usr/lib\" -DSYSCONFDIR=\"/etc\" -DDLL_NAME=\"libproxychains4.so\"  -fPIC -c -o src/daemon/udpserver.o src/daemon/udpserver.c
+In file included from src/daemon/udpserver.c:1:0:
+src/daemon/udpserver.h:11:0: 警告：忽略 #pragma RcB2 DEP [-Wunknown-pragmas]
+ #pragma RcB2 DEP "udpserver.c"
+ ^
+cc src/daemon/hsearch.o src/daemon/sblist.o src/daemon/sblist_delete.o src/daemon/daemon.o src/daemon/udpserver.o  -o proxychains4-daemon
+./tools/install.sh -D -m 644 libproxychains4.so /usr/lib/libproxychains4.so
+./tools/install.sh -D -m 755 proxychains4 /usr/bin/proxychains4
+./tools/install.sh -D -m 755 proxychains4-daemon /usr/bin/proxychains4-daemon
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# ls
+AUTHORS     configure  libproxychains4.so  proxychains4         README  tests  tools
+config.mak  COPYING    Makefile            proxychains4-daemon  src     TODO   VERSION
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# make install-config
+./tools/install.sh -D -m 644 src/proxychains.conf /etc/proxychains.conf
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# vi /etc/proxychains.conf
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# curl -4 ip.sb
+36.57.103.79
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# proxychains curl -4 ip.sb
+-bash: proxychains: 未找到命令
+[root@localhost proxychains-ng-4.16]#
+[root@localhost proxychains-ng-4.16]# proxychains4 curl -4 ip.sb
+[proxychains] config file found: /etc/proxychains.conf
+[proxychains] preloading /usr/lib/libproxychains4.so
+[proxychains] DLL init: proxychains-ng 4.16
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  ip.sb:80  ...  OK
+104.251.224.19
+[root@localhost proxychains-ng-4.16]#
+```
 
 
 
@@ -8188,3 +8308,5 @@ Failed to open/create the internal network 'HostInterfaceNetworking-VirtualBox H
 https://zhuanlan.zhihu.com/p/655313120
 
 阿里云容器镜像服务 <https://cr.console.aliyun.com/cn-shanghai/instances>
+
+
