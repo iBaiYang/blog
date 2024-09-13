@@ -927,6 +927,10 @@ root@a0c75b4db3a6:/var/www/html#
 
 yum添加软件源：
 ```
+阿里云源：
+> yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+或者
+中科大源：
 > yum-config-manager --add-repo https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
 ```
 
@@ -1057,15 +1061,38 @@ hello-world   latest    9c7a54a9a43c   5 months ago   13.3kB
 写入：
 ```
 {
-  "registry-mirrors": ["http://hub-mirror.c.163.com", "https://docker.mirrors.ustc.edu.cn"]
+  "registry-mirrors": [
+      "http://hub-mirror.c.163.com", 
+      "https://docker.mirrors.ustc.edu.cn"
+  ]
 }
 ```
+
+上面可以一步完成：
+```
+cat > /etc/docker/daemon.json <<EOF  
+{
+    "registry-mirrors": [
+        "https://hub-mirror.c.163.com",
+        "https://docker.mirrors.ustc.edu.cn",
+        "https://registry.docker-cn.com",
+        "https://mirror.ccs.tencentyun.com",
+        "https://5y6m9ocy.mirror.aliyuncs.com"
+    ]
+}
+EOF
+```
+
+https://***.mirror.aliyuncs.com 是阿里云Docker镜像加速器为开发者提供的一个免费服务。
 
 重载 systemd 的脚本配置文件内容：
 > systemctl daemon-reload
 
 重启docker：
 > systemctl restart docker
+
+或者一步重载配置并重启服务：
+> systemctl daemon-reload && systemctl restart docker
 
 明细：
 ```
@@ -1115,11 +1142,9 @@ StartLimitBurst=3
 ```
 
 重载 systemd 的脚本配置文件内容：
-
 > systemctl daemon-reload
 
 重启docker：
-
 > systemctl restart docker
 
 浏览器访问地址 http://192.168.56.102:2375/version ，返回（注意防火墙的配置）：
@@ -8160,3 +8185,6 @@ docker php安装redis扩展 <https://blog.csdn.net/longfeng995/article/details/1
 Failed to open/create the internal network 'HostInterfaceNetworking-VirtualBox Host-Only Ethernet Adapter'
 <https://www.jianshu.com/p/4bee5f609d01>
 
+https://zhuanlan.zhihu.com/p/655313120
+
+阿里云容器镜像服务 <https://cr.console.aliyun.com/cn-shanghai/instances>
