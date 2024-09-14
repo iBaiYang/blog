@@ -8295,11 +8295,14 @@ config.mak  COPYING    Makefile            proxychains4-daemon  src     TODO   V
 [root@localhost proxychains-ng-4.16]#
 ```
 
-Docker 容器默认会通过 Docker 守护进程的网络堆栈进行通信，而不是直接通过宿主机的网络堆栈。
-折腾来折腾去，还需要解决外网VPN的问题，无奈放弃。
+虚拟机访问外网，首先想到的是虚拟机使用宿主机的VPN。
+在Win11上与Virtualbox桥接，虚拟机有网了，宿主机没网了；宿主机有网了，虚拟机又没网了，只能选择其他方式。
+接着想到的是虚拟机内搭建VPN， 但发现Docker 容器默认会通过 Docker 守护进程的网络堆栈进行通信，
+而不是直接通过宿主机的网络堆栈，又需要解决docker共用虚拟机的网络服务的问题，不好解决。
+
+上面折腾来折腾去，还需要解决VPN的问题，无奈放弃。
 
 国内用不了docker，过去的这些记录算是废了！
-
 
 <br/><br/><br/><br/><br/>
 ## 参考资料
