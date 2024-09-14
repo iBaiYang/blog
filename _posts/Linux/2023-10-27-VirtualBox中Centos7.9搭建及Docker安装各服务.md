@@ -8177,7 +8177,7 @@ CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS  
 
 proxychains 源码 <https://github.com/rofl0r/proxychains-ng>
 
-<https://ww9510.com/portal/page/download?client=linux>
+Ubuntu Trojan客户端使用教程 <https://ww9510.com/portal/page/download?client=linux>
 
     测试本地IP: curl -4 ip.sb，将显示自己的IP
     测试代理IP: proxychains curl -4 ip.sb，将显示Trojan代理的IP
