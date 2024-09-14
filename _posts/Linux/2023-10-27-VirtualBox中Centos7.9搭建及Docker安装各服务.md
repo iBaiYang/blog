@@ -1078,6 +1078,7 @@ cat > /etc/docker/daemon.json <<EOF
         "https://registry.docker-cn.com",
         "https://mirror.ccs.tencentyun.com",
         "https://5y6m9ocy.mirror.aliyuncs.com",
+        "https://registry.docker-cn.com",
         "https://hub.docker.com"
     ]
 }
@@ -8174,7 +8175,12 @@ CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS  
 
 代理服务器proxychains 编译安装和使用 <https://zhuanlan.zhihu.com/p/470555571>
 
+proxychains 源码 <https://github.com/rofl0r/proxychains-ng>
+
 <https://ww9510.com/portal/page/download?client=linux>
+
+    测试本地IP: curl -4 ip.sb，将显示自己的IP
+    测试代理IP: proxychains curl -4 ip.sb，将显示Trojan代理的IP
 
 参考：
 ```
@@ -8289,6 +8295,10 @@ config.mak  COPYING    Makefile            proxychains4-daemon  src     TODO   V
 [root@localhost proxychains-ng-4.16]#
 ```
 
+Docker 容器默认会通过 Docker 守护进程的网络堆栈进行通信，而不是直接通过宿主机的网络堆栈。
+折腾来折腾去，还需要解决外网VPN的问题，无奈放弃。
+
+国内用不了docker，过去的这些记录算是废了！
 
 
 <br/><br/><br/><br/><br/>
