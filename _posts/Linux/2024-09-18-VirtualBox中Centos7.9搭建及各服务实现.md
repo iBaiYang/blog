@@ -939,6 +939,541 @@ Zend OPcache
 [root@localhost ~]#
 ```
 
+### rpm相关
+
+rpm命令是RPM软件包的管理工具。RPM套件管理方式的出现，让Linux易于安装，升级，间接提升了Linux的适用度。
+
+rpm常见命令参数：
+```
+用法: rpm [选项...]
+-a：查询所有套件；
+-b<完成阶段><套件档>+或-t <完成阶段><套件档>+：设置包装套件的完成阶段，并指定套件档的文件名称；
+-c：只列出组态配置文件，本参数需配合"-l"参数使用；
+-d：只列出文本文件，本参数需配合"-l"参数使用；
+-e<套件档>或--erase<套件档>：删除指定的套件；
+-f<文件>+：查询拥有指定文件的套件；
+-h或--hash：套件安装时列出标记；
+-i：显示套件的相关信息；
+-i<套件档>或--install<套件档>：安装指定的套件档；
+-l：显示套件的文件列表；
+-p<套件档>+：查询指定的RPM套件档；
+-q：使用询问模式，当遇到任何问题时，rpm指令会先询问用户；
+-R：显示套件的关联性信息；
+-s：显示文件状态，本参数需配合"-l"参数使用；
+-U<套件档>或--upgrade<套件档>：升级指定的套件档；
+-v：显示指令执行过程；
+-vv：详细显示指令执行过程，便于排错。
+```
+
+```
+# rpm更新软件包
+rpm -Uvh your.rpm
+
+# 直接安装
+rpm -ivh your-package
+# 忽略报错，强制安装  
+rpmrpm --force -ivh your-package.rpm 
+
+# 查询
+rpm -ql 程序名
+
+# 列出所有安装过的包
+rpm -qa
+
+# 获得某个软件包的文件全名
+rpm -q 程序名
+
+# rpm包中的文件安装的位置
+rpm -ql 程序名
+
+# 返回软件包的全名
+rpm -qf `which 程序名`    
+# 返回软件包的有关信息
+rpm -qif `which 程序名`   
+# 返回软件包的文件列表
+rpm -qlf `which 程序名`   
+
+# 卸载
+rpm -e 程序名 
+```
+
+详细：
+```
+[root@localhost ~]# rpm -qa
+php-7.4.33-15.el7.remi.x86_64
+setup-2.8.71-11.el7.noarch
+dejavu-sans-fonts-2.33-6.el7.noarch
+authconfig-6.2.8-30.el7.x86_64
+ncurses-base-5.9-14.20130511.el7_4.noarch
+graphite2-1.3.10-1.el7_3.x86_64
+libtiff-4.0.3-35.el7.x86_64
+biosdevname-0.7.3-2.el7.x86_64
+libstdc++-4.8.5-44.el7.x86_64
+libzstd-1.5.5-1.el7.x86_64
+pcre-8.32-17.el7.x86_64
+gd3php-2.3.3-7.el7.remi.x86_64
+btrfs-progs-4.9.1-1.el7.x86_64
+php-mysqlnd-7.4.33-15.el7.remi.x86_64
+libsysfs-2.1.0-16.el7.x86_64
+bzip2-libs-1.0.6-13.el7.x86_64
+php-fpm-7.4.33-15.el7.remi.x86_64
+rootfiles-8.1-11.el7.noarch
+readline-6.2-11.el7.x86_64
+libattr-2.4.46-13.el7.x86_64
+audit-libs-2.8.5-4.el7.x86_64
+net-tools-2.0-0.25.20131004git.el7.x86_64
+findutils-4.5.11-6.el7.x86_64
+kbd-misc-1.15.5-16.el7_9.noarch
+sqlite-3.7.17-8.el7_7.1.x86_64
+nss-softokn-freebl-3.90.0-6.el7_9.x86_64
+libaio-0.3.109-13.el7.x86_64
+nss-util-3.90.0-1.el7_9.x86_64
+libassuan-2.1.0-3.el7.x86_64
+libuuid-2.23.2-65.el7_9.1.x86_64
+libgomp-4.8.5-44.el7.x86_64
+libxml2-2.9.1-6.el7_9.6.x86_64
+jansson-2.10-1.el7.x86_64
+vim-minimal-7.4.629-8.el7_9.x86_64
+tcp_wrappers-libs-7.6-77.el7.x86_64
+ca-certificates-2023.2.60_v7.0.306-72.el7_9.noarch
+ethtool-4.8-10.el7.x86_64
+libblkid-2.23.2-65.el7_9.1.x86_64
+newt-0.52.15-4.el7.x86_64
+python-libs-2.7.5-94.el7_9.x86_64
+virt-what-1.18-4.el7_9.1.x86_64
+ipset-7.1-1.el7.x86_64
+nss-pem-1.0.3-7.el7_9.1.x86_64
+bc-1.06.95-13.el7.x86_64
+nss-tools-3.90.0-2.el7_9.x86_64
+kmod-libs-20-28.el7.x86_64
+rpm-libs-4.11.3-48.el7_9.x86_64
+libselinux-utils-2.5-15.el7.x86_64
+initscripts-9.49.53-1.el7_9.1.x86_64
+gmp-6.0.0-15.el7.x86_64
+device-mapper-event-libs-1.02.170-6.el7_9.5.x86_64
+libverto-0.2.5-4.el7.x86_64
+dhcp-libs-4.2.5-83.el7.centos.2.x86_64
+p11-kit-trust-0.23.5-3.el7.x86_64
+device-mapper-event-1.02.170-6.el7_9.5.x86_64
+systemd-sysv-219-78.el7_9.9.x86_64
+shadow-utils-4.6-5.el7.x86_64
+firewalld-filesystem-0.6.3-13.el7_9.noarch
+NetworkManager-team-1.18.8-2.el7_9.x86_64
+cracklib-dicts-2.9.0-11.el7.x86_64
+dhclient-4.2.5-83.el7.centos.2.x86_64
+gettext-libs-0.19.8.1-3.el7.x86_64
+kpartx-0.4.9-136.el7_9.x86_64
+gobject-introspection-1.56.1-1.el7.x86_64
+kexec-tools-2.0.15-51.el7_9.3.x86_64
+pyliblzma-0.5.3-11.el7.x86_64
+libcroco-0.6.12-6.el7_9.x86_64
+python-configobj-4.7.2-7.el7.noarch
+kernel-tools-3.10.0-1160.119.1.el7.x86_64
+pyxattr-0.5.1-5.el7.x86_64
+iwl6050-firmware-41.28.5.1-83.el7_9.noarch
+iwl2030-firmware-18.168.6.1-83.el7_9.noarch
+iwl6000-firmware-9.221.4.1-83.el7_9.noarch
+iwl5000-firmware-8.83.5.1_1-83.el7_9.noarch
+mpfr-3.1.1-4.el7.x86_64
+cpp-4.8.5-44.el7.x86_64
+hardlink-1.0-19.el7.x86_64
+perl-Pod-Perldoc-3.20-4.el7.noarch
+perl-Pod-Usage-1.63-3.el7.noarch
+libseccomp-2.3.1-4.el7.x86_64
+perl-Exporter-5.68-3.el7.noarch
+procps-ng-3.3.10-28.el7.x86_64
+perl-Carp-1.26-244.el7.noarch
+perl-Scalar-List-Utils-1.27-248.el7.x86_64
+elfutils-libs-0.176-5.el7.x86_64
+perl-libs-5.16.3-299.el7_9.x86_64
+dbus-1.10.24-15.el7.x86_64
+kernel-headers-3.10.0-1160.119.1.el7.x86_64
+iputils-20160308-10.el7.x86_64
+libXau-1.0.8-2.1.el7.x86_64
+libXt-1.1.5-3.el7.x86_64
+bzip2-1.0.6-13.el7.x86_64
+perl-Git-1.8.3.1-25.el7_9.noarch
+libxml2-python-2.9.1-6.el7_9.6.x86_64
+setools-libs-3.3.8-4.el7.x86_64
+ebtables-2.0.10-16.el7.x86_64
+python-IPy-0.75-6.el7.noarch
+hwdata-0.252-9.7.el7.x86_64
+checkpolicy-2.5-8.el7.x86_64
+dbus-glib-0.100-7.el7.x86_64
+docker-buildx-plugin-0.14.1-1.el7.x86_64
+plymouth-core-libs-0.8.9-0.34.20140113.el7.centos.x86_64
+docker-ce-cli-26.1.4-1.el7.x86_64
+wget-1.14-18.el7_6.1.x86_64
+gpg-pubkey-00f97f56-467e318a
+yum-3.4.3-168.el7.centos.noarch
+apr-util-1.5.2-6.el7_9.1.x86_64
+httpd-2.4.6-99.el7.centos.1.x86_64
+libgcc-4.8.5-44.el7.x86_64
+php-sodium-7.4.33-15.el7.remi.x86_64
+fontpackages-filesystem-1.44-8.el7.noarch
+filesystem-3.2-25.el7.x86_64
+dejavu-fonts-common-2.33-6.el7.noarch
+fontconfig-2.13.0-4.3.el7.x86_64
+audit-2.8.5-4.el7.x86_64
+libwebp7-1.0.3-2.el7.remi.x86_64
+kernel-3.10.0-1160.el7.x86_64
+harfbuzz-1.7.5-2.el7.x86_64
+chrony-3.4-1.el7.x86_64
+jbigkit-libs-2.0-11.el7.x86_64
+php-pdo-7.4.33-15.el7.remi.x86_64
+irqbalance-1.0.7-12.el7.x86_64
+ncurses-libs-5.9-14.20130511.el7_4.x86_64
+libraqm-0.7.0-4.el7.x86_64
+parted-3.1-32.el7.x86_64
+libsepol-2.5-10.el7.x86_64
+libzip5-1.10.1-1.el7.remi.x86_64
+man-db-2.6.3-11.el7.x86_64
+libselinux-2.5-15.el7.x86_64
+libXpm-3.5.12-2.el7_9.x86_64
+info-5.1-5.el7.x86_64
+php-gd-7.4.33-15.el7.remi.x86_64
+xfsprogs-4.5.0-22.el7.x86_64
+libcom_err-1.42.9-19.el7.x86_64
+php-pecl-zip-1.22.3-1.el7.remi.7.4.x86_64
+sed-4.2.2-7.el7.x86_64
+php-xml-7.4.33-15.el7.remi.x86_64
+popt-1.13-16.el7.x86_64
+php-bcmath-7.4.33-15.el7.remi.x86_64
+libdb-5.3.21-25.el7.x86_64
+php-opcache-7.4.33-15.el7.remi.x86_64
+grep-2.20-3.el7.x86_64
+elfutils-libelf-0.176-5.el7.x86_64
+ivtv-firmware-20080701-26.el7.noarch
+libacl-2.2.51-15.el7.x86_64
+libcap-ng-0.7.5-4.el7.x86_64
+libgpg-error-1.12-3.el7.x86_64
+libgcrypt-1.5.3-14.el7.x86_64
+cpio-2.11-28.el7.x86_64
+gpg-pubkey-f4a80eb5-53a7ff4b
+lua-5.1.4-15.el7.x86_64
+grub2-common-2.02-0.87.0.2.el7.centos.14.noarch
+which-2.20-7.el7.x86_64
+grub2-pc-modules-2.02-0.87.0.2.el7.centos.14.noarch
+libnl3-3.2.28-4.el7.x86_64
+kbd-legacy-1.15.5-16.el7_9.noarch
+file-libs-5.11-37.el7.x86_64
+bash-4.2.46-35.el7_9.x86_64
+libmnl-1.0.3-7.el7.x86_64
+glibc-common-2.17-326.el7_9.3.x86_64
+nspr-4.35.0-1.el7_9.x86_64
+p11-kit-0.23.5-3.el7.x86_64
+zlib-1.2.7-21.el7_9.x86_64
+groff-base-1.22.2-8.el7.x86_64
+systemd-libs-219-78.el7_9.9.x86_64
+expat-2.1.0-15.el7_9.x86_64
+libunistring-0.9.3-9.el7.x86_64
+device-mapper-persistent-data-0.8.5-3.el7_9.2.x86_64
+libedit-3.0-12.20121213cvs.el7.x86_64
+freetype-2.8-14.el7_9.1.x86_64
+libnfnetlink-1.0.1-4.el7.x86_64
+dmidecode-3.2-5.el7_9.1.x86_64
+hostname-3.13-3.el7_7.1.x86_64
+kernel-tools-libs-3.10.0-1160.119.1.el7.x86_64
+lzo-2.06-8.el7.x86_64
+linux-firmware-20200421-83.git78c0348.el7_9.noarch
+lz4-1.8.3-1.el7.x86_64
+openssl-libs-1.0.2k-26.el7_9.x86_64
+keyutils-libs-1.5.8-3.el7.x86_64
+krb5-libs-1.15.1-55.el7_9.x86_64
+slang-2.2.4-11.el7.x86_64
+libmount-2.23.2-65.el7_9.1.x86_64
+libnetfilter_conntrack-1.0.6-1.el7_3.x86_64
+util-linux-2.23.2-65.el7_9.1.x86_64
+iproute-4.11.0-30.el7.x86_64
+python-2.7.5-94.el7_9.x86_64
+libteam-1.29-3.el7.x86_64
+python-firewall-0.6.3-13.el7_9.noarch
+ipset-libs-7.1-1.el7.x86_64
+bind-export-libs-9.11.4-26.P2.el7_9.16.x86_64
+acl-2.2.51-15.el7.x86_64
+selinux-policy-3.13.1-268.el7_9.2.noarch
+tar-1.26-35.el7.x86_64
+nss-sysinit-3.90.0-2.el7_9.x86_64
+libdb-utils-5.3.21-25.el7.x86_64
+NetworkManager-libnm-1.18.8-2.el7_9.x86_64
+libss-1.42.9-19.el7.x86_64
+libssh2-1.8.0-4.el7_9.1.x86_64
+make-3.82-24.el7.x86_64
+curl-7.29.0-59.el7_9.2.x86_64
+rpm-4.11.3-48.el7_9.x86_64
+systemd-219-78.el7_9.9.x86_64
+mozjs17-17.0.0-20.el7.x86_64
+device-mapper-libs-1.02.170-6.el7_9.5.x86_64
+snappy-1.1.0-3.el7.x86_64
+grub2-tools-minimal-2.02-0.87.0.2.el7.centos.14.x86_64
+libndp-1.2-9.el7.x86_64
+grub2-tools-2.02-0.87.0.2.el7.centos.14.x86_64
+ustr-1.0.4-16.el7.x86_64
+openssh-7.4p1-23.el7_9.x86_64
+libtasn1-4.10-1.el7.x86_64
+dhcp-common-4.2.5-83.el7.centos.2.x86_64
+grub2-pc-2.02-0.87.0.2.el7.centos.14.x86_64
+lvm2-libs-2.02.187-6.el7_9.5.x86_64
+cronie-1.4.11-25.el7_9.x86_64
+wpa_supplicant-2.6-12.el7_9.2.x86_64
+rpm-build-libs-4.11.3-48.el7_9.x86_64
+python-decorator-3.4.0-3.el7.noarch
+firewalld-0.6.3-13.el7_9.noarch
+NetworkManager-tui-1.18.8-2.el7_9.x86_64
+NetworkManager-wifi-1.18.8-2.el7_9.x86_64
+pam-1.1.8-23.el7.x86_64
+gettext-0.19.8.1-3.el7.x86_64
+yum-metadata-parser-1.1.4-10.el7.x86_64
+python-gobject-base-3.22.0-1.el7_4.1.x86_64
+python-iniparse-0.4-9.el7.noarch
+newt-python-0.52.15-4.el7.x86_64
+python-linux-procfs-0.4.11-4.el7.noarch
+python-slip-0.4.0-4.el7.noarch
+grubby-8.28-26.el7.x86_64
+fipscheck-lib-1.4.1-6.el7.x86_64
+libuser-0.60-9.el7.x86_64
+python-urlgrabber-3.10-10.el7.noarch
+libmpc-1.0.1-3.el7.x86_64
+centos-logos-70.0.6-3.el7.centos.noarch
+libSM-1.2.2-2.el7.x86_64
+logrotate-3.8.6-19.el7.x86_64
+perl-parent-0.225-244.el7.noarch
+libfastjson-0.99.4-3.el7.x86_64
+perl-podlators-2.5.1-3.el7.noarch
+qrencode-libs-3.4.1-3.el7.x86_64
+perl-Pod-Escapes-1.04-299.el7_9.noarch
+libpipeline-1.2.3-3.el7.x86_64
+perl-Text-ParseWords-3.29-4.el7.noarch
+lsscsi-0.27-6.el7.x86_64
+perl-macros-5.16.3-299.el7_9.x86_64
+numactl-libs-2.0.12-5.el7.x86_64
+perl-Time-HiRes-1.9725-3.el7.x86_64
+perl-constant-1.27-2.el7.noarch
+perl-Time-Local-1.2300-2.el7.noarch
+perl-Storable-2.45-3.el7.x86_64
+cryptsetup-libs-2.0.3-6.el7.x86_64
+perl-PathTools-3.40-5.el7.x86_64
+kmod-20-28.el7.x86_64
+perl-Filter-1.49-3.el7.x86_64
+perl-File-Path-2.09-2.el7.noarch
+perl-Pod-Simple-3.28-4.el7.noarch
+elfutils-default-yama-scope-0.176-5.el7.noarch
+perl-5.16.3-299.el7_9.x86_64
+polkit-pkla-compat-0.1-4.el7.x86_64
+glibc-headers-2.17-326.el7_9.3.x86_64
+libX11-common-1.6.7-5.el7_9.noarch
+libxcb-1.13-1.el7.x86_64
+policycoreutils-2.5-34.el7.x86_64
+libXext-1.3.3-3.el7.x86_64
+os-prober-1.58-9.el7.x86_64
+libXmu-1.1.2-2.el7.x86_64
+kernel-devel-3.10.0-1160.119.1.el7.x86_64
+crontabs-1.11-6.20121102git.el7.noarch
+perl-Error-0.17020-2.el7.noarch
+perl-TermReadKey-2.30-20.el7.x86_64
+git-1.8.3.1-25.el7_9.x86_64
+python-kitchen-1.1.1-5.el7.noarch
+yum-utils-1.1.31-54.el7_8.noarch
+libcgroup-0.41-21.el7.x86_64
+audit-libs-python-2.8.5-4.el7.x86_64
+fxload-2002_04_11-16.el7.x86_64
+libsemanage-python-2.5-14.el7.x86_64
+alsa-tools-firmware-1.1.0-1.el7.x86_64
+docker-compose-plugin-2.27.1-1.el7.x86_64
+libpciaccess-0.14-1.el7.x86_64
+fuse-overlayfs-0.7.2-6.el7_8.x86_64
+teamd-1.29-3.el7.x86_64
+policycoreutils-python-2.5-34.el7.x86_64
+dbus-python-1.1.1-9.el7.x86_64
+plymouth-scripts-0.8.9-0.34.20140113.el7.centos.x86_64
+python-pyudev-0.15-9.el7.noarch
+containerd.io-1.6.33-3.1.el7.x86_64
+pth-2.0.7-23.el7.x86_64
+docker-ce-rootless-extras-26.1.4-1.el7.x86_64
+epel-release-7-11.noarch
+gpgme-1.3.2-5.el7.x86_64
+gpg-pubkey-352c64e5-52ae6884
+yum-plugin-fastestmirror-1.1.31-54.el7_8.noarch
+php-json-7.4.33-15.el7.remi.x86_64
+apr-1.4.8-7.el7.x86_64
+httpd-tools-2.4.6-99.el7.centos.1.x86_64
+mailcap-2.1.41-2.el7.noarch
+grub2-2.02-0.87.0.2.el7.centos.14.x86_64
+openssh-server-7.4p1-23.el7_9.x86_64
+tuned-2.11.0-12.el7_9.noarch
+kbd-1.15.5-16.el7_9.x86_64
+microcode_ctl-2.1-73.20.el7_9.x86_64
+rsyslog-8.24.0-57.el7_9.3.x86_64
+selinux-policy-targeted-3.13.1-268.el7_9.2.noarch
+openssl-1.0.2k-26.el7_9.x86_64
+gzip-1.5-11.el7_9.x86_64
+xz-5.2.2-2.el7_9.x86_64
+less-458-10.el7_9.x86_64
+iwl4965-firmware-228.61.2.24-83.el7_9.noarch
+iwl6000g2b-firmware-18.168.6.1-83.el7_9.noarch
+iwl3945-firmware-15.32.2.9-83.el7_9.noarch
+iwl5150-firmware-8.24.2.2-83.el7_9.noarch
+iwl3160-firmware-25.30.13.0-83.el7_9.noarch
+iwl100-firmware-39.31.5.1-83.el7_9.noarch
+iwl7260-firmware-25.30.13.0-83.el7_9.noarch
+iwl6000g2a-firmware-18.168.6.1-83.el7_9.noarch
+libsodium-1.0.18-1.el7.x86_64
+libjpeg-turbo-1.2.90-8.el7.x86_64
+basesystem-10.0-7.el7.centos.noarch
+oniguruma5php-6.9.9-1.el7.remi.x86_64
+postfix-2.10.1-9.el7.x86_64
+libxslt-1.1.28-6.el7.x86_64
+aic94xx-firmware-30-6.el7.noarch
+fribidi-1.0.2-1.el7_7.1.x86_64
+dracut-config-rescue-033-572.el7.x86_64
+libmcrypt-2.5.8-13.el7.x86_64
+passwd-0.79-6.el7.x86_64
+php-pecl-mcrypt-1.0.7-1.el7.remi.7.4.x86_64
+e2fsprogs-1.42.9-19.el7.x86_64
+php-mbstring-7.4.33-15.el7.remi.x86_64
+chkconfig-1.7.6-1.el7.x86_64
+gawk-4.0.2-4.el7_3.1.x86_64
+libcap-2.22-11.el7.x86_64
+libffi-3.0.13-19.el7.x86_64
+centos-release-7-9.2009.2.el7.centos.x86_64
+tzdata-2024a-1.el7.noarch
+file-5.11-37.el7.x86_64
+glibc-2.17-326.el7_9.3.x86_64
+libnl3-cli-3.2.28-4.el7.x86_64
+xz-libs-5.2.2-2.el7_9.x86_64
+e2fsprogs-libs-1.42.9-19.el7.x86_64
+nss-softokn-3.90.0-6.el7_9.x86_64
+libidn-1.28-4.el7.x86_64
+libsmartcols-2.23.2-65.el7_9.1.x86_64
+sysvinit-tools-2.88-14.dsf.el7.x86_64
+diffutils-3.3-6.el7_9.x86_64
+gdbm-1.10-8.el7.x86_64
+coreutils-8.22-24.el7_9.2.x86_64
+pciutils-libs-3.5.1-3.el7.x86_64
+glib2-2.56.1-9.el7_9.x86_64
+iptables-1.4.21-35.el7.x86_64
+python-perf-3.10.0-1160.119.1.el7.x86_64
+cyrus-sasl-lib-2.1.26-24.el7_9.x86_64
+nss-3.90.0-2.el7_9.x86_64
+pinentry-0.8.1-17.el7.x86_64
+libcurl-7.29.0-59.el7_9.2.x86_64
+libpng-1.5.13-8.el7.x86_64
+openldap-2.4.44-25.el7_9.x86_64
+ncurses-5.9-14.20130511.el7_4.x86_64
+device-mapper-1.02.170-6.el7_9.5.x86_64
+polkit-0.112-26.el7_9.1.x86_64
+libsemanage-2.5-14.el7.x86_64
+grub2-tools-extra-2.02-0.87.0.2.el7.centos.14.x86_64
+cronie-anacron-1.4.11-25.el7_9.x86_64
+NetworkManager-1.18.8-2.el7_9.x86_64
+cracklib-2.9.0-11.el7.x86_64
+rpm-python-4.11.3-48.el7_9.x86_64
+shared-mime-info-1.8-5.el7.x86_64
+lvm2-2.02.187-6.el7_9.5.x86_64
+libpwquality-1.2.3-5.el7.x86_64
+openssh-clients-7.4p1-23.el7_9.x86_64
+pkgconfig-0.27.1-4.el7.x86_64
+kernel-3.10.0-1160.119.1.el7.x86_64
+libutempter-1.1.6-4.el7.x86_64
+sudo-1.8.23-10.el7_9.3.x86_64
+python-schedutils-0.4-6.el7.x86_64
+binutils-2.27-44.base.el7_9.1.x86_64
+libselinux-python-2.5-15.el7.x86_64
+iprutils-2.4.17.1-3.el7_7.x86_64
+mariadb-libs-5.5.68-1.el7.x86_64
+iwl135-firmware-18.168.6.1-83.el7_9.noarch
+fipscheck-1.4.1-6.el7.x86_64
+iwl105-firmware-18.168.6.1-83.el7_9.noarch
+iwl2000-firmware-18.168.6.1-83.el7_9.noarch
+iwl1000-firmware-39.31.5.1-83.el7_9.noarch
+python-pycurl-7.19.0-19.el7.x86_64
+libICE-1.0.9-9.el7.x86_64
+alsa-lib-1.1.8-1.el7.x86_64
+perl-HTTP-Tiny-0.033-3.el7.noarch
+libdaemon-0.14-7.el7.x86_64
+perl-Encode-2.51-7.el7.x86_64
+libestr-0.1.9-2.el7.x86_64
+perl-threads-1.87-4.el7.x86_64
+json-c-0.11-4.el7_0.x86_64
+perl-Socket-2.010-5.el7.x86_64
+perl-threads-shared-1.43-6.el7.x86_64
+dracut-033-572.el7.x86_64
+perl-File-Temp-0.23.01-3.el7.noarch
+dbus-libs-1.10.24-15.el7.x86_64
+perl-Getopt-Long-2.40-3.el7.noarch
+glibc-devel-2.17-326.el7_9.3.x86_64
+libX11-1.6.7-5.el7_9.x86_64
+gcc-4.8.5-44.el7.x86_64
+rsync-3.1.2-12.el7_9.x86_64
+python-chardet-2.2.1-3.el7.noarch
+dracut-network-033-572.el7.x86_64
+gpg-pubkey-621e9f35-58adea78
+slirp4netns-0.4.3-4.el7_8.x86_64
+alsa-firmware-1.0.28-2.el7.noarch
+fuse3-libs-3.6.1-4.el7.x86_64
+libdrm-2.4.97-2.el7.x86_64
+container-selinux-2.119.2-1.911c772.el7_8.noarch
+python-slip-dbus-0.4.0-4.el7.noarch
+plymouth-0.8.9-0.34.20140113.el7.centos.x86_64
+docker-ce-26.1.4-1.el7.x86_64
+gnupg2-2.0.22-5.el7_5.x86_64
+remi-release-7.9-6.el7.remi.noarch
+pygpgme-0.3-9.el7.x86_64
+php-common-7.4.33-15.el7.remi.x86_64
+php-cli-7.4.33-15.el7.remi.x86_64
+[root@localhost ~]#
+[root@localhost ~]# rpm -ql php
+/etc/httpd/conf.d/php.conf
+/etc/httpd/conf.modules.d/15-php.conf
+/usr/lib64/httpd/modules/libphp7-zts.so
+/usr/lib64/httpd/modules/libphp7.so
+/var/lib/php/opcache
+/var/lib/php/session
+/var/lib/php/wsdlcache
+[root@localhost ~]#
+[root@localhost ~]# rpm -qf `which php`
+php-cli-7.4.33-15.el7.remi.x86_64
+[root@localhost ~]#
+[root@localhost ~]# rpm -qif `which php`
+Name        : php-cli
+Version     : 7.4.33
+Release     : 15.el7.remi
+Architecture: x86_64
+Install Date: 2024年09月18日 星期三 18时08分59秒
+Group       : Development/Languages
+Size        : 19162432
+License     : PHP and Zend and BSD and MIT and ASL 1.0 and NCSA and PostgreSQL
+Signature   : DSA/SHA1, 2024年06月05日 星期三 13时15分37秒, Key ID 004e6f4700f97f56
+Source RPM  : php-7.4.33-15.el7.remi.src.rpm
+Build Date  : 2024年06月05日 星期三 13时11分38秒
+Build Host  : builder.remirepo.net
+Relocations : (not relocatable)
+Packager    : Remi Collet
+Vendor      : Remi's RPM repository <https://rpms.remirepo.net/> #StandWithUkraine
+URL         : http://www.php.net/
+Bug URL     : https://forum.remirepo.net/
+Summary     : Command-line interface for PHP
+Description :
+The php-cli package contains the command-line interface
+executing PHP scripts, /usr/bin/php, and the CGI interface.
+[root@localhost ~]#
+[root@localhost ~]# rpm -qlf `which php`
+/usr/bin/phar
+/usr/bin/phar.phar
+/usr/bin/php
+/usr/bin/php-cgi
+/usr/bin/phpize
+/usr/bin/zts-php
+/usr/share/man/man1/phar.1.gz
+/usr/share/man/man1/phar.phar.1.gz
+/usr/share/man/man1/php-cgi.1.gz
+/usr/share/man/man1/php.1.gz
+/usr/share/man/man1/phpize.1.gz
+/usr/share/man/man1/zts-php.1.gz
+/usr/share/man/man1/zts-phpize.1.gz
+[root@localhost ~]#
+```
+
 安装完成。
 
 ### 解说
