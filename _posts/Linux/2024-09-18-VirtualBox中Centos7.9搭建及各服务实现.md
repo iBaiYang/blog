@@ -32,6 +32,7 @@ VirtualBox中Centos7.9安装及共享文件夹搭建，参考 <https://ibaiyang.
 -rw-r--r--. 1 root root 1331 5月  21 22:48 CentOS-Sources.repo
 -rw-r--r--. 1 root root 9454 5月  21 22:48 CentOS-Vault.repo
 -rw-r--r--. 1 root root  616 5月  21 22:48 CentOS-x86_64-kernel.repo
+-rw-r--r--. 1 root root 2081 9月  13 14:14 docker-ce.repo
 [root@localhost ~]#
 [root@localhost ~]# yum list php*
 已加载插件：fastestmirror
@@ -940,6 +941,54 @@ Zend OPcache
 ```
 
 安装完成。
+
+启动fpm服务：
+> systemctl start php-fpm
+
+停止fpm服务：
+> systemctl start php-fpm
+
+详细：
+```
+[root@localhost ~]# systemctl status php-fpm
+● php-fpm.service - The PHP FastCGI Process Manager
+   Loaded: loaded (/usr/lib/systemd/system/php-fpm.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@localhost ~]#
+[root@localhost ~]# systemctl start php-fpm
+[root@localhost ~]#
+[root@localhost ~]# systemctl status php-fpm
+● php-fpm.service - The PHP FastCGI Process Manager
+   Loaded: loaded (/usr/lib/systemd/system/php-fpm.service; disabled; vendor preset: disabled)
+   Active: active (running) since 三 2024-09-18 19:26:23 CST; 3s ago
+ Main PID: 2654 (php-fpm)
+   Status: "Ready to handle connections"
+   CGroup: /system.slice/php-fpm.service
+           ├─2654 php-fpm: master process (/etc/php-fpm.conf)
+           ├─2655 php-fpm: pool www
+           ├─2656 php-fpm: pool www
+           ├─2657 php-fpm: pool www
+           ├─2658 php-fpm: pool www
+           └─2659 php-fpm: pool www
+
+9月 18 19:26:23 localhost.localdomain systemd[1]: Starting The PHP FastCGI Process M....
+9月 18 19:26:23 localhost.localdomain systemd[1]: Started The PHP FastCGI Process Ma....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+[root@localhost ~]# systemctl stop php-fpm
+[root@localhost ~]#
+[root@localhost ~]# systemctl status php-fpm
+● php-fpm.service - The PHP FastCGI Process Manager
+   Loaded: loaded (/usr/lib/systemd/system/php-fpm.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+
+9月 18 19:26:23 localhost.localdomain systemd[1]: Starting The PHP FastCGI Process M....
+9月 18 19:26:23 localhost.localdomain systemd[1]: Started The PHP FastCGI Process Ma....
+9月 18 19:27:20 localhost.localdomain systemd[1]: Stopping The PHP FastCGI Process M....
+9月 18 19:27:20 localhost.localdomain systemd[1]: Stopped The PHP FastCGI Process Ma....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+```
 
 ### 解说
 
