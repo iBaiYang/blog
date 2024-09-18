@@ -939,7 +939,203 @@ Zend OPcache
 [root@localhost ~]#
 ```
 
-### rpm相关
+安装完成。
+
+### 解说
+
+```
+php74：安装PHP 7.4的包
+php74-php：用于创建动态web的PHP脚本语言网站
+php74-build：基本的构建配置
+php74-php-gd：用于PHP应用程序使用gd的模块图形库
+php74-xhprof：一个用于PHP - Web接口的层次分析器
+php74-zephir：用于创建扩展的Zephir语言PHP：
+php74-php-ast：抽象语法树
+php74-php-cli：用于PHP的命令行接口
+php74-php-dba：一个用于PHP的数据库抽象层模块应用程序
+php74-php-dbg：交互式PHP调试器
+php74-php-ffi：外部函数接口
+php74-php-fpm：PHP FastCGI进程管理器
+php74-php-gmp：一个用于使用GNU的PHP应用程序模块议员库
+php74-php-lz4：x86_64: PHP的LZ4扩展
+php74-php-pdo：一个用于PHP的数据库访问抽象模块应用程序
+php74-php-xml：x86_64:用于使用XML的PHP应用程序的模块
+php74-runtime：处理php74软件集合的包：
+php74-php-imap：x86_64:用于使用IMAP的PHP应用程序的模块
+php74-php-intl：x86_64: PHP国际化扩展应用程序
+php74-php-json：x86_64: PHP的JavaScript对象符号扩展
+php74-php-ldap：x86_64:用于使用LDAP的PHP应用程序的模块
+php74-php-oci8：x86_64:用于使用OCI8的PHP应用程序的模块数据库
+php74-php-odbc：x86_64:用于使用ODBC的PHP应用程序的模块数据库
+php74-php-pear：noarch: PHP扩展和应用程序库框架
+php74-php-pggi：GTK绑定
+php74-php-snmp：一个用于PHP应用程序查询的模块SNMP-managed设备
+php74-php-soap：用于使用SOAP的PHP应用程序的模块协议
+php74-php-tidy：标准PHP模块提供了tidy库支持
+php74-php-zstd：x86_64: Zstandard扩展名
+php74-scldevel：x86_64:打包php74的开发文件
+php74-unit-php：用于NGINX单元的PHP模块
+php74-php-devel：构建PHP扩展所需的文件
+php74-php-pgsql：一个用于PHP的PostgreSQL数据库模块
+php74-php-pinba：x86_64: Pinba统计服务器的客户端扩展
+php74-php-bcmath：用于PHP应用程序的模块bcmath库
+php74-php-brotli：用于PHP的Brotli扩展
+php74-php-common：PHP的公共文件
+php74-php-pspell：x86_64:用于PHP应用程序的模块中接口
+php74-php-recode：用于PHP应用程序的模块重新编码库
+php74-php-snappy：PHP的Snappy扩展
+php74-php-sodium：x86_64:钠密码库的包装
+php74-php-sqlsrv：x86_64:用于SQL Server的PHP Microsoft驱动程序
+php74-php-xmlrpc：的PHP应用程序模块xml - rpc协议
+php74-php-enchant：增强PHP的拼写扩展应用程序
+php74-php-libvirt：用于Libvirt的PHP语言绑定
+php74-php-mysqlnd：x86_64:用于使用MySQL的PHP应用程序的模块数据库
+php74-php-opcache：x86_64: Zend OPcache
+php74-php-pecl-ds：x86_64: PHP的数据结构
+php74-php-pecl-ev：提供libev库的接口
+php74-php-pecl-pq：PostgreSQL客户端库(libpq)绑定
+php74-php-pecl-uv：Libuv包装器
+php74-php-process：用于PHP脚本的模块使用系统进程接口
+php74-php-embedded：用于嵌入应用程序的PHP库
+php74-php-mbstring：一个用于PHP应用程序的模块多字节字符串处理
+php74-php-pecl-dio：直接I/O函数
+php74-php-pecl-eio：提供libeio库的接口
+php74-php-pecl-env：加载环境变量
+php74-php-pecl-lua：嵌入式lua解释器
+php74-php-pecl-lzf：x86_64:处理LZF de/压缩的扩展
+php74-php-pecl-nsq：NSQ客户端的PHP扩展
+php74-php-pecl-psr：PSR接口
+php74-php-pecl-rar：用于读取RAR存档的PHP扩展
+php74-php-pecl-rrd：x86_64: rrdtool的PHP绑定
+php74-php-pecl-sdl：简单的PHP DirectMedia层
+php74-php-pecl-svn：x86_64: Subversion版本的PHP绑定控制系统
+php74-php-pecl-vld：x86_64:转储PHP的内部表示脚本
+php74-php-pecl-yac：无锁用户数据缓存
+php74-php-pecl-yaf：x86_64:又一个框架
+php74-php-pecl-yar：轻量级并发RPC框架
+php74-php-pecl-yaz：x86_64: Z39.50/SRU客户端
+php74-php-pecl-zip：一个ZIP文件的扩展名
+php74-php-pecl-zmq：ZeroMQ消息传递
+php74-php-phalcon4：Phalcon框架
+php74-php-componere：在运行时编写PHP类
+php74-php-litespeed：LiteSpeed Web服务器PHP支持
+php74-php-maxminddb：MaxMind DB Reader扩展
+php74-php-pdo-dblib：x86_64: PDO驱动程序，用于Microsoft SQL Server和Sybase数据库
+php74-php-pecl-amqp：与任何AMQP兼容的服务器通信
+php74-php-pecl-apcu：APC用户缓存
+php74-php-pecl-apfd：总是填充表单数据
+php74-php-pecl-fann：用于FANN库的包装器
+php74-php-pecl-grpc：x86_64:通用RPC框架
+php74-php-pecl-http：扩展的HTTP支持
+php74-php-pecl-krb5：Kerberos验证扩展
+php74-php-pecl-pcov：x86_64:代码覆盖驱动程序
+php74-php-pecl-ssh2：x86_64: libssh2库的绑定
+php74-php-pecl-sync：已命名和未命名同步对象
+php74-php-pecl-uopz：x86_64: Zend的用户操作
+php74-php-pecl-uuid：通用唯一标识符扩展对于PHP
+php74-php-pecl-vips：x86_64:与libvip接口的PHP扩展
+php74-php-pecl-wddx：Web分布式数据交换
+php74-php-pecl-yaml：x86_64: yaml的PHP绑定
+php74-php-phpiredis：x86_64: Redis的客户端扩展名
+php74-php-smbclient：libsmbclient的PHP包装
+php74-php-wkhtmltox：HTML转换器
+php74-php-pecl-cmark：CommonMark扩展名
+php74-php-pecl-dbase：dBase数据库文件访问函数
+php74-php-pecl-druid：一个PHP的德鲁伊驱动
+php74-php-pecl-event：提供libevent库的接口
+php74-php-pecl-geoip：将IP地址映射到的扩展名地理位置
+php74-php-pecl-gnupg：x86_64: gpgme库的包装
+php74-php-pecl-mysql：MySQL数据库访问函数
+php74-php-pecl-oauth：PHP OAuth消费者扩展
+php74-php-pecl-parle：x86_64:解析和词法分析
+php74-php-pecl-raphf：资源和持久句柄工厂
+php74-php-pecl-solr2：Apache Solr的API定向对象
+php74-php-pecl-stats：用于统计计算的例程
+php74-php-pecl-stomp：Stomp客户端扩展
+php74-php-pecl-taint：x86_64: XSS代码嗅探器
+php74-php-pecl-xattr：扩展属性
+php74-php-pecl-xdiff：文件差异/补丁
+php74-php-pecl-xxtea：XXTEA加密算法扩展PHP
+php74-php-libvirt-doc：noarch: php-libvirt文件
+php74-php-pecl-base58：用base58编码和解码数据
+php74-php-pecl-bitset：位集库
+php74-php-pecl-crypto：OpenSSL密码库的包装器
+php74-php-pecl-gender：x86_64:性别扩展
+php74-php-pecl-hprose：用于PHP的h散文
+php74-php-pecl-hrtime：x86_64:高分辨率定时
+php74-php-pecl-mcrypt：x86_64: libmcrypt库的绑定
+php74-php-pecl-pdflib：生成PDF文件的包
+php74-php-pecl-propro：属性代理
+php74-php-pecl-radius：Radius客户端库
+php74-php-pecl-redis4：的扩展名 Redis键值存储
+php74-php-pecl-redis5：的扩展名 Redis键值存储
+php74-php-pecl-scrypt：Scrypt散列函数
+php74-php-pecl-sphinx：Sphinx SQL全文的PECL扩展搜索引擎
+php74-php-pecl-ssdeep：libfuzzy库的包装器
+php74-php-pecl-trader：为贸易商提供技术分析
+php74-php-pecl-xdebug：用于调试PHP脚本的PECL包
+php74-php-pecl-xhprof：x86_64: XHProf的PHP扩展，层次结构分析器
+php74-php-pecl-yaconf：x86_64:另一个配置容器
+php74-php-pecl-apcu-bc：APCu向后兼容模块
+php74-php-pecl-decimal：任意精度浮点小数
+php74-php-pecl-gearman：PHP包装器到libgearman
+php74-php-pecl-gmagick：的包装器GraphicsMagick库
+php74-php-pecl-imagick：x86_64:用于创建和修改映像的扩展使用ImageMagick
+php74-php-pecl-inotify：x86_64: Inotify
+php74-php-pecl-leveldb：LevelDB PHP绑定
+php74-php-pecl-memprof：x86_64:内存使用分析器
+php74-php-pecl-mongodb：x86_64:用于PHP的MongoDB驱动程序
+php74-php-pecl-msgpack：用于与MessagePack通信的API序列化
+php74-php-pecl-rdkafka：基于librdkafka的Kafka客户端
+php74-php-pecl-rpminfo：x86_64: RPM信息
+php74-php-pecl-runkit7：为了这些你…不应该…无论如何我一直在做……但是肯定做的!
+php74-php-pecl-seaslog：一个有效、快速、稳定的日志 PHP扩展
+php74-php-pecl-selinux：用于PHP脚本的SELinux绑定语言
+php74-php-pecl-swoole4：PHP的异步并发分布式网络框架
+php74-php-pecl-timecop：x86_64:时间旅行和冻结扩展
+php74-php-pecl-varnish：Varnish缓存绑定
+php74-php-pecl-xmldiff：x86_64: XML差异和合并
+php74-php-pecl-igbinary：x86_64:替代标准PHP序列化器
+php74-php-pecl-memcache：x86_64:使用Memcached的扩展缓存守护进程
+php74-php-pecl-mogilefs：要与之通信的PHP客户端库 MogileFS存储
+php74-php-pecl-mustache：Mustache模板语言
+php74-php-pecl-protobuf：序列化结构化的机制数据
+php74-php-pecl-rdkafka4：基于librdkafka的Kafka客户端
+php74-php-pecl-scoutapm：本地扩展组件 ScoutAPM的PHP代理
+php74-php-pecl-translit：将非拉丁字符音译设置为拉丁文
+php74-php-snuffleupagus：x86_64: PHP的安全模块
+php74-php-zephir-parser：x86_64: Zephir解析器扩展
+php74-php-pecl-cassandra：用于Apache的DataStax PHP驱动程序卡桑德拉
+php74-php-pecl-json-post：JSON POST处理程序
+php74-php-pecl-mailparse：用于解析和的PHP PECL包处理电子邮件消息
+php74-php-pecl-memcached：x86_64:使用Memcached的扩展缓存守护进程
+php74-php-pecl-mosquitto：libmosquito - to的扩展
+php74-php-pecl-seasclick：一个Yandex ClickHouse客户端驱动 PHP扩展
+php74-php-pecl-xlswriter：一个高效、快速的xlsx文件出口扩展
+php74-php-horde-horde-lz4：Horde LZ4压缩扩展
+php74-php-pecl-apcu-devel：APCu开发人员文件(头文件)
+php74-php-pecl-couchbase2：Couchbase服务器PHP扩展
+php74-php-pecl-geospatial：PHP扩展来处理公共地理空间功能
+php74-php-pecl-handlebars：Handlebars模板语言
+php74-php-pecl-http-devel：x86_64:扩展HTTP支持开发人员文件(头)
+php74-php-pecl-krb5-devel：Kerberos扩展开发人员文件(头)
+php74-php-pecl-luasandbox：带有限制和安全的Lua解释器环境
+php74-php-pecl-opencensus：一个stats集合和分布式跟踪框架
+php74-php-pecl-skywalking：x86_64: Apache的PHP工具代理人行天桥
+php74-php-pecl-ahocorasick：有效的Aho-Corasick字符串模式匹配算法
+php74-php-pecl-ip2location：获取an的地理位置信息IP地址
+php74-php-pecl-http-message：x86_64: PSR-7 HTTP消息实现
+php74-php-pecl-datadog-trace：APM和分布式跟踪PHP
+php74-php-pecl-hdr-histogram：x86_64: C语言的PHP扩展包装hdrhistogram API
+php74-php-pecl-imagick-devel：imagick扩展开发人员文件(头)
+php74-php-pecl-msgpack-devel：MessagePack开发人员文件(头)
+php74-php-pecl-mysql-xdevapi：MySQL数据库访问函数
+php74-php-pecl-mysqlnd-azure：x86_64: mysqlnd的重定向插件
+php74-php-pecl-igbinary-devel：Igbinary开发人员文件(头)
+php74-php-pecl-uploadprogress：x86_64:跟踪进度的扩展文件上传
+```
+
+### rpm和yum-utils相关
 
 rpm命令是RPM软件包的管理工具。RPM套件管理方式的出现，让Linux易于安装，升级，间接提升了Linux的适用度。
 
@@ -1474,201 +1670,29 @@ executing PHP scripts, /usr/bin/php, and the CGI interface.
 [root@localhost ~]#
 ```
 
-安装完成。
+yum-utils是yum的工具包集合，由不同的作者开发，包含了额外的一些实用命令和工具，用于增强yum的功能，使yum使用起来更加方便和强大。
 
-### 解说
+find-repos-of-install 列出包是从哪个yum 仓库安装的；
+package-cleanup列出本地安装的，重复的或者orphan(找不到对应的仓库源)的包；
+repoclosure模块从多个yum仓库读取包的原信息，查询所有的依赖关系，列出无法解决依赖关系的包；
+等等：
 
 ```
-php74：安装PHP 7.4的包
-php74-php：用于创建动态web的PHP脚本语言网站
-php74-build：基本的构建配置
-php74-php-gd：用于PHP应用程序使用gd的模块图形库
-php74-xhprof：一个用于PHP - Web接口的层次分析器
-php74-zephir：用于创建扩展的Zephir语言PHP：
-php74-php-ast：抽象语法树
-php74-php-cli：用于PHP的命令行接口
-php74-php-dba：一个用于PHP的数据库抽象层模块应用程序
-php74-php-dbg：交互式PHP调试器
-php74-php-ffi：外部函数接口
-php74-php-fpm：PHP FastCGI进程管理器
-php74-php-gmp：一个用于使用GNU的PHP应用程序模块议员库
-php74-php-lz4：x86_64: PHP的LZ4扩展
-php74-php-pdo：一个用于PHP的数据库访问抽象模块应用程序
-php74-php-xml：x86_64:用于使用XML的PHP应用程序的模块
-php74-runtime：处理php74软件集合的包：
-php74-php-imap：x86_64:用于使用IMAP的PHP应用程序的模块
-php74-php-intl：x86_64: PHP国际化扩展应用程序
-php74-php-json：x86_64: PHP的JavaScript对象符号扩展
-php74-php-ldap：x86_64:用于使用LDAP的PHP应用程序的模块
-php74-php-oci8：x86_64:用于使用OCI8的PHP应用程序的模块数据库
-php74-php-odbc：x86_64:用于使用ODBC的PHP应用程序的模块数据库
-php74-php-pear：noarch: PHP扩展和应用程序库框架
-php74-php-pggi：GTK绑定
-php74-php-snmp：一个用于PHP应用程序查询的模块SNMP-managed设备
-php74-php-soap：用于使用SOAP的PHP应用程序的模块协议
-php74-php-tidy：标准PHP模块提供了tidy库支持
-php74-php-zstd：x86_64: Zstandard扩展名
-php74-scldevel：x86_64:打包php74的开发文件
-php74-unit-php：用于NGINX单元的PHP模块
-php74-php-devel：构建PHP扩展所需的文件
-php74-php-pgsql：一个用于PHP的PostgreSQL数据库模块
-php74-php-pinba：x86_64: Pinba统计服务器的客户端扩展
-php74-php-bcmath：用于PHP应用程序的模块bcmath库
-php74-php-brotli：用于PHP的Brotli扩展
-php74-php-common：PHP的公共文件
-php74-php-pspell：x86_64:用于PHP应用程序的模块中接口
-php74-php-recode：用于PHP应用程序的模块重新编码库
-php74-php-snappy：PHP的Snappy扩展
-php74-php-sodium：x86_64:钠密码库的包装
-php74-php-sqlsrv：x86_64:用于SQL Server的PHP Microsoft驱动程序
-php74-php-xmlrpc：的PHP应用程序模块xml - rpc协议
-php74-php-enchant：增强PHP的拼写扩展应用程序
-php74-php-libvirt：用于Libvirt的PHP语言绑定
-php74-php-mysqlnd：x86_64:用于使用MySQL的PHP应用程序的模块数据库
-php74-php-opcache：x86_64: Zend OPcache
-php74-php-pecl-ds：x86_64: PHP的数据结构
-php74-php-pecl-ev：提供libev库的接口
-php74-php-pecl-pq：PostgreSQL客户端库(libpq)绑定
-php74-php-pecl-uv：Libuv包装器
-php74-php-process：用于PHP脚本的模块使用系统进程接口
-php74-php-embedded：用于嵌入应用程序的PHP库
-php74-php-mbstring：一个用于PHP应用程序的模块多字节字符串处理
-php74-php-pecl-dio：直接I/O函数
-php74-php-pecl-eio：提供libeio库的接口
-php74-php-pecl-env：加载环境变量
-php74-php-pecl-lua：嵌入式lua解释器
-php74-php-pecl-lzf：x86_64:处理LZF de/压缩的扩展
-php74-php-pecl-nsq：NSQ客户端的PHP扩展
-php74-php-pecl-psr：PSR接口
-php74-php-pecl-rar：用于读取RAR存档的PHP扩展
-php74-php-pecl-rrd：x86_64: rrdtool的PHP绑定
-php74-php-pecl-sdl：简单的PHP DirectMedia层
-php74-php-pecl-svn：x86_64: Subversion版本的PHP绑定控制系统
-php74-php-pecl-vld：x86_64:转储PHP的内部表示脚本
-php74-php-pecl-yac：无锁用户数据缓存
-php74-php-pecl-yaf：x86_64:又一个框架
-php74-php-pecl-yar：轻量级并发RPC框架
-php74-php-pecl-yaz：x86_64: Z39.50/SRU客户端
-php74-php-pecl-zip：一个ZIP文件的扩展名
-php74-php-pecl-zmq：ZeroMQ消息传递
-php74-php-phalcon4：Phalcon框架
-php74-php-componere：在运行时编写PHP类
-php74-php-litespeed：LiteSpeed Web服务器PHP支持
-php74-php-maxminddb：MaxMind DB Reader扩展
-php74-php-pdo-dblib：x86_64: PDO驱动程序，用于Microsoft SQL Server和Sybase数据库
-php74-php-pecl-amqp：与任何AMQP兼容的服务器通信
-php74-php-pecl-apcu：APC用户缓存
-php74-php-pecl-apfd：总是填充表单数据
-php74-php-pecl-fann：用于FANN库的包装器
-php74-php-pecl-grpc：x86_64:通用RPC框架
-php74-php-pecl-http：扩展的HTTP支持
-php74-php-pecl-krb5：Kerberos验证扩展
-php74-php-pecl-pcov：x86_64:代码覆盖驱动程序
-php74-php-pecl-ssh2：x86_64: libssh2库的绑定
-php74-php-pecl-sync：已命名和未命名同步对象
-php74-php-pecl-uopz：x86_64: Zend的用户操作
-php74-php-pecl-uuid：通用唯一标识符扩展对于PHP
-php74-php-pecl-vips：x86_64:与libvip接口的PHP扩展
-php74-php-pecl-wddx：Web分布式数据交换
-php74-php-pecl-yaml：x86_64: yaml的PHP绑定
-php74-php-phpiredis：x86_64: Redis的客户端扩展名
-php74-php-smbclient：libsmbclient的PHP包装
-php74-php-wkhtmltox：HTML转换器
-php74-php-pecl-cmark：CommonMark扩展名
-php74-php-pecl-dbase：dBase数据库文件访问函数
-php74-php-pecl-druid：一个PHP的德鲁伊驱动
-php74-php-pecl-event：提供libevent库的接口
-php74-php-pecl-geoip：将IP地址映射到的扩展名地理位置
-php74-php-pecl-gnupg：x86_64: gpgme库的包装
-php74-php-pecl-mysql：MySQL数据库访问函数
-php74-php-pecl-oauth：PHP OAuth消费者扩展
-php74-php-pecl-parle：x86_64:解析和词法分析
-php74-php-pecl-raphf：资源和持久句柄工厂
-php74-php-pecl-solr2：Apache Solr的API定向对象
-php74-php-pecl-stats：用于统计计算的例程
-php74-php-pecl-stomp：Stomp客户端扩展
-php74-php-pecl-taint：x86_64: XSS代码嗅探器
-php74-php-pecl-xattr：扩展属性
-php74-php-pecl-xdiff：文件差异/补丁
-php74-php-pecl-xxtea：XXTEA加密算法扩展PHP
-php74-php-libvirt-doc：noarch: php-libvirt文件
-php74-php-pecl-base58：用base58编码和解码数据
-php74-php-pecl-bitset：位集库
-php74-php-pecl-crypto：OpenSSL密码库的包装器
-php74-php-pecl-gender：x86_64:性别扩展
-php74-php-pecl-hprose：用于PHP的h散文
-php74-php-pecl-hrtime：x86_64:高分辨率定时
-php74-php-pecl-mcrypt：x86_64: libmcrypt库的绑定
-php74-php-pecl-pdflib：生成PDF文件的包
-php74-php-pecl-propro：属性代理
-php74-php-pecl-radius：Radius客户端库
-php74-php-pecl-redis4：的扩展名 Redis键值存储
-php74-php-pecl-redis5：的扩展名 Redis键值存储
-php74-php-pecl-scrypt：Scrypt散列函数
-php74-php-pecl-sphinx：Sphinx SQL全文的PECL扩展搜索引擎
-php74-php-pecl-ssdeep：libfuzzy库的包装器
-php74-php-pecl-trader：为贸易商提供技术分析
-php74-php-pecl-xdebug：用于调试PHP脚本的PECL包
-php74-php-pecl-xhprof：x86_64: XHProf的PHP扩展，层次结构分析器
-php74-php-pecl-yaconf：x86_64:另一个配置容器
-php74-php-pecl-apcu-bc：APCu向后兼容模块
-php74-php-pecl-decimal：任意精度浮点小数
-php74-php-pecl-gearman：PHP包装器到libgearman
-php74-php-pecl-gmagick：的包装器GraphicsMagick库
-php74-php-pecl-imagick：x86_64:用于创建和修改映像的扩展使用ImageMagick
-php74-php-pecl-inotify：x86_64: Inotify
-php74-php-pecl-leveldb：LevelDB PHP绑定
-php74-php-pecl-memprof：x86_64:内存使用分析器
-php74-php-pecl-mongodb：x86_64:用于PHP的MongoDB驱动程序
-php74-php-pecl-msgpack：用于与MessagePack通信的API序列化
-php74-php-pecl-rdkafka：基于librdkafka的Kafka客户端
-php74-php-pecl-rpminfo：x86_64: RPM信息
-php74-php-pecl-runkit7：为了这些你…不应该…无论如何我一直在做……但是肯定做的!
-php74-php-pecl-seaslog：一个有效、快速、稳定的日志 PHP扩展
-php74-php-pecl-selinux：用于PHP脚本的SELinux绑定语言
-php74-php-pecl-swoole4：PHP的异步并发分布式网络框架
-php74-php-pecl-timecop：x86_64:时间旅行和冻结扩展
-php74-php-pecl-varnish：Varnish缓存绑定
-php74-php-pecl-xmldiff：x86_64: XML差异和合并
-php74-php-pecl-igbinary：x86_64:替代标准PHP序列化器
-php74-php-pecl-memcache：x86_64:使用Memcached的扩展缓存守护进程
-php74-php-pecl-mogilefs：要与之通信的PHP客户端库 MogileFS存储
-php74-php-pecl-mustache：Mustache模板语言
-php74-php-pecl-protobuf：序列化结构化的机制数据
-php74-php-pecl-rdkafka4：基于librdkafka的Kafka客户端
-php74-php-pecl-scoutapm：本地扩展组件 ScoutAPM的PHP代理
-php74-php-pecl-translit：将非拉丁字符音译设置为拉丁文
-php74-php-snuffleupagus：x86_64: PHP的安全模块
-php74-php-zephir-parser：x86_64: Zephir解析器扩展
-php74-php-pecl-cassandra：用于Apache的DataStax PHP驱动程序卡桑德拉
-php74-php-pecl-json-post：JSON POST处理程序
-php74-php-pecl-mailparse：用于解析和的PHP PECL包处理电子邮件消息
-php74-php-pecl-memcached：x86_64:使用Memcached的扩展缓存守护进程
-php74-php-pecl-mosquitto：libmosquito - to的扩展
-php74-php-pecl-seasclick：一个Yandex ClickHouse客户端驱动 PHP扩展
-php74-php-pecl-xlswriter：一个高效、快速的xlsx文件出口扩展
-php74-php-horde-horde-lz4：Horde LZ4压缩扩展
-php74-php-pecl-apcu-devel：APCu开发人员文件(头文件)
-php74-php-pecl-couchbase2：Couchbase服务器PHP扩展
-php74-php-pecl-geospatial：PHP扩展来处理公共地理空间功能
-php74-php-pecl-handlebars：Handlebars模板语言
-php74-php-pecl-http-devel：x86_64:扩展HTTP支持开发人员文件(头)
-php74-php-pecl-krb5-devel：Kerberos扩展开发人员文件(头)
-php74-php-pecl-luasandbox：带有限制和安全的Lua解释器环境
-php74-php-pecl-opencensus：一个stats集合和分布式跟踪框架
-php74-php-pecl-skywalking：x86_64: Apache的PHP工具代理人行天桥
-php74-php-pecl-ahocorasick：有效的Aho-Corasick字符串模式匹配算法
-php74-php-pecl-ip2location：获取an的地理位置信息IP地址
-php74-php-pecl-http-message：x86_64: PSR-7 HTTP消息实现
-php74-php-pecl-datadog-trace：APM和分布式跟踪PHP
-php74-php-pecl-hdr-histogram：x86_64: C语言的PHP扩展包装hdrhistogram API
-php74-php-pecl-imagick-devel：imagick扩展开发人员文件(头)
-php74-php-pecl-msgpack-devel：MessagePack开发人员文件(头)
-php74-php-pecl-mysql-xdevapi：MySQL数据库访问函数
-php74-php-pecl-mysqlnd-azure：x86_64: mysqlnd的重定向插件
-php74-php-pecl-igbinary-devel：Igbinary开发人员文件(头)
-php74-php-pecl-uploadprogress：x86_64:跟踪进度的扩展文件上传
+[root@localhost ~]# find-repos-of-install yum-utils
+已加载插件：fastestmirror
+yum-utils-1.1.31-54.el7_8.noarch from repo base
+[root@localhost ~]#
+[root@localhost ~]# find-repos-of-install php
+已加载插件：fastestmirror
+php-7.4.33-15.el7.remi.x86_64 from repo remi-php74
+[root@localhost ~]#
+[root@localhost ~]# package-cleanup --problems
+已加载插件：fastestmirror
+No Problems Found
+[root@localhost ~]#
 ```
+
+
 
 
 <br/><br/><br/><br/><br/>
