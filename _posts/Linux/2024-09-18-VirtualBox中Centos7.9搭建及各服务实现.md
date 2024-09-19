@@ -1272,7 +1272,276 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [root@localhost ~]#
 ```
 
+### swoole安装
+
+搜索对应的swoole包：
+```bash
+> yum search pecl|grep swoole
+> 
+> yum list php74* | grep swoole
+```
+
+安装：
+```bash
+yum --enablerepo=remi-php74 install -y php74-php-pecl-swoole4
+```
+
+详细：
+```bash
+[root@localhost ~]# yum search pecl|grep swoole
+php72-php-pecl-swoole-devel.x86_64 : php72-php-pecl-swoole developer files
+php72-php-pecl-swoole2-devel.x86_64 : php72-php-pecl-swoole2 developer files
+php80-php-pecl-swoole5-devel.x86_64 : php80-php-pecl-swoole5 developer files
+php81-php-pecl-openswoole22-devel.x86_64 : php81-php-pecl-openswoole22 developer
+php81-php-pecl-swoole5-devel.x86_64 : php81-php-pecl-swoole5 developer files
+php82-php-pecl-openswoole22-devel.x86_64 : php82-php-pecl-openswoole22 developer
+php82-php-pecl-swoole5-devel.x86_64 : php82-php-pecl-swoole5 developer files
+php83-php-pecl-openswoole22-devel.x86_64 : php83-php-pecl-openswoole22 developer
+php83-php-pecl-swoole5-devel.x86_64 : php83-php-pecl-swoole5 developer files
+php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed networking
+php54-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php55-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php55-php-pecl-swoole2.x86_64 : PHP's asynchronous concurrent distributed
+php56-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php56-php-pecl-swoole2.x86_64 : PHP's asynchronous concurrent distributed
+php70-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php70-php-pecl-swoole-serialize.x86_64 : Fast and Small serialize
+php70-php-pecl-swoole2.x86_64 : PHP's asynchronous concurrent distributed
+php70-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php71-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php71-php-pecl-swoole-serialize.x86_64 : Fast and Small serialize
+php71-php-pecl-swoole2.x86_64 : PHP's asynchronous concurrent distributed
+php71-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php72-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php72-php-pecl-swoole.x86_64 : PHP's asynchronous concurrent distributed
+php72-php-pecl-swoole-serialize.x86_64 : Fast and Small serialize
+php72-php-pecl-swoole2.x86_64 : PHP's asynchronous concurrent distributed
+php72-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php73-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php73-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php74-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php74-php-pecl-openswoole22.x86_64 : High Performance Programmatic Server for
+php74-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php80-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php80-php-pecl-openswoole22.x86_64 : High Performance Programmatic Server for
+php80-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php80-php-pecl-swoole5.x86_64 : PHP's asynchronous concurrent distributed
+php81-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php81-php-pecl-openswoole22.x86_64 : High Performance Programmatic Server for
+php81-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php81-php-pecl-swoole5.x86_64 : PHP's asynchronous concurrent distributed
+php82-php-pecl-openswoole.x86_64 : PHP's asynchronous concurrent distributed
+php82-php-pecl-openswoole22.x86_64 : High Performance Programmatic Server for
+php82-php-pecl-swoole4.x86_64 : PHP's asynchronous concurrent distributed
+php82-php-pecl-swoole5.x86_64 : PHP's asynchronous concurrent distributed
+php83-php-pecl-openswoole22.x86_64 : High Performance Programmatic Server for
+php83-php-pecl-swoole5.x86_64 : PHP's asynchronous concurrent distributed
+[root@localhost ~]#
+[root@localhost ~]# yum list php74* | grep swoole
+php74-php-pecl-openswoole.x86_64         4.12.1-1.el7.remi             remi-safe
+php74-php-pecl-openswoole22.x86_64       22.0.0-1.el7.remi             remi-safe
+php74-php-pecl-swoole4.x86_64            4.8.13-1.el7.remi             remi-safe
+[root@localhost ~]#
+[root@localhost ~]# yum --enablerepo=remi-php74 install -y php74-php-pecl-swoole4
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                              | 4.7 kB  00:00:00
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * remi-php74: mirrors.tuna.tsinghua.edu.cn
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+base                                                              | 3.6 kB  00:00:00
+docker-ce-stable                                                  | 3.5 kB  00:00:00
+extras                                                            | 2.9 kB  00:00:00
+remi-php74                                                        | 3.0 kB  00:00:00
+remi-safe                                                         | 3.0 kB  00:00:00
+updates                                                           | 2.9 kB  00:00:00
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 php74-php-pecl-swoole4.x86_64.0.4.8.13-1.el7.remi 将被 安装
+--> 正在处理依赖关系 php74-php(api) = 20190902-64，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php(zend-abi) = 20190902-64，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-curl(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-json(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-mysqlnd(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-sockets(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-runtime，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-runtime(remi)(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libcares.so.2()(64bit)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在检查事务
+---> 软件包 c-ares.x86_64.0.1.10.0-3.el7_9.1 将被 安装
+---> 软件包 php74-php-common.x86_64.0.7.4.33-15.el7.remi 将被 安装
+---> 软件包 php74-php-json.x86_64.0.7.4.33-15.el7.remi 将被 安装
+---> 软件包 php74-php-mysqlnd.x86_64.0.7.4.33-15.el7.remi 将被 安装
+--> 正在处理依赖关系 php74-php-pdo(x86-64) = 7.4.33-15.el7.remi，它被软件包 php74-php-mysqlnd-7.4.33-15.el7.remi.x86_64 需要
+---> 软件包 php74-runtime.x86_64.0.7.4-3.el7.remi 将被 安装
+--> 正在处理依赖关系 environment-modules，它被软件包 php74-runtime-7.4-3.el7.remi.x86_64 需要
+--> 正在处理依赖关系 scl-utils，它被软件包 php74-runtime-7.4-3.el7.remi.x86_64 需要
+--> 正在检查事务
+---> 软件包 environment-modules.x86_64.0.3.2.10-10.el7 将被 安装
+--> 正在处理依赖关系 libtcl8.5.so()(64bit)，它被软件包 environment-modules-3.2.10-10.el7.x86_64 需要
+---> 软件包 php74-php-pdo.x86_64.0.7.4.33-15.el7.remi 将被 安装
+---> 软件包 scl-utils.x86_64.0.20130529-19.el7 将被 安装
+--> 正在检查事务
+---> 软件包 tcl.x86_64.1.8.5.13-8.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+=========================================================================================
+ Package                     架构        版本                       源              大小
+=========================================================================================
+正在安装:
+ php74-php-pecl-swoole4      x86_64      4.8.13-1.el7.remi          remi-safe      1.0 M
+为依赖而安装:
+ c-ares                      x86_64      1.10.0-3.el7_9.1           updates         78 k
+ environment-modules         x86_64      3.2.10-10.el7              base           107 k
+ php74-php-common            x86_64      7.4.33-15.el7.remi         remi-safe      702 k
+ php74-php-json              x86_64      7.4.33-15.el7.remi         remi-safe       80 k
+ php74-php-mysqlnd           x86_64      7.4.33-15.el7.remi         remi-safe      198 k
+ php74-php-pdo               x86_64      7.4.33-15.el7.remi         remi-safe      128 k
+ php74-runtime               x86_64      7.4-3.el7.remi             remi-safe      1.1 M
+ scl-utils                   x86_64      20130529-19.el7            base            24 k
+ tcl                         x86_64      1:8.5.13-8.el7             base           1.9 M
+
+事务概要
+=========================================================================================
+安装  1 软件包 (+9 依赖软件包)
+
+总下载量：5.3 M
+安装大小：15 M
+Downloading packages:
+(1/10): environment-modules-3.2.10-10.el7.x86_64.rpm              | 107 kB  00:00:00
+(2/10): c-ares-1.10.0-3.el7_9.1.x86_64.rpm                        |  78 kB  00:00:00
+(3/10): php74-php-mysqlnd-7.4.33-15.el7.remi.x86_64.rpm           | 198 kB  00:00:01
+(4/10): php74-runtime-7.4-3.el7.remi.x86_64.rpm                   | 1.1 MB  00:00:04
+(5/10): scl-utils-20130529-19.el7.x86_64.rpm                      |  24 kB  00:00:00
+(6/10): tcl-8.5.13-8.el7.x86_64.rpm                               | 1.9 MB  00:00:02
+(7/10): php74-php-json-7.4.33-15.el7.remi.x86_64.rpm              |  80 kB  00:00:18
+(8/10): php74-php-common-7.4.33-15.el7.remi.x86_64.rpm            | 702 kB  00:00:47
+(9/10): php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64.rpm       | 1.0 MB  00:00:56
+php74-php-pdo-7.4.33-15.el7.re FAILED                                          00:04 ETA
+http://mirrors.thzhost.com/remi/enterprise/7/safe/x86_64/php74-php-pdo-7.4.33-15.el7.remi.x86_64.rpm: [Errno 12] Timeout on http://mirrors.thzhost.com/remi/enterprise/7/safe/x86_64/php74-php-pdo-7.4.33-15.el7.remi.x86_64.rpm: (28, 'Operation too slow. Less than 1000 bytes/sec transferred the last 30 seconds')
+正在尝试其它镜像。
+(10/10): php74-php-pdo-7.4.33-15.el7.remi.x86_64.rpm              | 128 kB  00:00:01
+-----------------------------------------------------------------------------------------
+总计                                                         91 kB/s | 5.3 MB  01:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : c-ares-1.10.0-3.el7_9.1.x86_64                                      1/10
+  正在安装    : scl-utils-20130529-19.el7.x86_64                                    2/10
+  正在安装    : 1:tcl-8.5.13-8.el7.x86_64                                           3/10
+  正在安装    : environment-modules-3.2.10-10.el7.x86_64                            4/10
+  正在安装    : php74-runtime-7.4-3.el7.remi.x86_64                                 5/10
+  正在安装    : php74-php-json-7.4.33-15.el7.remi.x86_64                            6/10
+  正在安装    : php74-php-common-7.4.33-15.el7.remi.x86_64                          7/10
+  正在安装    : php74-php-pdo-7.4.33-15.el7.remi.x86_64                             8/10
+  正在安装    : php74-php-mysqlnd-7.4.33-15.el7.remi.x86_64                         9/10
+  正在安装    : php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64                    10/10
+=====================================================================
+
+  WARNING : PHP 7.4 have reached its "End of Life" in
+  November 2022. Even, if this package includes some of
+  the important security fixes, backported from 8.1, the
+  UPGRADE to a maintained version is very strongly RECOMMENDED.
+
+=====================================================================
+  验证中      : 1:tcl-8.5.13-8.el7.x86_64                                           1/10
+  验证中      : scl-utils-20130529-19.el7.x86_64                                    2/10
+  验证中      : php74-php-mysqlnd-7.4.33-15.el7.remi.x86_64                         3/10
+  验证中      : c-ares-1.10.0-3.el7_9.1.x86_64                                      4/10
+  验证中      : environment-modules-3.2.10-10.el7.x86_64                            5/10
+  验证中      : php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64                     6/10
+  验证中      : php74-php-json-7.4.33-15.el7.remi.x86_64                            7/10
+  验证中      : php74-runtime-7.4-3.el7.remi.x86_64                                 8/10
+  验证中      : php74-php-pdo-7.4.33-15.el7.remi.x86_64                             9/10
+  验证中      : php74-php-common-7.4.33-15.el7.remi.x86_64                         10/10
+
+已安装:
+  php74-php-pecl-swoole4.x86_64 0:4.8.13-1.el7.remi
+
+作为依赖被安装:
+  c-ares.x86_64 0:1.10.0-3.el7_9.1
+  environment-modules.x86_64 0:3.2.10-10.el7
+  php74-php-common.x86_64 0:7.4.33-15.el7.remi
+  php74-php-json.x86_64 0:7.4.33-15.el7.remi
+  php74-php-mysqlnd.x86_64 0:7.4.33-15.el7.remi
+  php74-php-pdo.x86_64 0:7.4.33-15.el7.remi
+  php74-runtime.x86_64 0:7.4-3.el7.remi
+  scl-utils.x86_64 0:20130529-19.el7
+  tcl.x86_64 1:8.5.13-8.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# php -m
+[PHP Modules]
+bcmath
+bz2
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+fileinfo
+filter
+ftp
+gd
+gettext
+hash
+iconv
+json
+libxml
+mbstring
+mcrypt
+mysqli
+mysqlnd
+openssl
+pcntl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+readline
+Reflection
+session
+SimpleXML
+sockets
+sodium
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+xsl
+Zend OPcache
+zip
+zlib
+
+[Zend Modules]
+Zend OPcache
+
+[root@localhost ~]#
+```
+
+安装成功。
+
 ### 解说
+
+PECL 的全称是 The PHP Extension Community Library ，是一个开放的并通过 PEAR(PHP Extension and Application Repository，
+PHP 扩展和应用仓库)打包格式来打包安装的 PHP 扩展库仓库。通过 PEAR 的 Package Manager 的安装管理方式，
+可以对 PECL 模块进行下载和安装。与以往的多数 PEAR 包不同的是，PECL 扩展包含的是可以编译进 PHP Core 的 C 语言代码，
+因此可以将 PECL 扩展库编译成为可动态加载的 .so 共享库，或者采用静态编译方式与 PHP 源代码编译为一体的方法进行扩展。
+PECL 扩展库包含了对于 XML 解析，数据库访问，邮件解析，嵌入式的 Perl 以及 Python 脚本解释器等诸多的 PHP 扩展模块，
+因此从某种意义上来说，在运行效率上 PECL 要高于以往诸多的 PEAR 扩展库。
 
 ```
 php74：安装PHP 7.4的包
