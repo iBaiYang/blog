@@ -2930,13 +2930,8 @@ SELINUXTYPE=targeted
 
 将`SELINUX=enforcing` 改为 `SELINUX=disabled`
 
-设置后需要重启才能生效。
-
 查看SELinux状态：
-```
-[root@localhost ~]# getenforce
-Permissive
-[root@localhost ~]#
+```bash
 [root@localhost ~]# sestatus
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
@@ -2947,6 +2942,21 @@ Mode from config file:          disabled
 Policy MLS status:              enabled
 Policy deny_unknown status:     allowed
 Max kernel policy version:      31
+[root@localhost ~]#
+[root@localhost ~]# getenforce
+Permissive
+[root@localhost ~]#
+```
+
+设置后需要重启才能生效。
+
+查看SELinux状态：
+```bash
+[root@localhost ~]# getenforce
+Disabled
+[root@localhost ~]#
+[root@localhost ~]# sestatus
+SELinux status:                 disabled
 [root@localhost ~]#
 ```
 
@@ -3013,16 +3023,24 @@ hello world!
 
 示例输出 `phpinfo()` 内容。
 
-在 C:\develop\vhost\virtualbox 下新建 test.local.conf 文件，写入内容：
+在 C:\develop\vhost\virtualbox 下新建 phpinfo.local.conf 文件，写入内容：
 ```
 server {
     listen       80;
     server_name  phpinfo.local;
 
     location / {
-        root   /media/sf_develop/www/test;
+        root   /media/sf_develop/www/phpinfo;
         index  index.html index.htm;
     }
+
+    location ~ \.php$ {  
+        root   /media/sf_develop/www/phpinfo;
+        fastcgi_pass 127.0.0.1:9000; 
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+        #fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        include fastcgi_params;  
+    }  
 
     # redirect server error pages to the static page /50x.html
     #
@@ -3048,6 +3066,20 @@ phpinfo();
 > systemctl restart nginx
 
 浏览器访问 `phpinfo.local` 查看效果。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## SELinux是什么
 
