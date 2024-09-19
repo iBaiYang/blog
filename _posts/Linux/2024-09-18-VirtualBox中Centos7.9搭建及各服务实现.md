@@ -2962,7 +2962,7 @@ SELinux status:                 disabled
 
 ### web配置
 
-在 C:\develop\vhost\virtualbox 下新建 test.local.conf 文件，写入内容：
+在 `C:\develop\vhost\virtualbox` 下新建 `test.local.conf` 文件，写入内容：
 ```
 server {
     listen       80;
@@ -2984,7 +2984,7 @@ server {
 }
 ```
 
-在 C:\develop\www\test 下新建 index.html 文件，写入内容：
+在 `C:\develop\www\test` 下新建 `index.html` 文件，写入内容：
 ```
 hello world!
 ```
@@ -3023,22 +3023,22 @@ hello world!
 
 示例输出 `phpinfo()` 内容。
 
-在 C:\develop\vhost\virtualbox 下新建 phpinfo.local.conf 文件，写入内容：
+在 `C:\develop\vhost\virtualbox` 下新建 `phpinfo.local.conf` 文件，写入内容：
 ```
 server {
     listen       80;
     server_name  phpinfo.local;
 
+    root   /media/sf_develop/www/phpinfo;
+    index  index.php index.html index.htm;
+
     location / {
-        root   /media/sf_develop/www/phpinfo;
-        index  index.html index.htm;
+        try_files $uri $uri/ =404; 
     }
 
     location ~ \.php$ {  
-        root   /media/sf_develop/www/phpinfo;
         fastcgi_pass 127.0.0.1:9000; 
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
-        #fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
         include fastcgi_params;  
     }  
 
@@ -3051,7 +3051,7 @@ server {
 }
 ```
 
-在 C:\develop\www\phpinfo 下新建 index.php 文件，写入内容：
+在 `C:\develop\www\phpinfo` 下新建 `index.php` 文件，写入内容：
 ```
 <?php
 phpinfo();
