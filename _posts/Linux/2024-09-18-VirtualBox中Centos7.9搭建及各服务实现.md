@@ -2911,7 +2911,25 @@ nginx:x:996:991:Nginx web server:/var/lib/nginx:/sbin/nologin
 [root@localhost ~]#
 ```
 
-关闭SELINUX：
+查看SELinux状态：
+```bash
+[root@localhost ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+[root@localhost ~]#
+[root@localhost ~]# getenforce
+Enforcing
+[root@localhost ~]#
+```
+
+永久关闭SELINUX：
 > vi /etc/selinux/config
 
 ```
@@ -2929,24 +2947,6 @@ SELINUXTYPE=targeted
 ```
 
 将`SELINUX=enforcing` 改为 `SELINUX=disabled`
-
-查看SELinux状态：
-```bash
-[root@localhost ~]# sestatus
-SELinux status:                 enabled
-SELinuxfs mount:                /sys/fs/selinux
-SELinux root directory:         /etc/selinux
-Loaded policy name:             targeted
-Current mode:                   permissive
-Mode from config file:          disabled
-Policy MLS status:              enabled
-Policy deny_unknown status:     allowed
-Max kernel policy version:      31
-[root@localhost ~]#
-[root@localhost ~]# getenforce
-Permissive
-[root@localhost ~]#
-```
 
 设置后需要重启才能生效。
 
