@@ -1224,14 +1224,20 @@ Zend OPcache
 
 安装完成。
 
+设置开机自启动：
+> systemctl enable php-fpm
+
 启动fpm服务：
 > systemctl start php-fpm
 
 停止fpm服务：
-> systemctl start php-fpm
+> systemctl stop php-fpm
 
 详细：
 ```
+[root@localhost ~]# systemctl enable php-fpm
+Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service to /usr/lib/systemd/system/php-fpm.service.
+[root@localhost ~]#
 [root@localhost ~]# systemctl status php-fpm
 ● php-fpm.service - The PHP FastCGI Process Manager
    Loaded: loaded (/usr/lib/systemd/system/php-fpm.service; disabled; vendor preset: disabled)
@@ -2292,6 +2298,526 @@ No Problems Found
 [root@localhost ~]#
 ```
 
+## Nginx安装
+
+查看nginx并安装：
+> yum list nginx*
+> 
+> yum install -y nginx
+
+详细：
+```bash
+[root@localhost ~]# yum search nginx
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+================================== N/S matched: nginx ===================================
+collectd-nginx.x86_64 : Nginx plugin for collectd
+munin-nginx.noarch : NGINX support for Munin resource monitoring
+nginx-all-modules.noarch : A meta package that installs all available Nginx modules
+nginx-filesystem.noarch : The basic directory layout for the Nginx server
+nginx-mod-devel.x86_64 : Nginx module development files
+nginx-mod-http-image-filter.x86_64 : Nginx HTTP image filter module
+nginx-mod-http-perl.x86_64 : Nginx HTTP perl module
+nginx-mod-http-xslt-filter.x86_64 : Nginx XSLT module
+nginx-mod-mail.x86_64 : Nginx mail modules
+nginx-mod-stream.x86_64 : Nginx stream modules
+pagure-web-nginx.noarch : Nginx configuration for Pagure
+pcp-pmda-nginx.x86_64 : Performance Co-Pilot (PCP) metrics for the Nginx Webserver
+python2-certbot-nginx.noarch : The nginx plugin for certbot
+sympa-nginx.x86_64 : Sympa with nginx
+nginx.x86_64 : A high performance web server and reverse proxy server
+php54-unit-php.x86_64 : PHP module for NGINX Unit
+php55-unit-php.x86_64 : PHP module for NGINX Unit
+php56-unit-php.x86_64 : PHP module for NGINX Unit
+php70-unit-php.x86_64 : PHP module for NGINX Unit
+php71-unit-php.x86_64 : PHP module for NGINX Unit
+php72-unit-php.x86_64 : PHP module for NGINX Unit
+php73-unit-php.x86_64 : PHP module for NGINX Unit
+php74-unit-php.x86_64 : PHP module for NGINX Unit
+php80-unit-php.x86_64 : PHP module for NGINX Unit
+php81-unit-php.x86_64 : PHP module for NGINX Unit
+php82-unit-php.x86_64 : PHP module for NGINX Unit
+php83-unit-php.x86_64 : PHP module for NGINX Unit
+unit.x86_64 : NGINX Unit application server
+unit-php.x86_64 : PHP module for NGINX Unit
+
+  名称和简介匹配 only，使用“search all”试试。
+[root@localhost ~]#
+[root@localhost ~]# yum list nginx
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+可安装的软件包
+nginx.x86_64                             1:1.20.1-10.el7                             epel
+[root@localhost ~]#
+[root@localhost ~]# yum list nginx*
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+可安装的软件包
+nginx.x86_64                                        1:1.20.1-10.el7                  epel
+nginx-all-modules.noarch                            1:1.20.1-10.el7                  epel
+nginx-filesystem.noarch                             1:1.20.1-10.el7                  epel
+nginx-mod-devel.x86_64                              1:1.20.1-10.el7                  epel
+nginx-mod-http-image-filter.x86_64                  1:1.20.1-10.el7                  epel
+nginx-mod-http-perl.x86_64                          1:1.20.1-10.el7                  epel
+nginx-mod-http-xslt-filter.x86_64                   1:1.20.1-10.el7                  epel
+nginx-mod-mail.x86_64                               1:1.20.1-10.el7                  epel
+nginx-mod-stream.x86_64                             1:1.20.1-10.el7                  epel
+[root@localhost ~]#
+[root@localhost ~]# yum install -y nginx
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: dl.fedoraproject.org
+ * extras: mirrors.aliyun.com
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 nginx.x86_64.1.1.20.1-10.el7 将被 安装
+--> 正在处理依赖关系 nginx-filesystem = 1:1.20.1-10.el7，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libcrypto.so.1.1(OPENSSL_1_1_0)(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1(OPENSSL_1_1_0)(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1(OPENSSL_1_1_1)(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 nginx-filesystem，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 redhat-indexhtml，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libcrypto.so.1.1()(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libprofiler.so.0()(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在处理依赖关系 libssl.so.1.1()(64bit)，它被软件包 1:nginx-1.20.1-10.el7.x86_64 需要
+--> 正在检查事务
+---> 软件包 centos-indexhtml.noarch.0.7-9.el7.centos 将被 安装
+---> 软件包 gperftools-libs.x86_64.0.2.6.1-1.el7 将被 安装
+---> 软件包 nginx-filesystem.noarch.1.1.20.1-10.el7 将被 安装
+---> 软件包 openssl11-libs.x86_64.1.1.1.1k-7.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+=========================================================================================
+ Package                   架构            版本                      源             大小
+=========================================================================================
+正在安装:
+ nginx                     x86_64          1:1.20.1-10.el7           epel          588 k
+为依赖而安装:
+ centos-indexhtml          noarch          7-9.el7.centos            base           92 k
+ gperftools-libs           x86_64          2.6.1-1.el7               base          272 k
+ nginx-filesystem          noarch          1:1.20.1-10.el7           epel           24 k
+ openssl11-libs            x86_64          1:1.1.1k-7.el7            epel          1.5 M
+
+事务概要
+=========================================================================================
+安装  1 软件包 (+4 依赖软件包)
+
+总下载量：2.4 M
+安装大小：6.7 M
+Downloading packages:
+(1/5): centos-indexhtml-7-9.el7.centos.noarch.rpm                 |  92 kB  00:00:00
+(2/5): gperftools-libs-2.6.1-1.el7.x86_64.rpm                     | 272 kB  00:00:00
+(3/5): nginx-filesystem-1.20.1-10.el7.noarch.rpm                  |  24 kB  00:00:01
+(4/5): openssl11-libs-1.1.1k-7.el7.x86_64.rpm                     | 1.5 MB  00:00:05
+(5/5): nginx-1.20.1-10.el7.x86_64.rpm                             | 588 kB  00:00:51
+-----------------------------------------------------------------------------------------
+总计                                                         48 kB/s | 2.4 MB  00:51
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : 1:openssl11-libs-1.1.1k-7.el7.x86_64                                 1/5
+  正在安装    : 1:nginx-filesystem-1.20.1-10.el7.noarch                              2/5
+  正在安装    : centos-indexhtml-7-9.el7.centos.noarch                               3/5
+  正在安装    : gperftools-libs-2.6.1-1.el7.x86_64                                   4/5
+  正在安装    : 1:nginx-1.20.1-10.el7.x86_64                                         5/5
+  验证中      : gperftools-libs-2.6.1-1.el7.x86_64                                   1/5
+  验证中      : centos-indexhtml-7-9.el7.centos.noarch                               2/5
+  验证中      : 1:nginx-filesystem-1.20.1-10.el7.noarch                              3/5
+  验证中      : 1:nginx-1.20.1-10.el7.x86_64                                         4/5
+  验证中      : 1:openssl11-libs-1.1.1k-7.el7.x86_64                                 5/5
+
+已安装:
+  nginx.x86_64 1:1.20.1-10.el7
+
+作为依赖被安装:
+  centos-indexhtml.noarch 0:7-9.el7.centos      gperftools-libs.x86_64 0:2.6.1-1.el7
+  nginx-filesystem.noarch 1:1.20.1-10.el7       openssl11-libs.x86_64 1:1.1.1k-7.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# nginx -v
+nginx version: nginx/1.20.1
+[root@localhost ~]#
+```
+
+设置开机自启动：
+> systemctl enable nginx
+
+启动：
+> systemctl start nginx
+
+```bash
+[root@localhost ~]# systemctl enable php-fpm
+Created symlink from /etc/systemd/system/multi-user.target.wants/php-fpm.service to /usr/lib/systemd/system/php-fpm.service.
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# systemctl enable nginx
+Created symlink from /etc/systemd/system/multi-user.target.wants/nginx.service to /usr/lib/systemd/system/nginx.service.
+[root@localhost ~]#
+[root@localhost ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@localhost ~]#
+[root@localhost ~]# systemctl start nginx
+[root@localhost ~]#
+[root@localhost ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since 四 2024-09-19 10:43:15 CST; 2s ago
+  Process: 4144 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 4140 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 4139 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 4147 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─4147 nginx: master process /usr/sbin/nginx
+           ├─4148 nginx: worker process
+           ├─4149 nginx: worker process
+           ├─4150 nginx: worker process
+           ├─4151 nginx: worker process
+           ├─4152 nginx: worker process
+           └─4153 nginx: worker process
+
+9月 19 10:43:15 localhost.localdomain systemd[1]: Starting The nginx HTTP and revers....
+9月 19 10:43:15 localhost.localdomain nginx[4140]: nginx: the configuration file /et...k
+9月 19 10:43:15 localhost.localdomain nginx[4140]: nginx: configuration file /etc/ng...l
+9月 19 10:43:15 localhost.localdomain systemd[1]: Started The nginx HTTP and reverse....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+[root@localhost ~]# systemctl stop nginx
+[root@localhost ~]#
+[root@localhost ~]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: inactive (dead) since 四 2024-09-19 10:43:27 CST; 1s ago
+  Process: 4144 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 4140 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 4139 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 4147 (code=exited, status=0/SUCCESS)
+
+9月 19 10:43:15 localhost.localdomain systemd[1]: Starting The nginx HTTP and revers....
+9月 19 10:43:15 localhost.localdomain nginx[4140]: nginx: the configuration file /et...k
+9月 19 10:43:15 localhost.localdomain nginx[4140]: nginx: configuration file /etc/ng...l
+9月 19 10:43:15 localhost.localdomain systemd[1]: Started The nginx HTTP and reverse....
+9月 19 10:43:27 localhost.localdomain systemd[1]: Stopping The nginx HTTP and revers....
+9月 19 10:43:27 localhost.localdomain systemd[1]: Stopped The nginx HTTP and reverse....
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost ~]#
+```
+
+### nginx配置
+
+查看配置：
+> cat /etc/nginx/nginx.conf
+
+文件内容：
+```bash
+[root@localhost ~]# cat /etc/nginx/nginx.conf
+# For more information on configuration, see:
+#   * Official English Documentation: http://nginx.org/en/docs/
+#   * Official Russian Documentation: http://nginx.org/ru/docs/
+
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    include /etc/nginx/conf.d/*.conf;
+
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  _;
+        root         /usr/share/nginx/html;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+
+# Settings for a TLS enabled server.
+#
+#    server {
+#        listen       443 ssl http2;
+#        listen       [::]:443 ssl http2;
+#        server_name  _;
+#        root         /usr/share/nginx/html;
+#
+#        ssl_certificate "/etc/pki/nginx/server.crt";
+#        ssl_certificate_key "/etc/pki/nginx/private/server.key";
+#        ssl_session_cache shared:SSL:1m;
+#        ssl_session_timeout  10m;
+#        ssl_ciphers HIGH:!aNULL:!MD5;
+#        ssl_prefer_server_ciphers on;
+#
+#        # Load configuration files for the default server block.
+#        include /etc/nginx/default.d/*.conf;
+#
+#        error_page 404 /404.html;
+#            location = /40x.html {
+#        }
+#
+#        error_page 500 502 503 504 /50x.html;
+#            location = /50x.html {
+#        }
+#    }
+
+}
+
+[root@localhost ~]#
+```
+
+在文件 `/etc/nginx/nginx.conf` 的 `include /etc/nginx/conf.d/*.conf;` 下加一行 `include /media/sf_develop/vhost/virtualbox/*.conf;`
+
+重启nginx：
+> systemctl restart nginx
+
+### 开放指定端口
+
+查看监听端口：
+> ss -tunlp
+
+```bash
+[root@localhost ~]# ss -tunlp
+Netid State      Recv-Q Send-Q Local Address:Port               Peer Address:Port        
+udp   UNCONN     0      0              *:68                         *:*                   users:(("dhclient",pid=1040,fd=6))
+udp   UNCONN     0      0      127.0.0.1:323                        *:*                   users:(("chronyd",pid=723,fd=5))
+udp   UNCONN     0      0          [::1]:323                     [::]:*                   users:(("chronyd",pid=723,fd=6))
+tcp   LISTEN     0      128    127.0.0.1:9000                       *:*                   users:(("php-fpm",pid=4199,fd=9),("php-fpm",pid=4198,fd=9),("php-fpm",pid=4197,fd=9),("php-fpm",pid=4196,fd=9),("php-fpm",pid=4195,fd=9),("php-fpm",pid=4194,fd=7))
+tcp   LISTEN     0      128            *:80                         *:*                   users:(("nginx",pid=4185,fd=6),("nginx",pid=4184,fd=6),("nginx",pid=4183,fd=6),("nginx",pid=4182,fd=6),("nginx",pid=4181,fd=6),("nginx",pid=4180,fd=6),("nginx",pid=4179,fd=6))
+tcp   LISTEN     0      128            *:22                         *:*                   users:(("sshd",pid=1218,fd=3))
+tcp   LISTEN     0      100    127.0.0.1:25                         *:*                   users:(("master",pid=1472,fd=13))
+tcp   LISTEN     0      128         [::]:80                      [::]:*                   users:(("nginx",pid=4185,fd=7),("nginx",pid=4184,fd=7),("nginx",pid=4183,fd=7),("nginx",pid=4182,fd=7),("nginx",pid=4181,fd=7),("nginx",pid=4180,fd=7),("nginx",pid=4179,fd=7))
+tcp   LISTEN     0      128         [::]:22                      [::]:*                   users:(("sshd",pid=1218,fd=4))
+tcp   LISTEN     0      100        [::1]:25                      [::]:*                   users:(("master",pid=1472,fd=14))
+[root@localhost ~]#
+```
+
+查看开放端口的情况：
+```bash
+> firewall-cmd --list-all
+```
+
+```bash
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s8
+  sources:
+  services: dhcpv6-client ssh
+  ports: 
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+`services: dhcpv6-client ssh` 表示 ssh 服务是放行的，而 `ports:` 这里为空，表示无端口号放行。
+
+开放 http服务 和 80端口：
+```bash
+> sudo firewall-cmd --add-service=http --permanent
+>
+> sudo firewall-cmd --add-port=80/tcp --permanent
+```
+
+命令末尾的```--permanent```表示永久有效；不加这句，重启后刚才开放的端口就又失效了。
+
+然后重启防火墙：
+```bash
+> sudo firewall-cmd --reload
+```
+
+再次查看端口的开放情况：
+```bash
+> firewall-cmd --list-all
+```
+
+```bash
+[root@localhost ~]# firewall-cmd --reload
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s8
+  sources:
+  services: dhcpv6-client http ssh
+  ports: 80/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+### web配置
+
+在 C:\develop\vhost\virtualbox 下新建 test.local.conf 文件，写入内容：
+```
+server {
+    listen       80;
+    server_name  test.local;
+
+    location / {
+        root   /media/sf_develop/www/test;
+        index  index.html index.htm;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+在 C:\develop\www\test 下新建 index.html 文件，写入内容：
+```
+hello world!
+```
+
+查看服务器ip：
+> ip addr
+
+```bash
+[root@localhost ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:ad:5d:64 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.110.203/24 brd 192.168.110.255 scope global noprefixroute dynamic enp0s8
+       valid_lft 15854sec preferred_lft 15854sec
+    inet6 fe80::933d:1aa0:72ae:e8a3/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+[root@localhost ~]#
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.110.203    test.local
+```
+
+重启nginx：
+> systemctl restart nginx
+
+浏览器访问 `test.local` 查看效果。
+
+### php项目配置
+
+示例输出 `phpinfo()` 内容。
+
+在 C:\develop\vhost\virtualbox 下新建 test.local.conf 文件，写入内容：
+```
+server {
+    listen       80;
+    server_name  phpinfo.local;
+
+    location / {
+        root   /media/sf_develop/www/test;
+        index  index.html index.htm;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+在 C:\develop\www\phpinfo 下新建 index.php 文件，写入内容：
+```
+<?php
+phpinfo();
+```
+
+在 `C:\Windows\System32\drivers\etc\hosts` 文件中追加一行：
+```
+192.168.110.203    phpinfo.local
+```
+
+重启nginx：
+> systemctl restart nginx
+
+浏览器访问 `phpinfo.local` 查看效果。
+
+
+
+
+
+
+
+
 
 
 
@@ -2304,3 +2830,4 @@ Centos7.8 安装PHP7.4 <https://ibaiyang.github.io/blog/linux/2021/08/29/Centos7
 
 Centos8（Liunx） 中安装PHP7.4 的三种方法和删除它的三种方法 <https://www.kancloud.cn/lk_super/mysql/2311557>
 
+VirtualBox-搭建Centos7.9 <https://ibaiyang.github.io/blog/linux/2022/02/16/VirtualBox-搭建Centos7.9.html>
