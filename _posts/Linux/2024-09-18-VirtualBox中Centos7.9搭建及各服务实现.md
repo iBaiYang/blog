@@ -2714,6 +2714,242 @@ public (active)
 [root@localhost ~]#
 ```
 
+### 权限准备
+
+查看php和nginx进程的用户：
+```bash
+[root@localhost ~]# ps aux | grep php-fpm
+root      4194  0.0  0.2 494608 16844 ?        Ss   10:44   0:05 php-fpm: master process (/etc/php-fpm.conf)
+apache    4195  0.0  0.1 494608  7576 ?        S    10:44   0:00 php-fpm: pool www
+apache    4196  0.0  0.1 494608  7576 ?        S    10:44   0:00 php-fpm: pool www
+apache    4197  0.0  0.1 494608  7576 ?        S    10:44   0:00 php-fpm: pool www
+apache    4198  0.0  0.1 494608  7576 ?        S    10:44   0:00 php-fpm: pool www
+apache    4199  0.0  0.1 494608  7576 ?        S    10:44   0:00 php-fpm: pool www
+root      4575  0.0  0.0 112824   992 pts/0    R+   16:32   0:00 grep --color=auto php-fpm
+[root@localhost ~]#
+[root@localhost ~]# ps aux | grep nginx
+root      4526  0.0  0.0  39312  1052 ?        Ss   15:53   0:00 nginx: master process /usr/sbin/nginx
+nginx     4527  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+nginx     4528  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+nginx     4529  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+nginx     4530  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+nginx     4531  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+nginx     4532  0.0  0.0  39700  2060 ?        S    15:53   0:00 nginx: worker process
+root      4577  0.0  0.0 112828   988 pts/0    S+   16:32   0:00 grep --color=auto ngin
+[root@localhost ~]#
+```
+
+php-fpm 的用户是 apache，nginx 的用户是 nginx。
+
+查看服务器中的用户：
+```bash
+[root@localhost ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+chrony:x:998:996::/var/lib/chrony:/sbin/nologin
+admin:x:1000:1000:admin:/home/admin:/bin/bash
+vboxadd:x:997:1::/var/run/vboxadd:/bin/false
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+nginx:x:996:991:Nginx web server:/var/lib/nginx:/sbin/nologin
+[root@localhost ~]#
+```
+
+查看服务器中的用户组：
+```bash
+[root@localhost ~]# cat /etc/group
+root:x:0:
+bin:x:1:
+daemon:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mem:x:8:
+kmem:x:9:
+wheel:x:10:admin
+cdrom:x:11:
+mail:x:12:postfix
+man:x:15:
+dialout:x:18:
+floppy:x:19:
+games:x:20:
+tape:x:33:
+video:x:39:
+ftp:x:50:
+lock:x:54:
+audio:x:63:
+nobody:x:99:
+users:x:100:
+utmp:x:22:
+utempter:x:35:
+input:x:999:
+systemd-journal:x:190:
+systemd-network:x:192:
+dbus:x:81:
+polkitd:x:998:
+ssh_keys:x:997:
+sshd:x:74:
+postdrop:x:90:
+postfix:x:89:
+chrony:x:996:
+admin:x:1000:admin
+vboxsf:x:995:
+vboxdrmipc:x:994:
+cgred:x:993:
+docker:x:992:
+apache:x:48:
+nginx:x:991:
+[root@localhost ~]#
+```
+
+查看下面将会配置的项目配置文件所在目录的用户和用户组：
+```bash
+[root@localhost ~]# ls -l /media/
+总用量 0
+drwxr-xr-x. 2 root root   6 9月   3 18:13 cdrom
+drwxrwx---. 1 root vboxsf 0 9月  19 15:54 sf_develop
+[root@localhost ~]#
+```
+
+挂载目录 sf_develop 的用户组是 vboxsf，为了让php和nginx可以读取与执行该目录下的文件，我们需要把php和nginx加入 vboxsf 用户组：
+> usermod -aG vboxsf nginx
+> 
+> usermod -aG vboxsf apache
+
+详细：
+```bash
+[root@localhost ~]# usermod -aG vboxsf nginx
+[root@localhost ~]#
+[root@localhost ~]# usermod -aG vboxsf apache
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/group
+root:x:0:
+bin:x:1:
+daemon:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mem:x:8:
+kmem:x:9:
+wheel:x:10:admin
+cdrom:x:11:
+mail:x:12:postfix
+man:x:15:
+dialout:x:18:
+floppy:x:19:
+games:x:20:
+tape:x:33:
+video:x:39:
+ftp:x:50:
+lock:x:54:
+audio:x:63:
+nobody:x:99:
+users:x:100:
+utmp:x:22:
+utempter:x:35:
+input:x:999:
+systemd-journal:x:190:
+systemd-network:x:192:
+dbus:x:81:
+polkitd:x:998:
+ssh_keys:x:997:
+sshd:x:74:
+postdrop:x:90:
+postfix:x:89:
+chrony:x:996:
+admin:x:1000:admin
+vboxsf:x:995:nginx,apache
+vboxdrmipc:x:994:
+cgred:x:993:
+docker:x:992:
+apache:x:48:
+nginx:x:991:
+[root@localhost ~]#
+[root@localhost ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+chrony:x:998:996::/var/lib/chrony:/sbin/nologin
+admin:x:1000:1000:admin:/home/admin:/bin/bash
+vboxadd:x:997:1::/var/run/vboxadd:/bin/false
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+nginx:x:996:991:Nginx web server:/var/lib/nginx:/sbin/nologin
+[root@localhost ~]#
+```
+
+关闭SELINUX：
+> vi /etc/selinux/config
+
+```
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+```
+
+将`SELINUX=enforcing` 改为 `SELINUX=disabled`
+
+设置后需要重启才能生效。
+
+查看SELinux状态：
+```
+[root@localhost ~]# getenforce
+Permissive
+[root@localhost ~]#
+[root@localhost ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   permissive
+Mode from config file:          disabled
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+[root@localhost ~]#
+```
+
 ### web配置
 
 在 C:\develop\vhost\virtualbox 下新建 test.local.conf 文件，写入内容：
@@ -2722,9 +2958,11 @@ server {
     listen       80;
     server_name  test.local;
 
+    root   /media/sf_develop/www/test;
+    index  index.html index.htm;	
+
     location / {
-        root   /media/sf_develop/www/test;
-        index  index.html index.htm;
+        try_files $uri $uri/ =404; 
     }
 
     # redirect server error pages to the static page /50x.html
@@ -2811,9 +3049,38 @@ phpinfo();
 
 浏览器访问 `phpinfo.local` 查看效果。
 
+## SELinux是什么
 
+SELinux，全称为Security-Enhanced Linux，是一种在Linux操作系统上实施细粒度访问控制的安全机制。
+它由美国国家安全局（NSA）联合其他安全机构共同开发，旨在增强传统Linux操作系统的安全性，
+解决自主访问控制（DAC）系统中的各种权限问题，如root权限过高等。
 
+### SELinux的主要特点包括：
 
+1. **强制访问控制（MAC）**：SELinux采用MAC系统，控制一个进程对具体文件系统上的文件或目录是否拥有访问权限。
+2. 这种控制机制比传统的基于用户和组的访问控制更为严格和细致。
+
+2. **安全策略**：SELinux使用了一个安全策略，该策略定义了每个进程、文件、目录等在系统中的访问权限。
+3. 当进程或用户尝试访问一个对象时，SELinux会根据安全策略中定义的规则，检查请求是否合法，并决定是否允许访问。
+
+3. **上下文（Context）**：在SELinux中，每个对象（如文件、目录、进程等）都有一个上下文，包括对象的类别和安全标签。
+4. 这些上下文信息用于在访问控制决策中识别和区分不同的对象。
+
+4. **内核级实现**：SELinux的安全策略是在Linux内核中实现的，它拦截系统调用和文件操作，并根据安全策略进行验证和授权。
+5. 这种内核级的实现方式使得SELinux能够提供更强大的安全保护。
+
+5. **可定制性**：SELinux提供了丰富的安全策略选项，用户可以根据自己的需求定制安全策略。
+6. 这些策略可以包括不同的安全级别（如disabled、permissive、enforcing等）和不同的策略类型（如targeted、strict等）。
+
+### SELinux的应用场景：
+
+SELinux被广泛应用于对安全性要求较高的系统中，如服务器环境、金融系统、政府机构等。在这些系统中，
+SELinux可以有效地防止未经授权的访问、提高系统的安全性和稳定性。
+
+### 总结：
+
+SELinux是一种在Linux操作系统上实施细粒度访问控制的安全机制，它通过强制访问控制和安全策略来增强系统的安全性。
+SELinux的内核级实现和可定制性使其成为一种强大的安全工具，被广泛应用于对安全性要求较高的系统中。
 
 
 
@@ -2831,3 +3098,12 @@ Centos7.8 安装PHP7.4 <https://ibaiyang.github.io/blog/linux/2021/08/29/Centos7
 Centos8（Liunx） 中安装PHP7.4 的三种方法和删除它的三种方法 <https://www.kancloud.cn/lk_super/mysql/2311557>
 
 VirtualBox-搭建Centos7.9 <https://ibaiyang.github.io/blog/linux/2022/02/16/VirtualBox-搭建Centos7.9.html>
+
+Linux YUM yum-utils 模块详解 <https://www.cnblogs.com/ryanpan/p/16422240.html>
+
+
+
+
+
+
+
