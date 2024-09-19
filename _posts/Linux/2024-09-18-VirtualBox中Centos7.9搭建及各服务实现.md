@@ -1289,8 +1289,10 @@ Hint: Some lines were ellipsized, use -l to show in full.
 
 安装：
 ```bash
-yum --enablerepo=remi-php74 install -y php74-php-pecl-swoole4
+yum --enablerepo=remi-php74 install -y php-pecl-swoole4
 ```
+
+这里有一个注意点，别输入成```yum --enablerepo=remi-php74 install -y php74-php-pecl-swoole4```，不然拓展会安装失败，安装后找不到。
 
 详细：
 ```bash
@@ -1348,7 +1350,7 @@ php74-php-pecl-openswoole.x86_64         4.12.1-1.el7.remi             remi-safe
 php74-php-pecl-openswoole22.x86_64       22.0.0-1.el7.remi             remi-safe
 php74-php-pecl-swoole4.x86_64            4.8.13-1.el7.remi             remi-safe
 [root@localhost ~]#
-[root@localhost ~]# yum --enablerepo=remi-php74 install -y php74-php-pecl-swoole4
+[root@localhost ~]# yum --enablerepo=remi-php74 install -y php-pecl-swoole4
 已加载插件：fastestmirror
 Loading mirror speeds from cached hostfile
 epel/x86_64/metalink                                              | 4.7 kB  00:00:00
@@ -1366,16 +1368,16 @@ remi-safe                                                         | 3.0 kB  00:0
 updates                                                           | 2.9 kB  00:00:00
 正在解决依赖关系
 --> 正在检查事务
----> 软件包 php74-php-pecl-swoole4.x86_64.0.4.8.13-1.el7.remi 将被 安装
---> 正在处理依赖关系 php74-php(api) = 20190902-64，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-php(zend-abi) = 20190902-64，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-php-curl(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-php-json(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-php-mysqlnd(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-php-sockets(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-runtime，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 php74-runtime(remi)(x86-64)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
---> 正在处理依赖关系 libcares.so.2()(64bit)，它被软件包 php74-php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+---> 软件包 php-pecl-swoole4.x86_64.0.4.8.13-1.el7.remi 将被 安装
+--> 正在处理依赖关系 php74-php(api) = 20190902-64，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php(zend-abi) = 20190902-64，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-curl(x86-64)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-json(x86-64)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-mysqlnd(x86-64)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-php-sockets(x86-64)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-runtime，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 php74-runtime(remi)(x86-64)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libcares.so.2()(64bit)，它被软件包 php-pecl-swoole4-4.8.13-1.el7.remi.x86_64 需要
 --> 正在检查事务
 ---> 软件包 c-ares.x86_64.0.1.10.0-3.el7_9.1 将被 安装
 ---> 软件包 php74-php-common.x86_64.0.7.4.33-15.el7.remi 将被 安装
@@ -1523,6 +1525,7 @@ sodium
 SPL
 sqlite3
 standard
+swoole
 tokenizer
 xml
 xmlreader
@@ -1539,6 +1542,9 @@ Zend OPcache
 ```
 
 安装成功。
+
+重启 php-fpm 服务：
+> systemctl restart php-fpm
 
 ### 解说
 
