@@ -1278,7 +1278,7 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [root@localhost ~]#
 ```
 
-### swoole安装
+### swoolet拓展安装
 
 搜索对应的swoole包：
 ```bash
@@ -1546,7 +1546,59 @@ Zend OPcache
 重启 php-fpm 服务：
 > systemctl restart php-fpm
 
-### 解说
+### Composer安装
+
+下载安装包：
+>  php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
+
+安装：
+> php composer-setup.php
+
+移到bin目录：
+> mv composer.phar /usr/local/bin/composer
+
+删除安装包：
+> php -r "unlink('composer-setup.php');"
+
+详细：
+```bash
+[root@localhost ~]# php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
+[root@localhost ~]#
+[root@localhost ~]# ls
+anaconda-ks.cfg  composer-setup.php
+[root@localhost ~]#
+[root@localhost ~]# php composer-setup.php
+All settings correct for using Composer
+Downloading...
+
+Composer (version 2.7.9) successfully installed to: /root/composer.phar
+Use it: php composer.phar
+
+[root@localhost ~]#
+[root@localhost ~]# ll
+总用量 3012
+-rw-------. 1 root root    1412 9月   3 17:28 anaconda-ks.cfg
+-rwxr-xr-x  1 root root 3018138 9月  20 14:25 composer.phar
+-rw-r--r--  1 root root   58452 9月  20 14:24 composer-setup.php
+[root@localhost ~]#
+[root@localhost ~]# mv composer.phar /usr/local/bin/composer
+[root@localhost ~]#
+[root@localhost ~]# ls
+anaconda-ks.cfg  composer-setup.php
+[root@localhost ~]#
+[root@localhost ~]# composer --version
+Composer version 2.7.9 2024-09-04 14:43:28
+PHP version 7.4.33 (/usr/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+[root@localhost ~]#
+[root@localhost ~]# php -r "unlink('composer-setup.php');"
+[root@localhost ~]#
+[root@localhost ~]# ls
+anaconda-ks.cfg
+[root@localhost ~]#
+```
+
+### 拓展解说
 
 PECL 的全称是 The PHP Extension Community Library ，是一个开放的并通过 PEAR(PHP Extension and Application Repository，
 PHP 扩展和应用仓库)打包格式来打包安装的 PHP 扩展库仓库。通过 PEAR 的 Package Manager 的安装管理方式，
