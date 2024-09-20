@@ -1278,7 +1278,7 @@ Hint: Some lines were ellipsized, use -l to show in full.
 [root@localhost ~]#
 ```
 
-### swoolet拓展安装
+### Swoolet拓展安装
 
 搜索对应的swoole包：
 ```bash
@@ -3127,13 +3127,408 @@ phpinfo();
 
 
 
+## MySQL安装
 
+查看Linux版本：
+```bash
+[root@localhost ~]# cat /etc/redhat-release
+CentOS Linux release 7.9.2009 (Core)
+[root@localhost ~]#
+```
 
+首先我们需要获取分发源的地址（<https://dev.mysql.com/downloads/repo/yum/>）， 安装存储库：
+> rpm -Uvh https://repo.mysql.com/mysql84-community-release-el7-1.noarch.rpm
 
+> ll /etc/yum.repos.d/
 
+```
+> yum repolist enabled | grep "mysql.*-community.*"
+>
+> yum repolist all | grep mysql
+> 
+> yum repolist enabled | grep mysql
+```
 
+安装：
+> yum install -y mysql-community-server
 
+设置开机自启动：
+> systemctl enable mysqld
 
+启动mysql服务：
+> systemctl start mysqld
+
+详细：
+```base
+[root@localhost ~]# cat /etc/redhat-release
+CentOS Linux release 7.9.2009 (Core)
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# rpm -Uvh https://repo.mysql.com/mysql84-community-release-el7-1.noarch.rpm
+获取https://repo.mysql.com/mysql84-community-release-el7-1.noarch.rpm
+警告：/var/tmp/rpm-tmp.w09DRK: 头V4 RSA/SHA256 Signature, 密钥 ID a8d3785c: NOKEY
+准备中...                          ################################# [100%]
+正在升级/安装...
+   1:mysql84-community-release-el7-1  ################################# [100%]
+[root@localhost ~]#
+[root@localhost ~]# ll /etc/yum.repos.d/
+总用量 120
+-rw-r--r--. 1 root root 2523 9月   3 18:00 CentOS-Base.repo
+-rw-r--r--. 1 root root 1664 10月 23 2020 CentOS-Base.repo.backup
+-rw-r--r--. 1 root root 1309 5月  21 22:48 CentOS-CR.repo
+-rw-r--r--. 1 root root  649 5月  21 22:48 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  314 5月  21 22:48 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 5月  21 22:48 CentOS-Media.repo
+-rw-r--r--. 1 root root 1331 5月  21 22:48 CentOS-Sources.repo
+-rw-r--r--. 1 root root 9454 5月  21 22:48 CentOS-Vault.repo
+-rw-r--r--. 1 root root  616 5月  21 22:48 CentOS-x86_64-kernel.repo
+-rw-r--r--. 1 root root 2081 9月  13 14:14 docker-ce.repo
+-rw-r--r--. 1 root root  951 10月  3 2017 epel.repo
+-rw-r--r--. 1 root root 1050 10月  3 2017 epel-testing.repo
+-rw-r--r--  1 root root 3070 4月  22 17:33 mysql-community-debuginfo.repo
+-rw-r--r--  1 root root 2751 4月  22 17:33 mysql-community.repo
+-rw-r--r--  1 root root 2870 4月  22 17:33 mysql-community-source.repo
+-rw-r--r--. 1 root root  855 11月 28 2023 remi-modular.repo
+-rw-r--r--. 1 root root  456 11月 28 2023 remi-php54.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php70.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php71.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php72.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php73.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php74.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php80.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php81.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php82.repo
+-rw-r--r--. 1 root root 1314 11月 28 2023 remi-php83.repo
+-rw-r--r--. 1 root root 2605 11月 28 2023 remi.repo
+-rw-r--r--. 1 root root  750 11月 28 2023 remi-safe.repo
+[root@localhost ~]#
+[root@localhost ~]# yum repolist enabled | grep "mysql.*-community.*"
+mysql-8.4-lts-community/x86_64       MySQL 8.4 LTS Community Server           23
+mysql-connectors-community/x86_64    MySQL Connectors Community              258
+mysql-tools-8.4-lts-community/x86_64 MySQL Tools 8.4 LTS Community             4
+[root@localhost ~]#
+[root@localhost ~]# yum repolist all | grep mysql
+mysql-8.4-lts-community/x86_64                      MySQL 8.4 LTS C 启用:     23
+mysql-8.4-lts-community-debuginfo/x86_64            MySQL 8.4 LTS C 禁用
+mysql-8.4-lts-community-source                      MySQL 8.4 LTS C 禁用
+mysql-cluster-8.0-community/x86_64                  MySQL Cluster 8 禁用
+mysql-cluster-8.0-community-debuginfo/x86_64        MySQL Cluster 8 禁用
+mysql-cluster-8.0-community-source                  MySQL Cluster 8 禁用
+mysql-cluster-8.4-lts-community/x86_64              MySQL Cluster 8 禁用
+mysql-cluster-8.4-lts-community-debuginfo/x86_64    MySQL Cluster 8 禁用
+mysql-cluster-8.4-lts-community-source              MySQL Cluster 8 禁用
+mysql-cluster-innovation-community/x86_64           MySQL Cluster I 禁用
+mysql-cluster-innovation-community-debuginfo/x86_64 MySQL Cluster I 禁用
+mysql-cluster-innovation-community-source           MySQL Cluster I 禁用
+mysql-connectors-community/x86_64                   MySQL Connector 启用:    258
+mysql-connectors-community-debuginfo/x86_64         MySQL Connector 禁用
+mysql-connectors-community-source                   MySQL Connector 禁用
+mysql-innovation-community/x86_64                   MySQL Innovatio 禁用
+mysql-innovation-community-debuginfo/x86_64         MySQL Innovatio 禁用
+mysql-innovation-community-source                   MySQL Innovatio 禁用
+mysql-tools-8.4-lts-community/x86_64                MySQL Tools 8.4 启用:      4
+mysql-tools-8.4-lts-community-debuginfo/x86_64      MySQL Tools 8.4 禁用
+mysql-tools-8.4-lts-community-source                MySQL Tools 8.4 禁用
+mysql-tools-community/x86_64                        MySQL Tools Com 禁用
+mysql-tools-community-debuginfo/x86_64              MySQL Tools Com 禁用
+mysql-tools-community-source                        MySQL Tools Com 禁用
+mysql-tools-innovation-community/x86_64             MySQL Tools Inn 禁用
+mysql-tools-innovation-community-debuginfo/x86_64   MySQL Tools Inn 禁用
+mysql-tools-innovation-community-source             MySQL Tools Inn 禁用
+mysql80-community/x86_64                            MySQL 8.0 Commu 禁用
+mysql80-community-debuginfo/x86_64                  MySQL 8.0 Commu 禁用
+mysql80-community-source                            MySQL 8.0 Commu 禁用
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# yum repolist enabled | grep mysql
+mysql-8.4-lts-community/x86_64       MySQL 8.4 LTS Community Server           23
+mysql-connectors-community/x86_64    MySQL Connectors Community              258
+mysql-tools-8.4-lts-community/x86_64 MySQL Tools 8.4 LTS Community             4
+[root@localhost ~]#
+[root@localhost ~]# yum install mysql-community-server
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: dl.fedoraproject.org
+ * extras: mirrors.aliyun.com
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 mysql-community-server.x86_64.0.8.4.2-1.el7 将被 安装
+--> 正在处理依赖关系 mysql-community-common(x86-64) = 8.4.2-1.el7，它被软件包 mysql-community-server-8.4.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 mysql-community-icu-data-files = 8.4.2-1.el7，它被软件包 mysql-community-server-8.4.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 mysql-community-client(x86-64) >= 8.0.11，它被软件包 mysql-community-server-8.4.2-1.el7.x86_64 需要
+--> 正在检查事务
+---> 软件包 mysql-community-client.x86_64.0.8.4.2-1.el7 将被 安装
+--> 正在处理依赖关系 mysql-community-client-plugins = 8.4.2-1.el7，它被软件包 mysql-community-client-8.4.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 mysql-community-libs(x86-64) >= 8.0.11，它被软件包 mysql-community-client-8.4.2-1.el7.x86_64 需要
+---> 软件包 mysql-community-common.x86_64.0.8.4.2-1.el7 将被 安装
+---> 软件包 mysql-community-icu-data-files.x86_64.0.8.4.2-1.el7 将被 安装
+--> 正在检查事务
+---> 软件包 mariadb-libs.x86_64.1.5.5.68-1.el7 将被 取代
+--> 正在处理依赖关系 libmysqlclient.so.18()(64bit)，它被软件包 2:postfix-2.10.1-9.el7.x86_64 需要
+--> 正在处理依赖关系 libmysqlclient.so.18(libmysqlclient_18)(64bit)，它被软件包 2:postfix-2.10.1-9.el7.x86_64 需要
+---> 软件包 mysql-community-client-plugins.x86_64.0.8.4.2-1.el7 将被 安装
+---> 软件包 mysql-community-libs.x86_64.0.8.4.2-1.el7 将被 舍弃
+--> 正在检查事务
+---> 软件包 mysql-community-libs-compat.x86_64.0.8.4.2-1.el7 将被 舍弃
+--> 解决依赖关系完成
+
+依赖关系解决
+
+==========================================================================================
+ Package                          架构     版本           源                         大小
+==========================================================================================
+正在安装:
+ mysql-community-libs             x86_64   8.4.2-1.el7    mysql-8.4-lts-community   1.5 M
+      替换  mariadb-libs.x86_64 1:5.5.68-1.el7
+ mysql-community-libs-compat      x86_64   8.4.2-1.el7    mysql-8.4-lts-community   671 k
+      替换  mariadb-libs.x86_64 1:5.5.68-1.el7
+ mysql-community-server           x86_64   8.4.2-1.el7    mysql-8.4-lts-community    61 M
+为依赖而安装:
+ mysql-community-client           x86_64   8.4.2-1.el7    mysql-8.4-lts-community    15 M
+ mysql-community-client-plugins   x86_64   8.4.2-1.el7    mysql-8.4-lts-community   3.5 M
+ mysql-community-common           x86_64   8.4.2-1.el7    mysql-8.4-lts-community   690 k
+ mysql-community-icu-data-files   x86_64   8.4.2-1.el7    mysql-8.4-lts-community   2.2 M
+
+事务概要
+==========================================================================================
+安装  3 软件包 (+4 依赖软件包)
+
+总下载量：84 M
+Is this ok [y/d/N]: y
+Downloading packages:
+警告：/var/cache/yum/x86_64/7/mysql-8.4-lts-community/packages/mysql-community-client-plugins-8.4.2-1.el7.x86_64.rpm: 头V4 RSA/SHA256 Signature, 密钥 ID a8d3785c: NOKEY
+mysql-community-client-plugins-8.4.2-1.el7.x86_64.rpm 的公钥尚未安装
+(1/7): mysql-community-client-plugins-8.4.2-1.el7.x86_64.rpm       | 3.5 MB  00:00:07
+(2/7): mysql-community-common-8.4.2-1.el7.x86_64.rpm               | 690 kB  00:00:01
+(3/7): mysql-community-icu-data-files-8.4.2-1.el7.x86_64.rpm       | 2.2 MB  00:00:04
+(4/7): mysql-community-libs-8.4.2-1.el7.x86_64.rpm                 | 1.5 MB  00:00:02
+(5/7): mysql-community-libs-compat-8.4.2-1.el7.x86_64.rpm          | 671 kB  00:00:01
+(6/7): mysql-community-client-8.4.2-1.el7.x86_64.rpm               |  15 MB  00:00:28
+(7/7): mysql-community-server-8.4.2-1.el7.x86_64.rpm               |  61 MB  00:01:04
+------------------------------------------------------------------------------------------
+总计                                                      1.0 MB/s |  84 MB  00:01:22
+从 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql-2023 检索密钥
+导入 GPG key 0xA8D3785C:
+ 用户ID     : "MySQL Release Engineering <mysql-build@oss.oracle.com>"
+ 指纹       : bca4 3417 c3b4 85dd 128e c6d4 b7b3 b788 a8d3 785c
+ 软件包     : mysql84-community-release-el7-1.noarch (installed)
+ 来自       : /etc/pki/rpm-gpg/RPM-GPG-KEY-mysql-2023
+是否继续？[y/N]：y
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+警告：RPM 数据库已被非 yum 程序修改。
+  正在安装    : mysql-community-client-plugins-8.4.2-1.el7.x86_64                     1/8
+  正在安装    : mysql-community-common-8.4.2-1.el7.x86_64                             2/8
+  正在安装    : mysql-community-libs-8.4.2-1.el7.x86_64                               3/8
+  正在安装    : mysql-community-client-8.4.2-1.el7.x86_64                             4/8
+  正在安装    : mysql-community-icu-data-files-8.4.2-1.el7.x86_64                     5/8
+  正在安装    : mysql-community-server-8.4.2-1.el7.x86_64                             6/8
+  正在安装    : mysql-community-libs-compat-8.4.2-1.el7.x86_64                        7/8
+  正在删除    : 1:mariadb-libs-5.5.68-1.el7.x86_64                                    8/8
+  验证中      : mysql-community-common-8.4.2-1.el7.x86_64                             1/8
+  验证中      : mysql-community-libs-8.4.2-1.el7.x86_64                               2/8
+  验证中      : mysql-community-client-8.4.2-1.el7.x86_64                             3/8
+  验证中      : mysql-community-server-8.4.2-1.el7.x86_64                             4/8
+  验证中      : mysql-community-libs-compat-8.4.2-1.el7.x86_64                        5/8
+  验证中      : mysql-community-client-plugins-8.4.2-1.el7.x86_64                     6/8
+  验证中      : mysql-community-icu-data-files-8.4.2-1.el7.x86_64                     7/8
+  验证中      : 1:mariadb-libs-5.5.68-1.el7.x86_64                                    8/8
+
+已安装:
+  mysql-community-libs.x86_64 0:8.4.2-1.el7
+  mysql-community-libs-compat.x86_64 0:8.4.2-1.el7
+  mysql-community-server.x86_64 0:8.4.2-1.el7
+
+作为依赖被安装:
+  mysql-community-client.x86_64 0:8.4.2-1.el7
+  mysql-community-client-plugins.x86_64 0:8.4.2-1.el7
+  mysql-community-common.x86_64 0:8.4.2-1.el7
+  mysql-community-icu-data-files.x86_64 0:8.4.2-1.el7
+
+替代:
+  mariadb-libs.x86_64 1:5.5.68-1.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# systemctl status mysqld
+● mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+[root@localhost ~]#
+[root@localhost ~]# systemctl enable mysqld
+[root@localhost ~]#
+[root@localhost ~]# systemctl start mysqld
+[root@localhost ~]#
+[root@localhost ~]# systemctl status mysqld
+● mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since 五 2024-09-20 18:04:03 CST; 4s ago
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+  Process: 2330 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)
+ Main PID: 2403 (mysqld)
+   Status: "Server is operational"
+   CGroup: /system.slice/mysqld.service
+           └─2403 /usr/sbin/mysqld
+
+9月 20 18:03:49 localhost.localdomain systemd[1]: Starting MySQL Server...
+9月 20 18:04:03 localhost.localdomain systemd[1]: Started MySQL Server.
+[root@localhost ~]#
+```
+
+### 设置root账户远程登录
+
+查看root账户临时密码（这里是 Gy8,KLM4fpJj）：
+> grep 'temporary password' /var/log/mysqld.log
+
+登录mysql：
+> mysql -u root -p
+
+查看有哪些表，提示要先修改用户密码（设置为 Root.1234）：
+> alter user user() identified by "Root.1234";
+
+查看有哪些表：
+> show databases;
+
+查看版本：
+> select @@version;
+
+修改用户登录权限（`%` 表示可以远程登录，`localhost` 表示只允许本地登录，也可以是具体IP地址），使用mysql库，授权然后刷新：
+> USE mysql;
+> 
+> update user set host='%' where user='root';
+> 
+> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+> 
+> FLUSH PRIVILEGES;
+
+详细：
+```base
+[root@localhost ~]# grep 'temporary password' /var/log/mysqld.log
+2024-09-20T10:03:55.795569Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: Gy8,KLM4fpJj
+[root@localhost ~]#
+[root@localhost ~]# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.4.2
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+mysql> SHOW DATABASES;
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql>
+mysql> show databases;
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql>
+mysql> alter user user() identified by "Root.1234";
+Query OK, 0 rows affected (0.08 sec)
+
+mysql>
+mysql> set password='Root.1234';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.14 sec)
+
+mysql>
+mysql> select @@version;
++-----------+
+| @@version |
++-----------+
+| 8.4.2     |
++-----------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> USE mysql;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql>
+mysql> update user set host='%' where user='root';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+mysql>
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql>
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> exit
+Bye
+[root@localhost ~]#
+```
+
+### 开放指定端口
+
+防火墙添加 mysql服务 和 3306端口，然后重启防火墙：
+```
+> firewall-cmd --permanent --zone=public --add-service=mysql
+> 
+> firewall-cmd --permanent --zone=public --add-port=3306/tcp
+> 
+> firewall-cmd --reload
+```
+
+详细：
+```base
+[root@localhost ~]# firewall-cmd --permanent --zone=public --add-service=mysql
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --permanent --zone=public --add-port=3306/tcp
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --reload
+success
+[root@localhost ~]#
+[root@localhost ~]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s8
+  sources:
+  services: dhcpv6-client http mysql ssh
+  ports: 80/tcp 3306/tcp
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+[root@localhost ~]#
+```
+
+远程使用账号 root 和密码 Root.1234 登录看一下。
 
 
 
@@ -3194,7 +3589,7 @@ VirtualBox-搭建Centos7.9 <https://ibaiyang.github.io/blog/linux/2022/02/16/Vir
 
 Linux YUM yum-utils 模块详解 <https://www.cnblogs.com/ryanpan/p/16422240.html>
 
-
+yum 安装 mysql <https://cloud.tencent.com/developer/article/1441098?from=15425>
 
 
 
