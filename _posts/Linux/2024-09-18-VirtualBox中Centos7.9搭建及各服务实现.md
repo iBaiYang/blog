@@ -3125,7 +3125,42 @@ phpinfo();
 
 浏览器访问 `phpinfo.local` 查看效果。
 
+下面看个伪静态配置的例子：
+```
+server {
+    listen       80;
+    server_name  phpinfo.local;
 
+    root   /media/sf_develop/www/phpinfo;
+    index  index.php index.html index.htm;
+
+    location / {
+        if (!-e $request_filename) {   #支持伪静态，省去index.php?
+               rewrite  ^(.*)$  /index.php?s=/$1  last;
+               break;
+         }
+    }
+
+    location ~ \.php$ {  
+        fastcgi_pass 127.0.0.1:9000; 
+        fastcgi_index  index.php;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;     #增加这一句，支持pathinfo
+        fastcgi_param PATH_INFO $fastcgi_path_info;    #增加这一句，支持pathinfo
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+        include fastcgi_params;  
+    }  
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    access_log  /dev/null;
+    error_log  /media/sf_develop/wwwlogs/wxworkadmin.local.error.log;
+}
+```
 
 ## MySQL安装
 
