@@ -3565,6 +3565,578 @@ public (active)
 
 远程使用账号 root 和密码 Root.1234 登录看一下。
 
+## FFmpeg安装
+
+安装Nux Dextop Yum 源：
+> rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+
+安装：
+> yum install -y ffmpeg ffmpeg-devel
+
+查看版本：
+> ffmpeg -version
+
+详细：
+```base
+[root@localhost ~]# rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+获取http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+警告：/var/tmp/rpm-tmp.exmaQ8: 头V4 RSA/SHA1 Signature, 密钥 ID 85c6cd8a: NOKEY
+准备中...                          ################################# [100%]
+正在升级/安装...
+   1:nux-dextop-release-0-5.el7.nux   ################################# [100%]
+[root@localhost ~]#
+[root@localhost ~]# yum search ffmpeg
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+=================================== N/S matched: ffmpeg ===================================
+ffmpeg-compat-debuginfo.x86_64 : Debug information for package ffmpeg-compat
+ffmpeg-compat-devel.x86_64 : Development package for ffmpeg-compat
+ffmpeg-debuginfo.x86_64 : Debug information for package ffmpeg
+ffmpeg-devel.x86_64 : Development package for ffmpeg
+ffmpeg-libs.x86_64 : Libraries for ffmpeg
+ffmpeg2theora-debuginfo.x86_64 : Debug information for package ffmpeg2theora
+ffmpegthumbnailer-debuginfo.x86_64 : Debug information for package ffmpegthumbnailer
+ffmpegthumbnailer-devel.x86_64 : Headers and libraries for building apps that use
+                               : ffmpegthumbnailer
+gstreamer-ffmpeg.x86_64 : GStreamer FFmpeg-based plug-ins
+gstreamer-ffmpeg-debuginfo.x86_64 : Debug information for package gstreamer-ffmpeg
+kffmpegthumbnailer.x86_64 : A video thumbnailer for kde based on ffmpegthumbnailer
+kffmpegthumbnailer-debuginfo.x86_64 : Debug information for package kffmpegthumbnailer
+mlt-ffmpeg.x86_64 : FFMpeg package for MLT
+mythffmpeg.x86_64 : MythTV build of FFmpeg
+audacious-plugins-freeworld-ffaudio.x86_64 : FFMpeg/FAAD2 based input plugin for Audacious
+ffmpeg.x86_64 : Digital VCR and streaming server
+ffmpeg-compat.x86_64 : Digital VCR and streaming server
+ffmpeg2theora.x86_64 : Simple converter to create Ogg Theora files
+ffmpegthumbnailer.x86_64 : Lightweight video thumbnailer that can be used by file managers
+ffms2.x86_64 : Wrapper library around libffmpeg
+nv-codec-headers.noarch : FFmpeg version of Nvidia Codec SDK headers
+winff.x86_64 : Graphical video and audio batch converter using ffmpeg
+
+  名称和简介匹配 only，使用“search all”试试。
+[root@localhost ~]#
+[root@localhost ~]# yum list ffmpeg
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+已安装的软件包
+ffmpeg.x86_64                         2.8.15-2.el7.nux                          @nux-dextop
+[root@localhost ~]#
+[root@localhost ~]# yum install -y ffmpeg ffmpeg-devel
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                                | 5.1 kB  00:00:00
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+base                                                                | 3.6 kB  00:00:00
+docker-ce-stable                                                    | 3.5 kB  00:00:00
+extras                                                              | 2.9 kB  00:00:00
+mysql-8.4-lts-community                                             | 2.6 kB  00:00:00
+mysql-connectors-community                                          | 2.6 kB  00:00:00
+mysql-tools-8.4-lts-community                                       | 2.6 kB  00:00:00
+nux-dextop                                                          | 2.9 kB  00:00:00
+https://mirror.ihost.md/remi/enterprise/7/safe/x86_64/repodata/repomd.xml: [Errno 14] HTTPS Error 403 - Forbidden
+正在尝试其它镜像。
+To address this issue please refer to the below wiki article
+
+https://wiki.centos.org/yum-errors
+
+If above article doesn't help to resolve this issue please use https://bugs.centos.org/.
+
+remi-safe                                                           | 3.0 kB  00:00:00
+updates                                                             | 2.9 kB  00:00:00
+nux-dextop/x86_64/primary_db                                        | 1.8 MB  00:01:53
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 ffmpeg.x86_64.0.2.8.15-2.el7.nux 将被 安装
+--> 正在处理依赖关系 ffmpeg-libs(x86-64) = 2.8.15-2.el7.nux，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libswscale.so.3(LIBSWSCALE_3)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libswresample.so.1(LIBSWRESAMPLE_1)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libpostproc.so.53(LIBPOSTPROC_53)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavutil.so.54(LIBAVUTIL_54)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavresample.so.2(LIBAVRESAMPLE_2)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavformat.so.56(LIBAVFORMAT_56)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavfilter.so.5(LIBAVFILTER_5)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavdevice.so.56(LIBAVDEVICE_56)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavcodec.so.56(LIBAVCODEC_56)(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libvdpau.so.1()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libswscale.so.3()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libswresample.so.1()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libpostproc.so.53()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavutil.so.54()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavresample.so.2()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavformat.so.56()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavfilter.so.5()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavdevice.so.56()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libavcodec.so.56()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libSDL-1.2.so.0()(64bit)，它被软件包 ffmpeg-2.8.15-2.el7.nux.x86_64 需要
+---> 软件包 ffmpeg-devel.x86_64.0.2.8.15-2.el7.nux 将被 安装
+--> 正在检查事务
+---> 软件包 SDL.x86_64.0.1.2.15-17.el7 将被 安装
+---> 软件包 ffmpeg-libs.x86_64.0.2.8.15-2.el7.nux 将被 安装
+--> 正在处理依赖关系 libtheoraenc.so.1(libtheoraenc_1.0)(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libtheoradec.so.1(libtheoradec_1.0)(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libgnutls.so.28(GNUTLS_3_0_0)(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libgnutls.so.28(GNUTLS_1_4)(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libxvidcore.so.4()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libx265.so.79()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libx264.so.142()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libvorbisenc.so.2()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libvorbis.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libvo-amrwbenc.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libva.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libtheoraenc.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libtheoradec.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libspeex.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libsoxr.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libschroedinger-1.0.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libopus.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libopenjpeg.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libopencore-amrwb.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libopencore-amrnb.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libmp3lame.so.0()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libgsm.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libgnutls.so.28()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libfdk-aac.so.1()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libass.so.5()(64bit)，它被软件包 ffmpeg-libs-2.8.15-2.el7.nux.x86_64 需要
+---> 软件包 libavdevice.x86_64.0.2.8.15-2.el7.nux 将被 安装
+--> 正在处理依赖关系 libpulse.so.0(PULSE_0)(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libcdio_paranoia.so.1(CDIO_PARANOIA_1)(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libcdio_cdda.so.1(CDIO_CDDA_1)(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libv4l2.so.0()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libpulse.so.0()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libopenal.so.1()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libdc1394.so.22()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libcdio_paranoia.so.1()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libcdio_cdda.so.1()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+--> 正在处理依赖关系 libXv.so.1()(64bit)，它被软件包 libavdevice-2.8.15-2.el7.nux.x86_64 需要
+---> 软件包 libvdpau.x86_64.0.1.1.1-3.el7 将被 安装
+--> 正在检查事务
+---> 软件包 fdk-aac.x86_64.0.0.1.4-1 将被 安装
+---> 软件包 gnutls.x86_64.0.3.3.29-9.el7_6 将被 安装
+--> 正在处理依赖关系 trousers >= 0.3.11.2，它被软件包 gnutls-3.3.29-9.el7_6.x86_64 需要
+--> 正在处理依赖关系 libnettle.so.4()(64bit)，它被软件包 gnutls-3.3.29-9.el7_6.x86_64 需要
+--> 正在处理依赖关系 libhogweed.so.2()(64bit)，它被软件包 gnutls-3.3.29-9.el7_6.x86_64 需要
+---> 软件包 gsm.x86_64.0.1.0.13-11.el7 将被 安装
+---> 软件包 lame-libs.x86_64.0.3.100-1.el7 将被 安装
+---> 软件包 libXv.x86_64.0.1.0.11-1.el7 将被 安装
+---> 软件包 libass.x86_64.0.0.13.4-6.el7 将被 安装
+---> 软件包 libcdio-paranoia.x86_64.0.10.2+0.90-11.el7 将被 安装
+--> 正在处理依赖关系 libcdio.so.15(CDIO_15)(64bit)，它被软件包 libcdio-paranoia-10.2+0.90-11.el7.x86_64 需要
+--> 正在处理依赖关系 libcdio.so.15()(64bit)，它被软件包 libcdio-paranoia-10.2+0.90-11.el7.x86_64 需要
+---> 软件包 libdc1394.x86_64.0.2.2.2-3.el7 将被 安装
+--> 正在处理依赖关系 libraw1394.so.11()(64bit)，它被软件包 libdc1394-2.2.2-3.el7.x86_64 需要
+--> 正在处理依赖关系 libusb-1.0.so.0()(64bit)，它被软件包 libdc1394-2.2.2-3.el7.x86_64 需要
+---> 软件包 libtheora.x86_64.1.1.1.1-8.el7 将被 安装
+--> 正在处理依赖关系 libogg.so.0()(64bit)，它被软件包 1:libtheora-1.1.1-8.el7.x86_64 需要
+---> 软件包 libv4l.x86_64.0.0.9.5-4.el7 将被 安装
+---> 软件包 libva.x86_64.0.1.8.3-1.el7 将被 安装
+--> 正在处理依赖关系 libwayland-client.so.0()(64bit)，它被软件包 libva-1.8.3-1.el7.x86_64 需要
+--> 正在处理依赖关系 libXfixes.so.3()(64bit)，它被软件包 libva-1.8.3-1.el7.x86_64 需要
+--> 正在处理依赖关系 libGL.so.1()(64bit)，它被软件包 libva-1.8.3-1.el7.x86_64 需要
+--> 正在处理依赖关系 libEGL.so.1()(64bit)，它被软件包 libva-1.8.3-1.el7.x86_64 需要
+---> 软件包 libvorbis.x86_64.1.1.3.3-8.el7.1 将被 安装
+---> 软件包 openal-soft.x86_64.0.1.16.0-3.el7 将被 安装
+---> 软件包 opencore-amr.x86_64.0.0.1.3-3.el7.nux 将被 安装
+---> 软件包 openjpeg-libs.x86_64.0.1.5.1-18.el7 将被 安装
+---> 软件包 opus.x86_64.0.1.0.2-6.el7 将被 安装
+---> 软件包 pulseaudio-libs.x86_64.0.10.0-6.el7_9 将被 安装
+--> 正在处理依赖关系 libsndfile.so.1(libsndfile.so.1.0)(64bit)，它被软件包 pulseaudio-libs-10.0-6.el7_9.x86_64 需要
+--> 正在处理依赖关系 libsndfile.so.1()(64bit)，它被软件包 pulseaudio-libs-10.0-6.el7_9.x86_64 需要
+--> 正在处理依赖关系 libasyncns.so.0()(64bit)，它被软件包 pulseaudio-libs-10.0-6.el7_9.x86_64 需要
+--> 正在处理依赖关系 libXtst.so.6()(64bit)，它被软件包 pulseaudio-libs-10.0-6.el7_9.x86_64 需要
+---> 软件包 schroedinger.x86_64.0.1.0.11-4.el7 将被 安装
+--> 正在处理依赖关系 liborc-0.4.so.0()(64bit)，它被软件包 schroedinger-1.0.11-4.el7.x86_64 需要
+---> 软件包 soxr.x86_64.0.0.1.2-1.el7 将被 安装
+---> 软件包 speex.x86_64.0.1.2-0.19.rc1.el7 将被 安装
+---> 软件包 vo-amrwbenc.x86_64.0.0.1.2-1.el7.nux 将被 安装
+---> 软件包 x264-libs.x86_64.0.0.142-11.20141221git6a301b6.el7.nux 将被 安装
+---> 软件包 x265-libs.x86_64.0.1.9-1.el7.nux 将被 安装
+---> 软件包 xvidcore.x86_64.0.1.3.2-5.el7.nux 将被 安装
+--> 正在检查事务
+---> 软件包 libXfixes.x86_64.0.5.0.3-1.el7 将被 安装
+---> 软件包 libXtst.x86_64.0.1.2.3-1.el7 将被 安装
+--> 正在处理依赖关系 libXi.so.6()(64bit)，它被软件包 libXtst-1.2.3-1.el7.x86_64 需要
+---> 软件包 libasyncns.x86_64.0.0.8-7.el7 将被 安装
+---> 软件包 libcdio.x86_64.0.0.92-3.el7 将被 安装
+---> 软件包 libglvnd-egl.x86_64.1.1.0.1-0.8.git5baa1e5.el7 将被 安装
+--> 正在处理依赖关系 libglvnd(x86-64) = 1:1.0.1-0.8.git5baa1e5.el7，它被软件包 1:libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64 需要
+--> 正在处理依赖关系 mesa-libEGL(x86-64) >= 13.0.4-1，它被软件包 1:libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64 需要
+--> 正在处理依赖关系 libGLdispatch.so.0()(64bit)，它被软件包 1:libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64 需要
+---> 软件包 libglvnd-glx.x86_64.1.1.0.1-0.8.git5baa1e5.el7 将被 安装
+--> 正在处理依赖关系 mesa-libGL(x86-64) >= 13.0.4-1，它被软件包 1:libglvnd-glx-1.0.1-0.8.git5baa1e5.el7.x86_64 需要
+---> 软件包 libogg.x86_64.2.1.3.0-7.el7 将被 安装
+---> 软件包 libraw1394.x86_64.0.2.1.0-2.el7 将被 安装
+---> 软件包 libsndfile.x86_64.0.1.0.25-12.el7_9.1 将被 安装
+--> 正在处理依赖关系 libFLAC.so.8()(64bit)，它被软件包 libsndfile-1.0.25-12.el7_9.1.x86_64 需要
+---> 软件包 libusbx.x86_64.0.1.0.21-1.el7 将被 安装
+---> 软件包 libwayland-client.x86_64.0.1.15.0-1.el7 将被 安装
+---> 软件包 nettle.x86_64.0.2.7.1-9.el7_9 将被 安装
+---> 软件包 orc.x86_64.0.0.4.26-1.el7 将被 安装
+---> 软件包 trousers.x86_64.0.0.3.14-2.el7 将被 安装
+--> 正在检查事务
+---> 软件包 flac-libs.x86_64.0.1.3.0-5.el7_1 将被 安装
+---> 软件包 libXi.x86_64.0.1.7.9-1.el7 将被 安装
+---> 软件包 libglvnd.x86_64.1.1.0.1-0.8.git5baa1e5.el7 将被 安装
+---> 软件包 mesa-libEGL.x86_64.0.18.3.4-12.el7_9 将被 安装
+--> 正在处理依赖关系 mesa-libgbm = 18.3.4-12.el7_9，它被软件包 mesa-libEGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在处理依赖关系 libxshmfence.so.1()(64bit)，它被软件包 mesa-libEGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在处理依赖关系 libwayland-server.so.0()(64bit)，它被软件包 mesa-libEGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在处理依赖关系 libglapi.so.0()(64bit)，它被软件包 mesa-libEGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在处理依赖关系 libgbm.so.1()(64bit)，它被软件包 mesa-libEGL-18.3.4-12.el7_9.x86_64 需要
+---> 软件包 mesa-libGL.x86_64.0.18.3.4-12.el7_9 将被 安装
+--> 正在处理依赖关系 libXxf86vm.so.1()(64bit)，它被软件包 mesa-libGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在处理依赖关系 libXdamage.so.1()(64bit)，它被软件包 mesa-libGL-18.3.4-12.el7_9.x86_64 需要
+--> 正在检查事务
+---> 软件包 libXdamage.x86_64.0.1.1.4-4.1.el7 将被 安装
+---> 软件包 libXxf86vm.x86_64.0.1.1.4-1.el7 将被 安装
+---> 软件包 libwayland-server.x86_64.0.1.15.0-1.el7 将被 安装
+---> 软件包 libxshmfence.x86_64.0.1.2-1.el7 将被 安装
+---> 软件包 mesa-libgbm.x86_64.0.18.3.4-12.el7_9 将被 安装
+---> 软件包 mesa-libglapi.x86_64.0.18.3.4-12.el7_9 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+===========================================================================================
+ Package              架构      版本                                   源             大小
+===========================================================================================
+正在安装:
+ ffmpeg               x86_64    2.8.15-2.el7.nux                       nux-dextop    1.3 M
+ ffmpeg-devel         x86_64    2.8.15-2.el7.nux                       nux-dextop    678 k
+为依赖而安装:
+ SDL                  x86_64    1.2.15-17.el7                          base          206 k
+ fdk-aac              x86_64    0.1.4-1                                nux-dextop    375 k
+ ffmpeg-libs          x86_64    2.8.15-2.el7.nux                       nux-dextop    5.5 M
+ flac-libs            x86_64    1.3.0-5.el7_1                          base          169 k
+ gnutls               x86_64    3.3.29-9.el7_6                         base          680 k
+ gsm                  x86_64    1.0.13-11.el7                          base           30 k
+ lame-libs            x86_64    3.100-1.el7                            epel          354 k
+ libXdamage           x86_64    1.1.4-4.1.el7                          base           20 k
+ libXfixes            x86_64    5.0.3-1.el7                            base           18 k
+ libXi                x86_64    1.7.9-1.el7                            base           40 k
+ libXtst              x86_64    1.2.3-1.el7                            base           20 k
+ libXv                x86_64    1.0.11-1.el7                           base           18 k
+ libXxf86vm           x86_64    1.1.4-1.el7                            base           18 k
+ libass               x86_64    0.13.4-6.el7                           epel           99 k
+ libasyncns           x86_64    0.8-7.el7                              base           26 k
+ libavdevice          x86_64    2.8.15-2.el7.nux                       nux-dextop     73 k
+ libcdio              x86_64    0.92-3.el7                             base          236 k
+ libcdio-paranoia     x86_64    10.2+0.90-11.el7                       base           70 k
+ libdc1394            x86_64    2.2.2-3.el7                            epel          121 k
+ libglvnd             x86_64    1:1.0.1-0.8.git5baa1e5.el7             base           89 k
+ libglvnd-egl         x86_64    1:1.0.1-0.8.git5baa1e5.el7             base           44 k
+ libglvnd-glx         x86_64    1:1.0.1-0.8.git5baa1e5.el7             base          125 k
+ libogg               x86_64    2:1.3.0-7.el7                          base           24 k
+ libraw1394           x86_64    2.1.0-2.el7                            base           63 k
+ libsndfile           x86_64    1.0.25-12.el7_9.1                      updates       150 k
+ libtheora            x86_64    1:1.1.1-8.el7                          base          136 k
+ libusbx              x86_64    1.0.21-1.el7                           base           61 k
+ libv4l               x86_64    0.9.5-4.el7                            base          194 k
+ libva                x86_64    1.8.3-1.el7                            base           80 k
+ libvdpau             x86_64    1.1.1-3.el7                            base           34 k
+ libvorbis            x86_64    1:1.3.3-8.el7.1                        base          204 k
+ libwayland-client    x86_64    1.15.0-1.el7                           base           33 k
+ libwayland-server    x86_64    1.15.0-1.el7                           base           39 k
+ libxshmfence         x86_64    1.2-1.el7                              base          7.2 k
+ mesa-libEGL          x86_64    18.3.4-12.el7_9                        updates       110 k
+ mesa-libGL           x86_64    18.3.4-12.el7_9                        updates       166 k
+ mesa-libgbm          x86_64    18.3.4-12.el7_9                        updates        39 k
+ mesa-libglapi        x86_64    18.3.4-12.el7_9                        updates        46 k
+ nettle               x86_64    2.7.1-9.el7_9                          updates       328 k
+ openal-soft          x86_64    1.16.0-3.el7                           epel          282 k
+ opencore-amr         x86_64    0.1.3-3.el7.nux                        nux-dextop    172 k
+ openjpeg-libs        x86_64    1.5.1-18.el7                           base           86 k
+ opus                 x86_64    1.0.2-6.el7                            base          630 k
+ orc                  x86_64    0.4.26-1.el7                           base          166 k
+ pulseaudio-libs      x86_64    10.0-6.el7_9                           updates       651 k
+ schroedinger         x86_64    1.0.11-4.el7                           epel          291 k
+ soxr                 x86_64    0.1.2-1.el7                            epel           77 k
+ speex                x86_64    1.2-0.19.rc1.el7                       base           98 k
+ trousers             x86_64    0.3.14-2.el7                           base          289 k
+ vo-amrwbenc          x86_64    0.1.2-1.el7.nux                        nux-dextop     70 k
+ x264-libs            x86_64    0.142-11.20141221git6a301b6.el7.nux    nux-dextop    570 k
+ x265-libs            x86_64    1.9-1.el7.nux                          nux-dextop    1.5 M
+ xvidcore             x86_64    1.3.2-5.el7.nux                        nux-dextop    258 k
+
+事务概要
+===========================================================================================
+安装  2 软件包 (+53 依赖软件包)
+
+总下载量：17 M
+安装大小：59 M
+Downloading packages:
+(1/55): SDL-1.2.15-17.el7.x86_64.rpm                                | 206 kB  00:00:00
+warning: /var/cache/yum/x86_64/7/nux-dextop/packages/fdk-aac-0.1.4-1.x86_64.rpm: Header V4 RSA/SHA1 Signature, key ID 85c6cd8a: NOKEY
+fdk-aac-0.1.4-1.x86_64.rpm 的公钥尚未安装
+(2/55): fdk-aac-0.1.4-1.x86_64.rpm                                  | 375 kB  00:00:13
+(3/55): ffmpeg-2.8.15-2.el7.nux.x86_64.rpm                          | 1.3 MB  00:00:24
+(4/55): flac-libs-1.3.0-5.el7_1.x86_64.rpm                          | 169 kB  00:00:00
+(5/55): gsm-1.0.13-11.el7.x86_64.rpm                                |  30 kB  00:00:00
+(6/55): libXdamage-1.1.4-4.1.el7.x86_64.rpm                         |  20 kB  00:00:00
+(7/55): libXfixes-5.0.3-1.el7.x86_64.rpm                            |  18 kB  00:00:00
+(8/55): libXi-1.7.9-1.el7.x86_64.rpm                                |  40 kB  00:00:00
+(9/55): libXtst-1.2.3-1.el7.x86_64.rpm                              |  20 kB  00:00:00
+(10/55): gnutls-3.3.29-9.el7_6.x86_64.rpm                           | 680 kB  00:00:00
+(11/55): libXv-1.0.11-1.el7.x86_64.rpm                              |  18 kB  00:00:00
+(12/55): libXxf86vm-1.1.4-1.el7.x86_64.rpm                          |  18 kB  00:00:00
+(13/55): libasyncns-0.8-7.el7.x86_64.rpm                            |  26 kB  00:00:00
+(14/55): ffmpeg-devel-2.8.15-2.el7.nux.x86_64.rpm                   | 678 kB  00:00:12
+(15/55): libcdio-0.92-3.el7.x86_64.rpm                              | 236 kB  00:00:00
+(16/55): libcdio-paranoia-10.2+0.90-11.el7.x86_64.rpm               |  70 kB  00:00:00
+(17/55): libass-0.13.4-6.el7.x86_64.rpm                             |  99 kB  00:00:01
+(18/55): libglvnd-1.0.1-0.8.git5baa1e5.el7.x86_64.rpm               |  89 kB  00:00:00
+(19/55): libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64.rpm           |  44 kB  00:00:00
+(20/55): libglvnd-glx-1.0.1-0.8.git5baa1e5.el7.x86_64.rpm           | 125 kB  00:00:00
+(21/55): libogg-1.3.0-7.el7.x86_64.rpm                              |  24 kB  00:00:00
+(22/55): libraw1394-2.1.0-2.el7.x86_64.rpm                          |  63 kB  00:00:00
+(23/55): libavdevice-2.8.15-2.el7.nux.x86_64.rpm                    |  73 kB  00:00:01
+(24/55): libsndfile-1.0.25-12.el7_9.1.x86_64.rpm                    | 150 kB  00:00:00
+(25/55): libusbx-1.0.21-1.el7.x86_64.rpm                            |  61 kB  00:00:00
+(26/55): libtheora-1.1.1-8.el7.x86_64.rpm                           | 136 kB  00:00:00
+(27/55): lame-libs-3.100-1.el7.x86_64.rpm                           | 354 kB  00:00:03
+(28/55): libva-1.8.3-1.el7.x86_64.rpm                               |  80 kB  00:00:00
+(29/55): libv4l-0.9.5-4.el7.x86_64.rpm                              | 194 kB  00:00:00
+(30/55): libvdpau-1.1.1-3.el7.x86_64.rpm                            |  34 kB  00:00:00
+(31/55): libwayland-client-1.15.0-1.el7.x86_64.rpm                  |  33 kB  00:00:00
+(32/55): libwayland-server-1.15.0-1.el7.x86_64.rpm                  |  39 kB  00:00:00
+(33/55): libxshmfence-1.2-1.el7.x86_64.rpm                          | 7.2 kB  00:00:00
+(34/55): libvorbis-1.3.3-8.el7.1.x86_64.rpm                         | 204 kB  00:00:00
+(35/55): mesa-libGL-18.3.4-12.el7_9.x86_64.rpm                      | 166 kB  00:00:00
+(36/55): mesa-libgbm-18.3.4-12.el7_9.x86_64.rpm                     |  39 kB  00:00:00
+(37/55): mesa-libEGL-18.3.4-12.el7_9.x86_64.rpm                     | 110 kB  00:00:00
+(38/55): mesa-libglapi-18.3.4-12.el7_9.x86_64.rpm                   |  46 kB  00:00:00
+(39/55): libdc1394-2.2.2-3.el7.x86_64.rpm                           | 121 kB  00:00:03
+(40/55): nettle-2.7.1-9.el7_9.x86_64.rpm                            | 328 kB  00:00:00
+(41/55): openjpeg-libs-1.5.1-18.el7.x86_64.rpm                      |  86 kB  00:00:00
+(42/55): orc-0.4.26-1.el7.x86_64.rpm                                | 166 kB  00:00:00
+(43/55): opus-1.0.2-6.el7.x86_64.rpm                                | 630 kB  00:00:01
+(44/55): openal-soft-1.16.0-3.el7.x86_64.rpm                        | 282 kB  00:00:02
+(45/55): pulseaudio-libs-10.0-6.el7_9.x86_64.rpm                    | 651 kB  00:00:01
+(46/55): speex-1.2-0.19.rc1.el7.x86_64.rpm                          |  98 kB  00:00:00
+(47/55): trousers-0.3.14-2.el7.x86_64.rpm                           | 289 kB  00:00:00
+(48/55): schroedinger-1.0.11-4.el7.x86_64.rpm                       | 291 kB  00:00:01
+(49/55): soxr-0.1.2-1.el7.x86_64.rpm                                |  77 kB  00:00:01
+(50/55): opencore-amr-0.1.3-3.el7.nux.x86_64.rpm                    | 172 kB  00:00:04
+(51/55): vo-amrwbenc-0.1.2-1.el7.nux.x86_64.rpm                     |  70 kB  00:00:02
+(52/55): x264-libs-0.142-11.20141221git6a301b6.el7.nux.x86_64.rpm   | 570 kB  00:00:07
+(53/55): x265-libs-1.9-1.el7.nux.x86_64.rpm                         | 1.5 MB  00:00:42
+(54/55): xvidcore-1.3.2-5.el7.nux.x86_64.rpm                        | 258 kB  00:00:09
+(55/55): ffmpeg-libs-2.8.15-2.el7.nux.x86_64.rpm                    | 5.5 MB  00:01:47
+-------------------------------------------------------------------------------------------
+总计                                                       131 kB/s |  17 MB  00:02:12
+从 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nux.ro 检索密钥
+导入 GPG key 0x85C6CD8A:
+ 用户ID     : "Nux.Ro (rpm builder) <rpm@li.nux.ro>"
+ 指纹       : 561c 96bd 2f7f dc2a db5a fd46 e98b fbe7 85c6 cd8a
+ 软件包     : nux-dextop-release-0-5.el7.nux.noarch (installed)
+ 来自       : /etc/pki/rpm-gpg/RPM-GPG-KEY-nux.ro
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+警告：RPM 数据库已被非 yum 程序修改。
+  正在安装    : 2:libogg-1.3.0-7.el7.x86_64                                           1/55
+  正在安装    : libXfixes-5.0.3-1.el7.x86_64                                          2/55
+  正在安装    : mesa-libglapi-18.3.4-12.el7_9.x86_64                                  3/55
+  正在安装    : 1:libvorbis-1.3.3-8.el7.1.x86_64                                      4/55
+  正在安装    : libxshmfence-1.2-1.el7.x86_64                                         5/55
+  正在安装    : gsm-1.0.13-11.el7.x86_64                                              6/55
+  正在安装    : 1:libglvnd-1.0.1-0.8.git5baa1e5.el7.x86_64                            7/55
+  正在安装    : SDL-1.2.15-17.el7.x86_64                                              8/55
+  正在安装    : libwayland-server-1.15.0-1.el7.x86_64                                 9/55
+  正在安装    : libwayland-client-1.15.0-1.el7.x86_64                                10/55
+  正在安装    : mesa-libgbm-18.3.4-12.el7_9.x86_64                                   11/55
+  正在安装    : 1:libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64                       12/55
+  正在安装    : mesa-libEGL-18.3.4-12.el7_9.x86_64                                   13/55
+  正在安装    : libXdamage-1.1.4-4.1.el7.x86_64                                      14/55
+  正在安装    : 1:libtheora-1.1.1-8.el7.x86_64                                       15/55
+  正在安装    : flac-libs-1.3.0-5.el7_1.x86_64                                       16/55
+  正在安装    : libsndfile-1.0.25-12.el7_9.1.x86_64                                  17/55
+  正在安装    : libraw1394-2.1.0-2.el7.x86_64                                        18/55
+  正在安装    : vo-amrwbenc-0.1.2-1.el7.nux.x86_64                                   19/55
+  正在安装    : libass-0.13.4-6.el7.x86_64                                           20/55
+  正在安装    : xvidcore-1.3.2-5.el7.nux.x86_64                                      21/55
+  正在安装    : libv4l-0.9.5-4.el7.x86_64                                            22/55
+  正在安装    : libXxf86vm-1.1.4-1.el7.x86_64                                        23/55
+  正在安装    : 1:libglvnd-glx-1.0.1-0.8.git5baa1e5.el7.x86_64                       24/55
+  正在安装    : mesa-libGL-18.3.4-12.el7_9.x86_64                                    25/55
+  正在安装    : libva-1.8.3-1.el7.x86_64                                             26/55
+  正在安装    : nettle-2.7.1-9.el7_9.x86_64                                          27/55
+  正在安装    : libusbx-1.0.21-1.el7.x86_64                                          28/55
+  正在安装    : libdc1394-2.2.2-3.el7.x86_64                                         29/55
+  正在安装    : orc-0.4.26-1.el7.x86_64                                              30/55
+  正在安装    : schroedinger-1.0.11-4.el7.x86_64                                     31/55
+  正在安装    : fdk-aac-0.1.4-1.x86_64                                               32/55
+  正在安装    : x265-libs-1.9-1.el7.nux.x86_64                                       33/55
+  正在安装    : libvdpau-1.1.1-3.el7.x86_64                                          34/55
+  正在安装    : openjpeg-libs-1.5.1-18.el7.x86_64                                    35/55
+  正在安装    : opencore-amr-0.1.3-3.el7.nux.x86_64                                  36/55
+  正在安装    : x264-libs-0.142-11.20141221git6a301b6.el7.nux.x86_64                 37/55
+  正在安装    : libasyncns-0.8-7.el7.x86_64                                          38/55
+  正在安装    : opus-1.0.2-6.el7.x86_64                                              39/55
+  正在安装    : openal-soft-1.16.0-3.el7.x86_64                                      40/55
+  正在安装    : speex-1.2-0.19.rc1.el7.x86_64                                        41/55
+  正在安装    : libcdio-0.92-3.el7.x86_64                                            42/55
+  正在安装    : libcdio-paranoia-10.2+0.90-11.el7.x86_64                             43/55
+  正在安装    : trousers-0.3.14-2.el7.x86_64                                         44/55
+  正在安装    : gnutls-3.3.29-9.el7_6.x86_64                                         45/55
+  正在安装    : libXv-1.0.11-1.el7.x86_64                                            46/55
+  正在安装    : soxr-0.1.2-1.el7.x86_64                                              47/55
+  正在安装    : libXi-1.7.9-1.el7.x86_64                                             48/55
+  正在安装    : libXtst-1.2.3-1.el7.x86_64                                           49/55
+  正在安装    : pulseaudio-libs-10.0-6.el7_9.x86_64                                  50/55
+  正在安装    : lame-libs-3.100-1.el7.x86_64                                         51/55
+  正在安装    : ffmpeg-libs-2.8.15-2.el7.nux.x86_64                                  52/55
+  正在安装    : libavdevice-2.8.15-2.el7.nux.x86_64                                  53/55
+  正在安装    : ffmpeg-2.8.15-2.el7.nux.x86_64                                       54/55
+  正在安装    : ffmpeg-devel-2.8.15-2.el7.nux.x86_64                                 55/55
+  验证中      : lame-libs-3.100-1.el7.x86_64                                          1/55
+  验证中      : libXi-1.7.9-1.el7.x86_64                                              2/55
+  验证中      : libcdio-paranoia-10.2+0.90-11.el7.x86_64                              3/55
+  验证中      : libwayland-client-1.15.0-1.el7.x86_64                                 4/55
+  验证中      : 1:libvorbis-1.3.3-8.el7.1.x86_64                                      5/55
+  验证中      : ffmpeg-2.8.15-2.el7.nux.x86_64                                        6/55
+  验证中      : soxr-0.1.2-1.el7.x86_64                                               7/55
+  验证中      : mesa-libGL-18.3.4-12.el7_9.x86_64                                     8/55
+  验证中      : libXv-1.0.11-1.el7.x86_64                                             9/55
+  验证中      : 1:libglvnd-glx-1.0.1-0.8.git5baa1e5.el7.x86_64                       10/55
+  验证中      : pulseaudio-libs-10.0-6.el7_9.x86_64                                  11/55
+  验证中      : libwayland-server-1.15.0-1.el7.x86_64                                12/55
+  验证中      : trousers-0.3.14-2.el7.x86_64                                         13/55
+  验证中      : libcdio-0.92-3.el7.x86_64                                            14/55
+  验证中      : speex-1.2-0.19.rc1.el7.x86_64                                        15/55
+  验证中      : openal-soft-1.16.0-3.el7.x86_64                                      16/55
+  验证中      : opus-1.0.2-6.el7.x86_64                                              17/55
+  验证中      : libasyncns-0.8-7.el7.x86_64                                          18/55
+  验证中      : x264-libs-0.142-11.20141221git6a301b6.el7.nux.x86_64                 19/55
+  验证中      : SDL-1.2.15-17.el7.x86_64                                             20/55
+  验证中      : opencore-amr-0.1.3-3.el7.nux.x86_64                                  21/55
+  验证中      : openjpeg-libs-1.5.1-18.el7.x86_64                                    22/55
+  验证中      : libXtst-1.2.3-1.el7.x86_64                                           23/55
+  验证中      : libvdpau-1.1.1-3.el7.x86_64                                          24/55
+  验证中      : ffmpeg-devel-2.8.15-2.el7.nux.x86_64                                 25/55
+  验证中      : x265-libs-1.9-1.el7.nux.x86_64                                       26/55
+  验证中      : fdk-aac-0.1.4-1.x86_64                                               27/55
+  验证中      : gnutls-3.3.29-9.el7_6.x86_64                                         28/55
+  验证中      : 1:libtheora-1.1.1-8.el7.x86_64                                       29/55
+  验证中      : 1:libglvnd-1.0.1-0.8.git5baa1e5.el7.x86_64                           30/55
+  验证中      : orc-0.4.26-1.el7.x86_64                                              31/55
+  验证中      : libusbx-1.0.21-1.el7.x86_64                                          32/55
+  验证中      : libva-1.8.3-1.el7.x86_64                                             33/55
+  验证中      : flac-libs-1.3.0-5.el7_1.x86_64                                       34/55
+  验证中      : libdc1394-2.2.2-3.el7.x86_64                                         35/55
+  验证中      : gsm-1.0.13-11.el7.x86_64                                             36/55
+  验证中      : nettle-2.7.1-9.el7_9.x86_64                                          37/55
+  验证中      : libsndfile-1.0.25-12.el7_9.1.x86_64                                  38/55
+  验证中      : 2:libogg-1.3.0-7.el7.x86_64                                          39/55
+  验证中      : libXxf86vm-1.1.4-1.el7.x86_64                                        40/55
+  验证中      : libv4l-0.9.5-4.el7.x86_64                                            41/55
+  验证中      : xvidcore-1.3.2-5.el7.nux.x86_64                                      42/55
+  验证中      : mesa-libglapi-18.3.4-12.el7_9.x86_64                                 43/55
+  验证中      : libass-0.13.4-6.el7.x86_64                                           44/55
+  验证中      : mesa-libgbm-18.3.4-12.el7_9.x86_64                                   45/55
+  验证中      : schroedinger-1.0.11-4.el7.x86_64                                     46/55
+  验证中      : vo-amrwbenc-0.1.2-1.el7.nux.x86_64                                   47/55
+  验证中      : libxshmfence-1.2-1.el7.x86_64                                        48/55
+  验证中      : libavdevice-2.8.15-2.el7.nux.x86_64                                  49/55
+  验证中      : mesa-libEGL-18.3.4-12.el7_9.x86_64                                   50/55
+  验证中      : libXdamage-1.1.4-4.1.el7.x86_64                                      51/55
+  验证中      : libXfixes-5.0.3-1.el7.x86_64                                         52/55
+  验证中      : libraw1394-2.1.0-2.el7.x86_64                                        53/55
+  验证中      : ffmpeg-libs-2.8.15-2.el7.nux.x86_64                                  54/55
+  验证中      : 1:libglvnd-egl-1.0.1-0.8.git5baa1e5.el7.x86_64                       55/55
+
+已安装:
+  ffmpeg.x86_64 0:2.8.15-2.el7.nux          ffmpeg-devel.x86_64 0:2.8.15-2.el7.nux
+
+作为依赖被安装:
+  SDL.x86_64 0:1.2.15-17.el7
+  fdk-aac.x86_64 0:0.1.4-1
+  ffmpeg-libs.x86_64 0:2.8.15-2.el7.nux
+  flac-libs.x86_64 0:1.3.0-5.el7_1
+  gnutls.x86_64 0:3.3.29-9.el7_6
+  gsm.x86_64 0:1.0.13-11.el7
+  lame-libs.x86_64 0:3.100-1.el7
+  libXdamage.x86_64 0:1.1.4-4.1.el7
+  libXfixes.x86_64 0:5.0.3-1.el7
+  libXi.x86_64 0:1.7.9-1.el7
+  libXtst.x86_64 0:1.2.3-1.el7
+  libXv.x86_64 0:1.0.11-1.el7
+  libXxf86vm.x86_64 0:1.1.4-1.el7
+  libass.x86_64 0:0.13.4-6.el7
+  libasyncns.x86_64 0:0.8-7.el7
+  libavdevice.x86_64 0:2.8.15-2.el7.nux
+  libcdio.x86_64 0:0.92-3.el7
+  libcdio-paranoia.x86_64 0:10.2+0.90-11.el7
+  libdc1394.x86_64 0:2.2.2-3.el7
+  libglvnd.x86_64 1:1.0.1-0.8.git5baa1e5.el7
+  libglvnd-egl.x86_64 1:1.0.1-0.8.git5baa1e5.el7
+  libglvnd-glx.x86_64 1:1.0.1-0.8.git5baa1e5.el7
+  libogg.x86_64 2:1.3.0-7.el7
+  libraw1394.x86_64 0:2.1.0-2.el7
+  libsndfile.x86_64 0:1.0.25-12.el7_9.1
+  libtheora.x86_64 1:1.1.1-8.el7
+  libusbx.x86_64 0:1.0.21-1.el7
+  libv4l.x86_64 0:0.9.5-4.el7
+  libva.x86_64 0:1.8.3-1.el7
+  libvdpau.x86_64 0:1.1.1-3.el7
+  libvorbis.x86_64 1:1.3.3-8.el7.1
+  libwayland-client.x86_64 0:1.15.0-1.el7
+  libwayland-server.x86_64 0:1.15.0-1.el7
+  libxshmfence.x86_64 0:1.2-1.el7
+  mesa-libEGL.x86_64 0:18.3.4-12.el7_9
+  mesa-libGL.x86_64 0:18.3.4-12.el7_9
+  mesa-libgbm.x86_64 0:18.3.4-12.el7_9
+  mesa-libglapi.x86_64 0:18.3.4-12.el7_9
+  nettle.x86_64 0:2.7.1-9.el7_9
+  openal-soft.x86_64 0:1.16.0-3.el7
+  opencore-amr.x86_64 0:0.1.3-3.el7.nux
+  openjpeg-libs.x86_64 0:1.5.1-18.el7
+  opus.x86_64 0:1.0.2-6.el7
+  orc.x86_64 0:0.4.26-1.el7
+  pulseaudio-libs.x86_64 0:10.0-6.el7_9
+  schroedinger.x86_64 0:1.0.11-4.el7
+  soxr.x86_64 0:0.1.2-1.el7
+  speex.x86_64 0:1.2-0.19.rc1.el7
+  trousers.x86_64 0:0.3.14-2.el7
+  vo-amrwbenc.x86_64 0:0.1.2-1.el7.nux
+  x264-libs.x86_64 0:0.142-11.20141221git6a301b6.el7.nux
+  x265-libs.x86_64 0:1.9-1.el7.nux
+  xvidcore.x86_64 0:1.3.2-5.el7.nux
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# ffmpeg -version
+ffmpeg version 2.8.15 Copyright (c) 2000-2018 the FFmpeg developers
+built with gcc 4.8.5 (GCC) 20150623 (Red Hat 4.8.5-36)
+configuration: --prefix=/usr --bindir=/usr/bin --datadir=/usr/share/ffmpeg --incdir=/usr/include/ffmpeg --libdir=/usr/lib64 --mandir=/usr/share/man --arch=x86_64 --optflags='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic' --extra-ldflags='-Wl,-z,relro ' --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3 --enable-bzlib --disable-crystalhd --enable-gnutls --enable-ladspa --enable-libass --enable-libcdio --enable-libdc1394 --enable-libfdk-aac --enable-nonfree --disable-indev=jack --enable-libfreetype --enable-libgsm --enable-libmp3lame --enable-openal --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libvorbis --enable-libv4l2 --enable-libx264 --enable-libx265 --enable-libxvid --enable-x11grab --enable-avfilter --enable-avresample --enable-postproc --enable-pthreads --disable-static --enable-shared --enable-gpl --disable-debug --disable-stripping --shlibdir=/usr/lib64 --enable-runtime-cpudetect
+libavutil      54. 31.100 / 54. 31.100
+libavcodec     56. 60.100 / 56. 60.100
+libavformat    56. 40.101 / 56. 40.101
+libavdevice    56.  4.100 / 56.  4.100
+libavfilter     5. 40.101 /  5. 40.101
+libavresample   2.  1.  0 /  2.  1.  0
+libswscale      3.  1.101 /  3.  1.101
+libswresample   1.  2.101 /  1.  2.101
+libpostproc    53.  3.100 / 53.  3.100
+[root@localhost ~]#
+```
 
 
 
@@ -3626,7 +4198,7 @@ Linux YUM yum-utils 模块详解 <https://www.cnblogs.com/ryanpan/p/16422240.htm
 
 yum 安装 mysql <https://cloud.tencent.com/developer/article/1441098?from=15425>
 
+yum安装ffmpeg <https://www.kancloud.cn/lengyueguang/linux/847013>
 
-
-
+lengyueguang博客，上面有各类常用软件的安装及使用方式 <https://www.kancloud.cn/lengyueguang/linux>
 
