@@ -4138,8 +4138,631 @@ libpostproc    53.  3.100 / 53.  3.100
 [root@localhost ~]#
 ```
 
+## ImageMagick安装
 
+ImageMagick是一个功能强大的图片处理工具集，它可以用来对图片进行编辑、转换、合并等操作。
 
+使用国内EPEL源，上面已经安装过了。
+
+安装ImageMagick：
+> yum install -y ImageMagick ImageMagick-devel
+
+详细：
+```bash
+[root@localhost ~]# yum search ImageMagick
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+=========================== N/S matched: ImageMagick ===========================
+ImageMagick-c++.i686 : ImageMagick Magick++ library (C++ bindings)
+ImageMagick-c++.x86_64 : ImageMagick Magick++ library (C++ bindings)
+ImageMagick-c++-devel.i686 : C++ bindings for the ImageMagick library
+ImageMagick-c++-devel.x86_64 : C++ bindings for the ImageMagick library
+ImageMagick-devel.i686 : Library links and header files for ImageMagick app
+                       : development
+ImageMagick-devel.x86_64 : Library links and header files for ImageMagick app
+                         : development
+ImageMagick-doc.x86_64 : ImageMagick html documentation
+ImageMagick-perl.x86_64 : ImageMagick perl bindings
+ImageMagick6-c++.x86_64 : ImageMagick Magick++ library (C++ bindings)
+ImageMagick6-djvu.x86_64 : DjVu plugin for ImageMagick
+ImageMagick6-heic.x86_64 : HEIC plugin for ImageMagick
+ImageMagick6-libs.x86_64 : ImageMagick library
+ImageMagick7-c++.x86_64 : ImageMagick Magick++ library (C++ bindings)
+ImageMagick7-djvu.x86_64 : DjVu plugin for ImageMagick
+ImageMagick7-heic.x86_64 : HEIC plugin for ImageMagick
+ImageMagick7-libs.x86_64 : ImageMagick library
+GraphicsMagick.x86_64 : An ImageMagick fork, offering faster image generation
+                      : and better quality
+ImageMagick.i686 : An X application for displaying and manipulating images
+ImageMagick.x86_64 : An X application for displaying and manipulating images
+php-magickwand.x86_64 : PHP API for ImageMagick
+php-pecl-imagick.x86_64 : Provides a wrapper to the ImageMagick library
+php54-php-magickwand.x86_64 : PHP API for ImageMagick
+php54-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php54-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php54-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php55-php-magickwand.x86_64 : PHP API for ImageMagick
+php55-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php55-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php55-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php56-php-magickwand.x86_64 : PHP API for ImageMagick
+php56-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php56-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php56-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php70-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php70-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php70-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php71-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php71-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php71-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php72-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php72-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php72-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php73-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php73-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php73-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php74-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php74-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php74-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php80-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php80-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php80-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php81-php-pecl-imagick.x86_64 : Extension to create and modify images using
+                              : ImageMagick
+php81-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php81-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php82-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php82-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+php83-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 6
+php83-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+                                  : ImageMagick 7
+vips-magick-im6.x86_64 : Magick support for vips using ImageMagick6
+vips-magick-im7.x86_64 : Magick support for vips using ImageMagick7
+
+  名称和简介匹配 only，使用“search all”试试。
+[root@localhost ~]#
+[root@localhost ~]# yum list | grep ImageMagick
+ImageMagick.x86_64                         6.9.10.68-7.el7_9          updates
+ImageMagick-devel.x86_64                   6.9.10.68-7.el7_9          updates
+ImageMagick.i686                           6.9.10.68-7.el7_9          updates
+ImageMagick-c++.i686                       6.9.10.68-7.el7_9          updates
+ImageMagick-c++.x86_64                     6.9.10.68-7.el7_9          updates
+ImageMagick-c++-devel.i686                 6.9.10.68-7.el7_9          updates
+ImageMagick-c++-devel.x86_64               6.9.10.68-7.el7_9          updates
+ImageMagick-devel.i686                     6.9.10.68-7.el7_9          updates
+ImageMagick-doc.x86_64                     6.9.10.68-7.el7_9          updates
+ImageMagick-perl.x86_64                    6.9.10.68-7.el7_9          updates
+ImageMagick6-c++.x86_64                    6.9.13.11-1.el7.remi       remi-safe
+ImageMagick6-djvu.x86_64                   6.9.13.11-1.el7.remi       remi-safe
+ImageMagick6-heic.x86_64                   6.9.13.11-1.el7.remi       remi-safe
+ImageMagick6-libs.x86_64                   6.9.13.11-1.el7.remi       remi-safe
+ImageMagick7-c++.x86_64                    1:7.1.1.33-1.el7.remi      remi-safe
+ImageMagick7-djvu.x86_64                   1:7.1.1.33-1.el7.remi      remi-safe
+ImageMagick7-heic.x86_64                   1:7.1.1.33-1.el7.remi      remi-safe
+ImageMagick7-libs.x86_64                   1:7.1.1.33-1.el7.remi      remi-safe
+[root@localhost ~]
+[root@localhost ~]# yum install -y ImageMagick ImageMagick-devel
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                     | 5.1 kB     00:00
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+base                                                     | 3.6 kB     00:00
+docker-ce-stable                                         | 3.5 kB     00:00
+extras                                                   | 2.9 kB     00:00
+mysql-8.4-lts-community                                  | 2.6 kB     00:00
+mysql-connectors-community                               | 2.6 kB     00:00
+mysql-tools-8.4-lts-community                            | 2.6 kB     00:00
+nux-dextop                                               | 2.9 kB     00:00
+remi-safe                                                | 3.0 kB     00:00
+updates                                                  | 2.9 kB     00:00
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 ImageMagick.x86_64.0.6.9.10.68-7.el7_9 将被 安装
+--> 正在处理依赖关系 urw-base35-fonts，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libwmflite-0.2.so.7()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 librsvg-2.so.2()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libpangocairo-1.0.so.0()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libpango-1.0.so.0()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libopenjp2.so.7()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libltdl.so.7()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 liblcms2.so.2()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libgs.so.9()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libgdk_pixbuf-2.0.so.0()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libcairo.so.2()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libImath.so.6()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libIlmThread.so.6()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libIlmImf.so.7()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libIexMath.so.6()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libIex.so.6()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libHalf.so.6()(64bit)，它被软件包 ImageMagick-6.9.10.68-7.el7_9.x86_64 需要
+---> 软件包 ImageMagick-devel.x86_64.0.6.9.10.68-7.el7_9 将被 安装
+--> 正在处理依赖关系 libtiff-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libjpeg-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libXt-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libXext-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 libX11-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 jasper-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 ghostscript-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 freetype-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在处理依赖关系 bzip2-devel，它被软件包 ImageMagick-devel-6.9.10.68-7.el7_9.x86_64 需要
+--> 正在检查事务
+---> 软件包 OpenEXR-libs.x86_64.0.1.7.1-8.el7 将被 安装
+---> 软件包 bzip2-devel.x86_64.0.1.0.6-13.el7 将被 安装
+---> 软件包 cairo.x86_64.0.1.15.12-4.el7 将被 安装
+--> 正在处理依赖关系 libpixman-1.so.0()(64bit)，它被软件包 cairo-1.15.12-4.el7.x86_64 需要
+--> 正在处理依赖关系 libXrender.so.1()(64bit)，它被软件包 cairo-1.15.12-4.el7.x86_64 需要
+---> 软件包 freetype-devel.x86_64.0.2.8-14.el7_9.1 将被 安装
+--> 正在处理依赖关系 pkgconfig(zlib)，它被软件包 freetype-devel-2.8-14.el7_9.1.x86_64 需要
+--> 正在处理依赖关系 pkgconfig(libpng)，它被软件包 freetype-devel-2.8-14.el7_9.1.x86_64 需要
+---> 软件包 gdk-pixbuf2.x86_64.0.2.36.12-3.el7 将被 安装
+--> 正在处理依赖关系 libjasper.so.1()(64bit)，它被软件包 gdk-pixbuf2-2.36.12-3.el7.x86_64 需要
+---> 软件包 ilmbase.x86_64.0.1.0.3-7.el7 将被 安装
+---> 软件包 jasper-devel.x86_64.0.1.900.1-33.el7 将被 安装
+---> 软件包 lcms2.x86_64.0.2.6-3.el7 将被 安装
+---> 软件包 libX11-devel.x86_64.0.1.6.7-5.el7_9 将被 安装
+--> 正在处理依赖关系 pkgconfig(xcb) >= 1.11.1，它被软件包 libX11-devel-1.6.7-5.el7_9.x86_64 需要
+--> 正在处理依赖关系 pkgconfig(xproto)，它被软件包 libX11-devel-1.6.7-5.el7_9.x86_64 需要
+--> 正在处理依赖关系 pkgconfig(xcb)，它被软件包 libX11-devel-1.6.7-5.el7_9.x86_64 需要
+--> 正在处理依赖关系 pkgconfig(kbproto)，它被软件包 libX11-devel-1.6.7-5.el7_9.x86_64 需要
+---> 软件包 libXext-devel.x86_64.0.1.3.3-3.el7 将被 安装
+---> 软件包 libXt-devel.x86_64.0.1.1.5-3.el7 将被 安装
+--> 正在处理依赖关系 pkgconfig(sm)，它被软件包 libXt-devel-1.1.5-3.el7.x86_64 需要
+--> 正在处理依赖关系 pkgconfig(ice)，它被软件包 libXt-devel-1.1.5-3.el7.x86_64 需要
+---> 软件包 libgs.x86_64.0.9.25-5.el7 将被 安装
+--> 正在处理依赖关系 adobe-mappings-pdf，它被软件包 libgs-9.25-5.el7.x86_64 需要
+--> 正在处理依赖关系 adobe-mappings-cmap-deprecated，它被软件包 libgs-9.25-5.el7.x86_64 需要
+--> 正在处理依赖关系 adobe-mappings-cmap，它被软件包 libgs-9.25-5.el7.x86_64 需要
+--> 正在处理依赖关系 libpaper.so.1()(64bit)，它被软件包 libgs-9.25-5.el7.x86_64 需要
+--> 正在处理依赖关系 libcupsimage.so.2()(64bit)，它被软件包 libgs-9.25-5.el7.x86_64 需要
+--> 正在处理依赖关系 libcups.so.2()(64bit)，它被软件包 libgs-9.25-5.el7.x86_64 需要
+---> 软件包 libgs-devel.x86_64.0.9.25-5.el7 将被 安装
+---> 软件包 libjpeg-turbo-devel.x86_64.0.1.2.90-8.el7 将被 安装
+---> 软件包 librsvg2.x86_64.0.2.40.20-1.el7 将被 安装
+---> 软件包 libtiff-devel.x86_64.0.4.0.3-35.el7 将被 安装
+---> 软件包 libtool-ltdl.x86_64.0.2.4.2-22.el7_3 将被 安装
+---> 软件包 libwmf-lite.x86_64.0.0.2.8.4-44.el7 将被 安装
+---> 软件包 openjpeg2.x86_64.0.2.3.1-3.el7_7 将被 安装
+---> 软件包 pango.x86_64.0.1.42.4-4.el7_7 将被 安装
+--> 正在处理依赖关系 libthai(x86-64) >= 0.1.9，它被软件包 pango-1.42.4-4.el7_7.x86_64 需要
+--> 正在处理依赖关系 libXft(x86-64) >= 2.0.0，它被软件包 pango-1.42.4-4.el7_7.x86_64 需要
+--> 正在处理依赖关系 libthai.so.0(LIBTHAI_0.1)(64bit)，它被软件包 pango-1.42.4-4.el7_7.x86_64 需要
+--> 正在处理依赖关系 libthai.so.0()(64bit)，它被软件包 pango-1.42.4-4.el7_7.x86_64 需要
+--> 正在处理依赖关系 libXft.so.2()(64bit)，它被软件包 pango-1.42.4-4.el7_7.x86_64 需要
+---> 软件包 urw-base35-fonts.noarch.0.20170801-10.el7 将被 安装
+--> 正在处理依赖关系 urw-base35-fonts-common = 20170801-10.el7，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-z003-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-standard-symbols-ps-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-p052-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-nimbus-sans-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-nimbus-roman-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-nimbus-mono-ps-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-gothic-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-d050000l-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-c059-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 urw-base35-bookman-fonts，它被软件包 urw-base35-fonts-20170801-10.el7.noarch 需要
+--> 正在检查事务
+---> 软件包 adobe-mappings-cmap.noarch.0.20171205-3.el7 将被 安装
+---> 软件包 adobe-mappings-cmap-deprecated.noarch.0.20171205-3.el7 将被 安装
+---> 软件包 adobe-mappings-pdf.noarch.0.20180407-1.el7 将被 安装
+---> 软件包 cups-libs.x86_64.1.1.6.3-52.el7_9 将被 安装
+--> 正在处理依赖关系 libavahi-common.so.3()(64bit)，它被软件包 1:cups-libs-1.6.3-52.el7_9.x86_64 需要
+--> 正在处理依赖关系 libavahi-client.so.3()(64bit)，它被软件包 1:cups-libs-1.6.3-52.el7_9.x86_64 需要
+---> 软件包 jasper-libs.x86_64.0.1.900.1-33.el7 将被 安装
+---> 软件包 libICE-devel.x86_64.0.1.0.9-9.el7 将被 安装
+---> 软件包 libSM-devel.x86_64.0.1.2.2-2.el7 将被 安装
+---> 软件包 libXft.x86_64.0.2.3.2-2.el7 将被 安装
+---> 软件包 libXrender.x86_64.0.0.9.10-1.el7 将被 安装
+---> 软件包 libpaper.x86_64.0.1.1.24-9.el7 将被 安装
+---> 软件包 libpng-devel.x86_64.2.1.5.13-8.el7 将被 安装
+---> 软件包 libthai.x86_64.0.0.1.14-9.el7 将被 安装
+---> 软件包 libxcb-devel.x86_64.0.1.13-1.el7 将被 安装
+--> 正在处理依赖关系 pkgconfig(xau) >= 0.99.2，它被软件包 libxcb-devel-1.13-1.el7.x86_64 需要
+---> 软件包 pixman.x86_64.0.0.34.0-1.el7 将被 安装
+---> 软件包 urw-base35-bookman-fonts.noarch.0.20170801-10.el7 将被 安装
+--> 正在处理依赖关系 xorg-x11-server-utils，它被软件包 urw-base35-bookman-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 xorg-x11-server-utils，它被软件包 urw-base35-bookman-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 xorg-x11-font-utils，它被软件包 urw-base35-bookman-fonts-20170801-10.el7.noarch 需要
+--> 正在处理依赖关系 xorg-x11-font-utils，它被软件包 urw-base35-bookman-fonts-20170801-10.el7.noarch 需要
+---> 软件包 urw-base35-c059-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-d050000l-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-fonts-common.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-gothic-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-nimbus-mono-ps-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-nimbus-roman-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-nimbus-sans-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-p052-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-standard-symbols-ps-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 urw-base35-z003-fonts.noarch.0.20170801-10.el7 将被 安装
+---> 软件包 xorg-x11-proto-devel.noarch.0.2018.4-1.el7 将被 安装
+---> 软件包 zlib-devel.x86_64.0.1.2.7-21.el7_9 将被 安装
+--> 正在检查事务
+---> 软件包 avahi-libs.x86_64.0.0.6.31-20.el7 将被 安装
+---> 软件包 libXau-devel.x86_64.0.1.0.8-2.1.el7 将被 安装
+---> 软件包 xorg-x11-font-utils.x86_64.1.7.5-21.el7 将被 安装
+--> 正在处理依赖关系 libfontenc.so.1()(64bit)，它被软件包 1:xorg-x11-font-utils-7.5-21.el7.x86_64 需要
+---> 软件包 xorg-x11-server-utils.x86_64.0.7.7-20.el7 将被 安装
+--> 正在处理依赖关系 libXxf86misc.so.1()(64bit)，它被软件包 xorg-x11-server-utils-7.7-20.el7.x86_64 需要
+--> 正在处理依赖关系 libXrandr.so.2()(64bit)，它被软件包 xorg-x11-server-utils-7.7-20.el7.x86_64 需要
+--> 正在处理依赖关系 libXinerama.so.1()(64bit)，它被软件包 xorg-x11-server-utils-7.7-20.el7.x86_64 需要
+--> 正在处理依赖关系 libXcursor.so.1()(64bit)，它被软件包 xorg-x11-server-utils-7.7-20.el7.x86_64 需要
+--> 正在检查事务
+---> 软件包 libXcursor.x86_64.0.1.1.15-1.el7 将被 安装
+---> 软件包 libXinerama.x86_64.0.1.1.3-2.1.el7 将被 安装
+---> 软件包 libXrandr.x86_64.0.1.5.1-2.el7 将被 安装
+---> 软件包 libXxf86misc.x86_64.0.1.0.3-7.1.el7 将被 安装
+---> 软件包 libfontenc.x86_64.0.1.1.3-3.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package                              架构   版本                 源       大小
+================================================================================
+正在安装:
+ ImageMagick                          x86_64 6.9.10.68-7.el7_9    updates 2.3 M
+ ImageMagick-devel                    x86_64 6.9.10.68-7.el7_9    updates 111 k
+为依赖而安装:
+ OpenEXR-libs                         x86_64 1.7.1-8.el7          base    217 k
+ adobe-mappings-cmap                  noarch 20171205-3.el7       base    2.1 M
+ adobe-mappings-cmap-deprecated       noarch 20171205-3.el7       base    114 k
+ adobe-mappings-pdf                   noarch 20180407-1.el7       base    703 k
+ avahi-libs                           x86_64 0.6.31-20.el7        base     62 k
+ bzip2-devel                          x86_64 1.0.6-13.el7         base    218 k
+ cairo                                x86_64 1.15.12-4.el7        base    741 k
+ cups-libs                            x86_64 1:1.6.3-52.el7_9     updates 359 k
+ freetype-devel                       x86_64 2.8-14.el7_9.1       updates 447 k
+ gdk-pixbuf2                          x86_64 2.36.12-3.el7        base    570 k
+ ilmbase                              x86_64 1.0.3-7.el7          base    100 k
+ jasper-devel                         x86_64 1.900.1-33.el7       base    376 k
+ jasper-libs                          x86_64 1.900.1-33.el7       base    150 k
+ lcms2                                x86_64 2.6-3.el7            base    150 k
+ libICE-devel                         x86_64 1.0.9-9.el7          base     50 k
+ libSM-devel                          x86_64 1.2.2-2.el7          base     13 k
+ libX11-devel                         x86_64 1.6.7-5.el7_9        updates 982 k
+ libXau-devel                         x86_64 1.0.8-2.1.el7        base     14 k
+ libXcursor                           x86_64 1.1.15-1.el7         base     30 k
+ libXext-devel                        x86_64 1.3.3-3.el7          base     75 k
+ libXft                               x86_64 2.3.2-2.el7          base     58 k
+ libXinerama                          x86_64 1.1.3-2.1.el7        base     14 k
+ libXrandr                            x86_64 1.5.1-2.el7          base     27 k
+ libXrender                           x86_64 0.9.10-1.el7         base     26 k
+ libXt-devel                          x86_64 1.1.5-3.el7          base    446 k
+ libXxf86misc                         x86_64 1.0.3-7.1.el7        base     19 k
+ libfontenc                           x86_64 1.1.3-3.el7          base     31 k
+ libgs                                x86_64 9.25-5.el7           base    4.6 M
+ libgs-devel                          x86_64 9.25-5.el7           base     57 k
+ libjpeg-turbo-devel                  x86_64 1.2.90-8.el7         base     99 k
+ libpaper                             x86_64 1.1.24-9.el7         base     37 k
+ libpng-devel                         x86_64 2:1.5.13-8.el7       base    122 k
+ librsvg2                             x86_64 2.40.20-1.el7        base    132 k
+ libthai                              x86_64 0.1.14-9.el7         base    187 k
+ libtiff-devel                        x86_64 4.0.3-35.el7         base    474 k
+ libtool-ltdl                         x86_64 2.4.2-22.el7_3       base     49 k
+ libwmf-lite                          x86_64 0.2.8.4-44.el7       base     66 k
+ libxcb-devel                         x86_64 1.13-1.el7           base    1.1 M
+ openjpeg2                            x86_64 2.3.1-3.el7_7        base    153 k
+ pango                                x86_64 1.42.4-4.el7_7       base    280 k
+ pixman                               x86_64 0.34.0-1.el7         base    248 k
+ urw-base35-bookman-fonts             noarch 20170801-10.el7      base    852 k
+ urw-base35-c059-fonts                noarch 20170801-10.el7      base    879 k
+ urw-base35-d050000l-fonts            noarch 20170801-10.el7      base     75 k
+ urw-base35-fonts                     noarch 20170801-10.el7      base    7.6 k
+ urw-base35-fonts-common              noarch 20170801-10.el7      base     19 k
+ urw-base35-gothic-fonts              noarch 20170801-10.el7      base    650 k
+ urw-base35-nimbus-mono-ps-fonts      noarch 20170801-10.el7      base    796 k
+ urw-base35-nimbus-roman-fonts        noarch 20170801-10.el7      base    860 k
+ urw-base35-nimbus-sans-fonts         noarch 20170801-10.el7      base    1.3 M
+ urw-base35-p052-fonts                noarch 20170801-10.el7      base    978 k
+ urw-base35-standard-symbols-ps-fonts noarch 20170801-10.el7      base     40 k
+ urw-base35-z003-fonts                noarch 20170801-10.el7      base    275 k
+ xorg-x11-font-utils                  x86_64 1:7.5-21.el7         base    104 k
+ xorg-x11-proto-devel                 noarch 2018.4-1.el7         base    280 k
+ xorg-x11-server-utils                x86_64 7.7-20.el7           base    178 k
+ zlib-devel                           x86_64 1.2.7-21.el7_9       updates  50 k
+
+事务概要
+================================================================================
+安装  2 软件包 (+57 依赖软件包)
+
+总下载量：25 M
+安装大小：84 M
+Downloading packages:
+(1/59): OpenEXR-libs-1.7.1-8.el7.x86_64.rpm                | 217 kB   00:00
+(2/59): adobe-mappings-pdf-20180407-1.el7.noarch.rpm       | 703 kB   00:00
+(3/59): avahi-libs-0.6.31-20.el7.x86_64.rpm                |  62 kB   00:00
+(4/59): bzip2-devel-1.0.6-13.el7.x86_64.rpm                | 218 kB   00:00
+(5/59): ImageMagick-devel-6.9.10.68-7.el7_9.x86_64.rpm     | 111 kB   00:00
+(6/59): cairo-1.15.12-4.el7.x86_64.rpm                     | 741 kB   00:00
+(7/59): adobe-mappings-cmap-20171205-3.el7.noarch.rpm      | 2.1 MB   00:01
+(8/59): cups-libs-1.6.3-52.el7_9.x86_64.rpm                | 359 kB   00:00
+(9/59): gdk-pixbuf2-2.36.12-3.el7.x86_64.rpm               | 570 kB   00:00
+(10/59): freetype-devel-2.8-14.el7_9.1.x86_64.rpm          | 447 kB   00:00
+(11/59): ilmbase-1.0.3-7.el7.x86_64.rpm                    | 100 kB   00:00
+(12/59): jasper-libs-1.900.1-33.el7.x86_64.rpm             | 150 kB   00:00
+(13/59): lcms2-2.6-3.el7.x86_64.rpm                        | 150 kB   00:00
+(14/59): libICE-devel-1.0.9-9.el7.x86_64.rpm               |  50 kB   00:00
+(15/59): jasper-devel-1.900.1-33.el7.x86_64.rpm            | 376 kB   00:00
+(16/59): ImageMagick-6.9.10.68-7.el7_9.x86_64.rpm          | 2.3 MB   00:02
+(17/59): libSM-devel-1.2.2-2.el7.x86_64.rpm                |  13 kB   00:00
+(18/59): libXau-devel-1.0.8-2.1.el7.x86_64.rpm             |  14 kB   00:00
+(19/59): libXcursor-1.1.15-1.el7.x86_64.rpm                |  30 kB   00:00
+(20/59): libXft-2.3.2-2.el7.x86_64.rpm                     |  58 kB   00:00
+(21/59): libXext-devel-1.3.3-3.el7.x86_64.rpm              |  75 kB   00:00
+(22/59): libXinerama-1.1.3-2.1.el7.x86_64.rpm              |  14 kB   00:00
+(23/59): libXrandr-1.5.1-2.el7.x86_64.rpm                  |  27 kB   00:00
+(24/59): libXrender-0.9.10-1.el7.x86_64.rpm                |  26 kB   00:00
+(25/59): libXxf86misc-1.0.3-7.1.el7.x86_64.rpm             |  19 kB   00:00
+(26/59): libfontenc-1.1.3-3.el7.x86_64.rpm                 |  31 kB   00:00
+(27/59): libXt-devel-1.1.5-3.el7.x86_64.rpm                | 446 kB   00:00
+(28/59): libX11-devel-1.6.7-5.el7_9.x86_64.rpm             | 982 kB   00:00
+(29/59): libgs-devel-9.25-5.el7.x86_64.rpm                 |  57 kB   00:00
+(30/59): libgs-9.25-5.el7.x86_64.rpm                       | 4.6 MB   00:00
+(31/59): libjpeg-turbo-devel-1.2.90-8.el7.x86_64.rpm       |  99 kB   00:00
+(32/59): libpaper-1.1.24-9.el7.x86_64.rpm                  |  37 kB   00:00
+(33/59): libpng-devel-1.5.13-8.el7.x86_64.rpm              | 122 kB   00:00
+(34/59): librsvg2-2.40.20-1.el7.x86_64.rpm                 | 132 kB   00:00
+(35/59): libthai-0.1.14-9.el7.x86_64.rpm                   | 187 kB   00:00
+(36/59): libtool-ltdl-2.4.2-22.el7_3.x86_64.rpm            |  49 kB   00:00
+(37/59): libtiff-devel-4.0.3-35.el7.x86_64.rpm             | 474 kB   00:00
+(38/59): libwmf-lite-0.2.8.4-44.el7.x86_64.rpm             |  66 kB   00:00
+(39/59): openjpeg2-2.3.1-3.el7_7.x86_64.rpm                | 153 kB   00:00
+(40/59): pango-1.42.4-4.el7_7.x86_64.rpm                   | 280 kB   00:00
+(41/59): pixman-0.34.0-1.el7.x86_64.rpm                    | 248 kB   00:00
+(42/59): libxcb-devel-1.13-1.el7.x86_64.rpm                | 1.1 MB   00:00
+(43/59): urw-base35-c059-fonts-20170801-10.el7.noarch.rpm  | 879 kB   00:00
+(44/59): urw-base35-bookman-fonts-20170801-10.el7.noarch.r | 852 kB   00:00
+(45/59): urw-base35-d050000l-fonts-20170801-10.el7.noarch. |  75 kB   00:00
+(46/59): urw-base35-fonts-20170801-10.el7.noarch.rpm       | 7.6 kB   00:00
+(47/59): urw-base35-fonts-common-20170801-10.el7.noarch.rp |  19 kB   00:00
+(48/59): urw-base35-gothic-fonts-20170801-10.el7.noarch.rp | 650 kB   00:00
+(49/59): urw-base35-nimbus-mono-ps-fonts-20170801-10.el7.n | 796 kB   00:00
+(50/59): urw-base35-nimbus-roman-fonts-20170801-10.el7.noa | 860 kB   00:00
+(51/59): urw-base35-nimbus-sans-fonts-20170801-10.el7.noar | 1.3 MB   00:00
+(52/59): urw-base35-standard-symbols-ps-fonts-20170801-10. |  40 kB   00:00
+(53/59): urw-base35-p052-fonts-20170801-10.el7.noarch.rpm  | 978 kB   00:00
+(54/59): urw-base35-z003-fonts-20170801-10.el7.noarch.rpm  | 275 kB   00:00
+(55/59): xorg-x11-font-utils-7.5-21.el7.x86_64.rpm         | 104 kB   00:00
+(56/59): xorg-x11-proto-devel-2018.4-1.el7.noarch.rpm      | 280 kB   00:00
+(57/59): xorg-x11-server-utils-7.7-20.el7.x86_64.rpm       | 178 kB   00:00
+(58/59): zlib-devel-1.2.7-21.el7_9.x86_64.rpm              |  50 kB   00:00
+adobe-mappings-cmap-deprecated FAILED
+http://mirrors.cloud.aliyuncs.com/centos/7/os/x86_64/Packages/adobe-mappings-cmap-deprecated-20171205-3.el7.noarch.rpm: [Errno 12] Timeout on http://mirrors.cloud.aliyuncs.com/centos/7/os/x86_64/Packages/adobe-mappings-cmap-deprecated-20171205-3.el7.noarch.rpm: (28, 'Connection timed out after 30001 milliseconds')
+正在尝试其它镜像。
+(59/59): adobe-mappings-cmap-deprecated-20171205-3.el7.noa | 114 kB   00:00
+--------------------------------------------------------------------------------
+总计                                               836 kB/s |  25 MB  00:30
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : urw-base35-fonts-common-20170801-10.el7.noarch             1/59
+  正在安装    : xorg-x11-proto-devel-2018.4-1.el7.noarch                   2/59
+  正在安装    : libXrender-0.9.10-1.el7.x86_64                             3/59
+  正在安装    : libICE-devel-1.0.9-9.el7.x86_64                            4/59
+  正在安装    : jasper-libs-1.900.1-33.el7.x86_64                          5/59
+  正在安装    : gdk-pixbuf2-2.36.12-3.el7.x86_64                           6/59
+  正在安装    : lcms2-2.6-3.el7.x86_64                                     7/59
+  正在安装    : openjpeg2-2.3.1-3.el7_7.x86_64                             8/59
+  正在安装    : zlib-devel-1.2.7-21.el7_9.x86_64                           9/59
+  正在安装    : adobe-mappings-cmap-20171205-3.el7.noarch                 10/59
+  正在安装    : ilmbase-1.0.3-7.el7.x86_64                                11/59
+  正在安装    : libjpeg-turbo-devel-1.2.90-8.el7.x86_64                   12/59
+  正在安装    : jasper-devel-1.900.1-33.el7.x86_64                        13/59
+  正在安装    : OpenEXR-libs-1.7.1-8.el7.x86_64                           14/59
+  正在安装    : adobe-mappings-cmap-deprecated-20171205-3.el7.noarch      15/59
+  正在安装    : 2:libpng-devel-1.5.13-8.el7.x86_64                        16/59
+  正在安装    : freetype-devel-2.8-14.el7_9.1.x86_64                      17/59
+  正在安装    : libSM-devel-1.2.2-2.el7.x86_64                            18/59
+  正在安装    : libXcursor-1.1.15-1.el7.x86_64                            19/59
+  正在安装    : libXrandr-1.5.1-2.el7.x86_64                              20/59
+  正在安装    : libXft-2.3.2-2.el7.x86_64                                 21/59
+  正在安装    : libXau-devel-1.0.8-2.1.el7.x86_64                         22/59
+  正在安装    : libxcb-devel-1.13-1.el7.x86_64                            23/59
+  正在安装    : libX11-devel-1.6.7-5.el7_9.x86_64                         24/59
+  正在安装    : libXt-devel-1.1.5-3.el7.x86_64                            25/59
+  正在安装    : libXext-devel-1.3.3-3.el7.x86_64                          26/59
+  正在安装    : pixman-0.34.0-1.el7.x86_64                                27/59
+  正在安装    : cairo-1.15.12-4.el7.x86_64                                28/59
+  正在安装    : avahi-libs-0.6.31-20.el7.x86_64                           29/59
+  正在安装    : 1:cups-libs-1.6.3-52.el7_9.x86_64                         30/59
+  正在安装    : libfontenc-1.1.3-3.el7.x86_64                             31/59
+  正在安装    : 1:xorg-x11-font-utils-7.5-21.el7.x86_64                   32/59
+  正在安装    : libtiff-devel-4.0.3-35.el7.x86_64                         33/59
+  正在安装    : libwmf-lite-0.2.8.4-44.el7.x86_64                         34/59
+  正在安装    : libthai-0.1.14-9.el7.x86_64                               35/59
+  正在安装    : pango-1.42.4-4.el7_7.x86_64                               36/59
+  正在安装    : librsvg2-2.40.20-1.el7.x86_64                             37/59
+  正在安装    : libtool-ltdl-2.4.2-22.el7_3.x86_64                        38/59
+  正在安装    : bzip2-devel-1.0.6-13.el7.x86_64                           39/59
+  正在安装    : adobe-mappings-pdf-20180407-1.el7.noarch                  40/59
+  正在安装    : libXxf86misc-1.0.3-7.1.el7.x86_64                         41/59
+  正在安装    : libpaper-1.1.24-9.el7.x86_64                              42/59
+  正在安装    : libXinerama-1.1.3-2.1.el7.x86_64                          43/59
+  正在安装    : xorg-x11-server-utils-7.7-20.el7.x86_64                   44/59
+  正在安装    : urw-base35-standard-symbols-ps-fonts-20170801-10.el7.no   45/59
+  正在安装    : urw-base35-z003-fonts-20170801-10.el7.noarch              46/59
+  正在安装    : urw-base35-p052-fonts-20170801-10.el7.noarch              47/59
+  正在安装    : urw-base35-c059-fonts-20170801-10.el7.noarch              48/59
+  正在安装    : urw-base35-d050000l-fonts-20170801-10.el7.noarch          49/59
+  正在安装    : urw-base35-nimbus-mono-ps-fonts-20170801-10.el7.noarch    50/59
+  正在安装    : urw-base35-bookman-fonts-20170801-10.el7.noarch           51/59
+  正在安装    : urw-base35-nimbus-sans-fonts-20170801-10.el7.noarch       52/59
+  正在安装    : urw-base35-nimbus-roman-fonts-20170801-10.el7.noarch      53/59
+  正在安装    : urw-base35-gothic-fonts-20170801-10.el7.noarch            54/59
+  正在安装    : urw-base35-fonts-20170801-10.el7.noarch                   55/59
+  正在安装    : libgs-9.25-5.el7.x86_64                                   56/59
+  正在安装    : ImageMagick-6.9.10.68-7.el7_9.x86_64                      57/59
+  正在安装    : libgs-devel-9.25-5.el7.x86_64                             58/59
+  正在安装    : ImageMagick-devel-6.9.10.68-7.el7_9.x86_64                59/59
+  验证中      : urw-base35-standard-symbols-ps-fonts-20170801-10.el7.no    1/59
+  验证中      : 1:xorg-x11-font-utils-7.5-21.el7.x86_64                    2/59
+  验证中      : 2:libpng-devel-1.5.13-8.el7.x86_64                         3/59
+  验证中      : gdk-pixbuf2-2.36.12-3.el7.x86_64                           4/59
+  验证中      : libXinerama-1.1.3-2.1.el7.x86_64                           5/59
+  验证中      : libpaper-1.1.24-9.el7.x86_64                               6/59
+  验证中      : libXrender-0.9.10-1.el7.x86_64                             7/59
+  验证中      : urw-base35-z003-fonts-20170801-10.el7.noarch               8/59
+  验证中      : libgs-9.25-5.el7.x86_64                                    9/59
+  验证中      : libjpeg-turbo-devel-1.2.90-8.el7.x86_64                   10/59
+  验证中      : urw-base35-p052-fonts-20170801-10.el7.noarch              11/59
+  验证中      : ilmbase-1.0.3-7.el7.x86_64                                12/59
+  验证中      : libXcursor-1.1.15-1.el7.x86_64                            13/59
+  验证中      : libICE-devel-1.0.9-9.el7.x86_64                           14/59
+  验证中      : adobe-mappings-cmap-deprecated-20171205-3.el7.noarch      15/59
+  验证中      : libXxf86misc-1.0.3-7.1.el7.x86_64                         16/59
+  验证中      : adobe-mappings-pdf-20180407-1.el7.noarch                  17/59
+  验证中      : libSM-devel-1.2.2-2.el7.x86_64                            18/59
+  验证中      : libXrandr-1.5.1-2.el7.x86_64                              19/59
+  验证中      : bzip2-devel-1.0.6-13.el7.x86_64                           20/59
+  验证中      : libXt-devel-1.1.5-3.el7.x86_64                            21/59
+  验证中      : adobe-mappings-cmap-20171205-3.el7.noarch                 22/59
+  验证中      : ImageMagick-6.9.10.68-7.el7_9.x86_64                      23/59
+  验证中      : urw-base35-c059-fonts-20170801-10.el7.noarch              24/59
+  验证中      : xorg-x11-proto-devel-2018.4-1.el7.noarch                  25/59
+  验证中      : libX11-devel-1.6.7-5.el7_9.x86_64                         26/59
+  验证中      : pango-1.42.4-4.el7_7.x86_64                               27/59
+  验证中      : libtool-ltdl-2.4.2-22.el7_3.x86_64                        28/59
+  验证中      : libthai-0.1.14-9.el7.x86_64                               29/59
+  验证中      : urw-base35-d050000l-fonts-20170801-10.el7.noarch          30/59
+  验证中      : libXft-2.3.2-2.el7.x86_64                                 31/59
+  验证中      : urw-base35-fonts-common-20170801-10.el7.noarch            32/59
+  验证中      : zlib-devel-1.2.7-21.el7_9.x86_64                          33/59
+  验证中      : libwmf-lite-0.2.8.4-44.el7.x86_64                         34/59
+  验证中      : urw-base35-fonts-20170801-10.el7.noarch                   35/59
+  验证中      : openjpeg2-2.3.1-3.el7_7.x86_64                            36/59
+  验证中      : 1:cups-libs-1.6.3-52.el7_9.x86_64                         37/59
+  验证中      : urw-base35-nimbus-mono-ps-fonts-20170801-10.el7.noarch    38/59
+  验证中      : ImageMagick-devel-6.9.10.68-7.el7_9.x86_64                39/59
+  验证中      : libXext-devel-1.3.3-3.el7.x86_64                          40/59
+  验证中      : urw-base35-bookman-fonts-20170801-10.el7.noarch           41/59
+  验证中      : jasper-devel-1.900.1-33.el7.x86_64                        42/59
+  验证中      : freetype-devel-2.8-14.el7_9.1.x86_64                      43/59
+  验证中      : urw-base35-nimbus-sans-fonts-20170801-10.el7.noarch       44/59
+  验证中      : cairo-1.15.12-4.el7.x86_64                                45/59
+  验证中      : libXau-devel-1.0.8-2.1.el7.x86_64                         46/59
+  验证中      : urw-base35-nimbus-roman-fonts-20170801-10.el7.noarch      47/59
+  验证中      : lcms2-2.6-3.el7.x86_64                                    48/59
+  验证中      : libxcb-devel-1.13-1.el7.x86_64                            49/59
+  验证中      : libtiff-devel-4.0.3-35.el7.x86_64                         50/59
+  验证中      : jasper-libs-1.900.1-33.el7.x86_64                         51/59
+  验证中      : libgs-devel-9.25-5.el7.x86_64                             52/59
+  验证中      : librsvg2-2.40.20-1.el7.x86_64                             53/59
+  验证中      : xorg-x11-server-utils-7.7-20.el7.x86_64                   54/59
+  验证中      : OpenEXR-libs-1.7.1-8.el7.x86_64                           55/59
+  验证中      : libfontenc-1.1.3-3.el7.x86_64                             56/59
+  验证中      : avahi-libs-0.6.31-20.el7.x86_64                           57/59
+  验证中      : urw-base35-gothic-fonts-20170801-10.el7.noarch            58/59
+  验证中      : pixman-0.34.0-1.el7.x86_64                                59/59
+
+已安装:
+  ImageMagick.x86_64 0:6.9.10.68-7.el7_9
+  ImageMagick-devel.x86_64 0:6.9.10.68-7.el7_9
+
+作为依赖被安装:
+  OpenEXR-libs.x86_64 0:1.7.1-8.el7
+  adobe-mappings-cmap.noarch 0:20171205-3.el7
+  adobe-mappings-cmap-deprecated.noarch 0:20171205-3.el7
+  adobe-mappings-pdf.noarch 0:20180407-1.el7
+  avahi-libs.x86_64 0:0.6.31-20.el7
+  bzip2-devel.x86_64 0:1.0.6-13.el7
+  cairo.x86_64 0:1.15.12-4.el7
+  cups-libs.x86_64 1:1.6.3-52.el7_9
+  freetype-devel.x86_64 0:2.8-14.el7_9.1
+  gdk-pixbuf2.x86_64 0:2.36.12-3.el7
+  ilmbase.x86_64 0:1.0.3-7.el7
+  jasper-devel.x86_64 0:1.900.1-33.el7
+  jasper-libs.x86_64 0:1.900.1-33.el7
+  lcms2.x86_64 0:2.6-3.el7
+  libICE-devel.x86_64 0:1.0.9-9.el7
+  libSM-devel.x86_64 0:1.2.2-2.el7
+  libX11-devel.x86_64 0:1.6.7-5.el7_9
+  libXau-devel.x86_64 0:1.0.8-2.1.el7
+  libXcursor.x86_64 0:1.1.15-1.el7
+  libXext-devel.x86_64 0:1.3.3-3.el7
+  libXft.x86_64 0:2.3.2-2.el7
+  libXinerama.x86_64 0:1.1.3-2.1.el7
+  libXrandr.x86_64 0:1.5.1-2.el7
+  libXrender.x86_64 0:0.9.10-1.el7
+  libXt-devel.x86_64 0:1.1.5-3.el7
+  libXxf86misc.x86_64 0:1.0.3-7.1.el7
+  libfontenc.x86_64 0:1.1.3-3.el7
+  libgs.x86_64 0:9.25-5.el7
+  libgs-devel.x86_64 0:9.25-5.el7
+  libjpeg-turbo-devel.x86_64 0:1.2.90-8.el7
+  libpaper.x86_64 0:1.1.24-9.el7
+  libpng-devel.x86_64 2:1.5.13-8.el7
+  librsvg2.x86_64 0:2.40.20-1.el7
+  libthai.x86_64 0:0.1.14-9.el7
+  libtiff-devel.x86_64 0:4.0.3-35.el7
+  libtool-ltdl.x86_64 0:2.4.2-22.el7_3
+  libwmf-lite.x86_64 0:0.2.8.4-44.el7
+  libxcb-devel.x86_64 0:1.13-1.el7
+  openjpeg2.x86_64 0:2.3.1-3.el7_7
+  pango.x86_64 0:1.42.4-4.el7_7
+  pixman.x86_64 0:0.34.0-1.el7
+  urw-base35-bookman-fonts.noarch 0:20170801-10.el7
+  urw-base35-c059-fonts.noarch 0:20170801-10.el7
+  urw-base35-d050000l-fonts.noarch 0:20170801-10.el7
+  urw-base35-fonts.noarch 0:20170801-10.el7
+  urw-base35-fonts-common.noarch 0:20170801-10.el7
+  urw-base35-gothic-fonts.noarch 0:20170801-10.el7
+  urw-base35-nimbus-mono-ps-fonts.noarch 0:20170801-10.el7
+  urw-base35-nimbus-roman-fonts.noarch 0:20170801-10.el7
+  urw-base35-nimbus-sans-fonts.noarch 0:20170801-10.el7
+  urw-base35-p052-fonts.noarch 0:20170801-10.el7
+  urw-base35-standard-symbols-ps-fonts.noarch 0:20170801-10.el7
+  urw-base35-z003-fonts.noarch 0:20170801-10.el7
+  xorg-x11-font-utils.x86_64 1:7.5-21.el7
+  xorg-x11-proto-devel.noarch 0:2018.4-1.el7
+  xorg-x11-server-utils.x86_64 0:7.7-20.el7
+  zlib-devel.x86_64 0:1.2.7-21.el7_9
+
+完毕！
+[root@localhost ~]#
+```
 
 ## SELinux是什么
 
