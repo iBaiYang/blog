@@ -4138,6 +4138,43 @@ libpostproc    53.  3.100 / 53.  3.100
 [root@localhost ~]#
 ```
 
+### 使用
+
+在 PHP 中，你可以使用 exec(), shell_exec(), passthru(), system() 等函数来执行外部命令。
+这些函数允许你在 PHP 脚本中运行 FFmpeg 命令。
+
+示例：转换视频格式。假设你想将一个名为 input.mp4 的视频文件转换为 output.avi 格式，你可以使用以下 PHP 代码：
+```php
+<?php  
+$ffmpegPath = '/usr/local/bin/ffmpeg'; // FFmpeg 的安装路径，根据你的服务器环境修改  
+$inputFile = 'path/to/your/input.mp4'; // 输入文件路径  
+$outputFile = 'path/to/your/output.avi'; // 输出文件路径  
+  
+// 构建 FFmpeg 命令  
+$cmd = "$ffmpegPath -i \"$inputFile\" -vcodec copy -acodec copy \"$outputFile\"";  
+  
+// 执行命令  
+$output = shell_exec($cmd);  
+  
+// 输出结果（可选）  
+echo $output;  
+  
+// 检查是否出错  
+if (empty($output)) {  
+    echo "视频转换成功";  
+} else {  
+    echo "视频转换出错: $output";  
+}  
+?>
+```
+
+注意：
+* 请根据你的服务器环境调整 $ffmpegPath 变量。
+* 上面的命令中 `-vcodec copy -acodec copy` 表示视频和音频编解码器都使用复制模式，这意味着不会重新编码音视频流，
+只会改变容器格式。 如果你需要进行编码转换（例如，改变分辨率或比特率），你需要相应地修改这些参数。
+* 使用 shell_exec() 可能会带来安全风险，特别是当你执行的命令包含来自用户输入的数据时。
+确保对任何用户输入进行适当的清理和验证，以避免注入攻击。
+
 ## ImageMagick安装
 
 ImageMagick是一个功能强大的图片处理工具集，它可以用来对图片进行编辑、转换、合并等操作。
@@ -4146,6 +4183,11 @@ ImageMagick是一个功能强大的图片处理工具集，它可以用来对图
 
 安装ImageMagick：
 > yum install -y ImageMagick ImageMagick-devel
+
+验证是否安装成功： 尝试运行ImageMagick提供的一些常用命令，比如：
+```
+> convert --version
+```
 
 详细：
 ```bash
@@ -4762,7 +4804,414 @@ Running transaction
 
 完毕！
 [root@localhost ~]#
+[root@localhost ~]# convert --version
+Version: ImageMagick 6.9.10-68 Q16 x86_64 2024-01-12 https://imagemagick.org
+Copyright: © 1999-2019 ImageMagick Studio LLC
+License: https://imagemagick.org/script/license.php
+Features: Cipher DPC Modules OpenMP(3.1)
+Delegates (built-in): bzlib cairo fontconfig freetype gslib jng jp2 jpeg lcms ltdl lzma openexr pangocairo png ps rsvg tiff wmf x xml zlib
+[root@localhost ~]#
 ```
+
+### 命令行使用
+
+下面是一些常用的ImageMagick命令：
+
+1.裁剪图片：
+```
+convert input.jpg -crop 100x100+10+10 output.jpg
+```
+这条命令将从input.jpg中裁剪出一块100x100的区域，起点坐标为（10,10），并保存为output.jpg。
+
+2.缩放图片：
+```
+convert input.jpg -resize 50% output.jpg
+```
+这条命令将input.jpg缩小为原来的一半，并保存为output.jpg。
+
+3.调整图片质量：
+```
+convert input.jpg -quality 80 output.jpg
+```
+这条命令将input.jpg的质量调整为80%，并保存为output.jpg。
+
+4.图片合并：
+```
+convert image1.jpg image2.jpg +append output.jpg
+```
+这条命令将image1.jpg和image2.jpg横向合并，并保存为output.jpg。
+
+5.添加水印：
+```
+convert input.jpg watermark.png -gravity southeast -composite output.jpg
+```
+这条命令将watermark.png添加在input.jpg的右下角，并保存为output.jpg。
+
+### PHP使用
+
+PHP有拓展可以直接使用imagick，不过依赖于上面安装的ImageMagick，需要先安装好ImageMagick。
+
+```bash
+# 搜索 php 的 ImageMagick
+yum search ImageMagick | grep php
+
+# 查看源
+yum list | grep imagick
+
+# 安装imagick拓展
+yum --enablerepo=remi-php74 install -y php-pecl-imagick
+```
+
+```
+[root@localhost ~]# yum search ImageMagick | grep php
+php-magickwand.x86_64 : PHP API for ImageMagick
+php-pecl-imagick.x86_64 : Provides a wrapper to the ImageMagick library
+php54-php-magickwand.x86_64 : PHP API for ImageMagick
+php54-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php54-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php54-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php55-php-magickwand.x86_64 : PHP API for ImageMagick
+php55-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php55-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php55-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php56-php-magickwand.x86_64 : PHP API for ImageMagick
+php56-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php56-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php56-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php70-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php70-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php70-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php71-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php71-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php71-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php72-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php72-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php72-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php73-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php73-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php73-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php74-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php74-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php74-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php80-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php80-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php80-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php81-php-pecl-imagick.x86_64 : Extension to create and modify images using
+php81-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php81-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php82-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php82-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+php83-php-pecl-imagick-im6.x86_64 : Extension to create and modify images using
+php83-php-pecl-imagick-im7.x86_64 : Extension to create and modify images using
+[root@localhost ~]#
+[root@localhost ~]# yum list | grep imagick
+php-pecl-imagick.x86_64                    3.4.4-1.el7                epel
+php54-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php54-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php54-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php54-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php54-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php54-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php55-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php55-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php55-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php55-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php55-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php55-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php56-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php56-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php56-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php56-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php56-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php56-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php70-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php70-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php70-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php70-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php70-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php70-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php71-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php71-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php71-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php71-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php71-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php71-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php72-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php72-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php72-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php72-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php72-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php72-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php73-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php73-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php73-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php73-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php73-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php73-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php74-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php74-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php74-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php74-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php74-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php74-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php80-php-pecl-imagick.x86_64              3.4.4-17.el7.remi          remi-safe
+php80-php-pecl-imagick-devel.x86_64        3.4.4-17.el7.remi          remi-safe
+php80-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php80-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php80-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php80-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php81-php-pecl-imagick.x86_64              3.4.4-18.el7.remi          remi-safe
+php81-php-pecl-imagick-devel.x86_64        3.4.4-18.el7.remi          remi-safe
+php81-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php81-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php81-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php81-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php82-php-pecl-imagick-im6.x86_64          3.7.0-7.el7.remi           remi-safe
+php82-php-pecl-imagick-im6-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php82-php-pecl-imagick-im7.x86_64          3.7.0-7.el7.remi           remi-safe
+php82-php-pecl-imagick-im7-devel.x86_64    3.7.0-7.el7.remi           remi-safe
+php83-php-pecl-imagick-im6.x86_64          3.7.0-9.el7.remi           remi-safe
+php83-php-pecl-imagick-im6-devel.x86_64    3.7.0-9.el7.remi           remi-safe
+php83-php-pecl-imagick-im7.x86_64          3.7.0-9.el7.remi           remi-safe
+php83-php-pecl-imagick-im7-devel.x86_64    3.7.0-9.el7.remi           remi-safe
+[root@localhost ~]#
+[root@localhost ~]# yum --enablerepo=remi-php74 install -y php-pecl-imagick
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                                | 5.1 kB  00:00:00
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-php74: ftp.riken.jp
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+base                                                                | 3.6 kB  00:00:00
+docker-ce-stable                                                    | 3.5 kB  00:00:00
+extras                                                              | 2.9 kB  00:00:00
+mysql-8.4-lts-community                                             | 2.6 kB  00:00:00
+mysql-connectors-community                                          | 2.6 kB  00:00:00
+mysql-tools-8.4-lts-community                                       | 2.6 kB  00:00:00
+nux-dextop                                                          | 2.9 kB  00:00:00
+remi-php74                                                          | 3.0 kB  00:00:00
+remi-safe                                                           | 3.0 kB  00:00:00
+updates                                                             | 2.9 kB  00:00:00
+软件包 php-pecl-imagick 已经被 php-pecl-imagick-im6 取代，改为尝试安装 php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 php-pecl-imagick-im6.x86_64.0.3.7.0-7.el7.remi.7.4 将被 安装
+--> 正在处理依赖关系 libMagickCore-6.Q16.so.7()(64bit)，它被软件包 php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64 需要
+--> 正在处理依赖关系 libMagickWand-6.Q16.so.7()(64bit)，它被软件包 php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64 需要
+--> 正在检查事务
+---> 软件包 ImageMagick6-libs.x86_64.0.6.9.13.11-1.el7.remi 将被 安装
+--> 正在处理依赖关系 open-sans-fonts，它被软件包 ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libcdt.so.5()(64bit)，它被软件包 ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libcgraph.so.6()(64bit)，它被软件包 ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libgvc.so.6()(64bit)，它被软件包 ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64 需要
+--> 正在处理依赖关系 libraw_r.so.19()(64bit)，它被软件包 ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64 需要
+--> 正在检查事务
+---> 软件包 LibRaw.x86_64.0.0.19.4-2.el7_9 将被 安装
+---> 软件包 graphviz.x86_64.0.2.30.1-22.el7 将被 安装
+--> 正在处理依赖关系 libgtk-x11-2.0.so.0()(64bit)，它被软件包 graphviz-2.30.1-22.el7.x86_64 需要
+--> 正在处理依赖关系 libgdk-x11-2.0.so.0()(64bit)，它被软件包 graphviz-2.30.1-22.el7.x86_64 需要
+--> 正在处理依赖关系 libgd.so.2()(64bit)，它被软件包 graphviz-2.30.1-22.el7.x86_64 需要
+--> 正在处理依赖关系 libatk-1.0.so.0()(64bit)，它被软件包 graphviz-2.30.1-22.el7.x86_64 需要
+--> 正在处理依赖关系 libXaw.so.7()(64bit)，它被软件包 graphviz-2.30.1-22.el7.x86_64 需要
+---> 软件包 open-sans-fonts.noarch.0.1.10-1.el7 将被 安装
+--> 正在检查事务
+---> 软件包 atk.x86_64.0.2.28.1-2.el7 将被 安装
+---> 软件包 gd.x86_64.0.2.0.35-27.el7_9 将被 安装
+---> 软件包 gtk2.x86_64.0.2.24.31-1.el7 将被 安装
+--> 正在处理依赖关系 hicolor-icon-theme，它被软件包 gtk2-2.24.31-1.el7.x86_64 需要
+--> 正在处理依赖关系 gtk-update-icon-cache，它被软件包 gtk2-2.24.31-1.el7.x86_64 需要
+--> 正在处理依赖关系 libXcomposite.so.1()(64bit)，它被软件包 gtk2-2.24.31-1.el7.x86_64 需要
+---> 软件包 libXaw.x86_64.0.1.0.13-4.el7 将被 安装
+--> 正在检查事务
+---> 软件包 gtk-update-icon-cache.x86_64.0.3.22.30-8.el7_9 将被 安装
+---> 软件包 hicolor-icon-theme.noarch.0.0.12-7.el7 将被 安装
+---> 软件包 libXcomposite.x86_64.0.0.4.4-4.1.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+===========================================================================================
+ Package                    架构        版本                         源               大小
+===========================================================================================
+正在安装:
+ php-pecl-imagick-im6       x86_64      3.7.0-7.el7.remi.7.4         remi-php74      185 k
+为依赖而安装:
+ ImageMagick6-libs          x86_64      6.9.13.11-1.el7.remi         remi-safe       2.4 M
+ LibRaw                     x86_64      0.19.4-2.el7_9               updates         309 k
+ atk                        x86_64      2.28.1-2.el7                 base            263 k
+ gd                         x86_64      2.0.35-27.el7_9              updates         146 k
+ graphviz                   x86_64      2.30.1-22.el7                base            1.3 M
+ gtk-update-icon-cache      x86_64      3.22.30-8.el7_9              updates          27 k
+ gtk2                       x86_64      2.24.31-1.el7                base            3.4 M
+ hicolor-icon-theme         noarch      0.12-7.el7                   base             42 k
+ libXaw                     x86_64      1.0.13-4.el7                 base            192 k
+ libXcomposite              x86_64      0.4.4-4.1.el7                base             22 k
+ open-sans-fonts            noarch      1.10-1.el7                   base            475 k
+
+事务概要
+===========================================================================================
+安装  1 软件包 (+11 依赖软件包)
+
+总下载量：8.7 M
+安装大小：32 M
+Downloading packages:
+(1/12): LibRaw-0.19.4-2.el7_9.x86_64.rpm                            | 309 kB  00:00:00
+(2/12): gtk-update-icon-cache-3.22.30-8.el7_9.x86_64.rpm            |  27 kB  00:00:00
+(3/12): atk-2.28.1-2.el7.x86_64.rpm                                 | 263 kB  00:00:00
+(4/12): graphviz-2.30.1-22.el7.x86_64.rpm                           | 1.3 MB  00:00:00
+(5/12): hicolor-icon-theme-0.12-7.el7.noarch.rpm                    |  42 kB  00:00:00
+(6/12): libXaw-1.0.13-4.el7.x86_64.rpm                              | 192 kB  00:00:00
+(7/12): libXcomposite-0.4.4-4.1.el7.x86_64.rpm                      |  22 kB  00:00:00
+(8/12): open-sans-fonts-1.10-1.el7.noarch.rpm                       | 475 kB  00:00:00
+(9/12): gtk2-2.24.31-1.el7.x86_64.rpm                               | 3.4 MB  00:00:00
+(10/12): gd-2.0.35-27.el7_9.x86_64.rpm                              | 146 kB  00:00:01
+(11/12): php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64.rpm       | 185 kB  00:00:22
+ImageMagick6-libs-6.9.13.11-1. FAILED                                          1:28:32 ETA
+https://mirrors.uni-ruse.bg/remi/enterprise/7/safe/x86_64/ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64.rpm: [Errno 12] Timeout on https://mirrors.uni-ruse.bg/remi/enterprise/7/safe/x86_64/ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64.rpm: (28, 'Operation too slow. Less than 1000 bytes/sec transferred the last 30 seconds')
+正在尝试其它镜像。
+(12/12): ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64.rpm          | 2.4 MB  00:00:13
+-------------------------------------------------------------------------------------------
+总计                                                       151 kB/s | 8.7 MB  00:00:58
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : atk-2.28.1-2.el7.x86_64                                               1/12
+  正在安装    : gd-2.0.35-27.el7_9.x86_64                                             2/12
+  正在安装    : LibRaw-0.19.4-2.el7_9.x86_64                                          3/12
+  正在安装    : gtk-update-icon-cache-3.22.30-8.el7_9.x86_64                          4/12
+  正在安装    : libXcomposite-0.4.4-4.1.el7.x86_64                                    5/12
+  正在安装    : libXaw-1.0.13-4.el7.x86_64                                            6/12
+  正在安装    : open-sans-fonts-1.10-1.el7.noarch                                     7/12
+  正在安装    : hicolor-icon-theme-0.12-7.el7.noarch                                  8/12
+  正在安装    : gtk2-2.24.31-1.el7.x86_64                                             9/12
+  正在安装    : graphviz-2.30.1-22.el7.x86_64                                        10/12
+  正在安装    : ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64                        11/12
+  正在安装    : php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64                     12/12
+  验证中      : hicolor-icon-theme-0.12-7.el7.noarch                                  1/12
+  验证中      : open-sans-fonts-1.10-1.el7.noarch                                     2/12
+  验证中      : libXaw-1.0.13-4.el7.x86_64                                            3/12
+  验证中      : ImageMagick6-libs-6.9.13.11-1.el7.remi.x86_64                         4/12
+  验证中      : php-pecl-imagick-im6-3.7.0-7.el7.remi.7.4.x86_64                      5/12
+  验证中      : libXcomposite-0.4.4-4.1.el7.x86_64                                    6/12
+  验证中      : gtk-update-icon-cache-3.22.30-8.el7_9.x86_64                          7/12
+  验证中      : LibRaw-0.19.4-2.el7_9.x86_64                                          8/12
+  验证中      : atk-2.28.1-2.el7.x86_64                                               9/12
+  验证中      : gtk2-2.24.31-1.el7.x86_64                                            10/12
+  验证中      : gd-2.0.35-27.el7_9.x86_64                                            11/12
+  验证中      : graphviz-2.30.1-22.el7.x86_64                                        12/12
+
+已安装:
+  php-pecl-imagick-im6.x86_64 0:3.7.0-7.el7.remi.7.4
+
+作为依赖被安装:
+  ImageMagick6-libs.x86_64 0:6.9.13.11-1.el7.remi
+  LibRaw.x86_64 0:0.19.4-2.el7_9
+  atk.x86_64 0:2.28.1-2.el7
+  gd.x86_64 0:2.0.35-27.el7_9
+  graphviz.x86_64 0:2.30.1-22.el7
+  gtk-update-icon-cache.x86_64 0:3.22.30-8.el7_9
+  gtk2.x86_64 0:2.24.31-1.el7
+  hicolor-icon-theme.noarch 0:0.12-7.el7
+  libXaw.x86_64 0:1.0.13-4.el7
+  libXcomposite.x86_64 0:0.4.4-4.1.el7
+  open-sans-fonts.noarch 0:1.10-1.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# php -m
+[PHP Modules]
+bcmath
+bz2
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+fileinfo
+filter
+ftp
+gd
+gettext
+hash
+iconv
+imagick
+json
+libxml
+mbstring
+mcrypt
+mysqli
+mysqlnd
+openssl
+pcntl
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+Phar
+readline
+Reflection
+session
+SimpleXML
+sockets
+sodium
+SPL
+sqlite3
+standard
+swoole
+tokenizer
+xml
+xmlreader
+xmlwriter
+xsl
+Zend OPcache
+zip
+zlib
+
+[Zend Modules]
+Zend OPcache
+
+[root@localhost ~]#
+```
+
+以下是一个简单的示例，展示了如何使用 Imagick 创建一个新的图像，并绘制一些文本：
+```php
+<?php  
+// 创建一个新的 Imagick 对象，并设置图像大小  
+$imagick = new Imagick();  
+$imagick->newImage(800, 600, new ImagickPixel('white'));  
+  
+// 设置字体和大小  
+$draw = new ImagickDraw();  
+$draw->setFont('path/to/your/font.ttf');  
+$draw->setFontSize(36);  
+  
+// 设置文本颜色  
+$draw->setFillColor(new ImagickPixel('black'));  
+  
+// 绘制文本  
+$draw->annotation(10, 50, 'Hello, Imagick!');  
+$imagick->drawImage($draw);  
+  
+// 设置图像格式  
+$imagick->setImageFormat('png');  
+  
+// 输出图像到浏览器  
+header("Content-Type: image/png");  
+echo $imagick->getImageBlob();  
+  
+// 或者，将图像保存到文件  
+// $imagick->writeImage('hello.png');  
+?>
+```
+
+请注意，你需要将 'path/to/your/font.ttf' 替换为你系统上有效的字体文件路径。
 
 ## SELinux是什么
 
