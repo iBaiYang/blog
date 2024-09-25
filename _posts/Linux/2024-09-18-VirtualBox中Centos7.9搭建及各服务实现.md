@@ -5213,6 +5213,129 @@ echo $imagick->getImageBlob();
 
 请注意，你需要将 'path/to/your/font.ttf' 替换为你系统上有效的字体文件路径。
 
+## 中文字体安装
+
+Centos中默认是没有中文字体的，我们需要安装中文字体。可以直接从Windows系统中拿过来用，在目录 `C:\Windows\Fonts` 下。
+
+准备工作，找到比较常用的 宋体、微软雅黑 放到 `C:\develop\chinese` 下，
+然后整体移动到 `/usr/share/fonts/` 目录中，修改权限为755：
+> mv /media/sf_develop/chinese /usr/share/fonts/
+> 
+> chmod -R 755 /usr/share/fonts/chinese
+
+安装字体管理软件fontconfig：
+> yum install -y fontconfig
+
+更新字体缓存：
+> fc-cache -fv
+
+查看安装的中文字体：
+> fc-list :lang=zh
+
+详细：
+```bash
+[root@localhost ~]# ll /media/sf_develop/chinese/
+总用量 65216
+-rwxrwx--- 1 root vboxsf 16880832 8月  11 2023 msyhbd.ttc
+-rwxrwx--- 1 root vboxsf 12183612 8月  11 2023 msyhl.ttc
+-rwxrwx--- 1 root vboxsf 19701556 8月  11 2023 msyh.ttc
+-rwxrwx--- 1 root vboxsf 18008680 8月  11 2023 simsun.ttc
+[root@localhost ~]# 
+[root@localhost ~]# mv /media/sf_develop/chinese /usr/share/fonts/
+[root@localhost ~]# 
+[root@localhost ~]# ll /usr/share/fonts | grep chinese
+drwxrwx---  2 root vboxsf   75 9月  25 19:19 chinese
+[root@localhost ~]# 
+[root@localhost ~]# chmod -R 755 /usr/share/fonts/chinese
+[root@localhost ~]# 
+[root@localhost ~]# ll /usr/share/fonts | grep chinese
+drwxr-xr-x  2 root vboxsf   75 9月  25 19:19 chinese
+[root@localhost ~]# 
+[root@localhost ~]# yum search fontconfig
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+========================================= N/S matched: fontconfig =========================================
+fontconfig-devel-doc.noarch : Development Documentation files for fontconfig library
+fontconfig.i686 : Font configuration and customization library
+fontconfig.x86_64 : Font configuration and customization library
+fontconfig-devel.i686 : Font configuration and customization library
+fontconfig-devel.x86_64 : Font configuration and customization library
+libeasyfc.i686 : Easy configuration generator interface for fontconfig
+libeasyfc.x86_64 : Easy configuration generator interface for fontconfig
+xemacs-xft.x86_64 : Different version of Emacs built with Xft/fontconfig support
+
+  名称和简介匹配 only，使用“search all”试试。
+[root@localhost ~]# 
+[root@localhost ~]# yum list | grep fontconfig
+fontconfig.x86_64                          2.13.0-4.3.el7             @base     
+fontconfig.i686                            2.13.0-4.3.el7             base      
+fontconfig-devel.i686                      2.13.0-4.3.el7             base      
+fontconfig-devel.x86_64                    2.13.0-4.3.el7             base      
+fontconfig-devel-doc.noarch                2.13.0-4.3.el7             base      
+[root@localhost ~]# 
+[root@localhost ~]# yum install -y fontconfig
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                                                | 5.1 kB  00:00:00     
+ * base: mirrors.aliyun.com
+ * epel: repo.jing.rocks
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+base                                                                                | 3.6 kB  00:00:00     
+docker-ce-stable                                                                    | 3.5 kB  00:00:00     
+extras                                                                              | 2.9 kB  00:00:00     
+mysql-8.4-lts-community                                                             | 2.6 kB  00:00:00     
+mysql-connectors-community                                                          | 2.6 kB  00:00:00     
+mysql-tools-8.4-lts-community                                                       | 2.6 kB  00:00:00     
+nux-dextop                                                                          | 2.9 kB  00:00:00     
+remi-safe                                                                           | 3.0 kB  00:00:00     
+updates                                                                             | 2.9 kB  00:00:00     
+软件包 fontconfig-2.13.0-4.3.el7.x86_64 已安装并且是最新版本
+无须任何处理
+[root@localhost ~]# 
+[root@localhost ~]# fc-cache --version
+fontconfig version 2.13.0
+[root@localhost ~]#
+[root@localhost ~]# fc-cache -fv
+/usr/share/fonts: 正在生成缓存，新增缓存内容：0 个字体，4 个目录
+/usr/share/fonts/chinese: 正在生成缓存，新增缓存内容：8 个字体，0 个目录
+/usr/share/fonts/dejavu: 正在生成缓存，新增缓存内容：9 个字体，0 个目录
+/usr/share/fonts/open-sans: 正在生成缓存，新增缓存内容：10 个字体，0 个目录
+/usr/share/fonts/urw-base35: 正在生成缓存，新增缓存内容：69 个字体，0 个目录
+/usr/share/X11/fonts/Type1: 跳过，无此目录
+/usr/share/X11/fonts/TTF: 跳过，无此目录
+/usr/local/share/fonts: 跳过，无此目录
+/root/.local/share/fonts: 跳过，无此目录
+/root/.fonts: 跳过，无此目录
+/usr/share/fonts/chinese: 跳过，探测到循环目录
+/usr/share/fonts/dejavu: 跳过，探测到循环目录
+/usr/share/fonts/open-sans: 跳过，探测到循环目录
+/usr/share/fonts/urw-base35: 跳过，探测到循环目录
+/usr/lib/fontconfig/cache: cleaning cache directory
+/root/.cache/fontconfig: not cleaning non-existent cache directory
+/root/.fontconfig: not cleaning non-existent cache directory
+/usr/bin/fc-cache-64: 缓存生成成功
+[root@localhost ~]# 
+[root@localhost test]# fc-list :lang=zh
+/usr/share/fonts/chinese/msyh.ttc: Microsoft YaHei:style=Normal
+/usr/share/fonts/chinese/simsun.ttc: 宋体,SimSun:style=常规,Regular
+/usr/share/fonts/chinese/msyhbd.ttc: Microsoft YaHei:style=Έντονα
+/usr/share/fonts/chinese/msyh.ttc: Microsoft YaHei UI:style=Normal
+/usr/share/fonts/chinese/msyhbd.ttc: Microsoft YaHei UI:style=Έντονα
+/usr/share/fonts/chinese/simsun.ttc: 新宋体,NSimSun:style=常规,Regular
+/usr/share/fonts/chinese/msyhl.ttc: Microsoft YaHei UI,Microsoft YaHei UI Light:style=Light,Regular
+/usr/share/fonts/chinese/msyhl.ttc: Microsoft YaHei,Microsoft YaHei Light:style=Light,Regular
+[root@localhost test]# 
+```
+
 ## SELinux是什么
 
 SELinux，全称为Security-Enhanced Linux，是一种在Linux操作系统上实施细粒度访问控制的安全机制。
