@@ -4902,7 +4902,7 @@ ffmpeg -r $(($scroll_speed * 2)) -i "$frames_dir/roll-text%d.png" -c:v libx264 -
 
 ### PHP使用
 
-PHP画图操作除了GD拓展库，也可以使用拓展imagick，不过依赖于上面安装的ImageMagick，需要先安装好ImageMagick。
+PHP画图操作除了gd拓展，也可以使用imagick拓展，不过依赖于上面安装的ImageMagick，需要先安装好ImageMagick。
 
 ```bash
 # 搜索 php 的 ImageMagick
@@ -4915,6 +4915,7 @@ yum list | grep imagick
 yum --enablerepo=remi-php74 install -y php-pecl-imagick
 ```
 
+详细：
 ```
 [root@localhost ~]# yum search ImageMagick | grep php
 php-magickwand.x86_64 : PHP API for ImageMagick
