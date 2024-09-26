@@ -1560,6 +1560,9 @@ Zend OPcache
 删除安装包：
 > php -r "unlink('composer-setup.php');"
 
+指定国内源：
+> composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
 详细：
 ```bash
 [root@localhost ~]# php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
@@ -4847,9 +4850,59 @@ convert input.jpg watermark.png -gravity southeast -composite output.jpg
 ```
 这条命令将watermark.png添加在input.jpg的右下角，并保存为output.jpg。
 
+6.示例，文字从底部向上滚动：
+```bash
+#!/bin/bash  
+# 滚动文本设置  
+text="滚动内容小说示例...滚动内容小说示例..."
+# 注意：确保这里使用的是支持中文的字体
+font="/usr/share/fonts/chinese/simsun.ttc"
+
+// 背景图片
+bgimg="../a.jpg"
+
+# 视频分辨率设置
+video_width=720
+video_height=1280
+video_dibu=236
+video_dingbu=288
+video_box_height=$(( 1280 - video_dibu ))
+
+font_size=36
+scroll_speed=60  # 每秒滚动的行数，这里用于计算总帧数的参考，每秒移动一行文字的比例
+total_frames=$(( ((video_box_height / font_size) * scroll_speed) - ((video_dingbu/font_size) * scroll_speed) ))  # 总帧数，你可以根据需要调整这个值
+
+# 创建一个临时目录用于存储图像  
+frames_dir="frames"  
+mkdir -p "$frames_dir"  
+  
+# 切换到临时目录  
+cd "$frames_dir"  
+  
+# 生成滚动文本的图像  
+for(( i=0; i<$total_frames; i++ ))  
+do  
+    # 这里假设每帧滚动一点点，具体取决于你想要的滚动效果  
+    # offset=$(( (i * font_size) / (total_frames / scroll_speed) ))
+    # convert ${bgimg} -font "$font" -fill black -pointsize ${font_size} -gravity north -annotate +72+${offset} "${text}" roll-text${i}.png
+    offset=$(( video_box_height - ((i * font_size) / (scroll_speed)) ))
+    convert ${bgimg} -font "$font" -fill black -pointsize ${font_size} -gravity northwest -draw "text 72,${offset} '${text}'" roll-text${i}.png
+done  
+  
+# 返回到原始目录（可选，但在这里有助于保持脚本的整洁）  
+cd ..  
+  
+# 使用FFmpeg将图像转换成视频  
+# ffmpeg -r $(echo "scale=0; $total_frames / ($scroll_speed)" | bc) -i "$frames_dir/roll-text%d.png" -c:v libx264 -pix_fmt yuv420p -s ${video_width}x${video_height} output.mp4
+ffmpeg -r $(($scroll_speed * 2)) -i "$frames_dir/roll-text%d.png" -c:v libx264 -pix_fmt yuv420p -s ${video_width}x${video_height} output.mp4
+
+# 清理临时文件和目录  
+#rm -rf "$frames_dir"
+```
+
 ### PHP使用
 
-PHP有拓展可以直接使用imagick，不过依赖于上面安装的ImageMagick，需要先安装好ImageMagick。
+PHP画图操作除了GD拓展库，也可以使用拓展imagick，不过依赖于上面安装的ImageMagick，需要先安装好ImageMagick。
 
 ```bash
 # 搜索 php 的 ImageMagick
