@@ -5447,6 +5447,8 @@ Linux YUM yum-utils 模块详解 <https://www.cnblogs.com/ryanpan/p/16422240.htm
 
 yum 安装 mysql <https://cloud.tencent.com/developer/article/1441098?from=15425>
 
+CentOS7中用yum安装Nginx配置Web服务器 <https://blog.csdn.net/Sunshine________/article/details/106419291>
+
 yum安装ffmpeg <https://www.kancloud.cn/lengyueguang/linux/847013>
 
 lengyueguang博客，上面有各类常用软件的安装及使用方式 <https://www.kancloud.cn/lengyueguang/linux>
