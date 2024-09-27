@@ -5394,7 +5394,7 @@ fontconfig version 2.13.0
 
 SELinux，全称为Security-Enhanced Linux，是一种在Linux操作系统上实施细粒度访问控制的安全机制。
 它由美国国家安全局（NSA）联合其他安全机构共同开发，旨在增强传统Linux操作系统的安全性，
-解决自主访问控制（DAC）系统中的各种权限问题，如root权限过高等。
+解决自主访问控制（DAC）系统中的各种权限问题，如root权限过高等。 
 
 ### SELinux的主要特点包括：
 
