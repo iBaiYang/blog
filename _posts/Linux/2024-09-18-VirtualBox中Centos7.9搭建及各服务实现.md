@@ -3568,6 +3568,206 @@ public (active)
 
 远程使用账号 root 和密码 Root.1234 登录看一下。
 
+
+## Nodejs和Npm安装
+
+Node.js是javascript的一种运行环境，是对Google V8引擎进行的封装，是一个服务器端的javascript的解释器。
+Npm是Node.js的包管理器（package manager），和PHP中的Composer类似，Npm会根据依赖关系，把所有依赖的包都下载下来。
+Npm是作为Node.js的一部分被打包发布的。
+
+查看nodejs包：
+> yum list nodejs
+
+安装：
+> yum install -y nodejs
+
+查看Node.js的版本：
+> node -v
+
+查看Npm的版本：
+> npm -v
+
+详细：
+```
+[root@localhost ~]# yum list nodejs
+已加载插件：fastestmirror
+Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+可安装的软件包
+nodejs.x86_64                        1:16.20.2-1.el7                        epel
+[root@localhost ~]#
+[root@localhost ~]# yum install -y nodejs
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                     | 5.1 kB     00:00
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+base                                                     | 3.6 kB     00:00
+docker-ce-stable                                         | 3.5 kB     00:00
+extras                                                   | 2.9 kB     00:00
+mysql-8.4-lts-community                                  | 2.6 kB     00:00
+mysql-connectors-community                               | 2.6 kB     00:00
+mysql-tools-8.4-lts-community                            | 2.6 kB     00:00
+nux-dextop                                               | 2.9 kB     00:00
+remi-safe                                                | 3.0 kB     00:00
+updates                                                  | 2.9 kB     00:00
+(1/3): mysql-tools-8.4-lts-community/x86_64/primary_db     |  10 kB   00:00
+(2/3): mysql-8.4-lts-community/x86_64/primary_db           |  33 kB   00:00
+(3/3): mysql-connectors-community/x86_64/primary_db        | 121 kB   00:01
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 nodejs.x86_64.1.16.20.2-1.el7 将被 安装
+--> 正在处理依赖关系 nodejs-libs(x86-64) = 1:16.20.2-1.el7，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 libuv >= 1:1.43.0，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 openssl11 >= 1:1.1.1，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 libbrotlidec.so.1()(64bit)，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 libbrotlienc.so.1()(64bit)，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 libnode.so.93()(64bit)，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在处理依赖关系 libuv.so.1()(64bit)，它被软件包 1:nodejs-16.20.2-1.el7.x86_64 需要
+--> 正在检查事务
+---> 软件包 libbrotli.x86_64.0.1.0.9-10.el7 将被 安装
+---> 软件包 libuv.x86_64.1.1.44.2-1.el7 将被 安装
+---> 软件包 nodejs-libs.x86_64.1.16.20.2-1.el7 将被 安装
+---> 软件包 openssl11.x86_64.1.1.1.1k-7.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package             架构           版本                     源            大小
+================================================================================
+正在安装:
+ nodejs              x86_64         1:16.20.2-1.el7          epel          96 k
+为依赖而安装:
+ libbrotli           x86_64         1.0.9-10.el7             epel         308 k
+ libuv               x86_64         1:1.44.2-1.el7           epel         145 k
+ nodejs-libs         x86_64         1:16.20.2-1.el7          epel          13 M
+ openssl11           x86_64         1:1.1.1k-7.el7           epel         694 k
+
+事务概要
+================================================================================
+安装  1 软件包 (+4 依赖软件包)
+
+总下载量：14 M
+安装大小：52 M
+Downloading packages:
+(1/5): libbrotli-1.0.9-10.el7.x86_64.rpm                   | 308 kB   00:01
+(2/5): libuv-1.44.2-1.el7.x86_64.rpm                       | 145 kB   00:05
+(3/5): nodejs-16.20.2-1.el7.x86_64.rpm                     |  96 kB   00:09
+(4/5): openssl11-1.1.1k-7.el7.x86_64.rpm                   | 694 kB   00:50
+(5/5): nodejs-libs-16.20.2-1.el7.x86_64.rpm                |  13 MB   05:26
+--------------------------------------------------------------------------------
+总计                                                45 kB/s |  14 MB  05:26
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : 1:libuv-1.44.2-1.el7.x86_64                                 1/5
+  正在安装    : libbrotli-1.0.9-10.el7.x86_64                               2/5
+  正在安装    : 1:nodejs-libs-16.20.2-1.el7.x86_64                          3/5
+  正在安装    : 1:openssl11-1.1.1k-7.el7.x86_64                             4/5
+  正在安装    : 1:nodejs-16.20.2-1.el7.x86_64                               5/5
+  验证中      : 1:nodejs-libs-16.20.2-1.el7.x86_64                          1/5
+  验证中      : 1:nodejs-16.20.2-1.el7.x86_64                               2/5
+  验证中      : libbrotli-1.0.9-10.el7.x86_64                               3/5
+  验证中      : 1:libuv-1.44.2-1.el7.x86_64                                 4/5
+  验证中      : 1:openssl11-1.1.1k-7.el7.x86_64                             5/5
+
+已安装:
+  nodejs.x86_64 1:16.20.2-1.el7
+
+作为依赖被安装:
+  libbrotli.x86_64 0:1.0.9-10.el7          libuv.x86_64 1:1.44.2-1.el7
+  nodejs-libs.x86_64 1:16.20.2-1.el7       openssl11.x86_64 1:1.1.1k-7.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# node -v
+v16.20.2
+[root@localhost ~]#
+[root@localhost ~]# npm -v
+-bash: npm: 未找到命令
+[root@localhost ~]#
+```
+
+有些情况下npm未被node内置，需要自己安装：
+> yum list npm
+> 
+> yum install -y npm
+>
+> npm -v
+
+详细：
+```
+[root@localhost nodejs]# yum list npm
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+可安装的软件包
+npm.x86_64                     1:8.19.4-1.16.20.2.1.el7                     epel
+[root@localhost nodejs]#
+[root@localhost nodejs]# yum install -y npm
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 npm.x86_64.1.8.19.4-1.16.20.2.1.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package     架构           版本                             源            大小
+================================================================================
+正在安装:
+ npm         x86_64         1:8.19.4-1.16.20.2.1.el7         epel         2.1 M
+
+事务概要
+================================================================================
+安装  1 软件包
+
+总下载量：2.1 M
+安装大小：8.0 M
+Downloading packages:
+npm-8.19.4-1.16.20.2.1.el7.x86_64.rpm                      | 2.1 MB   00:09
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : 1:npm-8.19.4-1.16.20.2.1.el7.x86_64                         1/1
+  验证中      : 1:npm-8.19.4-1.16.20.2.1.el7.x86_64                         1/1
+
+已安装:
+  npm.x86_64 1:8.19.4-1.16.20.2.1.el7
+
+完毕！
+[root@localhost nodejs]#
+[root@localhost nodejs]# npm -v
+8.19.4
+[root@localhost nodejs]#
+```
+
 ## FFmpeg安装
 
 安装Nux Dextop Yum 源：
