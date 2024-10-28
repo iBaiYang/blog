@@ -3768,6 +3768,21 @@ Running transaction
 [root@localhost nodejs]#
 ```
 
+npm默认是国外源，速度比较慢，需要切换国内源。国内最常用的npm镜像有淘宝源：
+> npm set registry https://registry.npmmirror.com/
+
+详细：
+```
+[root@localhost nodejs]# npm get registry
+https://registry.npmjs.org/
+[root@localhost nodejs]#
+[root@localhost nodejs]# npm set registry https://registry.npmmirror.com/
+[root@localhost nodejs]#
+[root@localhost nodejs]# npm get registry
+https://registry.npmmirror.com/
+[root@localhost nodejs]#
+```
+
 ## FFmpeg安装
 
 安装Nux Dextop Yum 源：
@@ -5653,3 +5668,4 @@ yum安装ffmpeg <https://www.kancloud.cn/lengyueguang/linux/847013>
 
 lengyueguang博客，上面有各类常用软件的安装及使用方式 <https://www.kancloud.cn/lengyueguang/linux>
 
+详解npm源及其使用方法 <https://blog.csdn.net/kaka_buka/article/details/142379293>
