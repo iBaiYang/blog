@@ -1563,6 +1563,9 @@ Zend OPcache
 指定国内源：
 > composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
+查看当前的全局配置：
+> composer config -g -l
+
 详细：
 ```bash
 [root@localhost ~]# php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
