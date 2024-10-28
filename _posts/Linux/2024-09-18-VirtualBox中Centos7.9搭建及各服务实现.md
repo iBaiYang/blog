@@ -3783,6 +3783,14 @@ https://registry.npmmirror.com/
 [root@localhost nodejs]#
 ```
 
+在Virtualbox中运行`npm install`或者`npm ci`过程中会报错：`npm ERR! syscall symlink`。
+原因是npm默认会使用symbolic links来安装组件，也即我们在linux系统里经常用的软链接（ln -s）或硬链接(ln)，
+但是有些文件系统不支持文件链接，比如Windows（或者说出于安全原因禁用了），
+有时候linux系统运行在有windows分区的硬盘上也不支持链接，比如virtualbox在windows主机上默认禁止在共享文件夹里使用symbolic links，
+当然也是出于安全考虑。
+
+解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
+
 ## FFmpeg安装
 
 安装Nux Dextop Yum 源：
@@ -5669,3 +5677,9 @@ yum安装ffmpeg <https://www.kancloud.cn/lengyueguang/linux/847013>
 lengyueguang博客，上面有各类常用软件的安装及使用方式 <https://www.kancloud.cn/lengyueguang/linux>
 
 详解npm源及其使用方法 <https://blog.csdn.net/kaka_buka/article/details/142379293>
+
+Laravel npm install 报错syscall symlink的原因及解决办法 <https://www.jianshu.com/p/b7a1e6cfb95a>
+
+
+
+
