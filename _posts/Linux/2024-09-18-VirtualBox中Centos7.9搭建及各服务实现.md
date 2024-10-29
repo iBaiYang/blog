@@ -3867,6 +3867,12 @@ https://registry.npmmirror.com/
 
 解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
 
+cross-env是一个在Node.js项目中广泛使用的npm包，它主要用于设置跨平台的环境变量。
+cross-env的核心目标是解决在Node.js项目中设置环境变量时遇到的平台兼容性问题。
+在Windows系统中，环境变量的设置与Unix/Linux系统有很大区别，这可能导致在不同的操作系统上运行同一脚本时出现问题。
+cross-env通过提供一个统一的命令语法，使得开发者无需关心具体的操作系统，就能轻松设置环境变量。
+它允许你在命令行中设置环境变量，无论你是在Windows、Linux还是macOS上工作，都能确保环境变量的设定保持一致。
+
 cross-env全局安装：
 > npm install -g cross-env
 
