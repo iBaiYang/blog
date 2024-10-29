@@ -11,6 +11,79 @@ meta: VirtualBox中Centos7.9搭建及各服务实现
 
 VirtualBox中Centos7.9安装及共享文件夹搭建，参考 <https://ibaiyang.github.io/blog/linux/2023/10/27/VirtualBox中Centos7.9搭建及Docker安装各服务.html>。
 
+## 环境工具准备
+
+在Linux环境中，需要用到一些工具，如解压等。
+
+**unzip安装**
+
+```
+[root@localhost ~]# yum list unzip
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+可安装的软件包
+unzip.x86_64                        6.0-24.el7_9                         updates
+[root@localhost ~]#
+[root@localhost ~]# yum install -y unzip
+已加载插件：fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                     | 5.1 kB     00:00
+ * base: mirrors.aliyun.com
+ * epel: d2lzkl7pfhq30w.cloudfront.net
+ * extras: mirrors.aliyun.com
+ * nux-dextop: mirror.li.nux.ro
+ * remi-safe: ftp.riken.jp
+ * updates: mirrors.aliyun.com
+base                                                     | 3.6 kB     00:00
+docker-ce-stable                                         | 3.5 kB     00:00
+extras                                                   | 2.9 kB     00:00
+mysql-8.4-lts-community                                  | 2.6 kB     00:00
+mysql-connectors-community                               | 2.6 kB     00:00
+mysql-tools-8.4-lts-community                            | 2.6 kB     00:00
+nux-dextop                                               | 2.9 kB     00:00
+remi-safe                                                | 3.0 kB     00:00
+updates                                                  | 2.9 kB     00:00
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 unzip.x86_64.0.6.0-24.el7_9 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package        架构            版本                     源                大小
+================================================================================
+正在安装:
+ unzip          x86_64          6.0-24.el7_9             updates          172 k
+
+事务概要
+================================================================================
+安装  1 软件包
+
+总下载量：172 k
+安装大小：369 k
+Downloading packages:
+unzip-6.0-24.el7_9.x86_64.rpm                              | 172 kB   00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : unzip-6.0-24.el7_9.x86_64                                   1/1
+  验证中      : unzip-6.0-24.el7_9.x86_64                                   1/1
+
+已安装:
+  unzip.x86_64 0:6.0-24.el7_9
+
+完毕！
+[root@localhost ~]#
+```
+
 ## PHP7.4安装
 
 安装 EPEL 存储库
