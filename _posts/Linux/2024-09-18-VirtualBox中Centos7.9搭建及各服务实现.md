@@ -3867,6 +3867,21 @@ https://registry.npmmirror.com/
 
 解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
 
+cross-env全局安装：
+> npm install -g cross-env
+
+```
+[root@localhost ~]# npm install -g cross-env
+
+added 7 packages in 2s
+[root@localhost ~]#
+[root@localhost ~]# npm list -g cross-env
+/usr/local/lib
+└── cross-env@7.0.3
+
+[root@localhost ~]#
+```
+
 ## FFmpeg安装
 
 安装Nux Dextop Yum 源：
