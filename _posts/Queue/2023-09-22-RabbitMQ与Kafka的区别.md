@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: RabbitMQ
+categories: Queue
 title: RabbitMQ与Kafka的区别
 meta: RabbitMQ与Kafka的区别
 ---
@@ -58,7 +58,13 @@ RocketMQ 是什么？它的架构是怎么样的？和 Kafka 又有什么区别�
 RocketMQ 是阿里自研的国产消息队列，目前已经是 Apache 的顶级项目。
 和其他消息队列一样，它接受来自生产者的消息，将消息分类，每一类是一个 topic，消费者根据需要订阅 topic，获取里面的消息。
 
-待补充。。。
+## 其他
+
+RabbitMQ和Kafka的比较 <https://zhuanlan.zhihu.com/p/138652597>
+
+选型必看：RabbitMQ 七战 Kafka，差异立现 <https://zhuanlan.zhihu.com/p/339564726>
+
+
 
 
 
