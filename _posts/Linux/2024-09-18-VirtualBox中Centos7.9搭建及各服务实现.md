@@ -3776,6 +3776,8 @@ v16.20.2
 [root@localhost ~]#
 ```
 
+### npm安装
+
 有些情况下npm未被node内置，需要自己安装：
 > yum list npm
 > 
@@ -3865,6 +3867,8 @@ https://registry.npmmirror.com/
 有时候linux系统运行在有windows分区的硬盘上也不支持链接，比如virtualbox在windows主机上默认禁止在共享文件夹里使用symbolic links，
 当然也是出于安全考虑。
 
+### cross-env安装
+
 解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
 
 cross-env是一个在Node.js项目中广泛使用的npm包，它主要用于设置跨平台的环境变量。
@@ -3887,6 +3891,14 @@ added 7 packages in 2s
 
 [root@localhost ~]#
 ```
+
+### Webpack安装
+
+WebPack是一款模块加载器兼打包工具，它能把各种资源，如JS、JSX、ES6、SASS、LESS、图片等都作为模块来处理和使用。
+
+> npm install webpack -g
+> 
+> npm install webpack-cli -g
 
 ## FFmpeg安装
 
