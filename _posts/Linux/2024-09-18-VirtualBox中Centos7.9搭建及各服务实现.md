@@ -3867,6 +3867,10 @@ https://registry.npmmirror.com/
 有时候linux系统运行在有windows分区的硬盘上也不支持链接，比如virtualbox在windows主机上默认禁止在共享文件夹里使用symbolic links，
 当然也是出于安全考虑。
 
+### 提示
+
+这里拿出来重点提示一下，如果是纯前端项目，在Windows系统中进行开发调试会更有效率。
+
 ### package.json文件说明
 
 package.json文件中是项目的描述，里面有项目基本信息、执行方式、依赖包等。
