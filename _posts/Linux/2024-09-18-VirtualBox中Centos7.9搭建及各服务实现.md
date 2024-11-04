@@ -3867,6 +3867,18 @@ https://registry.npmmirror.com/
 有时候linux系统运行在有windows分区的硬盘上也不支持链接，比如virtualbox在windows主机上默认禁止在共享文件夹里使用symbolic links，
 当然也是出于安全考虑。
 
+### package.json文件说明
+
+package.json文件中是项目的描述，里面有项目基本信息、执行方式、依赖包等。
+
+在`scripts`中是项目的执行方式，里面会用到一些npm的全局脚本，如 vue-cli、cross-env、Webpack、tailwind等。
+
+这些全局脚本或者依赖包可以在 npm官网 <https://www.npmjs.com/> 搜索，也可以在命令行使用`npm search 包名`命令搜索。
+
+项目中安装包，使用`npm install`命令，全局安装使用`npm install -g 包名`命令。
+
+安装完成后使用```npm list --global```命令查看安装结果。
+
 ### cross-env安装
 
 解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
@@ -3880,10 +3892,43 @@ cross-env通过提供一个统一的命令语法，使得开发者无需关心�
 cross-env全局安装：
 > npm install -g cross-env
 
+详细：
 ```
+[root@localhost ~]# npm search cross-env
+NAME                      | DESCRIPTION          | AUTHOR          | DATE       | VERSION
+cross-env                 | Run scripts that…    | =kentcdodds     | 2020-12-01 | 7.0.3
+path-key                  | Get the PATH…        | =sindresorhus   | 2021-04-09 | 4.0.0
+env-variable              | Cross platform…      | =3rdeden =v1    | 2020-01-29 | 0.0.6
+cross-blob                | Cross-platform Blob… | =richienb       | 2022-10-18 | 3.0.2
+cross-env-argv            | > More convenient…   | =joenix         | 2023-06-05 | 1.1.9
+@flatfile/cross-env-confi | A helper for…        | =mmccooyyy…     | 2024-05-02 | 0.0.6
+g                         |                      |                 |            |
+path-name                 | Cross-platform PATH… | =zkochan        | 2016-10-20 | 1.0.0
+zhi-env                   | a cross-platform…    | =terwer-org     | 2023-06-11 | 1.18.6
+cross-env-os              | Run scripts that…    | =chestershen    | 2022-05-26 | 7.1.1
+cross-conf-env            | To cross-platform…   | =akabeko        | 2022-07-24 | 1.3.0
+cross-os                  | Allow to add…        | =milewski       | 2022-06-17 | 1.5.0
+@esm2cjs/path-key         | Get the PATH…        | =alcalzone      | 2022-08-18 | 4.0.0
+cross-env-file            | Run scripts that…    | =marcojakob     | 2018-10-24 | 1.0.0
+cross-ci                  | `cross-ci`…          | =streamich      | 2023-05-18 | 1.7.0
+@w72/cross-env            | cross-env rewrite    | =w72            | 2023-06-14 | 1.0.2
+@encoderinc/cross-env     | <div…                | =superv1sion…   | 2022-01-14 | 1.0.11
+env-cross                 | security holding…    | =npm…           | 2023-07-04 | 0.0.1-s…
+python-env                | Cross platform…      | =codejamninja   | 2019-01-23 | 0.2.8
+run-with-node-env         | Set the `NODE_ENV`…  | =magiclen       | 2024-10-22 | 2.0.1
+ilib-env                  | Common environment…  | =ehoogerbeets   | 2024-02-11 | 1.4.0
+[root@localhost ~]#
 [root@localhost ~]# npm install -g cross-env
 
 added 7 packages in 2s
+[root@localhost ~]#
+[root@localhost ~]# npm list --global
+/usr/local/lib
+├── cross-env@7.0.3
+├── tailwindcss@3.4.14
+├── webpack-cli@5.1.4
+└── webpack@5.96.0
+
 [root@localhost ~]#
 [root@localhost ~]# npm list -g cross-env
 /usr/local/lib
