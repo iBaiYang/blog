@@ -3867,6 +3867,8 @@ https://registry.npmmirror.com/
 有时候linux系统运行在有windows分区的硬盘上也不支持链接，比如virtualbox在windows主机上默认禁止在共享文件夹里使用symbolic links，
 当然也是出于安全考虑。
 
+解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
+
 ### 提示
 
 这里拿出来重点提示一下，如果是纯前端项目，在Windows系统中进行开发调试会更有效率。
@@ -3884,8 +3886,6 @@ package.json文件中是项目的描述，里面有项目基本信息、执行�
 安装完成后使用```npm list --global```命令查看安装结果。
 
 ### cross-env安装
-
-解决办法，就是在`npm install`的时候加上一个参数，就是```--no-bin-links```，也即```npm install --no-bin-links```。
 
 cross-env是一个在Node.js项目中广泛使用的npm包，它主要用于设置跨平台的环境变量。
 cross-env的核心目标是解决在Node.js项目中设置环境变量时遇到的平台兼容性问题。
