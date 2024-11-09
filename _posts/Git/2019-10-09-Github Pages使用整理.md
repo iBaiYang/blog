@@ -166,6 +166,16 @@ Configuration file: /home/bai/www/blog/_config.yml
 
 然后提交到github上，发现构建成功了，问题解决。
 
+## 模板
+
+**chirpy**
+
+github地址 <https://github.com/cotes2020>
+
+在线体验 <https://chirpy.cotes.page/>
+
+
+
 
 ## Gitee码云搭建博客
 
