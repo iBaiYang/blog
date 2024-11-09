@@ -167,9 +167,9 @@ Configuration file: /home/bai/www/blog/_config.yml
 然后提交到github上，发现构建成功了，问题解决。
 
 
+## Gitee码云搭建博客
 
-
-
+码云Gitee Pages也搭建博客，参考 <https://cloud.tencent.com/developer/article/2116255>
 
 
 
@@ -190,3 +190,6 @@ Jekyll 官网 <http://jekyllcn.com/>
 GitHub Pages 官网 <https://pages.github.com/>
 
 GitHub Pages 文档 <https://docs.github.com/cn/pages>
+
+码云Gitee Pages搭建博客 <https://cloud.tencent.com/developer/article/2116255>
+
