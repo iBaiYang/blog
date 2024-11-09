@@ -7,6 +7,10 @@ meta: Github Pages使用整理
 * content
 {:toc}
 
+## 引言
+
+文档 <https://docs.github.com/zh/pages>
+
 ## 注意Github Pages的关键字
 
 一次提交后博客没有更新成功，收到的邮件中提示报了错，点开邮件中的超链接，查看 build 中的提示文字是：
