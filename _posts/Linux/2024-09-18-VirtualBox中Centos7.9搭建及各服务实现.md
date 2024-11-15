@@ -3885,6 +3885,8 @@ package.json文件中是项目的描述，里面有项目基本信息、执行�
 
 安装完成后使用```npm list --global```命令查看安装结果。
 
+卸载包使用`npm rm 包名`命令。
+
 ### cross-env安装
 
 cross-env是一个在Node.js项目中广泛使用的npm包，它主要用于设置跨平台的环境变量。
