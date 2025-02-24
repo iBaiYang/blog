@@ -29,6 +29,7 @@ VS Code（Visual Studio Code）是一款流行的代码编辑器，其丰富的�
 
 一、基础编辑快捷键
 
+    提示代码自动输入：Tab 或 Shift+Tab
     代码格式化：Shift+Alt+F
     向上或向下移动一行：Alt+Up 或 Alt+Down
     快速复制一行：Shift+Alt+Up 或 Shift+Alt+Down
