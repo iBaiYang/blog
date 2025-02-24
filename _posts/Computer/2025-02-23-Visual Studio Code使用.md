@@ -23,13 +23,18 @@ GitLens - 查看 Git 历史记录，轻松地导航和比较代码。
 
 Git Graph - 以图形方式查看 Git 历史记录。
 
+#### MarsCode
+
+MarsCode - 豆包 MarsCode 编程助手，提供自动代码补全、代码生成、代码编辑等能力。提示代码自动输入：Tab 或 Shift+Tab。
+
+官网：<https://www.marscode.cn/workbench>
+
 ### 快捷键
 
 VS Code（Visual Studio Code）是一款流行的代码编辑器，其丰富的快捷键可以大大提高编程效率
 
 一、基础编辑快捷键
 
-    提示代码自动输入：Tab 或 Shift+Tab
     代码格式化：Shift+Alt+F
     向上或向下移动一行：Alt+Up 或 Alt+Down
     快速复制一行：Shift+Alt+Up 或 Shift+Alt+Down
