@@ -5652,11 +5652,11 @@ echo $imagick->getImageBlob();
 
 ## Python3安装
 
-使用 yum 安装 Python 3：
+使用 yum 安装 Python3（这里默认安装的是3.6，最好使用编译的方式安装最新的版本，如3.12，这样可以避免好多问题）：
 > yum install python3
 
 ```
-[root@localhost dx-txt2video]# yum install python3
+[root@localhost ~]# yum install python3
 已加载插件：fastestmirror
 Determining fastest mirrors
 epel/x86_64/metalink                                     | 5.1 kB     00:00
@@ -5745,11 +5745,24 @@ Running transaction
   python3-pip.noarch 0:9.0.3-8.el7   python3-setuptools.noarch 0:39.2.0-10.el7
 
 完毕！
-[root@localhost dx-txt2video]#
-[root@localhost dx-txt2video]# python3 --version
+[root@localhost ~]#
+[root@localhost ~]# python3 --version
 Python 3.6.8
-[root@localhost dx-txt2video]#
+[root@localhost ~]#
+[root@localhost ~]# pip3 --version
+pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# pip3 install python-dotenv
+WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
+Collecting python-dotenv
+  Downloading https://files.pythonhosted.org/packages/30/5f/2e5c564bd86349fe6b82ca840f46acf6f4bb76d79ba9057fce3d3e008864/python_dotenv-0.20.0-py3-none-any.whl
+Installing collected packages: python-dotenv
+Successfully installed python-dotenv-0.20.0
+[root@localhost ~]#
 ```
+
+
 
 ## 中文字体安装
 
