@@ -5652,10 +5652,15 @@ echo $imagick->getImageBlob();
 
 ## Python3安装
 
-使用 yum 安装 Python3（这里默认安装的是3.6，最好使用编译的方式安装最新的版本，如3.12，这样可以避免好多问题）：
+CentOS 7 默认安装的的是 Python2，而 Python3 是 CentOS 8 及更高版本的默认 Python 版本。
+
+如果你需要在 CentOS 7 上使用 Python3，可以按照以下步骤进行安装（这里默认安装的是3.6，最好使用编译的方式安装最新的版本，如3.12，这样可以避免好多问题）：
 > yum install python3
 
 ```
+[root@localhost ~]# python --version
+Python 2.7.5
+[root@localhost ~]#
 [root@localhost ~]# yum install python3
 已加载插件：fastestmirror
 Determining fastest mirrors
