@@ -5650,6 +5650,125 @@ echo $imagick->getImageBlob();
 
 请注意，你需要将 'path/to/your/font.ttf' 替换为你系统上有效的字体文件路径。
 
+## Python3安装
+
+CentOS 7 默认安装的的是 Python2，而 Python3 是 CentOS 8 及更高版本的默认 Python 版本。
+
+如果你需要在 CentOS 7 上使用 Python3，可以按照以下步骤进行安装（这里默认安装的是3.6，最好使用编译的方式安装最新的版本，如3.12，这样可以避免好多问题）：
+> yum install python3
+
+```
+[root@localhost ~]# python --version
+Python 2.7.5
+[root@localhost ~]#
+[root@localhost ~]# yum install python3
+已加载插件：fastestmirror
+Determining fastest mirrors
+epel/x86_64/metalink                                     | 5.1 kB     00:00
+ * base: mirrors.aliyun.com
+ * epel: dl.fedoraproject.org
+ * extras: mirrors.aliyun.com
+ * nux-dextop: li.nux.ro
+ * remi-safe: mirrors.tuna.tsinghua.edu.cn
+ * updates: mirrors.aliyun.com
+base                                                     | 3.6 kB     00:00
+docker-ce-stable                                         | 3.5 kB     00:00
+extras                                                   | 2.9 kB     00:00
+mysql-8.4-lts-community                                  | 2.6 kB     00:00
+mysql-connectors-community                               | 2.6 kB     00:00
+mysql-tools-8.4-lts-community                            | 2.6 kB     00:00
+nux-dextop                                               | 2.9 kB     00:00
+remi-safe                                                | 3.0 kB     00:00
+updates                                                  | 2.9 kB     00:00
+(1/3): mysql-8.4-lts-community/x86_64/primary_db           |  41 kB   00:01
+(2/3): mysql-connectors-community/x86_64/primary_db        | 124 kB   00:01
+(3/3): mysql-tools-8.4-lts-community/x86_64/primary_db     |  12 kB   00:01
+正在解决依赖关系
+--> 正在检查事务
+---> 软件包 python3.x86_64.0.3.6.8-21.el7_9 将被 安装
+--> 正在处理依赖关系 python3-libs(x86-64) = 3.6.8-21.el7_9，它被软件包 python3-3.6.8-21.el7_9.x86_64 需要
+--> 正在处理依赖关系 python3-setuptools，它被软件包 python3-3.6.8-21.el7_9.x86_64 需要
+--> 正在处理依赖关系 python3-pip，它被软件包 python3-3.6.8-21.el7_9.x86_64 需要
+--> 正在处理依赖关系 libpython3.6m.so.1.0()(64bit)，它被软件包 python3-3.6.8-21.el7_9.x86_64 需要
+--> 正在检查事务
+---> 软件包 python3-libs.x86_64.0.3.6.8-21.el7_9 将被 安装
+--> 正在处理依赖关系 libtirpc.so.1()(64bit)，它被软件包 python3-libs-3.6.8-21.el7_9.x86_64 需要
+---> 软件包 python3-pip.noarch.0.9.0.3-8.el7 将被 安装
+---> 软件包 python3-setuptools.noarch.0.39.2.0-10.el7 将被 安装
+--> 正在检查事务
+---> 软件包 libtirpc.x86_64.0.0.2.4-0.16.el7 将被 安装
+--> 解决依赖关系完成
+
+依赖关系解决
+
+================================================================================
+ Package                  架构         版本                 源             大小
+================================================================================
+正在安装:
+ python3                  x86_64       3.6.8-21.el7_9       updates        71 k
+为依赖而安装:
+ libtirpc                 x86_64       0.2.4-0.16.el7       base           89 k
+ python3-libs             x86_64       3.6.8-21.el7_9       updates       7.0 M
+ python3-pip              noarch       9.0.3-8.el7          base          1.6 M
+ python3-setuptools       noarch       39.2.0-10.el7        base          629 k
+
+事务概要
+================================================================================
+安装  1 软件包 (+4 依赖软件包)
+
+总下载量：9.3 M
+安装大小：48 M
+Is this ok [y/d/N]: y
+Downloading packages:
+(1/5): libtirpc-0.2.4-0.16.el7.x86_64.rpm                  |  89 kB   00:00
+(2/5): python3-3.6.8-21.el7_9.x86_64.rpm                   |  71 kB   00:00
+(3/5): python3-setuptools-39.2.0-10.el7.noarch.rpm         | 629 kB   00:00
+(4/5): python3-pip-9.0.3-8.el7.noarch.rpm                  | 1.6 MB   00:01
+(5/5): python3-libs-3.6.8-21.el7_9.x86_64.rpm              | 7.0 MB   00:04
+--------------------------------------------------------------------------------
+总计                                               2.1 MB/s | 9.3 MB  00:04
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : libtirpc-0.2.4-0.16.el7.x86_64                              1/5
+  正在安装    : python3-setuptools-39.2.0-10.el7.noarch                     2/5
+  正在安装    : python3-pip-9.0.3-8.el7.noarch                              3/5
+  正在安装    : python3-3.6.8-21.el7_9.x86_64                               4/5
+  正在安装    : python3-libs-3.6.8-21.el7_9.x86_64                          5/5
+  验证中      : libtirpc-0.2.4-0.16.el7.x86_64                              1/5
+  验证中      : python3-libs-3.6.8-21.el7_9.x86_64                          2/5
+  验证中      : python3-3.6.8-21.el7_9.x86_64                               3/5
+  验证中      : python3-setuptools-39.2.0-10.el7.noarch                     4/5
+  验证中      : python3-pip-9.0.3-8.el7.noarch                              5/5
+
+已安装:
+  python3.x86_64 0:3.6.8-21.el7_9
+
+作为依赖被安装:
+  libtirpc.x86_64 0:0.2.4-0.16.el7   python3-libs.x86_64 0:3.6.8-21.el7_9
+  python3-pip.noarch 0:9.0.3-8.el7   python3-setuptools.noarch 0:39.2.0-10.el7
+
+完毕！
+[root@localhost ~]#
+[root@localhost ~]# python3 --version
+Python 3.6.8
+[root@localhost ~]#
+[root@localhost ~]# pip3 --version
+pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
+[root@localhost ~]#
+[root@localhost ~]#
+[root@localhost ~]# pip3 install python-dotenv
+WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
+Collecting python-dotenv
+  Downloading https://files.pythonhosted.org/packages/30/5f/2e5c564bd86349fe6b82ca840f46acf6f4bb76d79ba9057fce3d3e008864/python_dotenv-0.20.0-py3-none-any.whl
+Installing collected packages: python-dotenv
+Successfully installed python-dotenv-0.20.0
+[root@localhost ~]#
+```
+
+
+
 ## 中文字体安装
 
 Centos中默认是没有中文字体的，我们需要安装中文字体。可以直接从Windows系统中拿过来用，在目录 `C:\Windows\Fonts` 下。
