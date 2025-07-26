@@ -29,6 +29,10 @@ MarsCode - 豆包 MarsCode 编程助手，提供自动代码补全、代码生�
 
 官网：<https://www.marscode.cn/workbench>
 
+现在改名了，改成了 Trae AI
+
+网址：https://www.trae.cn/plugin
+
 ### 快捷键
 
 VS Code（Visual Studio Code）是一款流行的代码编辑器，其丰富的快捷键可以大大提高编程效率
