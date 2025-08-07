@@ -231,6 +231,7 @@ class Client
     // 这里就是整个请求处理管道的关键
     private function getSlice()
     {
+        // $stack是一个函数，$pipe是一个闭包函数，作用于$stack
         return function ($stack, $pipe) {
             // 返回一个闭包
             return function () use ($stack, $pipe) {
@@ -282,9 +283,148 @@ function () {
 
 当调用call_user_func时就是执行array_reduce返回的匿名函数。
 
+这里没有用到类来对实例对象进行包装，而是通过闭包函数完成，每一次处理在上一次处理之上进行包装，最后获得响应，就像流水线一样，一个请求进来通过一道道工序加工（包装）最后生成响应。
+
 ## Laravel实例
 
-Laravel框架源码分析之Pipeline管道设计 <https://zhuanlan.zhihu.com/p/669130742>
+在Laravel中最典型的应用就是中间件，每个中间件都是一个管道，控制器接受一个请求，请求会被每个中间件处理，最后返回给用户。
+
+看一下请求的处理：
+```php
+<?php
+
+namespace Illuminate\Foundation\Http;
+
+class Kernel implements KernelContract
+{
+    /**省略若干**/
+
+    /**
+     * Handle an incoming HTTP request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function handle($request)
+    {
+        try {
+            $request->enableHttpMethodParameterOverride();
+
+            $response = $this->sendRequestThroughRouter($request);  // 调用下面的方法
+        } catch (Exception $e) {
+            $this->reportException($e);
+
+            $response = $this->renderException($request, $e);
+        } catch (Throwable $e) {
+            $this->reportException($e = new FatalThrowableError($e));
+
+            $response = $this->renderException($request, $e);
+        }
+
+        $this->app['events']->dispatch(
+            new RequestHandled($request, $response)
+        );
+
+        return $response;
+    }
+
+    /**
+     * Send the given request through the middleware / router.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendRequestThroughRouter($request)
+    {
+        $this->app->instance('request', $request);
+
+        Facade::clearResolvedInstance('request');
+
+        $this->bootstrap();
+
+        return (new Pipeline($this->app))
+                    ->send($request)
+                    ->through($this->app->shouldSkipMiddleware() ? [] : $this->middleware)
+                    ->then($this->dispatchToRouter());
+    }
+
+    /**省略若干**/
+}
+```
+
+如在论坛用户发布的贴子中，用 纯文本替换链接标记、用“*”替换敏感词、从内容中完全删除脚本标记。下面的伪代码：
+```php
+<?php
+
+public function create(Request $request)
+{
+    // task 类集合
+    $pipes = [
+        RemoveBadWords::class,
+        ReplaceLinkTags::class,
+        RemoveScriptTags::class
+    ];
+
+    $post = app(Pipeline::class)
+        ->send($request->content)
+        ->through($pipes)
+        ->then(function ($content) {
+            return Post::create(['content' => 'content']);
+        });
+    // return any type of response
+}
+```
+
+每个 “task” 类应该有一个 “handle” 方法来执行操作。每个类都确定一个统一的约束：
+```php
+<?php
+
+namespace App;
+
+use Closure;
+
+interface Pipe
+{
+    public function handle($content, Closure $next);
+}
+```
+
+替换敏感词 RemoveBadWords类：
+```php
+<?php
+
+namespace App;
+
+use Closure;
+
+class RemoveBadWords implements Pipe
+{
+    public function handle($content, Closure $next)
+    {
+        // Here you perform the task and return the updated $content to the next pipe
+        $content = str_replace('badword', '****', $content);
+
+        return $next($content);
+    }
+}
+```
+
+用于执行任务的方法应该接收两个参数，第一个参数是合格的对象，第二个参数是当前操作处理完后会接管的下一个闭包（匿名函数）。
+
+可以使用自定义方法名称而不是“handle”。然后你需要指定pipeline要使用的方法名称，比如：
+```php
+$post = app(Pipeline::class)
+    ->send($request->content)
+    ->through($pipes)
+    ->via('customMethodName') // <---- This one，取代 handle 方法
+    ->then(function ($content) {
+        return Post::create(['content' => $content]);
+    });
+```
+
+提交的内容将会被各个$pipes 所处理, 被处理的结果将会存储下来。
+
+## Laravel代码分析
 
 先看下Laravel框架中Pipeline类的代码：
 ```php
@@ -541,72 +681,24 @@ class Pipeline implements PipelineContract
 }
 ```
 
-最典型的使用就是中间件，中间件就是一个管道，每个中间件都是一个管道，最后一个管道是控制器，控制器返回的结果是一个响应，响应会被每个中间件处理，最后返回给用户。
-
-看一下请求的处理：
+请求调用中，使用中间件：
 ```php
-<?php
+(new Pipeline($this->app))
+    ->send($request)
+    ->through($this->app->shouldSkipMiddleware() ? [] : $this->middleware)
+    ->then($this->dispatchToRouter());
+```
 
-namespace Illuminate\Foundation\Http;
-
-class Kernel implements KernelContract
+shouldSkipMiddleware() 判断中间件是否可用：
+```php
+public function shouldSkipMiddleware()
 {
-    /**省略若干**/
-
-    /**
-     * Handle an incoming HTTP request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function handle($request)
-    {
-        try {
-            $request->enableHttpMethodParameterOverride();
-
-            $response = $this->sendRequestThroughRouter($request);  // 调用下面的方法
-        } catch (Exception $e) {
-            $this->reportException($e);
-
-            $response = $this->renderException($request, $e);
-        } catch (Throwable $e) {
-            $this->reportException($e = new FatalThrowableError($e));
-
-            $response = $this->renderException($request, $e);
-        }
-
-        $this->app['events']->dispatch(
-            new RequestHandled($request, $response)
-        );
-
-        return $response;
-    }
-
-    /**
-     * Send the given request through the middleware / router.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    protected function sendRequestThroughRouter($request)
-    {
-        $this->app->instance('request', $request);
-
-        Facade::clearResolvedInstance('request');
-
-        $this->bootstrap();
-
-        return (new Pipeline($this->app))
-                    ->send($request)
-                    ->through($this->app->shouldSkipMiddleware() ? [] : $this->middleware)
-                    ->then($this->dispatchToRouter());
-    }
-
-    /**省略若干**/
+    return $this->bound('middleware.disable') &&
+            $this->make('middleware.disable') === true;
 }
 ```
 
-`$this->middleware` 在 `app/Http/Kernel.php` 下：
+中间件 `$this->middleware` 在 `app/Http/Kernel.php` 下，我们自己可以增加：
 
 ```php
 /**
@@ -625,7 +717,7 @@ protected $middleware = [
 ];
 ```
 
-看一下 `\App\Http\Middleware\TrimStrings::class` 的代码：
+看一下 `\App\Http\Middleware\TrimStrings::class` 的代码，用于字符trim处理：
 ```php
 <?php
 
@@ -779,18 +871,183 @@ class TransformsRequest
 }
 ```
 
+除了中间件，还有路由执行：
+```php
+<?php
+
+namespace Illuminate\Routing;
+
+class Router implements BindingRegistrar, RegistrarContract
+{
+    /**省略若干**/
+
+    /**
+     * Run the given route within a Stack "onion" instance.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function runRouteWithinStack(Route $route, Request $request)
+    {
+        $shouldSkipMiddleware = $this->container->bound('middleware.disable') &&
+                                $this->container->make('middleware.disable') === true;
+
+        $middleware = $shouldSkipMiddleware ? [] : $this->gatherRouteMiddleware($route);
+
+        return (new Pipeline($this->container))
+                        ->send($request)
+                        ->through($middleware)
+                        ->then(function ($request) use ($route) {
+                            return $this->prepareResponse(
+                                $request, $route->run()
+                            );
+                        });
+    }
+
+    /**省略若干**/
+}
+```
+
+队列执行：
+```php
+<?php
+
+namespace Illuminate\Queue;
+
+class CallQueuedHandler
+{
+    /**省略若干**/
+
+    /**
+     * Dispatch the given job / command through its specified middleware.
+     *
+     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  mixed  $command
+     * @return mixed
+     */
+    protected function dispatchThroughMiddleware(Job $job, $command)
+    {
+        return (new Pipeline($this->container))->send($command)
+                ->through(array_merge(method_exists($command, 'middleware') ? $command->middleware() : [], $command->middleware ?? []))
+                ->then(function ($command) use ($job) {
+                    return $this->dispatcher->dispatchNow(
+                        $command, $this->resolveHandler($job, $command)
+                    );
+                });
+    }
+
+    /**省略若干**/
+}
+```
+
+
+```php
+<?php
+
+namespace Illuminate\Bus;
+
+class Dispatcher implements QueueingDispatcher
+{
+    /**省略若干**/
+
+    /**
+     * The pipeline instance for the bus.
+     *
+     * @var \Illuminate\Pipeline\Pipeline
+     */
+    protected $pipeline;
+
+    public function __construct(Container $container, Closure $queueResolver = null)
+    {
+        $this->container = $container;
+        $this->queueResolver = $queueResolver;
+        $this->pipeline = new Pipeline($container);
+    }
+
+
+    /**省略若干**/
+}
+```
 
 
 
+```php
+<?php
 
+namespace Illuminate\Pipeline;
 
+use Closure;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Pipeline\Hub as HubContract;
 
+class Hub implements HubContract
+{
+    /**
+     * The container implementation.
+     *
+     * @var \Illuminate\Contracts\Container\Container|null
+     */
+    protected $container;
 
+    /**
+     * All of the available pipelines.
+     *
+     * @var array
+     */
+    protected $pipelines = [];
 
+    /**
+     * Create a new Hub instance.
+     *
+     * @param  \Illuminate\Contracts\Container\Container|null  $container
+     * @return void
+     */
+    public function __construct(Container $container = null)
+    {
+        $this->container = $container;
+    }
 
+    /**
+     * Define the default named pipeline.
+     *
+     * @param  \Closure  $callback
+     * @return void
+     */
+    public function defaults(Closure $callback)
+    {
+        return $this->pipeline('default', $callback);
+    }
 
+    /**
+     * Define a new named pipeline.
+     *
+     * @param  string  $name
+     * @param  \Closure  $callback
+     * @return void
+     */
+    public function pipeline($name, Closure $callback)
+    {
+        $this->pipelines[$name] = $callback;
+    }
 
+    /**
+     * Send an object through one of the available pipelines.
+     *
+     * @param  mixed  $object
+     * @param  string|null  $pipeline
+     * @return mixed
+     */
+    public function pipe($object, $pipeline = null)
+    {
+        $pipeline = $pipeline ?: 'default';
 
+        return call_user_func(
+            $this->pipelines[$pipeline], new Pipeline($this->container), $object
+        );
+    }
+}
+```
 
 
 
