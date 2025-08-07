@@ -9,7 +9,7 @@ meta: Laravel env配置文件加载分析
 
 ## 正文
 
-可以先看下 webman env配置文件加载分析 <https://ibaiyang.github.io/blog/php/2022/05/07/webman-env配置文件加载分析.html>
+可以先看下 webman env配置文件加载分析 <https://ibaiyang.github.io/blog/webman/2022/05/07/webman-env配置文件加载分析.html>
 
 
 ## 参考资料
