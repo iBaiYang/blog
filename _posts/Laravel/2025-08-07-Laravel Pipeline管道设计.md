@@ -970,8 +970,301 @@ class Dispatcher implements QueueingDispatcher
 }
 ```
 
+## Pipeline 源码
 
+Pipeline 服务提供者在服务启动时，引入了注册配置 app\config\app.php 的 providers 数组：
+```php
+<?php
 
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+
+    'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services the application utilizes. Set this in your ".env" file.
+    |
+    */
+
+    'env' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | When your application is in debug mode, detailed error messages with
+    | stack traces will be shown on every error that occurs within your
+    | application. If disabled, a simple generic error page is shown.
+    |
+    */
+
+    'debug' => (bool) env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used by the console to properly generate URLs when using
+    | the Artisan command line tool. You should set this to the root of
+    | your application so that it is used when running Artisan tasks.
+    |
+    */
+
+    'url' => env('APP_URL', 'http://localhost'),
+
+    'asset_url' => env('ASSET_URL', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default timezone for your application, which
+    | will be used by the PHP date and date-time functions. We have gone
+    | ahead and set this to a sensible default for you out of the box.
+    |
+    */
+
+    'timezone' => 'Asia/Shanghai',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The application locale determines the default locale that will be used
+    | by the translation service provider. You are free to set this value
+    | to any of the locales which will be supported by the application.
+    |
+    */
+
+    'locale' => 'en',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Fallback Locale
+    |--------------------------------------------------------------------------
+    |
+    | The fallback locale determines the locale to use when the current one
+    | is not available. You may change the value to correspond to any of
+    | the language folders that are provided through your application.
+    |
+    */
+
+    'fallback_locale' => 'en',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Faker Locale
+    |--------------------------------------------------------------------------
+    |
+    | This locale will be used by the Faker PHP library when generating fake
+    | data for your database seeds. For example, this will be used to get
+    | localized telephone numbers, street address information and more.
+    |
+    */
+
+    'faker_locale' => 'en_US',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encryption Key
+    |--------------------------------------------------------------------------
+    |
+    | This key is used by the Illuminate encrypter service and should be set
+    | to a random, 32 character string, otherwise these encrypted strings
+    | will not be safe. Please do this before deploying an application!
+    |
+    */
+
+    'key' => env('APP_KEY'),
+
+    'cipher' => 'AES-256-CBC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
+
+    'providers' => [
+
+        /*
+         * Laravel Framework Service Providers...
+         */
+        Illuminate\Auth\AuthServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+        Illuminate\Bus\BusServiceProvider::class,
+        Illuminate\Cache\CacheServiceProvider::class,
+        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+        Illuminate\Cookie\CookieServiceProvider::class,
+        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Encryption\EncryptionServiceProvider::class,
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+        Illuminate\Hashing\HashServiceProvider::class,
+        Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
+        Illuminate\Pagination\PaginationServiceProvider::class,
+        Illuminate\Pipeline\PipelineServiceProvider::class,                // 注册 Pipeline  
+        Illuminate\Queue\QueueServiceProvider::class,
+        Illuminate\Redis\RedisServiceProvider::class,
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Session\SessionServiceProvider::class,
+        Illuminate\Translation\TranslationServiceProvider::class,
+        Illuminate\Validation\ValidationServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class,
+
+        /*
+         * Package Service Providers...
+         */
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    |
+    | This array of class aliases will be registered when this application
+    | is started. However, feel free to register as many as you wish as
+    | the aliases are "lazy" loaded so they don't hinder performance.
+    |
+    */
+
+    'aliases' => [
+
+        'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
+        'Artisan' => Illuminate\Support\Facades\Artisan::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        'Blade' => Illuminate\Support\Facades\Blade::class,
+        'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
+        'Bus' => Illuminate\Support\Facades\Bus::class,
+        'Cache' => Illuminate\Support\Facades\Cache::class,
+        'Config' => Illuminate\Support\Facades\Config::class,
+        'Cookie' => Illuminate\Support\Facades\Cookie::class,
+        'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'DB' => Illuminate\Support\Facades\DB::class,
+        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Event' => Illuminate\Support\Facades\Event::class,
+        'File' => Illuminate\Support\Facades\File::class,
+        'Gate' => Illuminate\Support\Facades\Gate::class,
+        'Hash' => Illuminate\Support\Facades\Hash::class,
+        'Lang' => Illuminate\Support\Facades\Lang::class,
+        'Log' => Illuminate\Support\Facades\Log::class,
+        'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
+        'Password' => Illuminate\Support\Facades\Password::class,
+        'Queue' => Illuminate\Support\Facades\Queue::class,
+        'Redirect' => Illuminate\Support\Facades\Redirect::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Request' => Illuminate\Support\Facades\Request::class,
+        'Response' => Illuminate\Support\Facades\Response::class,
+        'Route' => Illuminate\Support\Facades\Route::class,
+        'Schema' => Illuminate\Support\Facades\Schema::class,
+        'Session' => Illuminate\Support\Facades\Session::class,
+        'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
+        'URL' => Illuminate\Support\Facades\URL::class,
+        'Validator' => Illuminate\Support\Facades\Validator::class,
+        'View' => Illuminate\Support\Facades\View::class,
+
+    ],
+
+];
+```
+
+PipelineServiceProvider 类源码：
+```php
+<?php
+
+namespace Illuminate\Pipeline;
+
+use Illuminate\Contracts\Pipeline\Hub as PipelineHubContract;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
+
+class PipelineServiceProvider extends ServiceProvider implements DeferrableProvider
+{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton(
+            PipelineHubContract::class, Hub::class
+        );
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [
+            PipelineHubContract::class,
+        ];
+    }
+}
+```
+
+Illuminate\Contracts\Pipeline\Hub 源码：
+```php
+<?php
+
+namespace Illuminate\Contracts\Pipeline;
+
+interface Hub
+{
+    /**
+     * Send an object through one of the available pipelines.
+     *
+     * @param  mixed  $object
+     * @param  string|null  $pipeline
+     * @return mixed
+     */
+    public function pipe($object, $pipeline = null);
+}
+```
+
+Illuminate\Pipeline\Hub 源码：
 ```php
 <?php
 
@@ -992,6 +1285,7 @@ class Hub implements HubContract
 
     /**
      * All of the available pipelines.
+     * 所有可用的管道.
      *
      * @var array
      */
@@ -1010,6 +1304,7 @@ class Hub implements HubContract
 
     /**
      * Define the default named pipeline.
+     * 定义默认命名管道.
      *
      * @param  \Closure  $callback
      * @return void
@@ -1021,6 +1316,7 @@ class Hub implements HubContract
 
     /**
      * Define a new named pipeline.
+     * 定义新的管道名，存入 $pipelines .
      *
      * @param  string  $name
      * @param  \Closure  $callback
@@ -1033,6 +1329,7 @@ class Hub implements HubContract
 
     /**
      * Send an object through one of the available pipelines.
+     * 通过其中一个可用管道发送对象。
      *
      * @param  mixed  $object
      * @param  string|null  $pipeline
@@ -1048,6 +1345,323 @@ class Hub implements HubContract
     }
 }
 ```
+
+Illuminate\Contracts\Pipeline\Pipeline 接口源码：
+```php
+<?php
+
+namespace Illuminate\Contracts\Pipeline;
+
+use Closure;
+
+interface Pipeline
+{
+    /**
+     * Set the traveler object being sent on the pipeline.
+     *
+     * @param  mixed  $traveler
+     * @return $this
+     */
+    public function send($traveler);
+
+    /**
+     * Set the stops of the pipeline.
+     *
+     * @param  dynamic|array  $stops
+     * @return $this
+     */
+    public function through($stops);
+
+    /**
+     * Set the method to call on the stops.
+     *
+     * @param  string  $method
+     * @return $this
+     */
+    public function via($method);
+
+    /**
+     * Run the pipeline with a final destination callback.
+     *
+     * @param  \Closure  $destination
+     * @return mixed
+     */
+    public function then(Closure $destination);
+}
+```
+
+Illuminate\Pipeline\Pipeline 源码：
+```php
+<?php
+
+namespace Illuminate\Pipeline;
+
+use Closure;
+use Exception;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Pipeline\Pipeline as PipelineContract;
+use RuntimeException;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
+
+class Pipeline implements PipelineContract
+{
+    /**
+     * The container implementation.
+     * 通过管道传递的对象。
+     *
+     * @var \Illuminate\Contracts\Container\Container
+     */
+    protected $container;
+
+    /**
+     * The object being passed through the pipeline.
+     *
+     * @var mixed
+     */
+    protected $passable;
+
+    /**
+     * The array of class pipes.
+     * 类管道的数组。
+     *
+     * @var array
+     */
+    protected $pipes = [];
+
+    /**
+     * The method to call on each pipe.
+     * 要在每个管道上调用的方法。
+     *
+     * @var string
+     */
+    protected $method = 'handle';
+
+    /**
+     * Create a new class instance.
+     *
+     * @param  \Illuminate\Contracts\Container\Container|null  $container
+     * @return void
+     */
+    public function __construct(Container $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Set the object being sent through the pipeline.
+     * 设置通过管道发送的对象
+     *
+     * @param  mixed  $passable
+     * @return $this
+     */
+    public function send($passable)
+    {
+        $this->passable = $passable;
+
+        return $this;
+    }
+
+    /**
+     * Set the array of pipes.
+     * 设置管道数组。
+     *
+     * @param  array|mixed  $pipes
+     * @return $this
+     */
+    public function through($pipes)
+    {
+        $this->pipes = is_array($pipes) ? $pipes : func_get_args();
+
+        return $this;
+    }
+
+    /**
+     * Set the method to call on the pipes.
+     * 设置要在管道上调用的方法,这里修改默认管道调用 handle 方法
+     *
+     * @param  string  $method
+     * @return $this
+     */
+    public function via($method)
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * Run the pipeline with a final destination callback.
+     * 使用最终目标回调运行管道（核心点）
+     *
+     * @param  \Closure  $destination
+     * @return mixed
+     */
+    public function then(Closure $destination)
+    {
+        $pipeline = array_reduce(
+            array_reverse($this->pipes()), $this->carry(), $this->prepareDestination($destination)
+        );
+
+        return $pipeline($this->passable);
+    }
+
+    /**
+     * Run the pipeline and return the result.
+     * 运行管道并返回结果
+     *
+     * @return mixed
+     */
+    public function thenReturn()
+    {
+        return $this->then(function ($passable) {
+            return $passable;
+        });
+    }
+
+    /**
+     * Get the final piece of the Closure onion.
+     *
+     * @param  \Closure  $destination
+     * @return \Closure
+     */
+    protected function prepareDestination(Closure $destination)
+    {
+        return function ($passable) use ($destination) {
+            try {
+                return $destination($passable);
+            } catch (Exception $e) {
+                return $this->handleException($passable, $e);
+            } catch (Throwable $e) {
+                return $this->handleException($passable, new FatalThrowableError($e));
+            }
+        };
+    }
+
+    /**
+     * Get a Closure that represents a slice of the application onion.
+     *
+     * @return \Closure
+     */
+    protected function carry()
+    {
+        return function ($stack, $pipe) {
+            return function ($passable) use ($stack, $pipe) {
+                try {
+                    if (is_callable($pipe)) {
+                        // If the pipe is a callable, then we will call it directly, but otherwise we
+                        // will resolve the pipes out of the dependency container and call it with
+                        // the appropriate method and arguments, returning the results back out.
+                        return $pipe($passable, $stack);
+                    } elseif (! is_object($pipe)) {
+                        [$name, $parameters] = $this->parsePipeString($pipe);
+
+                        // If the pipe is a string we will parse the string and resolve the class out
+                        // of the dependency injection container. We can then build a callable and
+                        // execute the pipe function giving in the parameters that are required.
+                        $pipe = $this->getContainer()->make($name);
+
+                        $parameters = array_merge([$passable, $stack], $parameters);
+                    } else {
+                        // If the pipe is already an object we'll just make a callable and pass it to
+                        // the pipe as-is. There is no need to do any extra parsing and formatting
+                        // since the object we're given was already a fully instantiated object.
+                        $parameters = [$passable, $stack];
+                    }
+
+                    $carry = method_exists($pipe, $this->method)
+                                    ? $pipe->{$this->method}(...$parameters)
+                                    : $pipe(...$parameters);
+
+                    return $this->handleCarry($carry);
+                } catch (Exception $e) {
+                    return $this->handleException($passable, $e);
+                } catch (Throwable $e) {
+                    return $this->handleException($passable, new FatalThrowableError($e));
+                }
+            };
+        };
+    }
+
+    /**
+     * Parse full pipe string to get name and parameters.
+     *
+     * @param  string  $pipe
+     * @return array
+     */
+    protected function parsePipeString($pipe)
+    {
+        [$name, $parameters] = array_pad(explode(':', $pipe, 2), 2, []);
+
+        if (is_string($parameters)) {
+            $parameters = explode(',', $parameters);
+        }
+
+        return [$name, $parameters];
+    }
+
+    /**
+     * Get the array of configured pipes.
+     *
+     * @return array
+     */
+    protected function pipes()
+    {
+        return $this->pipes;
+    }
+
+    /**
+     * Get the container instance.
+     *
+     * @return \Illuminate\Contracts\Container\Container
+     *
+     * @throws \RuntimeException
+     */
+    protected function getContainer()
+    {
+        if (! $this->container) {
+            throw new RuntimeException('A container instance has not been passed to the Pipeline.');
+        }
+
+        return $this->container;
+    }
+
+    /**
+     * Handle the value returned from each pipe before passing it to the next.
+     *
+     * @param  mixed  $carry
+     * @return mixed
+     */
+    protected function handleCarry($carry)
+    {
+        return $carry;
+    }
+
+    /**
+     * Handle the given exception.
+     *
+     * @param  mixed  $passable
+     * @param  \Exception  $e
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    protected function handleException($passable, Exception $e)
+    {
+        throw $e;
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
