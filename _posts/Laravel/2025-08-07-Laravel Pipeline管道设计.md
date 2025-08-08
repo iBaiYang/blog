@@ -1903,7 +1903,7 @@ PHP_FUNCTION(array_reduce)
 	/* (zval **)input points to an element of argument stack
 	 * the base pointer of which is subject to change.
 	 * thus we need to keep the pointer to the hashtable for safety */
-	htbl = Z_ARRVAL_P(input);
+	htbl = Z_ARRVAL_P(input);  // 获取PHP数组的底层哈希表
 
 	if (zend_hash_num_elements(htbl) == 0) {
 		return;
@@ -1913,8 +1913,8 @@ PHP_FUNCTION(array_reduce)
 	fci.param_count = 2;
 	fci.params = args;
 
-	ZEND_HASH_FOREACH_VAL(htbl, operand) {
-		ZVAL_COPY_VALUE(&args[0], return_value);  // 累积结果作为回调第一个参数
+	ZEND_HASH_FOREACH_VAL(htbl, operand) {  // 遍历哈希表元素
+		ZVAL_COPY_VALUE(&args[0], return_value);  // 浅拷贝zval，累积结果作为回调第一个参数
 		ZVAL_COPY_VALUE(&args[1], operand);  // 当前数组元素作为第二个参数
 
 		zend_call_function(&fci, &fci_cache);   // 执行回调函数
