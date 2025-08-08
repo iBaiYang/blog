@@ -83,10 +83,10 @@ var_dump(array_reduce($x, "sum", "No data to reduce")); // string(17) "No data t
 <?php
 function sum($carry, $item)
 {
-	var_dump('$carry-  ' . $carry);
-	var_dump('$item-  ' . $item);
+    var_dump('$carry-  ' . $carry);
+    var_dump('$item-  ' . $item);
     $carry += $item;
-	var_dump('$carry2  ' . $carry);
+    var_dump('$carry2  ' . $carry);
     return $carry;
 }
 
@@ -115,10 +115,10 @@ int(15)
 
 function product($carry, $item)
 {
-	var_dump('$carry-  ' . $carry);
-	var_dump('$item-  ' . $item);
+    var_dump('$carry-  ' . $carry);
+    var_dump('$item-  ' . $item);
     $carry *= $item;
-	var_dump('$carry2  ' . $carry);
+    var_dump('$carry2  ' . $carry);
     return $carry;
 }
 
@@ -266,7 +266,7 @@ Request4 End.
 
 getSlice() 循环闭包返回值也是一个闭包，在不断的循环中，闭包函数就像洋葱一样，一层一层不断包裹。
 
-最终array_reduce返回一个匿名函数：
+最终array_reduce()返回一个匿名函数：
 ```php
 function () {
     return Request4::handle(function () {
@@ -284,6 +284,209 @@ function () {
 当调用call_user_func时就是执行array_reduce返回的匿名函数。
 
 这里没有用到类来对实例对象进行包装，而是通过闭包函数完成，每一次处理在上一次处理之上进行包装，最后获得响应，就像流水线一样，一个请求进来通过一道道工序加工（包装）最后生成响应。
+
+我们把上面的例子再丰富一下：
+```php
+<?php 
+interface RequestInterface
+{
+    // 我们之前讲过装饰者模式，这里是通过闭包函数实现
+    // 通过之后实现类及调用就可以看出
+    public static function handle($param, Closure $next);
+}
+	
+class Request1 implements RequestInterface
+{
+    public static function handle($param, Closure $next)
+    {
+        echo "Request1 Begin." . "<br />";
+        $next($param);
+        echo "Request1 End." . "<br />";
+    }
+}
+
+class Request2 implements RequestInterface
+{
+    public static function handle($param, Closure $next)
+    {
+        echo "Request2 Begin." . "<br />";
+        $next($param);
+        echo "Request2 End." . "<br />";
+    }
+}
+
+class Request3 implements RequestInterface
+{
+    public static function handle($param, Closure $next)
+    {
+        echo "Request3 Begin." . "<br />";
+        $next($param);
+        echo "Request3 End." . "<br />";
+    }
+}
+
+class Request4 implements RequestInterface
+{
+    public static function handle($param, Closure $next)
+    {
+        echo "Request4 Begin." . "<br />";
+        $next($param);
+        echo "Request4 End." . "<br />";
+    }
+}
+
+class Client
+{
+    // 这里包含了所有的请求
+    private $pipes = [
+        'Request1',
+        'Request2',
+        'Request3',
+        'Request4',
+    ];
+
+    // 这里就是思维导图中默认返回的匿名回调函数
+    private function defaultClosure($param)
+    {
+        return function ($param) {
+            echo '请求处理中...'. $param . "<br />";
+        };
+    }
+
+    // 这里就是整个请求处理管道的关键
+    private function getSlice()
+    {
+        // $stack是一个函数，$pipe是一个闭包函数，作用于$stack
+        return function ($stack, $pipe) {
+            // 返回一个闭包
+            return function ($param) use ($stack, $pipe) {
+                return $pipe::handle($param, $stack);
+            };
+        };
+    }
+
+    // 这里是负责发起请求处理
+    public function then()
+    {
+        call_user_func(array_reduce(array_reverse($this->pipes), $this->getSlice(), $this->defaultClosure($param)), 'abc123');
+    }
+}
+
+$worker = new Client();
+$worker->then();
+```
+
+1. 增加参数 $param
+2. 反转中间件执行顺序
+
+输出结果：
+```
+Request1 Begin.
+Request2 Begin.
+Request3 Begin.
+Request4 Begin.
+请求处理中...abc123
+Request4 End.
+Request3 End.
+Request2 End.
+Request1 End.
+```
+
+call_user_func()函数：
+```
+call_user_func(callable $callback, mixed ...$args): mixed
+```
+
+因为上面array_reduce([...], func(f, b), func(arg))第三个参数是函数，所以返回的是一个函数，call_user_func(func(), arg)调用时就要加第二个参数arg。
+
+array_reduce() 返回一个匿名函数：
+```php
+function ($param) {
+    return Request1::handle($param, function ($param) {
+        return Request2::handle($param, function ($param) {
+            return Request3::handle($param, function ($param) {
+                return Reuqest4::handle($param, function ($param) {
+                    echo '请求处理中...' . $param . "<br />";
+                });
+            });
+        });
+    });
+}
+```
+
+再改一下看下过程：
+```php
+private function getSlice()
+{
+    echo 'a1' ."<br />";
+    return function ($stack, $pipe) {
+        echo 'b2(' . $pipe . ')' ."<br />";
+        return function ($param) use ($stack, $pipe) {
+            echo 'c3(' . $pipe . ')' ."<br />";
+            return $pipe::handle($param, $stack);
+        };
+    };
+}
+```
+
+输出结果：
+```
+a1
+b2(Request4)
+b2(Request3)
+b2(Request2)
+b2(Request1)
+c3(Request1)
+Request1 Begin.
+c3(Request2)
+Request2 Begin.
+c3(Request3)
+Request3 Begin.
+c3(Request4)
+Request4 Begin.
+请求处理中...abc123
+Request4 End.
+Request3 End.
+Request2 End.
+Request1 End.
+```
+
+为什么先是多个b2呢？不应该是b2、c3交替出现吗？
+
+核心原因：中间件管道的「构建期」与「执行期」分离。
+
+1、构建期。array_reduce 会一次性遍历所有中间件（Request1~Request4），每次遍历都会执行：
+
+```php
+return function ($stack, $pipe) {
+    echo 'b2' ."<br />"; // 此处立即输出 b2
+    return function ($param) use ($stack, $pipe) { ... };
+};
+```
+
+遍历4个中间件$pipe → 输出4次 b2，也可以说用C语言写成的array_reduce()的底层代码知道需要把中间件$pipes遍历一遍，所以先把所有$pipes遍历一遍。此时仅构建中间件嵌套结构，并未执行实际业务逻辑。
+
+2、执行期。当 call_user_func 触发最终闭包handle时，才会从外层到内层依次执行嵌套闭包：
+
+```
+Request1 的闭包({
+    echo 'c3';
+    Request2 的闭包({
+        echo 'c3';
+        Request3 的闭包({
+            echo 'c3';
+            Request4 的闭包({
+                echo 'c3';
+                执行默认闭包();
+            });
+        });
+    });
+});
+```
+
+此时才会依次输出 c3 和中间件逻辑。
+
+这就是Laravel中的Pipeline管道设计。
 
 ## Laravel实例
 
@@ -528,11 +731,12 @@ class Pipeline implements PipelineContract
      */
     public function then(Closure $destination)
     {
+        // 返回一个洋葱函数体
         $pipeline = array_reduce(
             array_reverse($this->pipes()), $this->carry(), $this->prepareDestination($destination)
         );
 
-        return $pipeline($this->passable);
+        return $pipeline($this->passable);  // 在这里传入 carry() 中的 $passable参数
     }
 
     /**
