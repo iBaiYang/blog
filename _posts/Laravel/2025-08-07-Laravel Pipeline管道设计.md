@@ -1874,64 +1874,7 @@ class Pipeline implements PipelineContract
 
 在 https://github.com/php/php-src/blob/master/ext/standard/array.c 中：
 
-```C
-/* {{{ Iteratively reduce the array to a single value via the callback. */
-PHP_FUNCTION(array_reduce)
-{
-	zval *input;
-	zval args[2];
-	zval *operand;
-	zend_fcall_info fci;
-	zend_fcall_info_cache fci_cache;
-	zval *initial = NULL;
-	HashTable *htbl;
-
-    ZEND_PARSE_PARAMETERS_START(2, 3)
-        Z_PARAM_ARRAY(input)       // 输入数组
-        Z_PARAM_FUNC(fci, fci_cache) // 回调函数
-        Z_PARAM_OPTIONAL
-        Z_PARAM_ZVAL(initial)      // 可选初始值
-    ZEND_PARSE_PARAMETERS_END();
-
-    // 将初始值复制到return_value（函数返回值容器）
-	if (initial) {
-		ZVAL_COPY(return_value, initial);
-	} else {
-		ZVAL_NULL(return_value);
-	}
-
-	/* (zval **)input points to an element of argument stack
-	 * the base pointer of which is subject to change.
-	 * thus we need to keep the pointer to the hashtable for safety */
-	htbl = Z_ARRVAL_P(input);  // 获取PHP数组的底层哈希表
-
-	if (zend_hash_num_elements(htbl) == 0) {
-		return;
-	}
-
-	fci.retval = return_value;
-	fci.param_count = 2;
-	fci.params = args;
-
-	ZEND_HASH_FOREACH_VAL(htbl, operand) {  // 遍历哈希表元素
-		ZVAL_COPY_VALUE(&args[0], return_value);  // 浅拷贝zval，累积结果作为回调第一个参数
-		ZVAL_COPY_VALUE(&args[1], operand);  // 当前数组元素作为第二个参数
-
-		zend_call_function(&fci, &fci_cache);   // 执行回调函数
-		zval_ptr_dtor(&args[0]);  // 销毁临时变量
-
-        // ... 结果更新与错误处理
-		if (EXPECTED(!Z_ISUNDEF_P(return_value))) {  
-			if (UNEXPECTED(Z_ISREF_P(return_value))) {
-				zend_unwrap_reference(return_value);  // 解引用
-			}
-		} else {
-			RETURN_NULL();
-		}
-	} ZEND_HASH_FOREACH_END();
-}
-/* }}} */
-```
+![]({{site.baseurl}}/images/Laravel/20250809120338.png)
 
 参数解析 → 初始化返回值 → 获取哈希表 → 遍历数组元素 → 传递(累积结果, 当前元素) → 调用回调 → 更新累积结果 → 返回最终值
 
