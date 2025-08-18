@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: Laravel
-title: Laravel Facade外观系统
-meta: Laravel Facade外观系统
+title: Laravel Facade门面模式
+meta: Laravel Facade门面模式
 ---
 * content
 {:toc}
