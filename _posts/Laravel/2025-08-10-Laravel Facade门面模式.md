@@ -346,7 +346,9 @@ class_alias(Illuminate\Support\Facades\Log::class, 'Log');
 class Log extends Illuminate\Support\Facades\Log {}
 ```
 
-### 执行流程示例（`Log::info('test')`）
+### 执行流程示例
+
+`Log::info('test')`
 
 1、首次调用触发自动加载
 
@@ -515,7 +517,9 @@ public static function getFacadeRoot()
 
 ---
 
-### 步骤 3: 识别服务标识 - `getFacadeAccessor()`
+### 步骤 3: 识别服务标识
+
+`getFacadeAccessor()`
 
 这个方法由具体的 Facade 类实现，它告诉框架：“我代表的是容器里绑定的哪个东西？”
 
@@ -585,7 +589,9 @@ protected static function resolveFacadeInstance($name)
 
 ---
 
-### 步骤 5: 服务容器接管 - `app()->make('log')`
+### 步骤 5: 服务容器接管 
+
+`app()->make('log')`
 
 服务容器接收到解析 `'log'` 的指令。它会查找自己的绑定记录，看看 `'log'` 对应的是什么。
 
@@ -607,27 +613,27 @@ class LogServiceProvider extends ServiceProvider
     {
         // 在容器中以单例形式注册 'log'
         // 当解析 'log' 时，就执行这个闭包函数来创建实例
-        $this->app->singleton('log', function ($app) {
-            // 调用 makeLogger 方法创建日志器实例
-            return new Logger(
-                new LogManager($app), // 传入日志管理器
-                $app['events'] // 传入事件分发器，用于触发日志事件
-            );
+        $this->app->singleton('log', function () {
+            return new LogManager($this->app);  // 传入日志管理器
         });
     }
 }
 ```
 
+在 app 项目服务容器`__construct`实例化时，`$this->registerBaseServiceProviders()` 中 `$this->register(new LogServiceProvider($this));` 注册时日志服务提供者。
+
 所以，当容器执行 `app()->make('log')` 时：
 1.  它知道 `'log'` 被绑定为一个**单例（singleton）**（意味着多次解析返回同一个实例）。
 2.  它执行注册时定义的闭包函数。
-3.  这个闭包函数**创建并返回了一个 `Illuminate\Log\Logger` 的实例**。
+3.  这个闭包函数 创建并返回了一个 `Illuminate\Log\LogManager` 的实例。
 
-这个 `Logger` 实例就是 `Log` Facade 背后真正的对象。
+这个 `LogManager` 实例就是 `Log` Facade 背后真正的对象。
 
 ---
 
-### 步骤 6: 完成调用 - `$instance->info('test')`
+### 步骤 6: 完成调用 
+
+`$instance->info('test')`
 
 现在，`__callStatic` 方法中的 `$instance` 变量已经是一个具体的 `Logger` 对象了。最后一步就是调用这个对象上的 `info` 方法。
 
@@ -2976,6 +2982,32 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     }
 }
 ```
+
+Illuminate\Log\LogServiceProvider 源码：
+
+```php
+<?php
+
+namespace Illuminate\Log;
+
+use Illuminate\Support\ServiceProvider;
+
+class LogServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton('log', function () {
+            return new LogManager($this->app);
+        });
+    }
+}
+```
+
 
 
 
