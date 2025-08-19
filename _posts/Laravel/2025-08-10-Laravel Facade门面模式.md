@@ -198,7 +198,7 @@ AliasLoader::getInstance($aliases)->register();
 
 ----
 
-项目入口 `index.php` 中 `$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);` 获取http服务。
+项目入口 `index.php` 中 `$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);` 获取http服务，调用 `$kernel->handle($request = Illuminate\Http\Request::capture())` 方法处理请求。
 
 在 `Illuminate\Foundation\Http` 目录下的 `Kernel.php` 中
 
@@ -366,15 +366,26 @@ class_alias('Illuminate\Support\Facades\Log', 'Log');
 3、Facade 魔术方法生效
 
 ```php
+<?php
+
+namespace Illuminate\Support\Facades;
+
 // 现在 Log 指向 Illuminate\Support\Facades\Log
-class Log extends Facade {
-    protected static function getFacadeAccessor() {
+class Log extends Facade 
+{
+    protected static function getFacadeAccessor() 
+    {
         return 'log'; // 返回服务容器绑定名
     }
 }
+```
 
+`Log::info('test')` 相当于 `(new Illuminate\Support\Facades\Log())::info()`，`info()`方法不存在，调用父类 Facade 中 __callStatic 方法：
+
+```php
 // 调用静态方法时触发基类的 __callStatic
-public static function __callStatic($method, $args) {
+public static function __callStatic($method, $args) 
+{
     $instance = static::getFacadeRoot(); // 从容器解析 log 服务
     return $instance->$method(...$args); // 执行真正的 info 方法
 }
