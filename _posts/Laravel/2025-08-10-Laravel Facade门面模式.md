@@ -196,7 +196,7 @@ AliasLoader::getInstance($aliases)->register();
 
 这里 `$aliases` 就是 `config/app.php` 中的别名配置数组。
 
-----
+---
 
 项目入口 `index.php` 中 `$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);` 获取http服务，调用 `$kernel->handle($request = Illuminate\Http\Request::capture())` 方法处理请求。
 
@@ -380,7 +380,7 @@ class Log extends Facade
 }
 ```
 
-`Log::info('test')` 相当于 `(new Illuminate\Support\Facades\Log())::info()`，`info()`方法不存在，调用父类 Facade 中 __callStatic 方法：
+`Log::info('test')` 相当于 `(new Illuminate\Support\Facades\Log())::info('test')`，`info()`方法不存在，调用父类 Facade 中 `__callStatic` 方法：
 
 ```php
 // 调用静态方法时触发基类的 __callStatic
@@ -427,6 +427,229 @@ public static function __callStatic($method, $args)
 - 比真正的静态类更优（支持依赖注入和模拟）
 
 这种设计完美平衡了开发便利性和框架灵活性，是 Laravel 优雅架构的典范之作。
+
+## 从容器解析 log 服务
+
+上面在 `Log::info('test')` 时讲到了：
+
+```php
+public static function __callStatic($method, $args) 
+{
+    $instance = static::getFacadeRoot(); // 从容器解析 log 服务
+    return $instance->$method(...$args); // 执行真正的 info 方法
+}
+```
+
+我们来深入、完整地追溯分析 `$instance = static::getFacadeRoot();` 这行代码是如何从 Laravel 的服务容器（IoC Container）中解析出 `log` 服务的真实实例的。
+
+这是一个层层递进的过程，我们将从 Facade 的静态调用开始，一直追踪到服务容器返回一个具体的 `Illuminate\Log\Logger` 实例。
+
+### 调用栈概览
+
+整个解析过程遵循一个清晰的调用链，其核心流程如下：
+
+[Facade静态调用 Log::info('test')] --> [触发Facade基类 `__callStatic`] --> [调用 getFacadeRoot 获取实例根对象] --> [调用 resolveFacadeInstance 解析]  --> [调用 getFacadeAccessor 获取服务名] --> [返回服务标识符 'log'] --> [向App容器请求解析 app[ 'log' ]] --> [容器根据绑定返回 Logger 实例] --> [缓存并返回该 实例] --> [最终调用实例方法: info('test')]
+
+下面是每个步骤的详细分解。
+
+---
+
+### 步骤 1: 静态调用的入口 - `__callStatic`
+
+当您调用 `Log::info('test')` 时，由于 `Log` Facade 自身没有定义静态方法 `info`，PHP 会调用其父类 `Illuminate\Support\Facades\Facade` 的魔术方法 `__callStatic`。
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php`
+
+```php
+/**
+ * Handle dynamic, static calls to the object.
+ *
+ * @param  string  $method
+ * @param  array  $args
+ * @return mixed
+ *
+ * @throws \RuntimeException
+ */
+public static function __callStatic($method, $args)
+{
+    // 第一步：获取它代理的真正对象实例
+    $instance = static::getFacadeRoot();
+
+    // 如果获取到的实例为 null，则抛出异常
+    if (! $instance) {
+        throw new RuntimeException('A facade root has not been set.');
+    }
+
+    // 第二步：调用真实实例上的方法
+    return $instance->$method(...$args);
+}
+```
+
+这是整个流程的起点。 它的首要任务就是获取它所要代理的那个真实对象实例。
+
+---
+
+### 步骤 2: 获取根实例 - `getFacadeRoot()`
+
+`getFacadeRoot()` 方法是 Facade 获取真实实例的核心。
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php`
+
+```php
+/**
+ * Get the root object behind the facade.
+ *
+ * @return mixed
+ */
+public static function getFacadeRoot()
+{
+    // 关键点：这里调用的是 static::resolveFacadeInstance(...)
+    // 这意味着它会使用最终子类（如 Log Facade）实现的 getFacadeAccessor 方法
+    return static::resolveFacadeInstance(static::getFacadeAccessor());
+}
+```
+
+这个方法做了两件事：
+1.  调用 `static::getFacadeAccessor()` 获取在服务容器中注册的**绑定名称**。
+2.  将这个绑定名称传递给 `static::resolveFacadeInstance()` 方法去解析。
+
+---
+
+### 步骤 3: 识别服务标识 - `getFacadeAccessor()`
+
+这个方法由具体的 Facade 类实现，它告诉框架：“我代表的是容器里绑定的哪个东西？”
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Facades/Log.php`
+
+```php
+namespace Illuminate\Support\Facades;
+
+/**
+ * @see \Illuminate\Log\Logger
+ */
+class Log extends Facade
+{
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'log'; // 就是返回这个字符串标识
+    }
+}
+```
+
+到这里，我们拿到了关键信息：字符串 `'log'`。 这个 `'log'` 就是在服务容器中注册日志服务时使用的键名。
+
+---
+
+### 步骤 4: 解析实例 - `resolveFacadeInstance()`
+
+现在我们有了服务名称 `'log'`，下一步就是拿着这个名字去容器里找对应的实例。
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php`
+
+```php
+/**
+ * Resolve the facade root instance from the container.
+ *
+ * @param  object|string  $name
+ * @return mixed
+ */
+protected static function resolveFacadeInstance($name)
+{
+    // 如果是对象，直接返回（但通常 'log' 是字符串）
+    if (is_object($name)) {
+        return $name;
+    }
+
+    // 检查是否已经解析过并缓存过这个实例
+    if (isset(static::$resolvedInstance[$name])) {
+        return static::$resolvedInstance[$name];
+    }
+
+    // 最核心的一行：通过服务容器解析实例
+    // app() 是全局辅助函数，返回服务容器的实例
+    // ->make($name) 是容器的方法，意为“解析绑定名为 $name 的服务”
+    return static::$resolvedInstance[$name] = app()->make($name);
+}
+```
+
+这个方法的核心是 `app()->make('log')`。
+- `app()`: 辅助函数，返回 Laravel 应用程序实例（即服务容器本身）。
+- `make($abstract)`: 容器的方法，用于解析给定的抽象类型（绑定名）。
+
+到这里，Facade 的工作就基本完成了，它把任务抛给了服务容器。 接下来是容器内部的解析过程。
+
+---
+
+### 步骤 5: 服务容器接管 - `app()->make('log')`
+
+服务容器接收到解析 `'log'` 的指令。它会查找自己的绑定记录，看看 `'log'` 对应的是什么。
+
+这个绑定是在框架启动时，由 日志服务提供者 (LogServiceProvider) 完成的。
+
+文件： `vendor/laravel/framework/src/Illuminate/Log/LogServiceProvider.php`
+
+```php
+namespace Illuminate\Log;
+
+class LogServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // 在容器中以单例形式注册 'log'
+        // 当解析 'log' 时，就执行这个闭包函数来创建实例
+        $this->app->singleton('log', function ($app) {
+            // 调用 makeLogger 方法创建日志器实例
+            return new Logger(
+                new LogManager($app), // 传入日志管理器
+                $app['events'] // 传入事件分发器，用于触发日志事件
+            );
+        });
+    }
+}
+```
+
+所以，当容器执行 `app()->make('log')` 时：
+1.  它知道 `'log'` 被绑定为一个**单例（singleton）**（意味着多次解析返回同一个实例）。
+2.  它执行注册时定义的闭包函数。
+3.  这个闭包函数**创建并返回了一个 `Illuminate\Log\Logger` 的实例**。
+
+这个 `Logger` 实例就是 `Log` Facade 背后真正的对象。
+
+---
+
+### 步骤 6: 完成调用 - `$instance->info('test')`
+
+现在，`__callStatic` 方法中的 `$instance` 变量已经是一个具体的 `Logger` 对象了。最后一步就是调用这个对象上的 `info` 方法。
+
+```php
+// $instance 现在是一个 Illuminate\Log\Logger 对象
+// 调用它的 info 方法，并传入参数 'test'
+return $instance->info('test');
+```
+
+`Logger` 类会处理日志的写入、格式化以及事件触发等所有实际逻辑。
+
+---
+
+### 总结与核心要点
+
+1.  代理模式： Facade 是一个**静态代理**，它自己不干活，只是负责找到干活的“工人”（真实实例）。
+2.  服务容器是核心： Facade 的强大完全依赖于 Laravel 的服务容器。容器负责管理和依赖注入这些真实实例。
+3.  关键桥梁： `getFacadeAccessor()` 方法是 Facade 和容器之间的桥梁，它返回服务在容器中的**注册键**。
+4.  缓存优化： `$resolvedInstance` 数组缓存了已解析的实例，避免了每次调用都去容器里重新解析的开销，提升了性能。
+5.  可测试性： 正因为 Facade 底层是通过 `app->make()` 解析的，我们可以在测试中很容易地用 `Log::shouldReceive('info')` 来模拟（Mock）这些调用，而无需关心底层的容器绑定。
+
+通过这个完整的追溯，您可以看到 Laravel 的 Facade 并非“魔法”，而是一套设计精巧、基于服务容器的静态接口实现，完美地平衡了代码的简洁性和灵活性。
 
 ## 总结
 
