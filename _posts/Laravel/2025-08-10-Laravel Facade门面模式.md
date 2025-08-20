@@ -27,7 +27,7 @@ Laravel 中的 Facades（门面）是一个核心概念，它提供了一种简�
     *   虽然 Facades 看起来是静态的，但 Laravel 提供了强大的测试工具（如 `Facade::shouldReceive()`）让你在测试中轻松模拟（Mock）或监听（Spy） Facades 背后的实际服务。这使得测试依赖于这些服务的代码变得可行。
 
 4.  IDE 友好（有辅助）：
-    *   配合 Laravel IDE Helper 这样的工具（它会生成包含 `@method` 静态方法注解的 Facade 类文档），现代 IDE 可以为 Facades 提供准确的自动完成和代码提示，解决了传统静态类带来的 IDE 支持不足的问题。
+    *   配合 [Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper) 这样的工具（它会生成包含 `@method` 静态方法注解的 Facade 类文档），现代 IDE 可以为 Facades 提供准确的自动完成和代码提示，解决了传统静态类带来的 IDE 支持不足的问题。
 
 ## 二、原理：静态外表下的动态本质
 
@@ -93,8 +93,7 @@ return Response::json(['status' => 'success']);
 
 如果你有自己的服务注册到容器中，并希望为其提供 Facade 访问方式：
 
-1、在服务容器中注册服务：
-    *   通常在服务提供者（`App\Providers\AppServiceProvider` 或自定义的 Provider）的 `register` 方法中绑定。
+1、在服务容器中注册服务：通常在服务提供者（`App\Providers\AppServiceProvider` 或自定义的 Provider）的 `register` 方法中绑定。
     
 ```php
 // AppServiceProvider.php
@@ -106,13 +105,14 @@ public function register()
 }
 ```
 
-2、创建 Facade 类：
-    *   在 `app/Facades` 目录下（Laravel 无强制要求，但这是惯例）创建文件 `MyServiceFacade.php`。
+2、创建 Facade 类：在 `app/Facades` 目录下（Laravel 无强制要求，但这是惯例）创建文件 `MyServiceFacade.php`。
 
 ```php
 // app/Facades/MyServiceFacade.php
 namespace App\Facades;
+
 use Illuminate\Support\Facades\Facade;
+
 class MyServiceFacade extends Facade
 {
     /**
@@ -127,8 +127,7 @@ class MyServiceFacade extends Facade
 }
 ```
 
-3、（可选）添加别名：
-    *   在 `config/app.php` 的 `aliases` 数组中添加：
+3、（可选）添加别名：在 `config/app.php` 的 `aliases` 数组中添加：
 
 ```php
 'aliases' => [
@@ -137,8 +136,7 @@ class MyServiceFacade extends Facade
 ],
 ```
 
-4、使用自定义 Facade：
-    *   现在可以像使用内置 Facade 一样使用你的服务了：
+4、使用自定义 Facade：现在可以像使用内置 Facade 一样使用你的服务了：
 
 ```php
 // 使用别名（如果配置了）
@@ -153,12 +151,12 @@ MyServiceFacade::doSomething();
 1、理解它不是真正的静态类： 牢记 Facade 是代理。背后的对象是动态从容器解析的，通常遵循容器的绑定规则（如单例、绑定接口到实现等）。
 
 2、依赖注入 vs Facades：
-    *   依赖注入（构造函数注入或方法注入） 是更显式、更符合 SOLID 原则（特别是依赖反转）的方式，它清晰地展示了类的依赖关系，是 Laravel 官方推荐的主要方式，尤其对于你自己编写的核心业务逻辑类。
-    *   Facades 提供极致的便利性，特别适合在**模板（Blade）、路由闭包、测试代码**中，以及访问那些**框架内置的、无处不在的服务**时使用。在控制器中适度使用也是常见的。
-    *   最佳实践： 对于自定义的、业务核心的服务，**优先考虑依赖注入**。对于 Laravel 框架提供的常用服务（Log, Cache, Config, Auth 等），**可以放心且合理地使用 Facades** 来简化代码。避免在模型内部过度使用 Facades。
 
-3、测试：
-    *   Laravel 内置了优秀的 Facade 测试支持。使用 `Facade::spy()` 或 `Facade::shouldReceive()` 来模拟或监听 Facade 调用：
+*   依赖注入（构造函数注入或方法注入） 是更显式、更符合 SOLID 原则（特别是依赖反转）的方式，它清晰地展示了类的依赖关系，是 Laravel 官方推荐的主要方式，尤其对于你自己编写的核心业务逻辑类。
+*   Facades 提供极致的便利性，特别适合在**模板（Blade）、路由闭包、测试代码**中，以及访问那些**框架内置的、无处不在的服务**时使用。在控制器中适度使用也是常见的。
+*   最佳实践： 对于自定义的、业务核心的服务，**优先考虑依赖注入**。对于 Laravel 框架提供的常用服务（Log, Cache, Config, Auth 等），**可以放心且合理地使用 Facades** 来简化代码。避免在模型内部过度使用 Facades。
+
+3、测试：Laravel 内置了优秀的 Facade 测试支持。使用 `Facade::spy()` 或 `Facade::shouldReceive()` 来模拟或监听 Facade 调用：
 
 ```php
 // 在测试中 (e.g., PestPHP or PHPUnit)
@@ -179,7 +177,7 @@ test('it caches data', function () {
 
 ## 动态类别名注册
 
-在 Laravel 中，通过 `config/app.php` 中的 `aliases` 数组配置后就能直接使用 `Log::info('TEST')` 这样的语法，背后是一个精妙的类别名自动加载机制。以下是详细原理：
+在 Laravel 中，通过 `config/app.php` 中的 `aliases` 数组配置后就能直接使用 `Log::info('test')` 这样的语法，背后是一个精妙的类别名自动加载机制。以下是详细原理：
 
 ### 核心原理
 
@@ -198,7 +196,7 @@ AliasLoader::getInstance($aliases)->register();
 
 ---
 
-项目入口 `index.php` 中 `$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);` 获取http服务，调用 `$kernel->handle($request = Illuminate\Http\Request::capture())` 方法处理请求。
+项目入口 `index.php` 中 `$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class)` 获取http服务，调用 `$kernel->handle($request = Illuminate\Http\Request::capture())` 方法处理请求。
 
 在 `Illuminate\Foundation\Http` 目录下的 `Kernel.php` 中
 
@@ -207,7 +205,7 @@ protected $bootstrappers = [
     \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
     \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
     \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-    \Illuminate\Foundation\Bootstrap\RegisterFacades::class,  // 注册 Facade 别名
+    \Illuminate\Foundation\Bootstrap\RegisterFacades::class,  // Facade 门面服务
     \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
     \Illuminate\Foundation\Bootstrap\BootProviders::class,
 ];
@@ -273,7 +271,8 @@ public function bootstrapWith(array $bootstrappers)
     foreach ($bootstrappers as $bootstrapper) {
         $this['events']->dispatch('bootstrapping: '.$bootstrapper, [$this]);
 
-        $this->make($bootstrapper)->bootstrap($this);  // 获取服务，服务再进行引导
+        // 获取 \Illuminate\Foundation\Bootstrap\RegisterFacades::class 服务，服务再进行bootstrap($app)引导
+        $this->make($bootstrapper)->bootstrap($this);  
 
         $this['events']->dispatch('bootstrapped: '.$bootstrapper, [$this]);
     }
@@ -310,16 +309,42 @@ class RegisterFacades
 2、AliasLoader 的工作机制
 
 ```php
-class AliasLoader {
-    public function register() {
+class AliasLoader 
+{
+    private function __construct($aliases)
+    {
+        $this->aliases = $aliases;
+    }
+
+    // 初始化所有配置别名
+    public static function getInstance(array $aliases = [])
+    {
+        if (is_null(static::$instance)) {
+            return static::$instance = new static($aliases);
+        }
+
+        $aliases = array_merge(static::$instance->getAliases(), $aliases);
+
+        static::$instance->setAliases($aliases);
+
+        return static::$instance;
+    }
+
+    // 使用 `spl_autoload_register` 注册自定义加载器
+    public function register() 
+    {
         spl_autoload_register([$this, 'load'], true, true);
     }
     
-    public function load($alias) {
+    // 当遇到未定义的类（如 `Log`）时触发加载器
+    public function load($alias) 
+    {
         if (isset($this->aliases[$alias])) {
             return class_alias($this->aliases[$alias], $alias);
         }
     }
+
+    // ...
 }
 ```
 
@@ -382,13 +407,13 @@ class Log extends Facade
 }
 ```
 
-`Log::info('test')` 相当于 `(new Illuminate\Support\Facades\Log())::info('test')`，`info()`方法不存在，调用父类 Facade 中 `__callStatic` 方法：
+调用 `Log::info('test')`，Log 类找到了， 但`info()`方法不存在，调用父类 Facade 中 `__callStatic` 方法：
 
 ```php
-// 调用静态方法时触发基类的 __callStatic
+// 调用静态方法时触发Facade基类的 __callStatic
 public static function __callStatic($method, $args) 
 {
-    $instance = static::getFacadeRoot(); // 从容器解析 log 服务
+    $instance = static::getFacadeRoot(); // 从容器解析 log 服务 
     return $instance->$method(...$args); // 执行真正的 info 方法
 }
 ```
@@ -444,13 +469,13 @@ public static function __callStatic($method, $args)
 
 我们来深入、完整地追溯分析 `$instance = static::getFacadeRoot();` 这行代码是如何从 Laravel 的服务容器（IoC Container）中解析出 `log` 服务的真实实例的。
 
-这是一个层层递进的过程，我们将从 Facade 的静态调用开始，一直追踪到服务容器返回一个具体的 `Illuminate\Log\Logger` 实例。
+这是一个层层递进的过程，我们将从 Facade 的静态调用开始，一直追踪到服务容器返回一个具体的 `Illuminate\Log\LogManager` 实例。
 
 ### 调用栈概览
 
 整个解析过程遵循一个清晰的调用链，其核心流程如下：
 
-[Facade静态调用 Log::info('test')] --> [触发Facade基类 `__callStatic`] --> [调用 getFacadeRoot 获取实例根对象] --> [调用 resolveFacadeInstance 解析]  --> [调用 getFacadeAccessor 获取服务名] --> [返回服务标识符 'log'] --> [向App容器请求解析 app[ 'log' ]] --> [容器根据绑定返回 Logger 实例] --> [缓存并返回该 实例] --> [最终调用实例方法: info('test')]
+[Facade静态调用 `Log::info('test')`] --> [触发Facade基类 `__callStatic`] --> [调用 getFacadeRoot 获取实例根对象] --> [调用 resolveFacadeInstance 解析]  --> [调用 getFacadeAccessor 获取服务名] --> [返回服务标识符 `'log'`] --> [向App容器请求解析 `app['log']`] --> [容器根据绑定返回 Logger 实例] --> [缓存并返回该 实例] --> [最终调用实例方法: `info('test')`]
 
 下面是每个步骤的详细分解。
 
@@ -626,7 +651,7 @@ class LogServiceProvider extends ServiceProvider
 }
 ```
 
-在 app 项目服务容器`__construct`实例化时，`$this->registerBaseServiceProviders()` 中 `$this->register(new LogServiceProvider($this));` 注册时日志服务提供者。
+在 app 项目服务容器`__construct`实例化时，`$this->registerBaseServiceProviders()` 中 `$this->register(new LogServiceProvider($this));` 注册日志服务。
 
 所以，当容器执行 `app()->make('log')` 时：
 1.  它知道 `'log'` 被绑定为一个**单例（singleton）**（意味着多次解析返回同一个实例）。
@@ -665,7 +690,7 @@ return $instance->info('test');
 
 ## 总结
 
-Laravel Facades 是一个强大的设计，它通过静态代理模式和服务容器，为开发者提供了访问框架服务的极其简洁、优雅的语法。理解其背后的原理（`__callStatic` + 服务容器 + `getFacadeAccessor`）是关键。它们不是邪恶的“静态陷阱”，而是 Laravel 为提升开发体验而精心设计的工具。在实际开发中，明智地结合使用依赖注入（首选）和 Facades（用于便利性场景），并配合 IDE Helper 工具，可以让你高效、愉快地构建 Laravel 应用。
+Laravel Facades 是一个强大的设计，它通过静态代理模式和服务容器，为开发者提供了访问框架服务的极其简洁、优雅的语法。理解其背后的原理（`spl_autoload_register` + `__callStatic` + 服务容器 + `getFacadeAccessor`）是关键。它们不是邪恶的“静态陷阱”，而是 Laravel 为提升开发体验而精心设计的工具。在实际开发中，明智地结合使用依赖注入（首选）和 Facades（用于便利性场景），并配合 IDE Helper 工具，可以让你高效、愉快地构建 Laravel 应用。
 
 ## 源码
 
