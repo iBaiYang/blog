@@ -114,7 +114,9 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
 
 ---
 
-### 四、包开发者如何利用它（extra.laravel）
+### 四、包开发者如何利用它
+
+- （extra.laravel）
 
 作为一个包开发者，要让你的包支持自动发现，你需要在你的 `composer.json` 中添加 `extra.laravel` 部分：
 
@@ -147,12 +149,14 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
 
 ### 五、常见问题与操作
 
-1.  缓存问题： 最常见的问题是，你安装了一个包，但它没有自动注册。这通常是因为缓存未更新。
-    *   解决方案： 手动运行 `composer dump-autoload` 或 `php artisan package:discover`。这会强制 `PackageManifest` 重新构建缓存文件。
+1、缓存问题： 最常见的问题是，你安装了一个包，但它没有自动注册。这通常是因为缓存未更新。
 
-2.  禁用自动发现：
-    *   有时你可能想完全禁用某个包的自动发现功能（例如，在特定环境不想使用它）。
-    *   方法： 在你的项目 `composer.json` 中配置 `extra.laravel.dont-discover`：
+*   解决方案： 手动运行 `composer dump-autoload` 或 `php artisan package:discover`。这会强制 `PackageManifest` 重新构建缓存文件。
+
+2、禁用自动发现：
+
+*   有时你可能想完全禁用某个包的自动发现功能（例如，在特定环境不想使用它）。
+*   方法： 在你的项目 `composer.json` 中配置 `extra.laravel.dont-discover`：
 
 ```json
 "extra": {
@@ -164,11 +168,12 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
 }
 ```
 
-    *   你也可以完全禁用整个自动发现功能（不推荐），通过重写 `PackageManifest` 类或移除 Composer 脚本，但这会破坏很多包的功能。
+*   你也可以完全禁用整个自动发现功能（不推荐），通过重写 `PackageManifest` 类或移除 Composer 脚本，但这会破坏很多包的功能。
 
-3.  文件位置：
-    *   清单缓存文件： `bootstrap/cache/packages.php`
-    *   类文件位置： `vendor/laravel/framework/src/Illuminate/Foundation/PackageManifest.php`
+3、文件位置：
+
+*   清单缓存文件： `bootstrap/cache/packages.php`
+*   类文件位置： `vendor/laravel/framework/src/Illuminate/Foundation/PackageManifest.php`
 
 ---
 
@@ -176,9 +181,9 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
 
 `PackageManifest` 类是 Laravel 架构中一个卓越的“性能优化”和“开发者体验”组件。它通过：
 
-1.  将昂贵的 I/O 操作（扫描所有包） 从**每次请求**转移到**每次包安装/更新时**（通过 Composer 钩子），显著提升了框架的启动速度。
-2.  提供了一个优雅的约定（`extra.laravel`），让包生态系统能够无缝集成到框架中，极大地简化了开发者的安装流程。
-3.  其设计完美体现了 Laravel 的理念：约定优于配置，以及通过缓存和优化来提升性能。
+1. 将昂贵的 I/O 操作（扫描所有包） 从**每次请求**转移到**每次包安装/更新时**（通过 Composer 钩子），显著提升了框架的启动速度。
+2. 提供了一个优雅的约定（`extra.laravel`），让包生态系统能够无缝集成到框架中，极大地简化了开发者的安装流程。
+3. 其设计完美体现了 Laravel 的理念：约定优于配置，以及通过缓存和优化来提升性能。
 
 理解 `PackageManifest` 有助于你更好地理解 Laravel 的启动过程、包机制，以及在遇到相关问题时能够快速定位和解决。
 
