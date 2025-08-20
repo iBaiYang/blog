@@ -692,6 +692,270 @@ return $instance->info('test');
 
 Laravel Facades 是一个强大的设计，它通过静态代理模式和服务容器，为开发者提供了访问框架服务的极其简洁、优雅的语法。理解其背后的原理（`spl_autoload_register` + `__callStatic` + 服务容器 + `getFacadeAccessor`）是关键。它们不是邪恶的“静态陷阱”，而是 Laravel 为提升开发体验而精心设计的工具。在实际开发中，明智地结合使用依赖注入（首选）和 Facades（用于便利性场景），并配合 IDE Helper 工具，可以让你高效、愉快地构建 Laravel 应用。
 
+## 配合测试
+
+我们来详细、深入地探讨 Laravel 6 中与 Facade 测试相关的内容。这是 Laravel 测试体系中非常强大和独特的一部分，理解它能极大地提升你的测试效率和代码质量。
+
+### 核心思想：为什么 Facade 可以被测试？
+
+首先，必须再次强调：Facades 不是静态方法！ 它们是动态对象的静态接口代理。正是因为这个设计，Laravel 才能让你在测试中“偷梁换柱”——将 Facade 背后代理的真实实例替换成一个模拟对象（Mock）或监听器（Spy），从而进行隔离测试。
+
+### 测试方法概览
+
+Laravel 主要提供了两种方式来测试与 Facade 的交互：
+
+1.  使用 Mockery（更底层、更灵活）： 直接使用 `Mockery` 库来创建模拟对象，并告诉 Facade 使用这个模拟对象。
+2.  使用内置的 Fake（更简洁、更直观）： Laravel 为许多常用的 Facade（如 `Cache`, `Queue`, `Notification`, `Event` 等）提供了开箱即用的“Fakes”，它们是为测试量身定制的模拟实现。
+
+---
+
+### 方法一：使用 Mockery 进行模拟
+
+这是最通用和强大的方法，适用于所有 Facade。
+
+#### 原理
+
+你使用 `Mockery::mock` 创建一个模拟对象，然后使用 Facade 的 `shouldReceive` 方法将这个模拟对象“注入”到 Facade 的静态代理背后。之后，你可以在模拟对象上定义期望。
+
+#### 语法与示例
+
+假设我们有一个服务 `App\Services\PaymentProcessor`，它使用了 `Http` Facade（假设存在）来发起外部请求。我们想测试 `process` 方法是否正确地发起了 POST 请求。
+
+1. 定义期望（Expectations）
+
+测试一个行为是否发生。
+
+```php
+use Tests\TestCase;
+use App\Services\PaymentProcessor;
+
+class PaymentTest extends TestCase
+{
+    public function test_payment_is_processed()
+    {
+        // 1. 创建一个模拟实例，并定义期望
+        // shouldReceive('post') 表示模拟对象应该接收到一个 post 方法的调用
+        // once() 表示它应该被调用 exactly一次
+        // with(...) 表示它应该伴随着这些参数被调用
+        // andReturn(['status' => 'success']) 表示当 post 方法被调用时，返回这个数组
+        Http::shouldReceive('post')
+            ->once()
+            ->with(
+                'https://payment-gateway.com/charge',
+                ['amount' => 100, 'currency' => 'USD']
+            )
+            ->andReturn(['status' => 'success']);
+
+        // 2. 执行被测代码
+        $processor = new PaymentProcessor();
+        $result = $processor->process(100);
+
+        // 3. 断言（基于行为）
+        // 这里的断言更多是验证 'process' 方法返回的结果是否正确。
+        // 而 Http::post 是否被正确调用，是由上面的 Mock 期望来验证的。
+        // 如果期望未被满足（例如没调用、参数不对），测试会自动失败。
+        $this->assertEquals('success', $result['status']);
+    }
+}
+```
+
+2. 制造异常（Exception）
+
+测试代码如何应对失败。
+
+```php
+public function test_payment_handles_failure()
+{
+    // 模拟 post 方法抛出异常
+    Http::shouldReceive('post')
+        ->once()
+        ->andThrow(new \Exception('Network error'));
+
+    $processor = new PaymentProcessor();
+
+    // 断言你的代码正确处理了异常，例如返回了特定的错误信息
+    $result = $processor->process(100);
+    $this->assertEquals('error', $result['status']);
+    $this->assertStringContainsString('Network error', $result['message']);
+}
+```
+
+3. 使用 Spy（监听）
+
+如果你更关心方法是否被调用，而不是定义严格的期望，可以使用 `spy` + `shouldHaveReceived`。
+
+```php
+public function test_notification_was_sent()
+{
+    // 先执行代码
+    $user = User::find(1);
+    $user->notify(new WelcomeNotification());
+
+    // 然后断言（Spy）：Notification Facade 应该收到了一个 `send` 调用
+    // 参数是 $user 和 WelcomeNotification 的实例
+    Notification::shouldHaveReceived('send')
+        ->with(
+            \Mockery::on(fn ($notifiable) => $notifiable->is($user)),
+            \Mockery::type(WelcomeNotification::class)
+        )
+        ->once();
+}
+// 注意：对于 `Notification`，使用它的内置 Fake (`Notification::fake()`) 是更简单的方式，见下文。
+```
+
+---
+
+### 方法二：使用内置的 Fake（首选且更优雅）
+
+Laravel 为常用功能提供了专门的 Fake 类。Fake 提供了一个模拟的实现，并自带了一系列用于断言的方法，语法更清晰，意图更明确。
+
+如何使用： 通常在测试方法的开始调用 `Facade::fake()`。
+
+#### 1. Event Fake
+
+测试事件是否被触发，而不真正执行其监听器。
+
+```php
+public function test_user_registration_fires_event()
+{
+    // 替换事件调度器的真实实现为 Fake
+    Event::fake();
+
+    // 执行会触发事件的代码
+    $response = $this->post('/register', [
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    // 使用 Fake 提供的断言方法
+    Event::assertDispatched(UserRegistered::class); // 断言事件被触发
+    Event::assertNotDispatched(AnotherEvent::class); // 断言事件未被触发
+
+    // 更精细的断言：检查事件是否被触发，并且其事件对象的属性
+    Event::assertDispatched(UserRegistered::class, function ($event) {
+        return $event->user->email === 'john@example.com';
+    });
+}
+```
+
+#### 2. Notification Fake
+
+测试通知是否被发送，而不真正发送邮件、短信等。
+
+```php
+public function test_welcome_notification_is_sent()
+{
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    // 执行会发送通知的代码，例如用户注册后
+    $user->notify(new WelcomeNotification());
+
+    // 断言：通知被发送给了指定的用户
+    Notification::assertSentTo(
+        $user, // 预期的接收者
+        WelcomeNotification::class // 预期的通知类
+    );
+
+    // 更精细的断言：检查通知数据
+    Notification::assertSentTo(
+        $user,
+        WelcomeNotification::class,
+        function ($notification, $channels) use ($user) {
+            return $notification->user->is($user);
+        }
+    );
+}
+```
+
+#### 3. Queue Fake
+
+测试任务是否被推送至队列，而不真正执行它。
+
+```php
+public function test_job_is_pushed_to_queue()
+{
+    Queue::fake();
+
+    // 执行会分发任务的代码
+    ProcessPodcast::dispatch($podcast);
+
+    // 断言任务被推入了指定的队列
+    Queue::assertPushed(ProcessPodcast::class); // 断言任务被推送
+    Queue::assertPushedOn('processing', ProcessPodcast::class); // 断言被推到 'processing' 队列
+
+    // 更精细的断言：检查任务数据
+    Queue::assertPushed(ProcessPodcast::class, function ($job) use ($podcast) {
+        return $job->podcast->is($podcast);
+    });
+}
+```
+
+#### 4. Mail Fake
+
+测试邮件是否被发送，而不真正发送邮件。
+
+```php
+public function test_order_confirmation_email_is_sent()
+{
+    Mail::fake();
+
+    $order = Order::factory()->create();
+
+    // 执行会发送邮件的代码
+    Mail::to($order->user)->send(new OrderShipped($order));
+
+    // 断言邮件被发送给了指定用户
+    Mail::assertSent(OrderShipped::class, function ($mail) use ($order) {
+        return $mail->order->is($order) &&
+               $mail->hasTo($order->user->email);
+    });
+}
+```
+
+#### 5. Storage Fake
+
+测试文件操作，而不真正操作磁盘。
+
+```php
+public function test_avatar_upload()
+{
+    Storage::fake('avatars'); // 使用一个名为 'avatars' 的虚拟磁盘
+
+    $response = $this->json('POST', '/avatar', [
+        'avatar' => UploadedFile::fake()->image('avatar.jpg')
+    ]);
+
+    // 断言文件已被存储
+    Storage::disk('avatars')->assertExists('avatar.jpg');
+
+    // 断言文件不存在
+    Storage::disk('avatars')->assertMissing('missing.jpg');
+}
+```
+
+---
+
+### 最佳实践与常见陷阱
+
+1.  优先使用 Fake：对于 `Event`, `Notification`, `Queue`, `Mail`, `Storage`，总是优先使用内置的 Fake。它们的 API 更友好，断言更强大。
+2.  `shouldReceive` 用于复杂场景：当内置 Fake 无法满足你的复杂模拟需求时（例如，需要模拟一个第三方 API 的特定返回值），再使用 `shouldReceive`。
+3.  避免过度模拟：不要模拟一切。Facade 测试用于**隔离测试**（单元测试）。你还需要**功能测试**和**集成测试**来确保整个流程正确工作。例如，测试一个控制器时，模拟 `Event` 是合理的，但模拟 `DB` Facade 通常是个坏主意，这会使测试变得脆弱且无法验证真正的 SQL 逻辑。
+4.  注意范围：`fake()` 和 `shouldReceive()` 的效果会在每个测试结束后由 Laravel 自动重置。你不需要担心一个测试的模拟会污染另一个测试。
+5.  `$this->withoutExceptionHandling()`：在调试测试时，这个 helper 函数非常有用，它会禁用 Laravel 的异常处理器，让真正的错误信息暴露出来，而不是被转化为一个 500 响应。
+
+### 总结
+
+Laravel 的 Facade 测试机制是其框架魅力的重要组成部分。它通过巧妙的设计，将看似“静态”的调用变得可测试。掌握这两种方法：
+
+*   `Facade::shouldReceive()`：用于通用的、基于期望的模拟。
+*   `Facade::fake()`：用于特定功能的、基于状态和断言的模拟（更推荐）。
+
+能让你编写出更清晰、更健壮、更快速的测试，从而 confidently 地构建和重构你的应用程序。
+
 ## 源码
 
 Illuminate\Support\Facades\Log 源码：
