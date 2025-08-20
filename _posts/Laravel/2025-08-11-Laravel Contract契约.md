@@ -74,11 +74,15 @@ Laravel 契约机制的实现核心是 服务容器（Service Container），它
 
 ---
 
-### 4. 如何使用（实战示例）
+### 4. 如何使用
+
+实战示例。
 
 使用契约主要有两种方式：依赖注入 和 门面（Facades）。值得注意的是，每一个门面都有一个对应的契约。
 
-#### 方式一：依赖注入（推荐方式）
+#### 方式一：依赖注入
+
+方式一：依赖注入（推荐方式）
 
 这是最直接和推荐的方式，因为它能最大限度地实现解耦和可测试性。
 
@@ -140,7 +144,9 @@ public function show(Request $request, Cache $cache, $id)
 }
 ```
 
-#### 方式二：使用门面（Facade）
+#### 方式二：使用Facade
+
+方式二：使用门面（Facade）
 
 门面为 Laravel 的服务提供了一个简单的静态接口。在底层，门面代理了对服务容器中已绑定实例的方法调用。
 
@@ -170,7 +176,9 @@ class UserController extends Controller
 *   门面 更简洁，写起来更快，在简单的场景下很方便。
 *   契约（依赖注入） 更显式，解耦更彻底，在测试时更容易模拟，是构建大型、复杂应用的首选。Laravel 官方文档也推荐使用依赖注入的方式。
 
-#### 如何查看契约及其对应的方法？
+#### 查看契约
+
+如何查看契约及其对应的方法？
 
 所有 Laravel 的契约都位于 `Illuminate/Contracts` 目录下。最好的方法是直接阅读这些接口的源代码，它们通常都非常简洁，只包含了方法的签名和注释，是绝佳的文档。
 
@@ -258,10 +266,10 @@ class UserController extends Controller
 
 5.  未来扩展
 
-    如果未来需要接入 PayPal，你只需要：
-    *   创建一个 `PaypalPaymentService` 并实现 `PaymentServiceContract`。
-    *   在 `AppServiceProvider` 中修改绑定，将契约绑定到新的 `PaypalPaymentService`。
-    *   控制器和其他业务代码一行都不用改！ 这就是契约的强大之处。
+如果未来需要接入 PayPal，你只需要：
+* 创建一个 `PaypalPaymentService` 并实现 `PaymentServiceContract`。
+* 在 `AppServiceProvider` 中修改绑定，将契约绑定到新的 `PaypalPaymentService`。
+* 控制器和其他业务代码一行都不用改！ 这就是契约的强大之处。
 
 ### 总结
 
