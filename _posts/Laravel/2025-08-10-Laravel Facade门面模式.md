@@ -696,7 +696,9 @@ Laravel Facades 是一个强大的设计，它通过静态代理模式和服务�
 
 我们来详细、深入地探讨 Laravel 6 中与 Facade 测试相关的内容。这是 Laravel 测试体系中非常强大和独特的一部分，理解它能极大地提升你的测试效率和代码质量。
 
-### 核心思想：为什么 Facade 可以被测试？
+### 核心思想
+
+核心思想：为什么 Facade 可以被测试？
 
 首先，必须再次强调：Facades 不是静态方法！ 它们是动态对象的静态接口代理。正是因为这个设计，Laravel 才能让你在测试中“偷梁换柱”——将 Facade 背后代理的真实实例替换成一个模拟对象（Mock）或监听器（Spy），从而进行隔离测试。
 
@@ -709,7 +711,9 @@ Laravel 主要提供了两种方式来测试与 Facade 的交互：
 
 ---
 
-### 方法一：使用 Mockery 进行模拟
+### 方法一：Mockery模拟
+
+方法一：使用 Mockery 进行模拟
 
 这是最通用和强大的方法，适用于所有 Facade。
 
@@ -721,7 +725,65 @@ Laravel 主要提供了两种方式来测试与 Facade 的交互：
 
 假设我们有一个服务 `App\Services\PaymentProcessor`，它使用了 `Http` Facade（假设存在）来发起外部请求。我们想测试 `process` 方法是否正确地发起了 POST 请求。
 
-1. 定义期望（Expectations）
+1、定义期望（Expectations）
+
+首先，我们要明确两种主要的测试验证方式：
+
+* 状态验证 (State Verification)：检查被测代码执行后，系统状态是否如预期所变。例如，数据库中的某条记录是否被更新，一个对象的属性值是什么，或者一个方法的返回值是什么。
+    * 断言目标：`$result`, `$user->name`, `DB::table(...)->get()`
+
+* 行为验证 (Behavior Verification)：检查被测代码是否以正确的方式与它的依赖项进行了交互。它不关心最终状态，只关心“是否发生了某个行为”。核心原理：期望（Expectations）与验证（Verification）。传统的状态断言是 “事后检查”：代码运行完毕后，我去检查结果（状态）是否正确。行为断言是 “事前约定，事后验证”：在代码运行之前，我先定义好我期望发生的行为（“这个函数应该被调用1次，并且参数是A和B”）。代码运行之后，由 Mocking 框架来检查这些预先设定的期望是否被全部满足。
+    * 断言目标：`Http::post` 是否被调用、整个执行过程中调用了多少次`->once()`、调用时的参数是什么`->with()`。
+
+在 `Http::shouldReceive()->...` 的模式中，链式调用 (`->once()`, `->with()`) 本身就是行为断言。如果这些期望不被满足，测试会直接失败。而我们最后写的 `$this->assertEquals(...)` 是状态断言，验证业务逻辑的结果。
+
+下面举例看一下。
+
+需要被测试的代码部分：
+
+```php
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+use App\Models\Transaction;
+
+class PaymentProcessor
+{
+    public function process($amount)
+    {
+        // 1. 调用支付网关
+        $response = Http::post('https://payment-gateway.com/charge', [
+            'amount' => $amount,
+            'currency' => 'USD'
+        ]);
+
+        $responseData = $response->json();
+
+        // 2. 根据网关响应处理业务逻辑
+        if ($responseData['status'] === 'success') {
+            // 成功：创建交易记录，并返回成功信息
+            Transaction::create([
+                'amount' => $amount,
+                'status' => 'completed',
+                'gateway_reference' => $responseData['id'] // 假设返回中有订单ID
+            ]);
+            return ['status' => 'success', 'message' => 'Payment processed!'];
+            
+        } elseif ($responseData['status'] === 'pending') {
+            // 处理中：创建交易记录，状态为pending
+            Transaction::create([
+                'amount' => $amount,
+                'status' => 'pending',
+            ]);
+            return ['status' => 'pending', 'message' => 'Payment is processing.'];
+
+        } else {
+            // 失败：返回错误信息，可能记录日志等
+            return ['status' => 'error', 'message' => $responseData['message']];
+        }
+    }
+}
+```
 
 测试一个行为是否发生。
 
@@ -739,12 +801,12 @@ class PaymentTest extends TestCase
         // with(...) 表示它应该伴随着这些参数被调用
         // andReturn(['status' => 'success']) 表示当 post 方法被调用时，返回这个数组
         Http::shouldReceive('post')
-            ->once()
+            ->once() 
             ->with(
                 'https://payment-gateway.com/charge',
                 ['amount' => 100, 'currency' => 'USD']
             )
-            ->andReturn(['status' => 'success']);
+            ->andReturn(['status' => 'success']);  // 模拟post请求时返回的数据
 
         // 2. 执行被测代码
         $processor = new PaymentProcessor();
@@ -759,7 +821,145 @@ class PaymentTest extends TestCase
 }
 ```
 
-2. 制造异常（Exception）
+为不同的场景编写测试看下。
+
+示例 1：测试成功流程
+
+测试目标：当支付网关返回成功时，确保我们的方法：1) 调用了正确的 API，2) 创建了成功的交易记录，3) 返回了成功的消息。
+
+```php
+use App\Models\Transaction;
+use Illuminate\Support\Facades\Http;
+
+public function test_process_payment_successfully()
+{
+    //  Arrange (准备阶段): 模拟依赖的返回，并定义期望
+    $mockGatewayResponse = [
+        'status' => 'success',
+        'id' => 'gateway_12345' // 模拟网关返回的唯一ID
+    ];
+    
+    // 行为断言 1: 期望 Http::post 被调用一次，且参数正确
+    Http::shouldReceive('post')
+        ->once()
+        ->with(
+            'https://payment-gateway.com/charge',
+            ['amount' => 100, 'currency' => 'USD']
+        ) // 伴随了参数，保证post请求完整
+        ->andReturn($mockGatewayResponse); // 返回我们预设的post请求的成功响应
+
+    //  Act (执行阶段): 执行被测代码
+    $processor = new PaymentProcessor();
+    $result = $processor->process(100);
+
+    //  Assert (断言阶段): 验证结果和行为
+    // 状态断言 1: 验证方法的返回值
+    $this->assertEquals('success', $result['status']);
+    $this->assertEquals('Payment processed!', $result['message']);
+
+    // 状态断言 2: 验证业务逻辑产生的状态变化（数据库记录）
+    $this->assertDatabaseHas('transactions', [
+        'amount' => 100,
+        'status' => 'completed',
+        'gateway_reference' => 'gateway_12345' // 确保网关ID被正确保存
+    ]);
+
+    // 注意：`->once()` 和 `->with()` 也是断言。
+    // 如果 Http::post 没被调用或参数不对，测试早就失败了。
+}
+```
+
+解说：
+* 行为验证 (`->once()`, `->with()`)：确保 process 方法确实发起了我们期望的 HTTP 请求。这是验证“它做了该做的事”。
+* 状态验证 (`assertEquals`, `assertDatabaseHas`)：确保 process 方法根据成功的响应，正确地处理了业务逻辑（返回了正确的信息、在数据库创建了正确的记录）。这是验证“事情的结果是对的”。
+
+示例 2：测试失败流程
+
+测试目标：当支付网关返回失败时，确保我们的方法：1) 调用了 API，2) 没有创建成功的交易记录，3) 返回了包含错误信息的消息。
+
+```php
+public function test_process_payment_handles_failure()
+{
+    //  Arrange: 模拟一个失败的网关响应
+    $mockGatewayResponse = [
+        'status' => 'error',
+        'message' => 'Insufficient funds.'
+    ];
+    
+    Http::shouldReceive('post')
+        ->once()
+        ->andReturn($mockGatewayResponse);
+
+    //  Act
+    $processor = new PaymentProcessor();
+    $result = $processor->process(100);
+
+    //  Assert
+    // 状态断言 1: 验证返回了错误状态和信息
+    $this->assertEquals('error', $result['status']);
+    $this->assertEquals('Insufficient funds.', $result['message']);
+
+    // 状态断言 2: 验证数据库中没有创建 status='completed' 的记录
+    // 这是非常重要的！验证系统在失败时没有错误地改变状态。
+    $this->assertDatabaseMissing('transactions', [
+        'status' => 'completed',
+    ]);
+
+    // 我们也可以验证是否创建了失败的记录（如果逻辑如此）
+    // $this->assertDatabaseHas('transactions', ['status' => 'failed']);
+}
+```
+
+解说：
+* 这个测试模拟了一个负面场景。行为验证 (`->once()`) 依然确保 API 被调用了。
+* 状态验证的重点变成了：当外部依赖失败时，我们的系统状态是否保持了正确的一致性？ 这里我们断言数据库里不应该有一条成功的交易记录。这防止了“即使支付失败，用户却被记录了成功”的严重 bug。
+
+示例 3：测试特定行为（例如重试）
+
+假设逻辑变为：如果状态是 'pending'，我们需要在 5 分钟后重试。
+
+```php
+public function test_process_payment_retries_on_pending_status()
+{
+    // 这个测试可能更关注行为而不是最终状态
+    $mockGatewayResponse = ['status' => 'pending'];
+
+    // 行为断言: 我们期望在遇到 pending 状态后，会分发一个重试的任务
+    // 假设我们有一个 RetryPaymentJob
+    Queue::fake(); // 使用 Queue Fake 来监听任务分发行为
+
+    Http::shouldReceive('post')
+        ->once()
+        ->andReturn($mockGatewayResponse);
+
+    $processor = new PaymentProcessor();
+    $result = $processor->process(100);
+
+    // 状态断言: 返回 pending 状态
+    $this->assertEquals('pending', $result['status']);
+
+    // 行为断言: 验证是否分发了一个特定的任务
+    Queue::assertPushed(RetryPaymentJob::class, function ($job) {
+        // 可以进一步断言任务的数据，比如是不是 5 分钟后执行
+        return $job->delay == 300; // 300 秒 = 5 分钟
+    });
+}
+```
+
+解说：
+* 这个测试的核心是行为：当收到 pending 响应时，你是否发起了重试？
+* `Queue::assertPushed` 是一个典型的行为断言。它不关心 `RetryPaymentJob` 执行后会做什么（那是另一个测试的任务），它只关心“这个Job被正确地计划了”。
+* 状态断言（检查返回值）在这里是次要的，主要用于确保流程走到了分发重试任务这一步。
+
+总结
+1. `->once()`, `->with()` 是**行为断言**。它们验证方法与依赖的交互是否正确。它们是测试的第一道关卡。
+2. `$this->assertEquals()`, `$this->assertDatabaseHas()` 是**状态断言**。它们验证方法执行后产生的结果和状态变化是否正确。它们是测试的第二道关卡。
+3. 一个完整的测试通常同时包含这两种断言。行为断言确保“事情做对了”，状态断言确保“做出了正确的结果”。
+4. 测试负面场景至关重要。不仅要测试阳光大道（成功流程），更要测试荆棘小径（失败、异常、边界情况），并验证系统在这些情况下状态依然一致、行为依然正确。
+
+通过这种方式，我们不仅验证了 `$processor->process(100)` 返回了一个值，更验证了它的 整个行为链 是否符合我们的业务需求设计。
+
+2、制造异常（Exception）
 
 测试代码如何应对失败。
 
@@ -780,7 +980,7 @@ public function test_payment_handles_failure()
 }
 ```
 
-3. 使用 Spy（监听）
+3、使用 Spy（监听）
 
 如果你更关心方法是否被调用，而不是定义严格的期望，可以使用 `spy` + `shouldHaveReceived`。
 
@@ -805,7 +1005,9 @@ public function test_notification_was_sent()
 
 ---
 
-### 方法二：使用内置的 Fake（首选且更优雅）
+### 方法二：使用 Fake
+
+方法二：使用内置的 Fake（首选且更优雅）
 
 Laravel 为常用功能提供了专门的 Fake 类。Fake 提供了一个模拟的实现，并自带了一系列用于断言的方法，语法更清晰，意图更明确。
 
