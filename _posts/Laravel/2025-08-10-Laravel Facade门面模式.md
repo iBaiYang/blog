@@ -706,7 +706,7 @@ Laravel Facades 是一个强大的设计，它通过静态代理模式和服务�
 
 Laravel 主要提供了两种方式来测试与 Facade 的交互：
 
-1.  使用 Mockery（更底层、更灵活）： 直接使用 `Mockery` 库来创建模拟对象，并告诉 Facade 使用这个模拟对象。
+1.  使用 Mockery（更底层、更灵活）： 直接使用 [Mockery](https://github.com/mockery/mockery) 库来创建模拟对象，并告诉 Facade 使用这个模拟对象。
 2.  使用内置的 Fake（更简洁、更直观）： Laravel 为许多常用的 Facade（如 `Cache`, `Queue`, `Notification`, `Event` 等）提供了开箱即用的“Fakes”，它们是为测试量身定制的模拟实现。
 
 ---
@@ -1157,6 +1157,249 @@ Laravel 的 Facade 测试机制是其框架魅力的重要组成部分。它通�
 *   `Facade::fake()`：用于特定功能的、基于状态和断言的模拟（更推荐）。
 
 能让你编写出更清晰、更健壮、更快速的测试，从而 confidently 地构建和重构你的应用程序。
+
+## Fake 机制
+
+好的，我们来对 Laravel 6 中的 Fake 机制进行一次彻底、深入的底层原理分析。这是一个理解 Laravel 测试哲学和框架设计巧妙之处的绝佳案例。
+
+### 核心思想
+
+核心思想：服务容器替换 + 行为记录 + 领域特定断言
+
+Fake 的底层原理可以概括为：在测试时，利用 Laravel 服务容器的强大能力，将某个服务的真实实现动态替换为一个专门用于测试的“伪装”实现。这个伪装实现不执行真实操作，只记录调用它的方式，并提供一套优雅的语法来验证这些调用记录。
+
+整个过程涉及 Laravel 服务容器、Facade 和专门的 Fake 类三者协同工作，其完整流程如下所示：
+
+```mermaid
+flowchart TD
+A[测试代码调用 Event::fake ] --> B
+
+subgraph B[第一阶段: 服务替换]
+    direction TB
+    B1[从服务容器中解析出<br>真实的事件调度器实例 RealDispatcher]
+    B2[创建一个事件Fake实例 EventFake<br>其内部包含一个空数组用于记录]
+    B3[使用container->instance方法<br>将事件服务绑定替换为EventFake实例]
+end
+
+B --> C[任何地方再通过容器<br>或Event Facade解析事件服务<br>拿到的都是EventFake实例]
+
+C --> D
+
+subgraph D[第二阶段: 执行测试代码]
+    D1[业务代码调用 event<br>或 Event::dispatch]
+    D2[实际调用的是 EventFake->dispatch]
+    D3[EventFake将事件信息<br>如事件名, 载荷存入内部数组]
+    D4[不执行任何真实监听器逻辑]
+end
+
+D --> E
+
+subgraph E[第三阶段: 进行行为断言]
+    E1[测试代码调用<br>Event::assertDispatched]
+    E2[实际调用的是 EventFake->assertDispatched]
+    E3[该方法查询内部记录数组<br>检查是否有匹配的调用]
+    E4[根据查找结果<br>通过或抛出断言异常]
+end
+```
+
+下面，我们通过一个详细的例子来拆解图中的每一个步骤。
+
+---
+
+### 底层原理详细分析
+
+我们以 Event Fake (`Event::fake()`) 为例，这是最典型的 Fake 应用。
+
+#### 第 1 步：调用 `Event::fake()` - 替换容器绑定
+
+这是所有魔法的起点。
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Facades/Event.php`
+
+```php
+namespace Illuminate\Support\Facades;
+
+class Event extends Facade
+{
+    public static function fake()
+    {
+        // 关键点：这里调用了容器的 instance 方法
+        static::swap($fake = new EventFake(static::getFacadeRoot()));
+
+        // 这行是 Laravel 6 及之后更完整的实现，确保所有地方的引用都更新
+        // 它获取应用实例，然后将 'events' 这个抽象绑定替换为 $fake 这个实例
+        app()->instance('events', $fake);
+    }
+
+    protected static function getFacadeAccessor()
+    {
+        return 'events'; // Event Facade 代表容器中的 'events' 服务
+    }
+}
+```
+
+发生了什么？
+
+1.  `static::getFacadeRoot()`: 获取当前 `Event` Facade 背后代理的真实实例，即 `Illuminate\Events\Dispatcher`（我们称之为 `RealDispatcher`）。
+2.  `new EventFake(static::getFacadeRoot())`: 创建一个 `EventFake` 实例，并将 `RealDispatcher` 传入其构造函数。 这是为了有时 Fake 需要回退到真实功能（如`assertNotDispatched`里检查事件是否本应被监听）。
+3.  `static::swap($fake)`: 一个 Facade 方法，它将 `Event` Facade 内部缓存的实例替换为刚创建的 `$fake`（`EventFake` 对象）。
+4.  `app()->instance('events', $fake)`: 这是最核心的一步！
+    *   `app()` 是全局辅助函数，返回 Laravel 的服务容器实例。
+    *   `instance('abstract', $instance)` 是容器的方法，它的作用是：将给定的『抽象』（通常是接口或字符串绑定名）绑定到容器中一个已存在的『具体实例』。
+    *   这里，它把字符串 `'events'`（也就是事件服务的绑定名）绑定到了我们刚创建的 `$fake`（`EventFake` 对象）上。
+    *   从此以后，任何通过 `app('events')`、`$app->make('events')` 或依赖注入 `Illuminate\Contracts\Events\Dispatcher` 来解析事件服务的代码，拿到的都将是这个 `EventFake` 实例，而不是原来的 `RealDispatcher`。
+
+#### 第 2 步：`EventFake` 类的内部机制 - 记录而非执行
+
+文件： `vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/EventFake.php`
+
+`EventFake` 类继承自 `RealDispatcher`，这意味着它拥有所有公共方法，但它重写了关键方法。
+
+```php
+namespace Illuminate\Support\Testing\Fakes;
+
+class EventFake extends Dispatcher // 继承自真实的事件调度器
+{
+    /**
+     * 所有被分发的事件都记录在这里！
+     */
+    protected $events = [];
+
+    /**
+     * 重写核心的 dispatch 方法
+     */
+    public function dispatch($event, $payload = [], $halt = false)
+    {
+        // 1. 如果是字符串事件名，将其规范化（Laravel支持字符串事件名）
+        $this->fired[] = $name = $this->getEventName($event);
+
+        // 2. 将事件信息记录到内部数组中
+        // 这就是 Fake 的记忆核心
+        $this->events[$name][] = func_get_args(); // 记录所有参数
+
+        // 3. 注意：它没有调用 parent::dispatch($event, $payload, $halt);
+        // 这意味着真正的『触发事件-执行监听器』链路被完全短路了！
+        // 监听器永远不会被执行，这就是测试速度飞快的原因。
+    }
+
+    // ... 其他被重写的方法，如 fire, until 等，最终都会调用 dispatch
+}
+```
+
+当你的业务代码调用 `event(new OrderShipped($order))` 或 `Event::dispatch(...)` 时：
+
+1.  `event()` 辅助函数内部会调用 `app('events')->dispatch(...)`。
+2.  由于第 1 步的替换，`app('events')` 返回的是 `EventFake` 实例。
+3.  所以，实际执行的是 `EventFake->dispatch($event, $payload, $halt)`。
+4.  这个方法只是将这次调用的详细信息（事件对象、载荷等）记录到 `$this->events` 这个私有数组中，然后就结束了。没有任何监听器被执行。
+
+#### 第 3 步：使用断言方法 - 查询记录
+
+`EventFake` 的强大之处在于它提供了一系列以 `assert` 开头的便捷方法。
+
+```php
+// 仍在 EventFake 类中
+public function assertDispatched($event, $callback = null)
+{
+    // 1. 判断事件是否被分发过
+    if ($this->dispatched($event, $callback) === 0) {
+        // 2. 如果没有，则抛出 PHPUnit 可识别的断言失败异常
+        throw new AssertionFailedException(
+            "The expected [{$event}] event was not dispatched."
+        );
+    }
+    // 3. 如果有，断言静默通过，什么也不做
+}
+
+// 辅助方法，用于查询内部记录
+public function dispatched($event, $callback = null)
+{
+    if (! $this->hasDispatched($event)) {
+        return 0;
+    }
+
+    $callback = $callback ?: function () {
+        return true;
+    };
+
+    $count = 0;
+
+    // 4. 遍历内部记录数组 $this->events，查找匹配的事件
+    foreach ($this->events[$event] as $dispatchedEvent) {
+        // $dispatchedEvent 是 dispatch 方法记录的参数数组
+        // func_get_args() 的结果，例如 [ $eventObject, $payload, $halt ]
+        if ($callback($dispatchedEvent[0], $dispatchedEvent[1], $dispatchedEvent[2])) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+```
+
+当你调用 `Event::assertDispatched(OrderShipped::class)` 时：
+
+1.  由于 `Event` Facade 背后现在是 `EventFake`，所以实际调用的是 `EventFake->assertDispatched(OrderShipped::class)`。
+2.  该方法去查询自己的“记忆”（`$this->events` 数组），看看有没有 `OrderShipped::class` 这个键名下的记录。
+3.  如果有，测试通过。如果没有，它直接抛出一个 `AssertionFailedException`，PHPUnit 会捕获这个异常并将其标记为一个失败的断言。
+
+---
+
+### 一个完整的真实示例解说
+
+让我们用一个完整的测试案例来串起整个流程：
+
+```php
+// 测试：订单发货后应触发事件
+public function test_order_shipped_event_is_fired()
+{
+    // 1. 触发 Fake -> 服务容器替换
+    Event::fake(); // 现在容器里和 Event Facade 背后都是 EventFake 实例了
+
+    $order = Order::factory()->create();
+
+    // 2. 执行业务代码
+    $response = $this->post("/orders/{$order->id}/ship");
+
+    // 3. 使用 Fake 提供的断言进行验证
+    Event::assertDispatched(OrderShipped::class); // <-- 这里调用的是 EventFake 的方法
+}
+```
+
+底层执行流程：
+
+1.  `Event::fake()`:
+    *   容器中的 `'events'` 绑定被替换为 `EventFake` 实例。
+
+2.  `$this->post(...)`:
+    *   这段代码最终会调用到类似 `$order->markAsShipped()` 的方法，该方法内部包含：
+        ```php
+        public function markAsShipped()
+        {
+            $this->status = 'shipped';
+            $this->save();
+            // 这行代码是关键！
+            event(new OrderShipped($this)); // 等价于 Event::dispatch(new OrderShipped($this));
+        }
+        ```
+    *   `event()` 辅助函数会从容器中解析 `'events'` 服务，拿到的是 `EventFake` 实例。
+    *   调用 `EventFake->dispatch(OrderShipped $event)`。
+    *   `EventFake` 将这个事件的类名和数据存入 `$this->events` 数组，然后立即返回，没有执行任何监听器。
+
+3.  `Event::assertDispatched(...)`:
+    *   这同样是调用 `EventFake` 实例上的方法。
+    *   `EventFake` 遍历它的 `$this->events` 数组，查找是否有 `OrderShipped` 的记录。
+    *   找到了！断言静默通过。如果没找到，它就抛出 `AssertionFailedException`，导致测试失败。
+
+### 总结：Fake 的底层原理
+
+1.  容器劫持 (Container Hijacking)：核心原理是利用服务容器，在测试运行时将真实的服务实现替换为一个为测试定制的“伪装”实现（Fake）。
+2.  行为记录 (Behavioral Recording)：Fake 类继承或实现真实类的接口，但重写其核心方法。这些方法不执行真实逻辑，只负责记录调用历史（谁、什么时候、用什么参数被调用了）。
+3.  领域断言 (Domain-Specific Assertions)：基于内部记录的调用历史，Fake 类提供一系列高级的、语义化的断言方法（如 `assertDispatched`, `assertSentTo`），让测试代码变得异常清晰和简洁。
+4.  自动清理 (Automatic Cleanup)：Laravel 的测试框架会在每个测试结束后自动重置服务容器，因此一个测试中的 `Event::fake()` 不会影响到下一个测试。Fake 的状态是隔离的。
+
+这种模式比使用 `shouldReceive` 更强大，因为它不是定义僵化的“期望”，而是提供一个有状态的、可查询的测试替身（Test Double），让你能在执行代码后，以更灵活的方式做断言。
+
 
 ## 源码
 
