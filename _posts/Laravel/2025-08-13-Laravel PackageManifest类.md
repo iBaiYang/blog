@@ -60,6 +60,12 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
     "post-autoload-dump": [
         "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
         "@php artisan package:discover --ansi"
+    ],
+    "post-root-package-install": [
+        "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-create-project-cmd": [
+        "@php artisan key:generate --ansi"
     ]
 }
 ```
