@@ -13,7 +13,7 @@ meta: Laravel Contract契约
 
 ---
 
-### 1. 什么是契约（Contracts）？
+### 1. 什么是契约
 
 在 Laravel 中，契约（Contracts）是一组由框架提供的、定义核心服务的接口（Interface）。
 
@@ -31,7 +31,9 @@ meta: Laravel Contract契约
 
 ---
 
-### 2. 背景与设计目的（为什么需要契约？）
+### 2. 背景与设计目的
+
+为什么需要契约？
 
 契约的出现是为了解决几个关键的软件设计问题，其背景源于 依赖反转原则（Dependency Inversion Principle, DIP） 和 控制反转（Inversion of Control, IoC）。
 
@@ -49,18 +51,20 @@ meta: Laravel Contract契约
 
 ---
 
-### 3. 原理（Laravel 如何实现契约？）
+### 3. 原理
+
+Laravel 如何实现契约？
 
 Laravel 契约机制的实现核心是 服务容器（Service Container），它是一个强大的依赖管理工具。
 
 其工作原理可以概括为以下几步：
 
-1.  绑定（Binding）： 在框架启动时（通常在服务提供者 `ServiceProvider` 的 `register` 方法中），Laravel 会将一个接口（契约）绑定到一个具体的实现类上。
-    *   例如，在 `Illuminate\Log\LogServiceProvider` 中，`Psr\Log\LoggerInterface`（Laravel 自己的契约继承自 PSR 标准）被绑定到了具体的日志器实例上。
+1. 绑定（Binding）： 在框架启动时（通常在服务提供者 `ServiceProvider` 的 `register` 方法中），Laravel 会将一个接口（契约）绑定到一个具体的实现类上。
+    * 例如，在 `Illuminate\Log\LogServiceProvider` 中，`Psr\Log\LoggerInterface`（Laravel 自己的契约继承自 PSR 标准）被绑定到了具体的日志器实例上。
 
-2.  解析（Resolving）： 当你的代码运行时（例如，一个控制器方法被调用），如果你在构造函数或方法中类型提示了一个契约（接口），服务容器就会自动介入。
-    *   容器会查找它之前存储的绑定关系，找到这个接口对应的具体实现类是哪一个。
-    *   然后，容器会自动实例化这个具体类（或返回已存在的实例），并将其注入（Inject）到你的代码中。
+2. 解析（Resolving）： 当你的代码运行时（例如，一个控制器方法被调用），如果你在构造函数或方法中类型提示了一个契约（接口），服务容器就会自动介入。
+    * 容器会查找它之前存储的绑定关系，找到这个接口对应的具体实现类是哪一个。
+    * 然后，容器会自动实例化这个具体类（或返回已存在的实例），并将其注入（Inject）到你的代码中。
 
 这个过程就是依赖注入（Dependency Injection），由服务容器自动完成，你无需手动 `new` 任何具体的类。
 
