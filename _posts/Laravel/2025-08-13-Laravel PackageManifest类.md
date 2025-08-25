@@ -79,7 +79,8 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
     *   写入缓存文件： 将这个大数据写入 `bootstrap/cache/packages.php` 文件中。这个文件就是一个返回数组的 PHP 文件，格式如下：
 
 ```php
-<?php return [
+<?php 
+return [
     'packages' => [
         'barryvdh/laravel-debugbar' => [
             'providers' => [
@@ -189,6 +190,8 @@ Laravel 5.5 引入了“包自动发现”（Package Auto-Discovery），使得�
 
 ## 源码
 
+### packages.php 文件
+
 bootstrap/cache/packages.php 文件实例：
 
 ```php
@@ -234,6 +237,8 @@ bootstrap/cache/packages.php 文件实例：
   ),
 );
 ```
+
+### PackageManifest 类
 
 Illuminate\Foundation\PackageManifest 源码：
 
@@ -423,6 +428,8 @@ class PackageManifest
     }
 }
 ```
+
+### Filesystem 类
 
 Illuminate\Filesystem\Filesystem 源码：
 
@@ -1063,6 +1070,8 @@ class Filesystem
     }
 }
 ```
+
+### ComposerScripts 类
 
 Illuminate\Foundation\ComposerScripts 源码：
 
