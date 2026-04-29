@@ -135,6 +135,15 @@ OPENAI_API_API_BASE = os.getenv('OPENAI_API_API_BASE')
 # SerpAPIWrapper
 os.environ["SERPAPI_API_KEY"] = os.getenv('SERPAPI_API_KEY')
 
+# Redis 地址，docker中使用的redis-server
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+
+# LangSmith 调试追踪
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = "ls_3360c66a625b47139a8481dd5a16b9b7"
+os.environ["LANGCHAIN_PROJECT"] = "chenxiaziTest"
+
+
 # 强制离线，不联网访问 huggingface（解决 SSL/网络错误）
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -303,10 +312,7 @@ def jieMeng (query:str):
         return result
     else:
         return "技术错误，请告诉用户稍后再试。"
-    
 
-# Redis 地址
-REDIS_URL = "redis://localhost:6379/0"
 
 
 class Master:
@@ -828,6 +834,89 @@ async def check_audio(message, audio_path):
 bot.infinity_polling()
 ```
 
+### Docker部署
+
+视频地址：https://www.bilibili.com/video/BV1sNFSzAExU?p=32
+
+Docker-composer.yml 多镜像 文件内容：
+```
+version: "3'
+services:
+
+  redis-server:
+    image: redis:latest
+    command: redis-server --requirepass 1234567
+    volumes:  #添加这一行，持久化数据
+      - redis_data:/data  #添加这一行
+
+  ai-server:
+    build: ./
+    ports:
+      - "9000:9000"
+    environment:
+      - REDIS_URL=redis://:1234567@redis-server:6379  # 调用上面的redis服务
+
+volumes:
+  redis_data:
+```
+
+
+Dockerfile 单镜像 文件内容：
+```
+# 使用官方的Python基础镜像
+FROM python:3.11.4
+
+# 设置工作目录
+WORKDIR /aiserver/chenxiazi
+
+# 安装依赖
+COPY requirements.txt .    # copy 到整个镜像中
+RUN pip install -r requirements.txt
+
+# 拷贝你的代码到容器中
+COPY . .  # copy 代码到容器中去
+
+#设置启动命令
+CMD ["python", "server.py"]
+```
+
+启动：
+> docker-compose -f Docker-compose.yml up -d
+
+### 调试追踪
+
+LangSmith 调试追踪：
+* https://smith.langchain.com
+* https://docs.smith.langchain.com/tracing/quick_start
+* https://docs.smith.langchain.com/tracing/faq/customizing_trace_attributes
+
+> pip install langsmith
+
+针对整个项目：
+```python
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = "ls_3360c66a625b47139a8481dd5a16b9b7"
+os.environ["LANGCHAIN_PROJECT"] = "chenxiaziTest"
+```
+
+针对单次调用：
+```python
+# You can set the project name for a specific tracer instance:
+from langchain.callbacks.tracers import LangChainTracer
+
+tracer = LangChainTracer(project_name="chenxiaziTest")
+chain.invoke({"query": "How many people live in canada as of 2023?"}, config={"callbacks": [tracer]})
+
+
+# LangChain python also supports a context manager for tracing a specific block of code.
+# You can set the project name using the project_name parameter.
+from langchain_core.tracers.context import tracing_v2_enabled
+
+with tracing_v2_enabled(project_name="chenxiaziTest"):
+    chain.invoke({"query": "How many people live in canada as of 2023?"})
+```
+
+
 ## Redis   
 
 ### Windows安装Redis
@@ -905,10 +994,6 @@ except Exception as e:
 LangChain 的 MCPs：https://docs.langchain.com/oss/python/integrations/providers/all_providers
 
 大模型：https://autodl.com
-
-LangSmith 调试追踪：
-* https://docs.smith.langchain.com/tracing/quick_start
-* https://docs.smith.langchain.com/tracing/faq/customizing_trace_attributes
 
 微软云：https://portal.azure.com/#home
 
