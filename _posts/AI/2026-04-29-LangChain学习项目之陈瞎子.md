@@ -9,8 +9,16 @@ meta: LangChain学习项目之陈瞎子
 
 ## 引言
 
-学习视频地址：
-https://www.bilibili.com/video/BV1sNFSzAExU
+学习视频地址：https://www.bilibili.com/video/BV1sNFSzAExU
+
+技术架构：
+
+![]({{site.baseurl}}/images/ArtiIntel/20260429163203.jpg)
+
+* APP：Telegram bot、数智人
+* API层：APL、LangSmith
+* 服务层：FastAPI、LangChain(Prompt、.Agent...)
+* 资源层：Redis、LLM、Config、VectorStore、APl
 
 ## 安装
 
@@ -991,11 +999,30 @@ except Exception as e:
 
 ## 其他
 
-LangChain 的 MCPs：https://docs.langchain.com/oss/python/integrations/providers/all_providers
+OpenAI：https://openai.com/ , API开发者入口：https://platform.openai.com/ , 用户登录入口：https://chat.openai.com
 
-大模型：https://autodl.com
+Open接口服务转发：https://ai-yyds.com ，可以在里面购买OpenAI的模型
 
-微软云：https://portal.azure.com/#home
+AutoDl服务商：https://autodl.com ，可以在里面购买与搭建大模型
+
+CodeWithGPU开放模型：https://codewithgpu.com/ ，可以在里面购买与搭建大模型，也可以在里面运行OpenAI的模型
+
+微软云：https://portal.azure.com/#home ，可以在里面购买语音服务
+
+SerpAPI聚合搜索引擎：https://serpapi.com/ ，里面有各类搜索引擎
+
+chroma向量数据库：https://trychroma.com/ ，可以在里面存储和检索向量数据库
+
+Qdrant数据库向量引擎：https://qdrant.tech/ ，可以在里面存储和检索向量数据库
+
+LangChain社区开源框架，langserve：https://github.com/langchain-ai/langserve?tab=readme-ov-file
+
+LangChain各类工具：https://docs.langchain.com/oss/python/integrations/tools
+
+LangChain各类数据加载：https://docs.langchain.com/oss/python/integrations/providers/all_providers
+
+缘份居，本次项目中八字算卦等的数据来源：https://yuanfenju.com/
+
 
 
 
