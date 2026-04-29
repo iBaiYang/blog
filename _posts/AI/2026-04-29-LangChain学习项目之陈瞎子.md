@@ -563,6 +563,26 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
+### 语音克隆和TTS合成
+
+视频地址：https://www.bilibili.com/video/BV1sNFSzAExU?vd_source=14e623b3280938e774caf714015caa22&p=28
+
+Suno模型，免费的文字生成语音模型，项目地址：https://github.com/suno-ai/bark ，官网：https://suno.ai ，还可以生成音乐；HuggingFace地址：https://huggingface.co/suno/bark
+
+Sambert-Hifigan模型，免费的文字生成语音模型，中文支持好一点，官网：https://modelscope.cn ，说明：https://modelscope.cn/models/speech_tts/speech_sambert-hifigan_tts_zh-cn_multisp_pretrain_16k/summary ；部署比较麻烦，他人做了镜像：https://github.com/KevinWang676/Bark-Voice-Cloning/blob/main/README_zh.md ; AutoDL镜像：https://autodl.com/create?image=KevinWang676/Bark-Voice-Cloning/Sambert-Voice-Cloning:v1 ，https://codewithgpu.com/i/KevinWang676/Bark-Voice-Cloning/Sambert-Voice-Cloning
+
+
+
+
+
+
+
+
+
+
+
+
+
 <br/><br/><br/><br/><br/>
 ## 参考资料 
 
