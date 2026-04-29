@@ -12,6 +12,82 @@ meta: LangChain学习项目之陈瞎子
 学习视频地址：
 https://www.bilibili.com/video/BV1sNFSzAExU
 
+## 安装
+
+### 虚拟环境搭建
+
+创建一个项目文件夹。
+
+在项目根目录下创建一个虚拟环境：
+```
+python -m venv --without-pip .venv
+```
+
+激活虚拟环境：
+> .venv\Scripts\activate
+
+安装pip模块：
+```
+.venv\Scripts\python -m ensurepip --upgrade
+```
+
+安装fastapi：
+> .venv\Scripts\pip3 install fastapi
+
+安装uvicorn：
+> .venv\Scripts\pip3 install uvicorn
+
+进行具体开发。
+
+导出依赖：
+```
+.venv\Scripts\pip3 freeze > requirements.txt
+```
+
+.gitignore 文件内容：
+```
+# .gitignore 推荐配置
+.venv/
+__pycache__/
+*.pyc
+.env
+*.egg-info/
+```
+
+退出虚拟环境：
+> deactivate
+
+删除虚拟环境：
+> 删除 .venv 文件夹
+
+### 新环境项目对接开发
+
+下载项目文件。
+
+在项目根目录下创建一个虚拟环境：
+```
+python -m venv --without-pip .venv
+```
+
+激活虚拟环境：
+> .venv\Scripts\activate
+
+安装pip模块：
+```
+.venv\Scripts\python -m ensurepip --upgrade
+```
+
+安装项目依赖：
+> .venv\Scripts\pip3 install -r requirements.txt
+
+继续开发或部署项目。
+
+退出虚拟环境：
+> deactivate
+
+删除虚拟环境：
+> 删除 .venv 文件夹
+
 ## 正文
 
 视频中的LangChain版中比较旧，在这里改成1.0以上的版本。
@@ -563,18 +639,221 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
+访问项目接口文档：
+> http://127.0.0.1:8000/docs
+
+看一下 requirements.txt 的内容：
+```
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.5
+aiosignal==1.4.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+attrs==26.1.0
+beautifulsoup4==4.14.3
+certifi==2026.2.25
+charset-normalizer==3.4.7
+click==8.3.2
+colorama==0.4.6
+dataclasses-json==0.6.7
+distro==1.9.0
+fastapi==0.135.3
+filelock==3.25.2
+frozenlist==1.8.0
+fsspec==2026.3.0
+google_search_results==2.4.2
+greenlet==3.4.0
+grpcio==1.80.0
+h11==0.16.0
+h2==4.3.0
+hf-xet==1.4.3
+hpack==4.1.0
+httpcore==1.0.9
+httpx==0.28.1
+httpx-sse==0.4.3
+huggingface_hub==1.10.1
+hyperframe==6.1.0
+idna==3.11
+Jinja2==3.1.6
+jiter==0.13.0
+joblib==1.5.3
+jsonpatch==1.33
+jsonpointer==3.1.1
+langchain==1.2.15
+langchain-classic==1.0.3
+langchain-community==0.4.1
+langchain-core==1.2.26
+langchain-huggingface==1.2.1
+langchain-openai==1.1.12
+langchain-qdrant==1.1.0
+langchain-text-splitters==1.1.1
+langgraph==1.1.6
+langgraph-checkpoint==4.0.1
+langgraph-prebuilt==1.0.9
+langgraph-sdk==0.3.12
+langsmith==0.7.26
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+marshmallow==3.26.2
+mdurl==0.1.2
+mpmath==1.3.0
+multidict==6.7.1
+mypy_extensions==1.1.0
+networkx==3.6.1
+numpy==2.4.4
+openai==2.30.0
+orjson==3.11.8
+ormsgpack==1.12.2
+packaging==26.0
+portalocker==3.2.0
+propcache==0.4.1
+protobuf==7.34.1
+pydantic==2.12.5
+pydantic-settings==2.13.1
+pydantic_core==2.41.5
+Pygments==2.20.0
+pyTelegramBotAPI==4.33.0
+python-dotenv==1.2.2
+pywin32==311
+PyYAML==6.0.3
+qdrant-client==1.17.1
+redis==7.4.0
+regex==2026.4.4
+requests==2.33.1
+requests-toolbelt==1.0.0
+rich==15.0.0
+safetensors==0.7.0
+scikit-learn==1.8.0
+scipy==1.17.1
+sentence-transformers==5.4.0
+setuptools==81.0.0
+shellingham==1.5.4
+sniffio==1.3.1
+soupsieve==2.8.3
+SQLAlchemy==2.0.49
+starlette==1.0.0
+sympy==1.14.0
+telebot==0.0.5
+tenacity==9.1.4
+threadpoolctl==3.6.0
+tiktoken==0.12.0
+tokenizers==0.22.2
+torch==2.11.0
+tqdm==4.67.3
+transformers==5.5.3
+typer==0.24.1
+typing-inspect==0.9.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.6.3
+uuid_utils==0.14.1
+uvicorn==0.44.0
+wikipedia==1.4.0
+xxhash==3.6.0
+yarl==1.23.0
+zstandard==0.25.0
+```
+
+
 ### 语音克隆和TTS合成
 
-视频地址：https://www.bilibili.com/video/BV1sNFSzAExU?vd_source=14e623b3280938e774caf714015caa22&p=28
+视频地址：https://www.bilibili.com/video/BV1sNFSzAExU?p=28
 
 Suno模型，免费的文字生成语音模型，项目地址：https://github.com/suno-ai/bark ，官网：https://suno.ai ，还可以生成音乐；HuggingFace地址：https://huggingface.co/suno/bark
 
 Sambert-Hifigan模型，免费的文字生成语音模型，中文支持好一点，官网：https://modelscope.cn ，说明：https://modelscope.cn/models/speech_tts/speech_sambert-hifigan_tts_zh-cn_multisp_pretrain_16k/summary ；部署比较麻烦，他人做了镜像：https://github.com/KevinWang676/Bark-Voice-Cloning/blob/main/README_zh.md ; AutoDL镜像：https://autodl.com/create?image=KevinWang676/Bark-Voice-Cloning/Sambert-Voice-Cloning:v1 ，https://codewithgpu.com/i/KevinWang676/Bark-Voice-Cloning/Sambert-Voice-Cloning
 
 
+### 电报机器人
+
+视频地址：https://www.bilibili.com/video/BV1sNFSzAExU?p=31
+
+Telegram 官网：https://telegram.org
+
+## Redis   
+
+### Windows安装Redis
+
+从官网下载Redis：https://redis.io/download
+
+安装Redis：
+1. 解压下载的Redis压缩包到您选择的目录。
+2. 打开命令提示符（CMD）。
+3. 导航到Redis目录。
+4. 运行`redis-server.exe`以启动Redis服务器。
+5. 确保Redis服务器正在运行。
+
+* 启动Redis服务器 ```redis-server --service-start```
+* 停止Redis服务器 ```redis-server --service-stop```
+* 重启Redis服务器 ```redis-server --service-restart```
+* 卸载Redis服务 ```redis-server --service-uninstall```
+* 进入 Redis 客户端 `redis-cli`
+* 查看所有键 `KEYS *`
+* 查看值 `GET 键名` 或 `LRANGE 键名 0 -1` , 还有可能是返回 nil，通过键占用内存查看是否有值
+* 查看某个键占用内存 `MEMORY USAGE 键名` , 单位是：字节（Byte）
+* 删除 指定一条会话记忆 `DEL 键名`
+* 删除 所有数据（清空全部记忆）`FLUSHDB`
+* 删除 所有库的所有数据（慎用）`FLUSHALL`
+
+* 杀死占用 6379 端口的进程 ```netstat -ano | findstr ":6379"``` , 你会看到最后一列数字 PID，然后杀死它：`taskkill /F /PID 这里填PID数字`
+
+Python 里直接测试 Redis 是否连通：
+```python
+import redis
+
+# 改成你要测的地址和端口
+r = redis.Redis(host="localhost", port=6379, db=0, socket_timeout=3)
+
+try:
+    result = r.ping()
+    print("Redis 连接成功:", result)  # 输出 True 就是通
+except Exception as e:
+    print("连接失败:", e)
+```
+
+### Mac安装Redis
+
+要在Mac上安装Redis,您可以按照以下步骤进行操作：
+
+1. 使用Homeb rew安装Redis:
+    - 打开终端应用程序。
+    - 输入以下命令以安装Homeb rew(如果您尚未安装)：
+        ```
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        ```
+    - 安装完Homebrew后，运行以下命令以安装Redis:
+        ```
+        brew install redis
+        ```
+
+2. 启动Redis.服务器：
+    - 在终端中运行以下命令以启动Redis服务器：
+        ```
+        redis-server
+        ```
+
+3. 验证Redis是否正在运行：
+    - 在终端中运行以下命令以连接到Redis服务器：
+        ```
+        redis-cli
+        ```
+    - 输入`ping`命令，如果返回`PONG`,则表示Redis已成功安装并正在运行。
+
+通过上述步骤，您应该能够在Mac上成功安装和运行Redis。
 
 
+## 其他
 
+LangChain 的 MCPs：https://docs.langchain.com/oss/python/integrations/providers/all_providers
+
+大模型：https://autodl.com
+
+LangSmith 调试追踪：
+* https://docs.smith.langchain.com/tracing/quick_start
+* https://docs.smith.langchain.com/tracing/faq/customizing_trace_attributes
+
+微软云：https://portal.azure.com/#home
 
 
 
