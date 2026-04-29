@@ -60,10 +60,10 @@ _set_env("OPENAI_API_KEY")
 
 
 ```python
-from langchain_openai import ChatopenAI
+from langchain_openai import ChanOpenAI
 
-11m = ChatopenAI(model="gpt-40")
-result = 11m.invoke(messages)
+llm = ChanOpenAI(model="gpt-4o")
+result = llm.invoke(messages)
 type(result)
 
 # 输出
@@ -105,6 +105,8 @@ result.response_metadata 内容：
 有的 LLM提供商 支持工具调用，有的不支持，可以在这里查看：https://python.langchain.com/v0.1/docs/integrations/chat/
 
 ```python
+from langchain.tools import tool
+
 @tool
 def multiply(a: int, b: int) -> int:
     """Multiply a and b.
@@ -158,11 +160,12 @@ class MessagesState(MessagesState):
 ```
 
 
-```
+```python
 # 初始状态
-initial_messages = [AIMessage(content="您好！我能为您做些什么？", name="Model"),
-                    HumanMessage(content="我正在寻找有关 fpv 无人机的信息.", name="Ronnie")
-                   ]
+initial_messages = [
+    AIMessage(content="您好！我能为您做些什么？", name="Model"),
+    HumanMessage(content="我正在寻找有关 fpv 无人机的信息.", name="Ronnie")
+]
 
 # 要添加的新消息
 new_message = AIMessage(content="当然，我可以帮忙。你具体对什么感兴趣？", name="Model")
@@ -274,9 +277,10 @@ _set_env("OPENAI_API_KEY")
 ```
 
 ```python
-from langchain_openai import ChatopenAI
+from langchain_openai import ChanOpenAI
+from langchain.tools import tool
 
-11m = ChatopenAI(model="gpt-40")
+llm = ChanOpenAI(model="gpt-4o")
 
 @tool
 def multiply(a: int, b: int) -> int:
