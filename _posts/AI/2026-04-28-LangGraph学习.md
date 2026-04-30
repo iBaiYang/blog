@@ -9,8 +9,6 @@ meta: LangGraph学习
 
 ## 引言
 
-LangGraph、LangChain、Deep Agent。
-
 视频地址：https://www.bilibili.com/video/BV1urDZBMEao
 
 ## 链
@@ -1354,8 +1352,193 @@ Name：Simon
 通过熟悉这些领域，你可以构建一个坚实的基础，并为应用这些技术解决实际问题做好准备。不同的应用领域也可能有特定的挑战和雲求研空时可以根据你的兴趣和目标进行深入。
 ```
 
+### Reducer状态更新
 
+处理消息时的一个实际挑战是管理长时间运行的对话。
 
+如果我们不小心，长时间运行的对话会导致大数量的token使用率和延迟，因为我们将越来越多的消息列表传递给模型。
+
+我们有几种方法可以解决这个问题。
+
+我们可以使用"RemoveMessage”和"add_messages" reducer状态更新函数
+```python
+from langchain_core.messages import RemoveMessage
+
+# 过滤节点
+def filter_messages(state: MessagesState):
+    # 删除所有消息, 只留下最近的 2 条
+    delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
+    return {"messages": delete_messages}
+
+def chat_model_node(state: MessagesState):
+    return {"messages": [llm.invoke(state["messages"])]}
+
+builder = StateGraph(MessagesState)
+builder.add_node("filter", filter_messages)
+builder.add_node("chat_model", chat_model_node)
+builder.add_edge(START, "filter")
+builder.add_edge("filter", "chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+结构：
+```
+__start__ -> filter -> chat_model -> __end__
+```
+
+调用：
+```python
+# 带标记的消息列表
+messages = [AIMessage("你好啊, 我是特朗普", name="Trump", id="1")]
+messages.append(HumanMessage("你好", name="Ronnie", id="2"))
+messages.append(AIMessage("所以你说你在研究神经网络? ", name="Ronnie", id="3"))
+messages.append(HumanMessage("是的, 我知道神经网络。但我还应该了解哪些其他东西呢? ", name="Lance", id="4"))
+
+output = graph.invoke({'messages': messages})
+for m in output['messages']:
+    m.pretty_print()
+```
+
+输出：
+```
+=============================== Ai Message ===============================
+Name: Ronnie
+
+所以你说你在研究神经网络?
+=============================== Human Message ===============================
+Name: Lance
+
+是的, 我知道神经网络。但我还应该了解哪些其他东西呢?
+=============================== Ai Message ===============================
+了解神经网络后，继续研究其他相关领域会为你提供更广泛、深刻的人工智能和机器学习理解。以下是一些你可能要了解的领域：
+1. **机器学习基础**：了解监督学习、无监督学习和强化学习，以及常用的算法如线性回归、决策树和集成方法等。
+2. **深度学习**：深入学习卷积神经网络（CNNs）、循环神经网络（RNNs）、长短时记忆网络（LSTMs）以及变分自编码器（VAEs）和生成对抗网络（GANs）等。
+3. **数据预处理与特征工程**：学习如何处理和清洗数据，进行特征选择和特征提取。
+4. **优化算法**：例如梯度下降（及其变种Adam，RMSprop等），帮助提升模型的性能。
+5. **概率和统计学**：深入理解概率分布、统计推断以及贝叶斯推断等概念。
+6. **大规模数据处理**：学习如何使用工具和框架如Hadoop、Spark来处理大规模数据集。
+7. **自然语言处理（NLP）**：研究文本分析、情感分析、语言翻译等方面的技术。
+8. **计算机视觉**：了解图像分类、目标检测和图像分割等技术。
+9. **强化学习**：探索如何进行策略优化，发掘基于奖励机制的学习方法。
+10. **人工智能伦理**：了解AI在隐私、安全、公平和透明度等方面的社会影响。
+通过熟悉这些领域，你可以构建一个坚实的基础，并为应用这些技术解决实际问题做好准备。不同的应用领域也可能有特定的挑战和雲求研空时可以根据你的兴趣和目标进行深入。
+```
+
+### 过滤消息
+
+如果不需要或不想修改图形状态，可以只过滤传递给聊天模型的消息。
+
+例如，只需将过滤后的列表`llm.invoke(messages[-1:])`传递给模型。
+
+```python
+# 过滤节点
+def chat_model_node(state: MessagesState):
+    return {"messages": 1lm.invoke(state["messages"][-1:])}
+
+# 建立图
+builder= StateGraph(MessagesState)
+builder.add_node("chat_model",chat_model_node)
+builder.add_edge(START,"chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+# 显示图结构
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+调用：
+```python
+messages.append(output['messages'][-1])
+messages.append(HumanMessage(f"告诉我更多关于神经网络的信息", name="Ronnie"))
+
+for m in messages:
+    m.pretty_print()
+```
+
+输出：
+```
+=============================== Ai Message ===============================
+Name: Trump
+
+你好啊, 我是特朗普
+=============================== Human Message ===============================
+Name: Ronnie
+
+你好
+=============================== Ai Message ===============================
+Name: Ronnie
+
+所以你说你在研究神经网络?
+=============================== Human Message ===============================
+Name: Lance
+
+是的, 我知道神经网络。但我还应该了解哪些其他东西呢?
+=============================== Ai Message ===============================
+了解神经网络后，继续研究其他相关领域会为你提供更广泛、深刻的人工智能和机器学习理解。以下是一些你可能要了解的领域：
+1. **机器学习基础**：了解监督学习、无监督学习和强化学习，以及常用的算法如线性回归、决策树和集成方法等。
+2. **深度学习**：深入学习卷积神经网络（CNNs）、循环神经网络（RNNs）、长短时记忆网络（LSTMs）以及变分自编码器（VAEs）和生成对抗网络（GANs）等。
+3. **数据预处理与特征工程**：学习如何处理和清洗数据，进行特征选择和特征提取。
+4. **优化算法**：例如梯度下降（及其变种Adam，RMSprop等），帮助提升模型的性能。
+5. **概率和统计学**：深入理解概率分布、统计推断以及贝叶斯推断等概念。
+6. **大规模数据处理**：学习如何使用工具和框架如Hadoop、Spark来处理大规模数据集。
+7. **自然语言处理（NLP）**：研究文本分析、情感分析、语言翻译等方面的技术。
+8. **计算机视觉**：了解图像分类、目标检测和图像分割等技术。
+9. **强化学习**：探索如何进行策略优化，发掘基于奖励机制的学习方法。
+10. **人工智能伦理**：了解AI在隐私、安全、公平和透明度等方面的社会影响。
+通过熟悉这些领域，你可以构建一个坚实的基础，并为应用这些技术解决实际问题做好准备。不同的应用领域也可能有特定的挑战和雲求研空时可以根据你的兴趣和目标进行深入。
+```
+
+### 修剪消息
+
+另一种方法是根据一定数量的标记修剪消息。这会将消息历史记录限制为指定数量的标记。
+
+```python
+from langchain_core.messages import trim_messages
+
+# 修建消息后的节点
+def chat_model_node(state: MessagesState):
+    messages = trim_messages(
+        state["messages"],
+        max_tokens=100,
+        strategy="last",
+        token_counter=ChatOpenAI(model="gpt-4o"),
+        allow_partial=False,
+    )
+    return {"messages": [llm.invoke(messages)]}
+
+# 建立图
+builder = StateGraph(MessagesState)
+builder.add_node("chat_model", chat_model_node)
+builder.add_edge(START,"chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+# 显示图结构
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+调用：
+```python
+messages.append(output['messages'][-1])
+messages.append(HumanMessage(f"告诉我更多关于神经网络的信息", name="Ronnie"))
+```
+
+```
+trim_messages(
+        state["messages"],
+        max_tokens=100,
+        strategy="last",
+        token_counter=ChatOpenAI(model="gpt-4o"),
+        allow_partial=False,
+    )
+```
+
+`[HumanMessage(content='告诉我什么是神经网络'，additional_kwargs={},response_metadata={},name='Ronnie')]`
+
+`messages_out_trim = graph.invoke({'messages': messages})`
 
 
 
