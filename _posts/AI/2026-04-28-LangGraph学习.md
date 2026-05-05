@@ -47,7 +47,7 @@ Name:Ronnie
 我想了解如何驾驶FPV无人机。
 ```
 
-
+OPENAI环境变量准备：
 ```python
 import os, getpass
 
@@ -60,9 +60,9 @@ _set_env("OPENAI_API_KEY")
 
 
 ```python
-from langchain_openai import ChanOpenAI
+from langchain_openai import ChatOpenAI
 
-llm = ChanOpenAI(model="gpt-4o")
+llm = ChatOpenAI(model="gpt-4o")
 result = llm.invoke(messages)
 type(result)
 
@@ -141,7 +141,7 @@ class MessagesState(TypedDict):
     messages: list[AnyMessage]
 ```
 
-Reducers 保留原消息：
+每次调用时，Reducers 保留原消息：
 ```python
 from typing import Annotated
 from langgraph.graph.message import add_messages
@@ -159,8 +159,10 @@ class MessagesState(MessagesState):
     pass
 ```
 
-
+信息过程如下：
 ```python
+from langgraph.graph.message import add_messages
+
 # 初始状态
 initial_messages = [
     AIMessage(content="您好！我能为您做些什么？", name="Model"),
@@ -185,6 +187,8 @@ add_messages(initial_messages , new_message)
 
 ```python
 # --------------
+
+from langchain.tools import tool
 
 @tool
 def multiply(a: int, b: int) -> int:
@@ -212,7 +216,6 @@ def tool_calling_llm(state: MessagesState):
 
 # --------------
 
-from IPython.display import Image, display
 from langgraph.graph import StateGraph, START, END
 
 # 建立图
@@ -223,7 +226,8 @@ builder.add_edge("tool_calling_llm", END)
 graph = builder.compile()
 
 # 显示图结构
-display(Image(graph.get_graph().draw_mermaid_png()))
+from IPython.display import Image, display
+display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
 ```
 
 调用：
@@ -274,13 +278,11 @@ def _set_env(var:str):
         os.environ[var] = getpass.getpass(f"{var}:")
         
 _set_env("OPENAI_API_KEY")
-```
 
-```python
-from langchain_openai import ChanOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 
-llm = ChanOpenAI(model="gpt-4o")
+llm = ChatOpenAI(model="gpt-4o")
 
 @tool
 def multiply(a: int, b: int) -> int:
@@ -320,13 +322,15 @@ builder = StateGraph(MessagesState)
 builder.add_node("tool_calling_llm", tool_calling_llm)
 builder.add_node("tools", ToolNode([multiply]))
 builder.add_edge(START, "tool_calling_llm")
-builder.add_edge("tools",END)
 builder.add_conditional_edges(
     "tool_calling_llm",
     # 如果来自助手的最新消息（结果）是工具调用 -> tools_condition 路由到工具
     # 如果来自助手的最新消息（结果）不是工具调用 -> tools_condition 路由到 END
     tools_condition,
+    # langgraph.prebuilt.tools_condition是LangGraph提供的工具函数，用于在状态图中根据消息内容动态路由。它检查状态中的最后一条消息（通常是LLM的响应），如果包含工具调用(too1_ca11s),则返回"too1s",引导流程到工具执行节点；否则返回"__end__",结束工作流。
+    ["tools", END]
 )
+builder.add_edge("tools", "tool_calling_llm")
 graph = builder.compile()
 
 # 显示图结构
@@ -402,7 +406,7 @@ _set_env("OPENAI_API_KEY")
 ```
 
 LangSmith配置：
-```
+```python
 _set_env("LANGCHAIN_API_KEY")
 os.environ["LANGCHAIN_TRACING_V2"]="true"
 os.environ["LANGCHAIN_PROJECT"]="react-agent"
@@ -410,40 +414,47 @@ os.environ["LANGCHAIN_PROJECT"]="react-agent"
 
 定义工具：
 ```python
-from langchain_openai import ChanOpenAI
+from langchain_openai import ChatOpenAI
+from langchain.tools import tool
 
+# Define tools
+@tool
 def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Multiply `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a * b
 
+
+@tool
 def add(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Adds `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a + b
 
-def divide(a: int, b: int) -> int:
-    """Multiply a and b.
+
+@tool
+def divide(a: int, b: int) -> float:
+    """Divide `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a / b
 
-tools = [add,multiply,divide]
-11m = ChanOpenAI(model="gpt-4o")
+11m = ChatOpenAI(model="gpt-4o")
 
-# 对于这个案例，我们将并行工具调用设置为false,因为数学运算通常是按顺序完成的，而这次我们有3个可以进行数学运算的工具
+# 对于这个案例，我们将并行工具调用设置为false，因为数学运算通常是按顺序完成的，而这次我们有3个可以进行数学运算的工具
 # OpenAI模型专门默认使用并行工具调用来提高效率，请参阅 https://python.langchain.com/docs/how_to/tool_calling_parallel/
+tools = [add, multiply, divide]
 11m_with_tools = 11m.bind_tools(tools, parallel_tool_calls=False)
 ```
 
@@ -1292,9 +1303,9 @@ Name：Simon
 
 调用：
 ```
-from langchain_openai import ChanOpenAI
+from langchain_openai import ChatOpenAI
 
-1lm = ChanOpenAI(model="gpt-4o")
+1lm = ChatOpenAI(model="gpt-4o")
 graph.invoke(messages)
 ```
 
