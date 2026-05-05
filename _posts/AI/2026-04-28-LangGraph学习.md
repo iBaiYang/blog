@@ -663,7 +663,6 @@ class TypedDictstate(TypedDict):
 例一：
 ```python
 import random
-from IPython.display import Image, display
 from langgraph.graph import StateGraph, START, END
 
 def node_1(state):
@@ -703,6 +702,7 @@ builder.add_edge("node_3", END)
 graph = builder.compile()
 
 # 显示图结构
+from IPython.display import Image, display
 display(Image(graph.get_graph().draw_mermaid_png()))
 ```
 
@@ -812,12 +812,13 @@ except ValidationError as e:
     print("Validation Error:", e)
 ```
 
+报错：
 ```
 Validation Error: 1 validation error for PydanticState
 mood
   Value error, mood 值必须是'高兴' 或 '悲伤' [type=value_error, input_value='失望', input_type=str]
     For further information visit https://errors.pydantic.dev/2.9/v/value_error
-···
+```
 
 我们可以在Langraph图中无缝使用"PydanticState"。
 
@@ -868,7 +869,6 @@ mood
 
 ```python
 from typing_extensions import TypedDict
-from IPython.display import Image, display
 from langgraph.graph import StateGraph, START, END
 
 class State(TypedDict):
@@ -889,6 +889,7 @@ builder.add_edge("node_1", END)
 graph = builder.compile()
 
 # 显示图结构
+from IPython.display import Image, display
 display(Image(graph.get_graph().draw_mermaid_png()))
 ```
 
@@ -1158,7 +1159,6 @@ node_2使用PrivateState作为输入，但写入OverallState。
 
 ```python
 from typing_extensions import TypedDict
-from IPython.display import Image, display
 from langgraph.graph import StateGraph, START, END
 
 class OverallState(TypedDict):
@@ -1187,6 +1187,7 @@ builder.add_edge("node_2", END)
 graph = builder.compile()
 
 # 显示图结构
+from IPython.display import Image, display
 display(Image(graph.get_graph().draw_mermaid_png()))
 ```
 
@@ -1238,7 +1239,7 @@ display(Image(graph.get_graph().draw_mermaid_png()))
 输出：`{'question':'你好', 'answer': '再见Ronnie','notes': "... 他的名字叫Ronnie'}`
 
 现在，让我们在图中使用特定的“输入”和“输出”模式。在这里，“输入”/“输出”模式图表的输入和输出上允许的键执行过滤。
-此外，我们可以使用类型提示"state：InputState”来指定每个节点的输入模式。当图表使用多个模式时，这一点很重要。
+此外，我们可以使用类型提示`state：InputState`来指定每个节点的输入模式。当图表使用多个模式时，这一点很重要。
 
 我们使用下面的类型提示来例如显示“answer_node”的输出将被过滤到”OutputState”。
 ```python
