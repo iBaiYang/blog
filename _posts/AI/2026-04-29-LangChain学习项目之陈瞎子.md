@@ -94,7 +94,7 @@ python -m venv --without-pip .venv
 > deactivate
 
 删除虚拟环境：
-> 删除 .venv 文件夹
+> 手动删除 .venv 文件夹
 
 ## 正文
 
