@@ -327,7 +327,7 @@ builder.add_conditional_edges(
     # 如果来自助手的最新消息（结果）不是工具调用 -> tools_condition 路由到 END
     tools_condition,
     # langgraph.prebuilt.tools_condition是LangGraph提供的工具函数，用于在状态图中根据消息内容动态路由。它检查状态中的最后一条消息（通常是LLM的响应），如果包含工具调用(too1_ca11s),则返回"too1s",引导流程到工具执行节点；否则返回"__end__",结束工作流。
-    ["tools", END]
+    ["tools": "tools", "__end__": END]
 )
 builder.add_edge("tools", "tool_calling_llm")
 graph = builder.compile()
