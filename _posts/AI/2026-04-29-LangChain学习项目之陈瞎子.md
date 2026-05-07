@@ -996,6 +996,8 @@ except Exception as e:
 
 通过上述步骤，您应该能够在Mac上成功安装和运行Redis。
 
+可视化界面管理Redis工具 RedisDesktopManager，现在收费了。有一个备有地址：https://github.com/lework/RedisDesktopManager-Windows/releases
+
 
 ## 其他
 

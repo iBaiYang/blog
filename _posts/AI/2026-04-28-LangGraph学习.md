@@ -11,6 +11,8 @@ meta: LangGraph学习
 
 视频地址：https://www.bilibili.com/video/BV1urDZBMEao
 
+另外有一个官方的学习地址：https://academy.langchain.com/courses/intro-to-langgraph
+
 ## 链
 
 ### 消息
