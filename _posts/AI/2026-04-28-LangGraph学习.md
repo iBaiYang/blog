@@ -307,7 +307,6 @@ class MessagesState(TypedDict):
 
 定义：
 ```python
-from IPython.display import Image, display
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph import MessagesState
 from langgraph.prebuilt import ToolNode
@@ -334,6 +333,7 @@ builder.add_edge("tools", "tool_calling_llm")
 graph = builder.compile()
 
 # 显示图结构
+from IPython.display import Image, display
 display(Image(graph.get_graph().draw_mermaid_png()))
 ```
 
@@ -1312,7 +1312,6 @@ graph.invoke(messages)
 
 使用”MessagesState”在简单的图表中运行我们的聊天模型。
 ```python
-from IPython.display import Image, display
 from langgraph.graph import MessagesState
 from langgraph.graph import StateGraph,START, END
 
@@ -1328,6 +1327,7 @@ builder.add_edge("chat_model", END)
 graph = builder.compile()
 
 # 显示图结构
+from IPython.display import Image, display
 display(Image(graph.get_graph().draw_mermaid_png()))
 ```
 
