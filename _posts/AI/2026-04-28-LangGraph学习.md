@@ -13,6 +13,8 @@ meta: LangGraph学习
 
 另外有一个官方的学习地址：https://academy.langchain.com/courses/intro-to-langgraph
 
+runoob中的一个学习地址：https://www.runoob.com/ai-agent/langgraph-quick-start.html
+
 ## 链
 
 ### 消息
