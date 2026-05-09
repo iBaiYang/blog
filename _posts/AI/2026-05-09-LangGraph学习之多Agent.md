@@ -13,7 +13,7 @@ meta: LangGraph学习之多Agent
 
 LangGraph源码地址：https://github.com/langchain-ai/langgraph
 
-内容有：
+多Agent有3种类型：
 * 协作多Agent（Multi-agent collaboration）
 * 主管多Agent（Multi-agent supervision）
 * 分层多Agent (Hierarchical Agent)
