@@ -1026,11 +1026,10 @@ for s in super_graph.stream(
 
 
 
-
 <br/><br/><br/><br/><br/>
 ## 参考资料 
 
-
+LangGraph实战教程：构建会思考、能记忆、可人工干预的多智能体AI系统：<https://cloud.tencent.com/developer/article/2557143>
 
 
 

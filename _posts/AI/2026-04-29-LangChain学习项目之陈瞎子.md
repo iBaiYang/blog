@@ -1025,9 +1025,9 @@ LangChain各类数据加载：https://docs.langchain.com/oss/python/integrations
 
 缘份居，本次项目中八字算卦等的数据来源：https://yuanfenju.com/
 
+小爱AI：https://xiaoai.plus/ ，可以在里面购买与搭建大模型，也可以在里面运行OpenAI的模型
 
-
-
+魔塔社区：https://www.modelscope.cn ，里面有各类模型服务产品。MCP广场有各类工具：<https://www.modelscope.cn/mcp>
 
 
 

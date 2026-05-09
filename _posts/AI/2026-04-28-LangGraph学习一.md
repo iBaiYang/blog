@@ -15,6 +15,8 @@ meta: LangGraph学习一
 
 runoob中的一个学习地址：https://www.runoob.com/ai-agent/langgraph-quick-start.html
 
+LangGraph 仓库地址：https://github.com/langchain-ai/langgraph
+
 ## 链
 
 ### 消息
