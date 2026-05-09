@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: AI
-title: LangGraph学习
-meta: LangGraph学习
+title: LangGraph学习一
+meta: LangGraph学习一
 ---
 * content
 {:toc}
