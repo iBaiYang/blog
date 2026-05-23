@@ -141,3 +141,6 @@ docker exec whisper-srv        # 进入容器执行
 
 <https://zhuanlan.zhihu.com/p/1934266877867198244>
 
+<https://zhuanlan.zhihu.com/p/1966238230786598191>
+
+
