@@ -132,7 +132,8 @@ docker exec whisper-srv        # 进入容器执行
 -nt                            # 输出纯文本（方便PHP接收）
 ```
 
-
+不过在执行前先要让PHP能够操作Docker：
+> chmod 666 /var/run/docker.sock
 
 
 
