@@ -45,7 +45,7 @@ RUN sed -e 's|mirror.centos.org|mirrors.aliyun.com|g' \
         -i /etc/yum.repos.d/centos* && \
     microdnf clean all
 
-# 安装依赖（包含ffmpeg）
+# 安装依赖
 RUN microdnf install -y git make gcc gcc-c++ cmake && \
     microdnf clean all
 
