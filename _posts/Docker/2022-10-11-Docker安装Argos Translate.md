@@ -74,7 +74,7 @@ $cmd = "docker exec argos-slim argos-translate --from-lang zh --to-lang en '你�
 $output = shell_exec($cmd);
 ```
 
-argos-translate --from-lang zh --to-lang en "你好"
+
 
 
 
