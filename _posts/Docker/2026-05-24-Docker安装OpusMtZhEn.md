@@ -94,6 +94,14 @@ $cmd = "docker exec opus-zh-en-slim python3 /app/translate.py {$zhText} 2>/dev/n
 $enText = trim(shell_exec($cmd));
 ```
 
+清理 docker 残留缓存、悬空镜像、无用数据
+```
+# 清理悬空镜像
+docker image prune -f
+
+# 全局清理无用资源（容器/网络/卷/缓存）
+docker system prune -f
+``` 
 
 
 
