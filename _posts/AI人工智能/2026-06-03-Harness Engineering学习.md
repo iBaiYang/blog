@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: AI
+categories: AI人工智能
 title: Harness Engineering学习
 meta: Harness Engineering 是什么和提示词工程和上下文工程有什么关系？
 ---

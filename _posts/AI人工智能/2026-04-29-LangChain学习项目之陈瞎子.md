@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: AI
+categories: AI人工智能
 title: LangChain学习项目之陈瞎子
 meta: LangChain学习项目之陈瞎子
 ---

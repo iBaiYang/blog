@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: AI
+categories: AI人工智能
 title: LangGraph学习一
 meta: LangGraph学习一
 ---

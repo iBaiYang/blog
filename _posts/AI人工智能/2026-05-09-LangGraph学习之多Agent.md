@@ -1,6 +1,6 @@
 ---
 layout: post
-categories: AI
+categories: AI人工智能
 title: LangGraph学习之多Agent
 meta: LangGraph学习之多Agent
 ---
