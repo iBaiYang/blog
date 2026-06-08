@@ -254,6 +254,7 @@ Hello.
 
 ### transformers 动态量化
 
+执行时，内存超限，被kill了。
 
 ```
 cat > quantize_dynamic_int8.py << 'EOF'
@@ -470,49 +471,6 @@ EOF
 
 查看：`python3 ct2_translate.py "你好"`
 
-
-
-
--------------------------------
-
-如果使用量化：
-```
-FROM quay.io/centos/centos:stream9-minimal
-
-# 替换阿里云yum源
-RUN sed -e 's|mirror.centos.org|mirrors.aliyun.com|g' \
-        -e 's|mirror.stream.centos.org|mirrors.aliyun.com|g' \
-        -i /etc/yum.repos.d/centos* && \
-    microdnf clean all && microdnf makecache
-
-# 仅装python基础，不装gcc、不装torch相关
-RUN microdnf install -y python3 python3-pip \
-    && microdnf clean all && rm -rf /var/cache/dnf
-
-WORKDIR /app
-
-# 安装运行&转换依赖：无torch、无transformers！
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-COPY app.py .
-
-COPY opus-mt-zh-en ./opus-mt-zh-en
-
-# OPUS专用转换器，INT8_FLOAT32量化 
-RUN ct2-opus-mt-converter \
-    --model_dir ./opus-mt-zh-en \
-    --output_dir ./opus-mt-zh-en-ct2-int8 \
-    --quantization int8_float32
-
-# 转换完可删除原始pytorch权重文件，仅保留spm分词文件（极致缩镜像）
-RUN mv ./opus-mt-zh-en/sentencepiece.bpe.model ./ && rm -rf ./opus-mt-zh-en
-
-COPY translate.py .
-RUN chmod +x /app/translate.py
-
-CMD ["tail", "-f", "/dev/null"]
-```
 
 
 
