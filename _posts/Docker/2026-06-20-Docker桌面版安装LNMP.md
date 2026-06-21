@@ -185,14 +185,14 @@ www/site2/index.php 内容：
 
 #### hosts 配置
 
-在宿主机的 hosts 文件中添加：
+在宿主机的 C:\Windows\System32\drivers\etc\hosts 文件中添加：
 ```
 127.0.0.1 test1.local
 127.0.0.1 test2.local
 ```
 
 
-### 安装Nginx+PHP：
+### 安装 Nginx + PHP：
 
 接下来安装Nginx+PHP。
 
