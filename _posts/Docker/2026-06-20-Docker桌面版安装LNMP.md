@@ -191,6 +191,7 @@ www/site2/index.php 内容：
 127.0.0.1 test2.local
 ```
 
+如果提示无权限修改，可以用管理员权限打开记事本，然后用记事本打开该文件进行修改并保存。
 
 ### 安装 Nginx + PHP：
 
@@ -223,7 +224,7 @@ RUN dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
         -i /etc/yum.repos.d/remi*.repo && \
     dnf clean all && dnf makecache
 
-# 5. 安装 Nginx + 启用 php:remi-7.4 模块并安装全部组件
+# 5. 安装 Nginx + 启用 php:remi-7.4 模块并安装全部组件 + 系统底层时区库
 RUN dnf module enable -y php:remi-7.4 && \
     dnf install -y \
         nginx \
@@ -246,22 +247,19 @@ RUN sed -i 's/^user = apache/user = nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/listen.owner = apache/listen.owner = nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/listen.group = apache/listen.group = nginx/' /etc/php-fpm.d/www.conf
 
-# 7.安装系统底层时区库
-RUN dnf install -y tzdata
-
-# 8. 统一设置系统时区+PHP时区配置，彻底消除时区报错
+# 7. 统一设置系统时区+PHP时区配置，彻底消除时区报错
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'date.timezone = Asia/Shanghai' > /etc/php.d/99-timezone.ini
 
-# 9. 安装 Composer 并设置全局阿里云镜像
+# 8. 安装 Composer 并设置全局阿里云镜像
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    php -d date.timezone=Asia/Shanghai composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+    php -d date.timezone=Asia/Shanghai /usr/local/bin/composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
-# 10. 复制本地Nginx主配置 + 多站点虚拟主机目录
+# 9. 复制本地Nginx主配置 + 多站点虚拟主机目录
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx/vhost /etc/nginx/conf.d/
 
-# 11. 创建站点根目录并授权nginx读写权限
+# 10. 创建站点根目录并授权nginx读写权限
 RUN mkdir -p /usr/share/nginx/www && \
     chown -R nginx:nginx /usr/share/nginx/www
 
