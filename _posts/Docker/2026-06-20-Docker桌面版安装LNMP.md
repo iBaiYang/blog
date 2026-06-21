@@ -244,22 +244,23 @@ RUN dnf module enable -y php:remi-7.4 && \
 # 6. 修改 php-fpm 运行用户为 nginx，解决页面403权限
 RUN sed -i 's/^user = apache/user = nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/^group = apache/group = nginx/' /etc/php-fpm.d/www.conf && \
-    sed -i 's/listen.owner = apache/listen.owner = nginx/' /etc/php-fpm.d/www.conf && \
-    sed -i 's/listen.group = apache/listen.group = nginx/' /etc/php-fpm.d/www.conf
+    sed -i 's/^listen = .*/listen = 127.0.0.1:9000/' /etc/php-fpm.d/www.conf
 
 # 7. 统一设置系统时区+PHP时区配置，彻底消除时区报错
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'date.timezone = Asia/Shanghai' > /etc/php.d/99-timezone.ini
 
 # 8. 安装 Composer 并设置全局阿里云镜像
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    php -d date.timezone=Asia/Shanghai /usr/local/bin/composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 9. 复制本地Nginx主配置 + 多站点虚拟主机目录
+# 9.手动创建 Composer 全局配置文件（阿里云镜像）
+RUN mkdir -p /root/.composer && \
+    echo '{"config": {"repositories": {"packagist": {"type": "composer", "url": "https://mirrors.aliyun.com/composer/"}}}}' > /root/.composer/config.json
+
+# 10. 复制本地Nginx主配置 + 多站点虚拟主机目录
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY ./nginx/vhost /etc/nginx/conf.d/
 
-# 10. 创建站点根目录并授权nginx读写权限
+# 11. 创建站点根目录并授权nginx读写权限
 RUN mkdir -p /usr/share/nginx/www && \
     chown -R nginx:nginx /usr/share/nginx/www
 
@@ -267,22 +268,20 @@ RUN mkdir -p /usr/share/nginx/www && \
 EXPOSE 80
 
 # 启动php-fpm + 前台运行nginx，防止容器自动退出
-CMD ["sh", "-c", "mkdir -p /run/php-fpm && chown nginx:nginx /run/php-fpm && php-fpm && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "mkdir -p /run/php-fpm && chown nginx:nginx /run/php-fpm && php-fpm -F & nginx -g 'daemon off;'"]
 ```
 
-这一块用了好长时间，说一下里面的注意点。基础镜像用的是centos:stream9精简版，为了国内加速，CentOS 基础源换为了阿里云。里面多处安装用到了dnf，但基础镜像 quay.io/centos/centos:stream9-minimal 默认的仓库配置中，没有可用的 dnf 包（尽管 microdnf 是内置的，但microdnf 本身是轻量级包管理器，好多包的安装还是要用到dnf），有些地方也要用到curl（尽管 curl-minimal 是内置的，但有些下载是要用到curl的，而curl 包与 curl-minimal 冲突），我们需要强制移除 curl-minimal，再安装 dnf 和 curl。还有centos:stream9精简版底层是缺少系统底层时区库，安装Composer会用到。php-fpm 运行时需要绑定到 /run/php-fpm/www.sock，这是一个临时目录，我们在容器启动时需要创建该目录。
+这一块用了好长时间，说一下里面的注意点。基础镜像用的是centos:stream9精简版，为了国内加速，CentOS 基础源换为了阿里云。里面多处安装用到了dnf，但基础镜像 quay.io/centos/centos:stream9-minimal 默认的仓库配置中，没有可用的 dnf 包（尽管 microdnf 是内置的，但microdnf 本身是轻量级包管理器，好多包的安装还是要用到dnf），有些地方也要用到curl（尽管 curl-minimal 是内置的，但有些下载是要用到curl的，而curl 包与 curl-minimal 冲突），我们需要强制移除 curl-minimal，再安装 dnf 和 curl。还有centos:stream9精简版底层是缺少系统底层时区库，安装Composer会用到。Composer 全局配置文件改为阿里云，命令行总是无法执行，无奈改为手动创建。php-fpm 一般是用socket实现，绑定地址 /run/php-fpm/www.sock，这是一个临时目录，在容器启动时需要创建该目录；但这里改下来有问题，最后改为了 127.0.0.1:9000 端口监听。`php-fpm -F`前台运行会阻塞后面`nginx -g 'daemon off;'`的执行，所以不能用`&&`，而是改为`&`。
 
 生成镜像：
 > docker build -t centos9-nginx-php74 .
 
 创建容器：
 ```
-docker run -d --name centos9-nginx-php74 --network web-net -v D:/develop/www:/usr/share/nginx/www -p 8080:80 centos9-nginx-php74
+docker run -d --name centos9-nginx-php74 --network web-net -v D:/develop/www:/usr/share/nginx/www -v D:/develop/DockerEnv/docker-multi-web/nginx/vhost:/etc/nginx/conf.d -p 8080:80 centos9-nginx-php74
 ```
 
-浏览器访问：http://localhost:8080 查看nginx默认页面。
-
-浏览器访问：
+浏览器访问，查看效果：
 - 站点 1：http://test1.local:8080
 - 站点 2：http://test2.local:8080
 
