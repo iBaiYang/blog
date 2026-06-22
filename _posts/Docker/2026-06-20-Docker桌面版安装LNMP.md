@@ -238,29 +238,32 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-mbstring \
         php-opcache \
         vim unzip \
-        tzdata && \
     dnf clean all
 
-# 6. 修改 php-fpm 运行用户为 nginx，解决页面403权限
+# 6.安装 tzdata 并重装确保时区数据文件存在
+RUN dnf install -y tzdata && \
+    dnf reinstall -y tzdata
+
+# 7. 修改 php-fpm 运行用户为 nginx，解决页面403权限
 RUN sed -i 's/^user = apache/user = nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/^group = apache/group = nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/^listen = .*/listen = 127.0.0.1:9000/' /etc/php-fpm.d/www.conf
 
-# 7. 统一设置系统时区+PHP时区配置，彻底消除时区报错
+# 8. 统一设置系统时区+PHP时区配置，彻底消除时区报错
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'date.timezone = Asia/Shanghai' > /etc/php.d/99-timezone.ini
 
-# 8. 安装 Composer 并设置全局阿里云镜像
+# 9. 安装 Composer 并设置全局阿里云镜像
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 9.手动创建 Composer 全局配置文件（阿里云镜像）
+# 10. 手动创建 Composer 全局配置文件（阿里云镜像）
 RUN mkdir -p /root/.composer && \
     echo '{"config": {"repositories": {"packagist": {"type": "composer", "url": "https://mirrors.aliyun.com/composer/"}}}}' > /root/.composer/config.json
 
-# 10. 复制本地Nginx主配置 + 多站点虚拟主机目录
+# 11. 复制本地Nginx主配置 + 多站点虚拟主机目录
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# 11. 创建站点根目录并授权nginx读写权限
+# 12. 创建站点根目录并授权nginx读写权限
 RUN mkdir -p /usr/share/nginx/www && \
     chown -R nginx:nginx /usr/share/nginx/www
 
@@ -272,6 +275,12 @@ CMD ["sh", "-c", "mkdir -p /run/php-fpm && chown nginx:nginx /run/php-fpm && php
 ```
 
 这一块用了好长时间，说一下里面的注意点。基础镜像用的是centos:stream9精简版，为了国内加速，CentOS 基础源换为了阿里云。里面多处安装用到了dnf，但基础镜像 quay.io/centos/centos:stream9-minimal 默认的仓库配置中，没有可用的 dnf 包（尽管 microdnf 是内置的，但microdnf 本身是轻量级包管理器，好多包的安装还是要用到dnf），有些地方也要用到curl（尽管 curl-minimal 是内置的，但有些下载是要用到curl的，而curl 包与 curl-minimal 冲突），我们需要强制移除 curl-minimal，再安装 dnf 和 curl。还有centos:stream9精简版底层是缺少系统底层时区库，安装Composer会用到。Composer 全局配置文件改为阿里云，命令行总是无法执行，无奈改为手动创建。php-fpm 一般是用socket实现，绑定地址 /run/php-fpm/www.sock，这是一个临时目录，在容器启动时需要创建该目录；但这里改下来有问题，最后改为了 127.0.0.1:9000 端口监听。`php-fpm -F`前台运行会阻塞后面`nginx -g 'daemon off;'`的执行，所以不能用`&&`，而是改为`&`。
+
+centos:stream9-minimal 为精简镜像，有意删除了 /usr/share/zoneinfo，导致tzdata安装不完整，需要重新安装`dnf reinstall -y tzdata`。之后 第10步 可以修改看一下能否正常安装：
+```
+# 10. 设置 Composer 全局为阿里云镜像
+php -d date.timezone=Asia/Shanghai composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+```
 
 生成镜像：
 > docker build -t centos9-nginx-php74 .
