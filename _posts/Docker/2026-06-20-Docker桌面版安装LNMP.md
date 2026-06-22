@@ -193,7 +193,7 @@ www/site2/index.php 内容：
 
 如果提示无权限修改，可以用管理员权限打开记事本，然后用记事本打开该文件进行修改并保存。
 
-### 安装 Nginx + PHP：
+### 安装 Nginx + PHP
 
 接下来安装Nginx+PHP。
 
@@ -253,7 +253,7 @@ RUN sed -i 's/^user = apache/user = nginx/' /etc/php-fpm.d/www.conf && \
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'date.timezone = Asia/Shanghai' > /etc/php.d/99-timezone.ini
 
-# 9. 安装 Composer 并设置全局阿里云镜像
+# 9. 安装 Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # 10. 手动创建 Composer 全局配置文件（阿里云镜像）
