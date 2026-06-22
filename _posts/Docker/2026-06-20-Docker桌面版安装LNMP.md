@@ -237,7 +237,7 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-curl \
         php-mbstring \
         php-opcache \
-        vim unzip \
+        vim unzip && \
     dnf clean all
 
 # 6.安装 tzdata 并重装确保时区数据文件存在
