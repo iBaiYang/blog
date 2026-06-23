@@ -237,6 +237,7 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-curl \
         php-mbstring \
         php-opcache \
+        php-xml \
         vim unzip && \
     dnf clean all
 
@@ -302,4 +303,86 @@ docker run -d --name centos9-nginx-php74 --network web-net -v D:/develop/www:/us
 > docker restart centos9-nginx-php74
 
 
+## PHP8.3 安装
+
+dockerfile 内容：
+```
+FROM quay.io/centos/centos:stream9
+
+# 1. 替换 CentOS 基础源为阿里云
+RUN sed -e 's|mirror.centos.org|mirrors.aliyun.com|g' \
+        -e 's|mirror.stream.centos.org|mirrors.aliyun.com|g' \
+        -i /etc/yum.repos.d/centos*.repo && \
+    microdnf clean all && microdnf makecache
+
+# 2. 强制移除 curl-minimal，再安装 dnf 和 curl
+RUN rpm -e --nodeps curl-minimal && \
+    microdnf install -y dnf curl && \
+    microdnf clean all
+
+# 3. 安装 epel-release 并替换为阿里云 EPEL 镜像
+RUN dnf install -y epel-release && \
+    sed -e 's|https://download.fedoraproject.org/pub|https://mirrors.aliyun.com/fedora-epel|g' \
+        -i /etc/yum.repos.d/epel*.repo && \
+    dnf clean all && dnf makecache
+
+# 4. 安装 Remi 源并替换为清华镜像（国内唯一完整同步Remi）
+RUN dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
+    sed -e 's|https://rpms.remirepo.net|https://mirrors.tuna.tsinghua.edu.cn/remi|g' \
+        -i /etc/yum.repos.d/remi*.repo && \
+    dnf clean all && dnf makecache
+
+# 5. 安装 Nginx + 启用 php:remi-7.4 模块并安装全部组件 + 系统底层时区库
+RUN dnf module enable -y php:remi-7.4 && \
+    dnf install -y \
+        nginx \
+        git \
+        php-fpm \
+        php-cli \
+        php-mysqlnd \
+        php-pdo \
+        php-gd \
+        php-zip \
+        php-curl \
+        php-mbstring \
+        php-opcache \
+        php-xml \
+        vim unzip && \
+    dnf clean all
+
+# 6.安装 tzdata 并重装确保时区数据文件存在
+RUN dnf install -y tzdata && \
+    dnf reinstall -y tzdata
+
+# 7. 修改 php-fpm 运行用户为 nginx，解决页面403权限
+RUN sed -i 's/^user = apache/user = nginx/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/^group = apache/group = nginx/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/^listen = .*/listen = 127.0.0.1:9000/' /etc/php-fpm.d/www.conf
+
+# 8. 统一设置系统时区+PHP时区配置，彻底消除时区报错
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo 'date.timezone = Asia/Shanghai' > /etc/php.d/99-timezone.ini
+
+# 9. 安装 Composer
+RUN curl -sS https://mirrors.aliyun.com/composer/composer.phar | php -- --install-dir=/usr/local/bin --filename=composer
+
+# 10. 手动创建 Composer 全局配置文件（阿里云镜像）
+RUN mkdir -p /root/.composer && \
+    echo '{"config": {"repositories": {"packagist": {"type": "composer", "url": "https://mirrors.aliyun.com/composer/"}}}}' > /root/.composer/config.json
+
+# 11. 复制本地Nginx主配置 + 多站点虚拟主机目录
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# 12. 创建站点根目录并授权nginx读写权限
+RUN mkdir -p /usr/share/nginx/www && \
+    chown -R nginx:nginx /usr/share/nginx/www
+
+
+EXPOSE 80
+
+# 启动php-fpm + 前台运行nginx，防止容器自动退出
+CMD ["sh", "-c", "mkdir -p /run/php-fpm && chown nginx:nginx /run/php-fpm && php-fpm -F & nginx -g 'daemon off;'"]
+```
+
+centos:stream9-minimal 为精简镜像，缺少好多东西，我们直接用centos:stream9，需要时我们也可以把git安装上。
 
