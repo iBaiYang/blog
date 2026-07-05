@@ -120,7 +120,7 @@ permalink: /games/snake/
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
-    z-index: 5;
+    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,9 +152,17 @@ permalink: /games/snake/
     margin-bottom: 0;
     gap: 20px;
     flex-direction: column;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.35);
     padding: 16px 12px;
     border-radius: 12px;
+    backdrop-filter: blur(4px);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  body.fullscreen-mode .score-board.show-solid {
+    opacity: 1;
+    background: rgba(0,0,0,0.7);
     backdrop-filter: blur(8px);
   }
   body.fullscreen-mode .score-value {
@@ -203,85 +211,6 @@ permalink: /games/snake/
     bottom: 0;
     border-radius: 0;
     z-index: 90;
-  }
-
-  /* Left control area indicator in fullscreen (landscape) */
-  .left-control-area {
-    display: none;
-  }
-  body.fullscreen-mode .left-control-area {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 35%;
-    z-index: 80;
-    pointer-events: none;
-    background: linear-gradient(to right, rgba(74, 222, 128, 0.05), transparent);
-    border-right: 1px dashed rgba(74, 222, 128, 0.15);
-  }
-  body.fullscreen-mode .left-control-area.fade-hint {
-    animation: fadeOutArea 3s ease forwards;
-  }
-  @keyframes fadeOutArea {
-    0% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  /* Swipe hint in fullscreen (shows briefly) */
-  .swipe-hint {
-    position: fixed;
-    bottom: 30px;
-    left: 17.5%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    color: rgba(255,255,255,0.8);
-    padding: 10px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    z-index: 105;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(8px);
-    text-align: center;
-    max-width: 30%;
-    line-height: 1.4;
-  }
-  .swipe-hint.show {
-    opacity: 1;
-  }
-  .swipe-hint .swipe-icon {
-    font-size: 1.1rem;
-    display: block;
-    margin-bottom: 2px;
-  }
-
-  /* Right tap hint in fullscreen */
-  .right-tap-hint {
-    display: none;
-  }
-  body.fullscreen-mode .right-tap-hint {
-    display: block;
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: rgba(0,0,0,0.7);
-    color: rgba(255,255,255,0.6);
-    padding: 8px 14px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    z-index: 105;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(8px);
-    text-align: center;
-  }
-  .right-tap-hint.show {
-    opacity: 1;
   }
 
   /* Game Over Overlay */
@@ -498,30 +427,19 @@ permalink: /games/snake/
 <!-- Instructions -->
 <div class="instructions">
   <p class="pc-only"><strong>操作方式：</strong>使用键盘方向键 ↑ ← ↓ → 或 W A S D 控制方向，空格键暂停</p>
-  <p class="mobile-only"><strong>操作方式：</strong>点击 ⛶ 进入横屏全屏，左手滑动控制方向，右侧点击暂停</p>
+  <p class="mobile-only"><strong>操作方式：</strong>滑动屏幕或点击方向键控制，点击 ⛶ 进入横屏全屏</p>
   <p>吃到绿色食物 +10 分，撞到墙或自己就结束啦</p>
-</div>
-
-<!-- Left control area (fullscreen mode) -->
-<div class="left-control-area" id="leftControlArea"></div>
-
-<!-- Swipe hint (shown briefly in fullscreen) -->
-<div class="swipe-hint" id="swipeHint">
-  <span class="swipe-icon">👈👉</span>左手滑动<br>控制方向
-</div>
-
-<!-- Right tap hint (shown briefly in fullscreen) -->
-<div class="right-tap-hint" id="rightTapHint">
-  右侧点击<br>暂停 / 继续
 </div>
 
 <script>
 (function() {
+  // Elements
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
   const bestScoreEl = document.getElementById('bestScore');
   const finalScoreEl = document.getElementById('finalScore');
+  const scoreBoard = document.querySelector('.score-board');
   const startOverlay = document.getElementById('startOverlay');
   const gameOverOverlay = document.getElementById('gameOverOverlay');
   const newRecordEl = document.getElementById('newRecord');
@@ -529,25 +447,36 @@ permalink: /games/snake/
   const restartBtn = document.getElementById('restartBtn');
   const diffBtns = document.querySelectorAll('.diff-btn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
-  const swipeHint = document.getElementById('swipeHint');
-  const rightTapHint = document.getElementById('rightTapHint');
-  const leftControlArea = document.getElementById('leftControlArea');
+
+  // Game config
+  let gridSize = 20;
+  let tileCols = 20;
+  let tileRows = 20;
+  let speed = 100;
   let isFullscreen = false;
 
-  // Responsive canvas size
+  // Game state
+  let snake = [];
+  let food = { x: 0, y: 0 };
+  let dx = 1;
+  let dy = 0;
+  let score = 0;
+  let bestScore = parseInt(localStorage.getItem('snakeBestScore') || '0');
+  let gameRunning = false;
+  let gameLoop = null;
+  let paused = false;
+
+  bestScoreEl.textContent = bestScore;
+
+  // ---------- Canvas resize ----------
   function resizeCanvas() {
     if (isFullscreen) {
-      // Landscape: fill screen, compute grid based on tile size
       const w = window.innerWidth;
       const h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
-      // Calculate tile size to fit nicely (target ~30px per tile, even numbers)
       const targetTile = Math.floor(Math.min(w / 30, h / 15));
       gridSize = Math.max(16, Math.min(targetTile, 40));
       tileCols = Math.floor(w / gridSize);
       tileRows = Math.floor(h / gridSize);
-      // Adjust canvas to exact grid size
       canvas.width = tileCols * gridSize;
       canvas.height = tileRows * gridSize;
     } else {
@@ -561,30 +490,13 @@ permalink: /games/snake/
     }
   }
 
-  let gridSize = 20;
-  let tileCols = 20;
-  let tileRows = 20;
   resizeCanvas();
   window.addEventListener('resize', function() {
     resizeCanvas();
     if (!gameRunning) draw();
   });
 
-  // Game state
-  let snake = [];
-  let food = { x: 0, y: 0 };
-  let dx = 0;
-  let dy = 0;
-  let score = 0;
-  let bestScore = parseInt(localStorage.getItem('snakeBestScore') || '0');
-  let gameRunning = false;
-  let gameLoop = null;
-  let speed = 100;
-  let paused = false;
-
-  bestScoreEl.textContent = bestScore;
-
-  // Initialize snake
+  // ---------- Game logic ----------
   function initSnake() {
     const startX = Math.floor(tileCols / 2);
     const startY = Math.floor(tileRows / 2);
@@ -599,7 +511,6 @@ permalink: /games/snake/
     scoreEl.textContent = score;
   }
 
-  // Generate food
   function generateFood() {
     let valid = false;
     while (!valid) {
@@ -609,7 +520,47 @@ permalink: /games/snake/
     }
   }
 
-  // Draw game
+  function changeDirection(newDx, newDy) {
+    if (newDx === -dx && newDy === -dy) return;
+    dx = newDx;
+    dy = newDy;
+  }
+
+  function togglePause() {
+    if (!gameRunning) return;
+    paused = !paused;
+    draw();
+  }
+
+  function update() {
+    if (paused) return;
+
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+    // Wall collision
+    if (head.x < 0 || head.x >= tileCols || head.y < 0 || head.y >= tileRows) {
+      gameOver();
+      return;
+    }
+
+    // Self collision
+    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+      gameOver();
+      return;
+    }
+
+    snake.unshift(head);
+
+    // Eat food
+    if (head.x === food.x && head.y === food.y) {
+      score += 10;
+      scoreEl.textContent = score;
+      generateFood();
+    } else {
+      snake.pop();
+    }
+  }
+
   function draw() {
     // Background
     ctx.fillStyle = '#0f1115';
@@ -688,44 +639,12 @@ permalink: /games/snake/
     }
   }
 
-  // Update game state
-  function update() {
-    if (paused) return;
-
-    // Move snake
-    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-
-    // Wall collision
-    if (head.x < 0 || head.x >= tileCols || head.y < 0 || head.y >= tileRows) {
-      gameOver();
-      return;
-    }
-
-    // Self collision
-    if (snake.some(s => s.x === head.x && s.y === head.y)) {
-      gameOver();
-      return;
-    }
-
-    snake.unshift(head);
-
-    // Eat food
-    if (head.x === food.x && head.y === food.y) {
-      score += 10;
-      scoreEl.textContent = score;
-      generateFood();
-    } else {
-      snake.pop();
-    }
-  }
-
-  // Game loop
   function tick() {
     update();
     draw();
   }
 
-  // Start game
+  // ---------- Game state ----------
   function startGame() {
     initSnake();
     generateFood();
@@ -736,18 +655,12 @@ permalink: /games/snake/
     if (gameLoop) clearInterval(gameLoop);
     gameLoop = setInterval(tick, speed);
 
-    // Show swipe hint in fullscreen mode
+    // Score board translucent during play
     if (isFullscreen) {
-      showSwipeHint();
-      showRightTapHint();
-      leftControlArea.classList.remove('fade-hint');
-      // Trigger reflow
-      void leftControlArea.offsetWidth;
-      leftControlArea.classList.add('fade-hint');
+      scoreBoard.classList.remove('show-solid');
     }
   }
 
-  // Game over
   function gameOver() {
     gameRunning = false;
     clearInterval(gameLoop);
@@ -761,18 +674,59 @@ permalink: /games/snake/
       newRecordEl.style.display = 'none';
     }
     gameOverOverlay.classList.remove('hidden');
+
+    // Show score board clearly on game over
+    if (isFullscreen) {
+      scoreBoard.classList.add('show-solid');
+    }
   }
 
-  // Change direction
-  function changeDirection(newDx, newDy) {
-    // Prevent 180 degree turn
-    if (newDx === -dx && newDy === -dy) return;
-    if (dx === 0 && dy === 0 && newDx === 0 && newDy === 0) return;
-    dx = newDx;
-    dy = newDy;
+  // ---------- Fullscreen ----------
+  function toggleFullscreen() {
+    const wasRunning = gameRunning;
+    const oldCols = tileCols;
+    const oldRows = tileRows;
+
+    isFullscreen = !isFullscreen;
+
+    if (isFullscreen) {
+      document.body.classList.add('fullscreen-mode');
+      fullscreenBtn.innerHTML = '✕';
+      fullscreenBtn.title = '退出全屏';
+      // Score state
+      if (!gameOverOverlay.classList.contains('hidden')) {
+        scoreBoard.classList.add('show-solid');
+      }
+    } else {
+      document.body.classList.remove('fullscreen-mode');
+      fullscreenBtn.innerHTML = '⛶';
+      fullscreenBtn.title = '全屏';
+      scoreBoard.classList.remove('show-solid');
+    }
+
+    setTimeout(function() {
+      resizeCanvas();
+      // Reposition snake & food proportionally
+      if (wasRunning && snake.length > 0) {
+        const ratioX = tileCols / oldCols;
+        const ratioY = tileRows / oldRows;
+        snake = snake.map(s => ({
+          x: Math.min(Math.floor(s.x * ratioX), tileCols - 1),
+          y: Math.min(Math.floor(s.y * ratioY), tileRows - 1)
+        }));
+        food.x = Math.min(Math.floor(food.x * ratioX), tileCols - 1);
+        food.y = Math.min(Math.floor(food.y * ratioY), tileRows - 1);
+      }
+      draw();
+    }, 50);
   }
 
-  // Keyboard controls
+  fullscreenBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleFullscreen();
+  });
+
+  // ---------- Keyboard controls ----------
   document.addEventListener('keydown', function(e) {
     if (!gameRunning && (e.key === ' ' || e.key === 'Enter')) {
       startGame();
@@ -807,165 +761,82 @@ permalink: /games/snake/
         break;
       case ' ':
         e.preventDefault();
-        paused = !paused;
-        draw();
+        togglePause();
         break;
     }
   });
 
-  // Touch /Mobile button controls
+  // ---------- Mobile button controls ----------
   document.querySelectorAll('.ctrl-btn[data-dir]').forEach(btn => {
+    const dirMap = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    const dir = btn.getAttribute('data-dir');
+    const [ndx, ndy] = dirMap[dir];
+
     btn.addEventListener('touchstart', function(e) {
       e.preventDefault();
-      if (!gameRunning) return;
-      const dir = this.getAttribute('data-dir');
-      switch(dir) {
-        case 'up': changeDirection(0, -1); break;
-        case 'down': changeDirection(0, 1); break;
-        case 'left': changeDirection(-1, 0); break;
-        case 'right': changeDirection(1, 0); break;
-      }
+      if (gameRunning) changeDirection(ndx, ndy);
     });
     btn.addEventListener('click', function() {
-      if (!gameRunning) return;
-      const dir = this.getAttribute('data-dir');
-      switch(dir) {
-        case 'up': changeDirection(0, -1); break;
-        case 'down': changeDirection(0, 1); break;
-        case 'left': changeDirection(-1, 0); break;
-        case 'right': changeDirection(1, 0); break;
-      }
+      if (gameRunning) changeDirection(ndx, ndy);
     });
   });
 
-  // Swipe controls
+  // ---------- Swipe controls (canvas + fullscreen) ----------
   let touchStartX = 0;
   let touchStartY = 0;
   let touchStartTime = 0;
   const minSwipeDistance = 30;
 
-  canvas.addEventListener('touchstart', function(e) {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
+  function handleSwipeStart(x, y) {
+    touchStartX = x;
+    touchStartY = y;
     touchStartTime = Date.now();
+  }
+
+  function handleSwipeEnd(x, y) {
+    if (!gameRunning || paused) return;
+    const diffX = x - touchStartX;
+    const diffY = y - touchStartY;
+    const timeDiff = Date.now() - touchStartTime;
+    if (timeDiff > 500) return;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (Math.abs(diffX) > minSwipeDistance) {
+        changeDirection(diffX > 0 ? 1 : -1, 0);
+      }
+    } else {
+      if (Math.abs(diffY) > minSwipeDistance) {
+        changeDirection(0, diffY > 0 ? 1 : -1);
+      }
+    }
+  }
+
+  // Canvas touch (non-fullscreen mode)
+  canvas.addEventListener('touchstart', function(e) {
+    if (isFullscreen) return;
+    handleSwipeStart(e.touches[0].clientX, e.touches[0].clientY);
   }, { passive: true });
 
   canvas.addEventListener('touchend', function(e) {
-    if (!gameRunning) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diffX = touchEndX - touchStartX;
-    const diffY = touchEndY - touchStartY;
-    const timeDiff = Date.now() - touchStartTime;
-
-    if (timeDiff > 500) return; // too slow, not a swipe
-
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-      // Horizontal swipe
-      if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) {
-          changeDirection(1, 0); // right
-        } else {
-          changeDirection(-1, 0); // left
-        }
-      }
-    } else {
-      // Vertical swipe
-      if (Math.abs(diffY) > minSwipeDistance) {
-        if (diffY > 0) {
-          changeDirection(0, 1); // down
-        } else {
-          changeDirection(0, -1); // up
-        }
-      }
-    }
+    if (isFullscreen) return;
+    handleSwipeEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
   }, { passive: true });
 
-  // Prevent page scroll on touch
   canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
   }, { passive: false });
 
-  // Fullscreen toggle
-  function toggleFullscreen() {
-    const wasRunning = gameRunning;
-    const oldCols = tileCols;
-    const oldRows = tileRows;
-
-    isFullscreen = !isFullscreen;
-
-    if (isFullscreen) {
-      document.body.classList.add('fullscreen-mode');
-      fullscreenBtn.innerHTML = '✕';
-      fullscreenBtn.title = '退出全屏';
-      // Show left control area hint (fades out)
-      leftControlArea.classList.add('fade-hint');
-      // Show hints
-      showSwipeHint();
-      showRightTapHint();
-    } else {
-      document.body.classList.remove('fullscreen-mode');
-      fullscreenBtn.innerHTML = '⛶';
-      fullscreenBtn.title = '全屏';
-      leftControlArea.classList.remove('fade-hint');
-      swipeHint.classList.remove('show');
-      rightTapHint.classList.remove('show');
-    }
-
-    // Resize after a short delay to allow CSS transitions
-    setTimeout(function() {
-      resizeCanvas();
-
-      // Reposition snake proportionally if game was running
-      if (wasRunning && snake.length > 0) {
-        const ratioX = tileCols / oldCols;
-        const ratioY = tileRows / oldRows;
-        snake = snake.map(s => ({
-          x: Math.min(Math.floor(s.x * ratioX), tileCols - 1),
-          y: Math.min(Math.floor(s.y * ratioY), tileRows - 1)
-        }));
-        // Clamp food position too
-        food.x = Math.min(Math.floor(food.x * ratioX), tileCols - 1);
-        food.y = Math.min(Math.floor(food.y * ratioY), tileRows - 1);
-      }
-
-      draw();
-    }, 50);
-  }
-
-  function showSwipeHint() {
-    swipeHint.classList.add('show');
-    setTimeout(function() {
-      swipeHint.classList.remove('show');
-    }, 2500);
-  }
-
-  function showRightTapHint() {
-    rightTapHint.classList.add('show');
-    setTimeout(function() {
-      rightTapHint.classList.remove('show');
-    }, 2500);
-  }
-
-  fullscreenBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    toggleFullscreen();
-  });
-
-  // Swipe controls on LEFT side of screen in fullscreen mode (left hand control)
-  // Right side tap = pause/resume
+  // Fullscreen: whole screen swipe + right side tap to pause
   let fsTouchStartX = 0;
   let fsTouchStartY = 0;
   let fsTouchStartTime = 0;
   let fsTouchMoved = false;
-  const fsMinSwipeDistance = 20;
-  const fsLeftControlWidth = 0.35; // left 35% of screen is control area (landscape)
-  const fsTapMaxDistance = 10;
+  const fsMinSwipe = 20;
+  const fsTapMaxDist = 10;
   const fsTapMaxTime = 300;
 
   document.addEventListener('touchstart', function(e) {
     if (!isFullscreen) return;
-    // Ignore if touching a button or overlay element
     if (e.target.closest('button') || e.target.closest('.overlay')) return;
     fsTouchStartX = e.touches[0].clientX;
     fsTouchStartY = e.touches[0].clientY;
@@ -976,70 +847,53 @@ permalink: /games/snake/
   document.addEventListener('touchmove', function(e) {
     if (!isFullscreen) return;
     if (e.target.closest('button') || e.target.closest('.overlay')) return;
-    const dx = e.touches[0].clientX - fsTouchStartX;
-    const dy = e.touches[0].clientY - fsTouchStartY;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-      fsTouchMoved = true;
-    }
+    const mx = e.touches[0].clientX - fsTouchStartX;
+    const my = e.touches[0].clientY - fsTouchStartY;
+    if (Math.abs(mx) > 5 || Math.abs(my) > 5) fsTouchMoved = true;
   }, { passive: true });
 
   document.addEventListener('touchend', function(e) {
     if (!isFullscreen) return;
-    // Ignore if touch was on a button or overlay
     if (e.target.closest('button') || e.target.closest('.overlay')) return;
 
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diffX = touchEndX - fsTouchStartX;
-    const diffY = touchEndY - fsTouchStartY;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = endX - fsTouchStartX;
+    const diffY = endY - fsTouchStartY;
     const timeDiff = Date.now() - fsTouchStartTime;
-    const isLeftSide = fsTouchStartX < window.innerWidth * fsLeftControlWidth;
+    const isLeftSide = fsTouchStartX < window.innerWidth * 0.35;
 
-    // Left side: swipe controls
     if (isLeftSide) {
-      if (!gameRunning) return;
+      // Left side: swipe direction control
+      if (!gameRunning || paused) return;
       if (timeDiff > 500) return;
 
       if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (Math.abs(diffX) > fsMinSwipeDistance) {
-          if (diffX > 0) {
-            changeDirection(1, 0);
-          } else {
-            changeDirection(-1, 0);
-          }
+        if (Math.abs(diffX) > fsMinSwipe) {
+          changeDirection(diffX > 0 ? 1 : -1, 0);
         }
       } else {
-        if (Math.abs(diffY) > fsMinSwipeDistance) {
-          if (diffY > 0) {
-            changeDirection(0, 1);
-          } else {
-            changeDirection(0, -1);
-          }
+        if (Math.abs(diffY) > fsMinSwipe) {
+          changeDirection(0, diffY > 0 ? 1 : -1);
         }
       }
-    }
-    // Right side: tap to pause/resume (ignore swipes)
-    else {
+    } else {
+      // Right side: tap to pause/resume
       if (!gameRunning) return;
-      const isTap = !fsTouchMoved && 
-                    Math.abs(diffX) < fsTapMaxDistance && 
-                    Math.abs(diffY) < fsTapMaxDistance && 
+      const isTap = !fsTouchMoved &&
+                    Math.abs(diffX) < fsTapMaxDist &&
+                    Math.abs(diffY) < fsTapMaxDist &&
                     timeDiff < fsTapMaxTime;
-      if (isTap) {
-        paused = !paused;
-        draw();
-      }
+      if (isTap) togglePause();
     }
   }, { passive: true });
 
   // Prevent scroll in fullscreen
   document.addEventListener('touchmove', function(e) {
-    if (isFullscreen) {
-      e.preventDefault();
-    }
+    if (isFullscreen) e.preventDefault();
   }, { passive: false });
 
-  // Difficulty buttons
+  // ---------- Difficulty buttons ----------
   diffBtns.forEach(btn => {
     btn.addEventListener('click', function() {
       diffBtns.forEach(b => b.classList.remove('active'));
@@ -1052,7 +906,7 @@ permalink: /games/snake/
     });
   });
 
-  // Start/Restart buttons
+  // ---------- Start/Restart ----------
   startBtn.addEventListener('click', startGame);
   restartBtn.addEventListener('click', startGame);
 
