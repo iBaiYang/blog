@@ -120,7 +120,7 @@ permalink: /games/snake/
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
-    z-index: 5;
+    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,9 +152,17 @@ permalink: /games/snake/
     margin-bottom: 0;
     gap: 20px;
     flex-direction: column;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.4);
     padding: 16px 12px;
     border-radius: 12px;
+    backdrop-filter: blur(4px);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  body.fullscreen-mode .score-board.visible {
+    opacity: 1;
+    background: rgba(0,0,0,0.7);
     backdrop-filter: blur(8px);
   }
   body.fullscreen-mode .score-value {
@@ -626,6 +634,7 @@ permalink: /games/snake/
   const scoreEl = document.getElementById('score');
   const bestScoreEl = document.getElementById('bestScore');
   const finalScoreEl = document.getElementById('finalScore');
+  const scoreBoard = document.querySelector('.score-board');
   const startOverlay = document.getElementById('startOverlay');
   const gameOverOverlay = document.getElementById('gameOverOverlay');
   const newRecordEl = document.getElementById('newRecord');
@@ -1137,6 +1146,9 @@ permalink: /games/snake/
     paused = false;
     startOverlay.classList.add('hidden');
     gameOverOverlay.classList.add('hidden');
+    if (isFullscreen) {
+      scoreBoard.classList.remove('visible');
+    }
     if (gameLoop) clearInterval(gameLoop);
     gameLoop = setInterval(tick, speed);
 
@@ -1174,6 +1186,10 @@ permalink: /games/snake/
       newRecordEl.style.display = 'none';
     }
     gameOverOverlay.classList.remove('hidden');
+    // Show score board clearly on game over
+    if (isFullscreen) {
+      scoreBoard.classList.add('visible');
+    }
   }
 
   // Change direction
@@ -1322,6 +1338,12 @@ permalink: /games/snake/
       attackBtn.classList.add('fade-hint');
       pauseBtn.classList.add('fade-hint');
       updatePauseBtnIcon();
+      // Score board: visible if game over, else translucent
+      if (!gameOverOverlay.classList.contains('hidden')) {
+        scoreBoard.classList.add('visible');
+      } else {
+        scoreBoard.classList.remove('visible');
+      }
       // Show hints
       showSwipeHint();
       showRightTapHint();
@@ -1332,6 +1354,7 @@ permalink: /games/snake/
       joystickArea.classList.remove('fade-hint');
       attackBtn.classList.remove('fade-hint');
       pauseBtn.classList.remove('fade-hint');
+      scoreBoard.classList.remove('visible');
       swipeHint.classList.remove('show');
       rightTapHint.classList.remove('show');
       // Reset joystick knob position
