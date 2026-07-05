@@ -1,0 +1,1324 @@
+---
+layout: null
+title: 消消乐
+permalink: /games/xiaoxiaole/
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>消消乐 · 白楊博客</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Top Nav */
+  .top-nav {
+    width: 100%;
+    background: #111318;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-brand {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .nav-brand:hover { color: #22d3ee; }
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-left: 16px;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  /* Game Header */
+  .game-header {
+    text-align: center;
+    padding: 24px 20px 16px;
+  }
+  .game-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #22d3ee, #38bdf8, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-header p {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.85rem;
+  }
+
+  /* Info Bar */
+  .info-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .info-item {
+    text-align: center;
+    background: #f8fafc;
+    padding: 10px 18px;
+    border-radius: 12px;
+    min-width: 75px;
+    border: 1px solid #e2e8f0;
+  }
+  .info-label {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+  .info-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0ea5e9;
+  }
+  .info-value.score { color: #f97316; }
+  .info-value.time { color: #0ea5e9; }
+  .info-value.left { color: #8b5cf6; }
+
+  /* Difficulty Select */
+  .difficulty {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .diff-btn {
+    padding: 7px 16px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .diff-btn.active {
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+    background: #e0f2fe;
+  }
+  .diff-btn:hover {
+    color: #0ea5e9;
+  }
+
+  /* Game Board */
+  .game-container {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  #gameCanvas {
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    display: block;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+    touch-action: none;
+  }
+
+  /* Fullscreen button */
+  .fullscreen-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .fullscreen-btn:hover {
+    background: #e0f2fe;
+    color: #0ea5e9;
+    border-color: #0ea5e9;
+  }
+
+  /* Fullscreen mode */
+  body.fullscreen-mode {
+    overflow: hidden;
+    touch-action: none;
+  }
+  body.fullscreen-mode .top-nav,
+  body.fullscreen-mode .game-header,
+  body.fullscreen-mode .difficulty,
+  body.fullscreen-mode .controls,
+  body.fullscreen-mode .instructions {
+    display: none !important;
+  }
+  body.fullscreen-mode .info-bar {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    margin-bottom: 0;
+    gap: 14px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 16px;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+  }
+  body.fullscreen-mode .info-bar.visible {
+    opacity: 1;
+    background: rgba(255,255,255,0.98);
+  }
+  body.fullscreen-mode .info-item {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    min-width: 60px;
+  }
+  body.fullscreen-mode .info-value {
+    font-size: 1.1rem;
+  }
+  body.fullscreen-mode .info-label {
+    font-size: 0.6rem;
+  }
+
+  /* Landscape: info bar on left side, vertical */
+  @media (orientation: landscape) and (min-width: 640px) {
+    body.fullscreen-mode .info-bar {
+      top: 50%;
+      left: 20px;
+      right: auto;
+      transform: translateY(-50%);
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: 16px;
+      padding: 14px 10px;
+    }
+    body.fullscreen-mode .info-item {
+      min-width: auto;
+      padding: 4px 4px;
+    }
+  }
+  body.fullscreen-mode .game-container {
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: inherit;
+  }
+  body.fullscreen-mode #gameCanvas {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+  body.fullscreen-mode .fullscreen-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 110;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    border-radius: 8px;
+  }
+  body.fullscreen-mode .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0;
+    z-index: 90;
+  }
+
+  /* Floating control buttons in fullscreen */
+  .fs-controls {
+    display: none;
+  }
+  body.fullscreen-mode .fs-controls {
+    display: flex;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 16px;
+    z-index: 90;
+  }
+  body.fullscreen-mode .fs-ctrl-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    border: 2px solid #e2e8f0;
+    backdrop-filter: blur(8px);
+    color: #475569;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.1s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  body.fullscreen-mode .fs-ctrl-btn:active {
+    background: #e0f2fe;
+    border-color: #0ea5e9;
+    transform: scale(0.92);
+  }
+
+  /* Landscape: controls on right side */
+  @media (orientation: landscape) and (min-width: 640px) {
+    body.fullscreen-mode .fs-controls {
+      bottom: auto;
+      right: 30px;
+      left: auto;
+      top: 50%;
+      transform: translateY(-50%);
+      flex-direction: column;
+      gap: 14px;
+    }
+  }
+
+  /* Control Buttons */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ctrl-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #22d3ee, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+  }
+  .ctrl-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.4);
+  }
+  .ctrl-btn:active {
+    transform: translateY(0);
+  }
+  .ctrl-btn.secondary {
+    background: #2d3142;
+  }
+  .ctrl-btn.secondary:hover {
+    box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+  }
+  .ctrl-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Overlay */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    z-index: 10;
+  }
+  .overlay.hidden { display: none; }
+  .overlay h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #22d3ee, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .overlay p {
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+  .overlay .final-score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 20px;
+  }
+  .overlay .btn-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn {
+    background: linear-gradient(135deg, #22d3ee, #6366f1);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+    letter-spacing: 1px;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+  }
+  .btn:active {
+    transform: translateY(0);
+  }
+  .btn-secondary {
+    background: #2d3142;
+  }
+  .btn-secondary:hover {
+    box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+  }
+
+  /* Instructions */
+  .instructions {
+    max-width: 500px;
+    padding: 0 20px 30px;
+    text-align: center;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+  .instructions strong {
+    color: rgba(255,255,255,0.65);
+  }
+
+  @media (max-width: 600px) {
+    .game-header h1 { font-size: 1.6rem; }
+    .info-value { font-size: 1.1rem; }
+    .theme-btn { padding: 5px 10px; font-size: 0.75rem; }
+    .theme-select { gap: 6px; }
+    .diff-btn { padding: 5px 12px; font-size: 0.75rem; }
+    .ctrl-btn { padding: 8px 14px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+  <div class="nav-inner">
+    <a href="{{ site.baseurl }}/index.html" class="nav-brand">白楊博客</a>
+    <div class="nav-links">
+      <a href="{{ site.baseurl }}/index.html">首页</a>
+    </div>
+  </div>
+</div>
+
+<!-- Game Header -->
+<div class="game-header">
+  <h1>🎮 消消乐</h1>
+  <p>找到相同图案，连线消除</p>
+</div>
+
+<!-- Info Bar -->
+<div class="info-bar">
+  <div class="info-item">
+    <div class="info-label">得分</div>
+    <div class="info-value score" id="score">0</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">剩余</div>
+    <div class="info-value left" id="leftCount">0</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">时间</div>
+    <div class="info-value time" id="time">00:00</div>
+  </div>
+</div>
+
+<!-- Difficulty -->
+<div class="difficulty">
+  <button class="diff-btn" data-size="6">简单 6×6</button>
+  <button class="diff-btn active" data-size="8">普通 8×8</button>
+  <button class="diff-btn" data-size="10">困难 10×10</button>
+</div>
+
+<!-- Game Canvas -->
+<div class="game-container">
+  <canvas id="gameCanvas"></canvas>
+  <button class="fullscreen-btn" id="fullscreenBtn" title="全屏">⛶</button>
+  <div class="overlay" id="startOverlay">
+    <h2>🎮 消消乐</h2>
+    <p>选择喜欢的主题，开始消除吧！</p>
+    <button class="btn" id="startBtn">开始游戏</button>
+  </div>
+  <div class="overlay hidden" id="winOverlay">
+    <h2>🎉 恭喜通关！</h2>
+    <div class="final-score" id="winScore">0</div>
+    <p id="winTime"></p>
+    <div class="btn-row">
+      <button class="btn" id="winRestartBtn">再来一局</button>
+    </div>
+  </div>
+  <div class="overlay hidden" id="loseOverlay">
+    <h2>😅 时间到！</h2>
+    <div class="final-score" id="loseScore">0</div>
+    <p id="loseLeft"></p>
+    <div class="btn-row">
+      <button class="btn" id="loseRestartBtn">再来一局</button>
+    </div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <button class="ctrl-btn secondary" id="hintBtn">💡 提示</button>
+  <button class="ctrl-btn secondary" id="shuffleBtn">🔀 洗牌</button>
+  <button class="ctrl-btn secondary" id="pauseBtn">⏸ 暂停</button>
+</div>
+
+<!-- Floating controls (fullscreen mode) -->
+<div class="fs-controls" id="fsControls">
+  <button class="fs-ctrl-btn" id="fsHintBtn" title="提示">💡</button>
+  <button class="fs-ctrl-btn" id="fsShuffleBtn" title="洗牌">🔀</button>
+  <button class="fs-ctrl-btn" id="fsPauseBtn" title="暂停">⏸</button>
+</div>
+
+<!-- Instructions -->
+<div class="instructions">
+  <p><strong>玩法：</strong>点击两个相同的图案，如果它们之间可以用不超过两次转弯的线连接，就能消除</p>
+  <p>每局随机主题，全部消除即可通关</p>
+</div>
+
+<script>
+(function() {
+  // ========== Themes (randomly selected each game) ==========
+  const themes = {
+    'fruits': ['🍎','🍊','🍋','🍇','🍓','🍑','🍒','🥝','🍌','🍉','🥭','🍍'],
+    'land-animals': ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮'],
+    'water-animals': ['🐟','🐠','🐡','🦐','🦀','🐙','🦑','🐳','🐬','🦈','🐚','🪼'],
+    'plants': ['🌵','🌴','🌲','🌳','🌿','☘️','🍀','🌱','🎋','🎍','🌾','🍃'],
+    'flowers': ['🌸','🌺','🌻','🌷','🌹','🌼','💐','🏵️','💮','🪻'],
+    'food': ['🍕','🍔','🍟','🌭','🍿','🍩','🍪','🍰','🧁','🍫','🍭','🍬'],
+    'vehicles': ['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚'],
+    'sports': ['⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥊','⛳']
+  };
+  const themeKeys = Object.keys(themes);
+
+  // ========== Elements ==========
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const leftCountEl = document.getElementById('leftCount');
+  const timeEl = document.getElementById('time');
+  const startOverlay = document.getElementById('startOverlay');
+  const winOverlay = document.getElementById('winOverlay');
+  const loseOverlay = document.getElementById('loseOverlay');
+  const winScoreEl = document.getElementById('winScore');
+  const loseScoreEl = document.getElementById('loseScore');
+  const winTimeEl = document.getElementById('winTime');
+  const loseLeftEl = document.getElementById('loseLeft');
+  const startBtn = document.getElementById('startBtn');
+  const winRestartBtn = document.getElementById('winRestartBtn');
+  const loseRestartBtn = document.getElementById('loseRestartBtn');
+  const hintBtn = document.getElementById('hintBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const diffBtns = document.querySelectorAll('.diff-btn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const fsHintBtn = document.getElementById('fsHintBtn');
+  const fsShuffleBtn = document.getElementById('fsShuffleBtn');
+  const fsPauseBtn = document.getElementById('fsPauseBtn');
+  const infoBar = document.querySelector('.info-bar');
+  let isFullscreen = false;
+
+  // ========== Config ==========
+  let gridSize = 8; // 8x8
+  let tileSize = 50;
+  let padding = 2;
+  let board = []; // 2D array, 0 = empty, else type index
+  let selected = null; // {x, y}
+  let score = 0;
+  let leftCount = 0;
+  let gameRunning = false;
+  let paused = false;
+  let timeSeconds = 0;
+  let timerInterval = null;
+  let hintPair = null;
+  let hintTimer = null;
+  let linePath = null;
+  let lineTimer = null;
+
+  // ========== Canvas Setup ==========
+  function resizeCanvas() {
+    if (isFullscreen) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const isLandscape = w > h;
+      // Portrait: info bar on top + controls on bottom
+      // Landscape: info bar on left + controls on right
+      const availW = isLandscape ? w - 180 : w - 20;
+      const availH = isLandscape ? h - 40 : h - 180;
+      const maxTile = Math.floor(Math.min(availW / (gridSize + 2), availH / (gridSize + 2)));
+      tileSize = Math.max(20, Math.min(maxTile, 80));
+      const cw = (gridSize + 2) * tileSize;
+      const ch = (gridSize + 2) * tileSize;
+      canvas.width = cw;
+      canvas.height = ch;
+    } else {
+      const maxWidth = Math.min(600, window.innerWidth - 30);
+      tileSize = Math.floor(maxWidth / (gridSize + 2));
+      tileSize = Math.max(30, Math.min(tileSize, 60));
+      const w = (gridSize + 2) * tileSize;
+      const h = (gridSize + 2) * tileSize;
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  window.addEventListener('resize', function() {
+    resizeCanvas();
+    draw();
+  });
+
+  // ========== Board Init ==========
+  function initBoard() {
+    const totalTiles = gridSize * gridSize;
+    const pairCount = totalTiles / 2;
+    // Randomly pick a theme for this game
+    const randomThemeKey = themeKeys[Math.floor(Math.random() * themeKeys.length)];
+    const themeEmojis = themes[randomThemeKey];
+    const typesInUse = Math.min(themeEmojis.length, Math.max(6, Math.floor(pairCount / 4)));
+
+    // Create pairs
+    let tiles = [];
+    for (let i = 0; i < pairCount; i++) {
+      const type = i % typesInUse;
+      tiles.push(type, type);
+    }
+
+    // Shuffle
+    for (let i = tiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+    }
+
+    // Fill board (with border of empty around actual grid)
+    // board is (gridSize+2) x (gridSize+2), index 0 and gridSize+1 are borders
+    board = [];
+    for (let y = 0; y < gridSize + 2; y++) {
+      board[y] = [];
+      for (let x = 0; x < gridSize + 2; x++) {
+        if (x === 0 || x === gridSize + 1 || y === 0 || y === gridSize + 1) {
+          board[y][x] = -1; // border (empty, passable)
+        } else {
+          board[y][x] = tiles[(y - 1) * gridSize + (x - 1)];
+        }
+      }
+    }
+
+    leftCount = totalTiles;
+    leftCountEl.textContent = leftCount;
+    currentEmojis = themeEmojis;
+  }
+
+  let currentEmojis = [];
+
+  // ========== Path Finding (max 2 turns) ==========
+  function canConnect(x1, y1, x2, y2) {
+    if (x1 === x2 && y1 === y2) return null;
+    if (board[y1][x1] !== board[y2][x2]) return null;
+    if (board[y1][x1] < 0) return null;
+
+    // Try direct horizontal
+    if (y1 === y2 && canWalkHorizontal(x1, x2, y1, true)) {
+      return [{x: x1, y: y1}, {x: x2, y: y2}];
+    }
+    // Try direct vertical
+    if (x1 === x2 && canWalkVertical(y1, y2, x1, true)) {
+      return [{x: x1, y: y1}, {x: x2, y: y2}];
+    }
+
+    // Try 1 turn: two L shapes
+    // Corner at (x2, y1)
+    if (board[y1][x2] < 0 &&
+        canWalkHorizontal(x1, x2, y1, true) &&
+        canWalkVertical(y1, y2, x2, false)) {
+      return [{x: x1, y: y1}, {x: x2, y: y1}, {x: x2, y: y2}];
+    }
+    // Corner at (x1, y2)
+    if (board[y2][x1] < 0 &&
+        canWalkVertical(y1, y2, x1, true) &&
+        canWalkHorizontal(x1, x2, y2, false)) {
+      return [{x: x1, y: y1}, {x: x1, y: y2}, {x: x2, y: y2}];
+    }
+
+    // Try 2 turns: scan all possible intermediate rows/cols
+    // Horizontal scan: go up/down from (x1,y1) to row y, then horizontal to x2, then down/up
+    for (let y = 0; y < gridSize + 2; y++) {
+      if (y === y1 || y === y2) continue;
+      if (board[y][x1] >= 0 || board[y][x2] >= 0) continue;
+      if (canWalkVertical(y1, y, x1, true) &&
+          canWalkHorizontal(x1, x2, y, false) &&
+          canWalkVertical(y, y2, x2, false)) {
+        return [{x: x1, y: y1}, {x: x1, y: y}, {x: x2, y: y}, {x: x2, y: y2}];
+      }
+    }
+
+    // Vertical scan: go left/right from (x1,y1) to col x, then vertical to y2, then right/left
+    for (let x = 0; x < gridSize + 2; x++) {
+      if (x === x1 || x === x2) continue;
+      if (board[y1][x] >= 0 || board[y2][x] >= 0) continue;
+      if (canWalkHorizontal(x1, x, y1, true) &&
+          canWalkVertical(y1, y2, x, false) &&
+          canWalkHorizontal(x, x2, y2, false)) {
+        return [{x: x1, y: y1}, {x: x, y: y1}, {x: x, y: y2}, {x: x2, y: y2}];
+      }
+    }
+
+    return null;
+  }
+
+  function canWalkHorizontal(x1, x2, y, includeEnds) {
+    const minX = Math.min(x1, x2);
+    const maxX = Math.max(x1, x2);
+    for (let x = minX; x <= maxX; x++) {
+      if (!includeEnds && (x === x1 || x === x2)) continue;
+      if (x === x1 || x === x2) continue; // endpoints are tiles, skip
+      if (board[y][x] >= 0) return false;
+    }
+    return true;
+  }
+
+  function canWalkVertical(y1, y2, x, includeEnds) {
+    const minY = Math.min(y1, y2);
+    const maxY = Math.max(y1, y2);
+    for (let y = minY; y <= maxY; y++) {
+      if (!includeEnds && (y === y1 || y === y2)) continue;
+      if (y === y1 || y === y2) continue;
+      if (board[y][x] >= 0) return false;
+    }
+    return true;
+  }
+
+  // ========== Find a valid pair (for hint / deadlock check) ==========
+  function findValidPair() {
+    const positions = [];
+    for (let y = 1; y <= gridSize; y++) {
+      for (let x = 1; x <= gridSize; x++) {
+        if (board[y][x] >= 0) {
+          positions.push({x, y, type: board[y][x]});
+        }
+      }
+    }
+
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        if (positions[i].type === positions[j].type) {
+          const path = canConnect(positions[i].x, positions[i].y, positions[j].x, positions[j].y);
+          if (path) {
+            return {a: positions[i], b: positions[j], path: path};
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // ========== Drawing ==========
+  function draw() {
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Background grid pattern (subtle)
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.06)';
+    for (let y = 1; y <= gridSize; y++) {
+      for (let x = 1; x <= gridSize; x++) {
+        if ((x + y) % 2 === 0) {
+          ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+        }
+      }
+    }
+
+    // Tiles
+    for (let y = 1; y <= gridSize; y++) {
+      for (let x = 1; x <= gridSize; x++) {
+        const type = board[y][x];
+        if (type >= 0) {
+          drawTile(x, y, currentEmojis[type], false, null, type);
+        }
+      }
+    }
+
+    // Selected tile
+    if (selected) {
+      const type = board[selected.y][selected.x];
+      if (type >= 0) {
+        drawTile(selected.x, selected.y, currentEmojis[type], true, null, type);
+      }
+    }
+
+    // Hint highlight
+    if (hintPair) {
+      ctx.save();
+      ctx.globalAlpha = 0.6 + 0.4 * Math.sin(Date.now() / 150);
+      drawTile(hintPair.a.x, hintPair.a.y, currentEmojis[hintPair.a.type], true, '#f59e0b', hintPair.a.type);
+      drawTile(hintPair.b.x, hintPair.b.y, currentEmojis[hintPair.b.type], true, '#f59e0b', hintPair.b.type);
+      ctx.restore();
+    }
+
+    // Connection line
+    if (linePath) {
+      drawLinePath(linePath);
+    }
+
+    // Pause overlay
+    if (paused) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0ea5e9';
+      ctx.font = `bold ${tileSize * 0.8}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('⏸ 已暂停', canvas.width / 2, canvas.height / 2);
+    }
+  }
+
+  // Macaron color palette for tiles (12 colors)
+  const tileColors = [
+    { bg: '#fef2f2', border: '#fecaca' }, // 淡红
+    { bg: '#fff7ed', border: '#fed7aa' }, // 淡橙
+    { bg: '#fefce8', border: '#fef08a' }, // 淡黄
+    { bg: '#f0fdf4', border: '#bbf7d0' }, // 淡绿
+    { bg: '#ecfeff', border: '#a5f3fc' }, // 淡青
+    { bg: '#eff6ff', border: '#bfdbfe' }, // 淡蓝
+    { bg: '#f5f3ff', border: '#ddd6fe' }, // 淡紫
+    { bg: '#fdf2f8', border: '#f9a8d4' }, // 淡粉
+    { bg: '#faf5ff', border: '#e9d5ff' }, // 淡紫罗兰
+    { bg: '#ecfeff', border: '#67e8f9' }, // 淡 cyan
+    { bg: '#fef9c3', border: '#fde68a' }, // 淡琥珀
+    { bg: '#dcfce7', border: '#86efac' }, // 淡薄荷绿
+  ];
+
+  function getTileColor(type) {
+    return tileColors[type % tileColors.length];
+  }
+
+  function drawTile(gx, gy, emoji, selected, borderColor, type) {
+    const x = gx * tileSize + padding;
+    const y = gy * tileSize + padding;
+    const s = tileSize - padding * 2;
+    const radius = s * 0.25;
+    const colorSet = getTileColor(type);
+
+    // Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.06)';
+    ctx.beginPath();
+    roundRect(ctx, x + 1, y + 2, s, s, radius);
+    ctx.fill();
+
+    // Selected glow effect
+    if (selected) {
+      ctx.save();
+      ctx.shadowColor = borderColor || '#0ea5e9';
+      ctx.shadowBlur = s * 0.2;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      roundRect(ctx, x - 2, y - 2, s + 4, s + 4, radius + 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Tile background - macaron color by type
+    let bgColor = colorSet.bg;
+    let borderCol = colorSet.border;
+
+    if (selected) {
+      bgColor = '#e0f2fe';
+      borderCol = '#0ea5e9';
+    }
+    if (borderColor) {
+      bgColor = '#fef3c7';
+      borderCol = borderColor;
+    }
+
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    roundRect(ctx, x, y, s, s, radius);
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = borderCol;
+    ctx.lineWidth = selected ? 3 : 1.5;
+    ctx.beginPath();
+    roundRect(ctx, x, y, s, s, radius);
+    ctx.stroke();
+
+    // Emoji
+    ctx.font = `${s * 0.62}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(emoji, x + s / 2, y + s / 2 + 1);
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+  }
+
+  function drawLinePath(path) {
+    ctx.save();
+    ctx.strokeStyle = '#0ea5e9';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = 'rgba(14, 165, 233, 0.5)';
+    ctx.shadowBlur = 8;
+
+    ctx.beginPath();
+    const cx = tileSize / 2;
+    const cy = tileSize / 2;
+    ctx.moveTo(path[0].x * tileSize + cx, path[0].y * tileSize + cy);
+    for (let i = 1; i < path.length; i++) {
+      ctx.lineTo(path[i].x * tileSize + cx, path[i].y * tileSize + cy);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Animation loop for hint glow
+  function animLoop() {
+    if (hintPair || linePath) {
+      draw();
+      requestAnimationFrame(animLoop);
+    }
+  }
+
+  // ========== Game Logic ==========
+  function handleClick(gx, gy) {
+    if (!gameRunning || paused) return;
+    if (gx < 1 || gx > gridSize || gy < 1 || gy > gridSize) return;
+    if (board[gy][gx] < 0) return;
+
+    // Clear hint
+    hintPair = null;
+    if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
+
+    if (!selected) {
+      selected = {x: gx, y: gy};
+      draw();
+      return;
+    }
+
+    if (selected.x === gx && selected.y === gy) {
+      selected = null;
+      draw();
+      return;
+    }
+
+    // Try to connect
+    const path = canConnect(selected.x, selected.y, gx, gy);
+    if (path) {
+      // Show line briefly
+      linePath = path;
+      draw();
+      animLoop();
+
+      const prevSelected = { ...selected };
+      const target = { x: gx, y: gy };
+
+      setTimeout(function() {
+        // Remove tiles
+        board[prevSelected.y][prevSelected.x] = -1;
+        board[target.y][target.x] = -1;
+        leftCount -= 2;
+        leftCountEl.textContent = leftCount;
+        score += 10 + Math.max(0, 50 - timeSeconds) * 2;
+        scoreEl.textContent = score;
+
+        linePath = null;
+        selected = null;
+        draw();
+
+        // Check win
+        if (leftCount <= 0) {
+          gameWin();
+          return;
+        }
+
+        // Check if no moves available
+        if (!findValidPair()) {
+          // Auto shuffle
+          shuffleBoard();
+        }
+      }, 250);
+    } else {
+      // Not connectable - select new tile
+      selected = {x: gx, y: gy};
+      draw();
+    }
+  }
+
+  function shuffleBoard() {
+    // Collect remaining tiles
+    const remaining = [];
+    const positions = [];
+    for (let y = 1; y <= gridSize; y++) {
+      for (let x = 1; x <= gridSize; x++) {
+        if (board[y][x] >= 0) {
+          remaining.push(board[y][x]);
+          positions.push({x, y});
+        }
+      }
+    }
+
+    // Shuffle
+    for (let i = remaining.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+    }
+
+    // Place back
+    for (let i = 0; i < positions.length; i++) {
+      board[positions[i].y][positions[i].x] = remaining[i];
+    }
+
+    // If still no valid pair, try again (up to 10 times)
+    let tries = 0;
+    while (!findValidPair() && tries < 10) {
+      for (let i = remaining.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+      }
+      for (let i = 0; i < positions.length; i++) {
+        board[positions[i].y][positions[i].x] = remaining[i];
+      }
+      tries++;
+    }
+
+    draw();
+  }
+
+  function showHint() {
+    if (!gameRunning || paused) return;
+    const pair = findValidPair();
+    if (pair) {
+      hintPair = pair;
+      score = Math.max(0, score - 20);
+      scoreEl.textContent = score;
+      draw();
+      animLoop();
+      if (hintTimer) clearTimeout(hintTimer);
+      hintTimer = setTimeout(function() {
+        hintPair = null;
+        hintTimer = null;
+        draw();
+      }, 2000);
+    }
+  }
+
+  function togglePause() {
+    if (!gameRunning) return;
+    paused = !paused;
+    pauseBtn.textContent = paused ? '▶ 继续' : '⏸ 暂停';
+    updateFsPauseBtn();
+    if (paused) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+    draw();
+  }
+
+  // ========== Timer ==========
+  function startTimer() {
+    stopTimer();
+    timerInterval = setInterval(function() {
+      timeSeconds++;
+      updateTimeDisplay();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function updateTimeDisplay() {
+    const mins = Math.floor(timeSeconds / 60);
+    const secs = timeSeconds % 60;
+    timeEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // ========== Game State ==========
+  function startGame() {
+    resizeCanvas();
+    initBoard();
+    score = 0;
+    scoreEl.textContent = score;
+    timeSeconds = 0;
+    updateTimeDisplay();
+    selected = null;
+    hintPair = null;
+    linePath = null;
+    paused = false;
+    pauseBtn.textContent = '⏸ 暂停';
+    updateFsPauseBtn();
+    gameRunning = true;
+    startOverlay.classList.add('hidden');
+    winOverlay.classList.add('hidden');
+    loseOverlay.classList.add('hidden');
+    startTimer();
+    // Info bar translucent during play in fullscreen
+    if (isFullscreen) {
+      infoBar.classList.remove('visible');
+    }
+    draw();
+  }
+
+  function gameWin() {
+    gameRunning = false;
+    stopTimer();
+    winScoreEl.textContent = score;
+    winTimeEl.textContent = `用时 ${timeEl.textContent}`;
+    winOverlay.classList.remove('hidden');
+    if (isFullscreen) {
+      infoBar.classList.add('visible');
+    }
+  }
+
+  function gameLose() {
+    gameRunning = false;
+    stopTimer();
+    loseScoreEl.textContent = score;
+    loseLeftEl.textContent = `还剩 ${leftCount} 个方块`;
+    loseOverlay.classList.remove('hidden');
+    if (isFullscreen) {
+      infoBar.classList.add('visible');
+    }
+  }
+
+  // ========== Input Handling ==========
+  function getGridPos(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+    const gx = Math.floor(x / tileSize);
+    const gy = Math.floor(y / tileSize);
+    return { gx, gy };
+  }
+
+  canvas.addEventListener('click', function(e) {
+    const pos = getGridPos(e.clientX, e.clientY);
+    handleClick(pos.gx, pos.gy);
+  });
+
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const pos = getGridPos(touch.clientX, touch.clientY);
+    handleClick(pos.gx, pos.gy);
+  }, { passive: false });
+
+  // ========== Buttons ==========
+  startBtn.addEventListener('click', startGame);
+  winRestartBtn.addEventListener('click', startGame);
+  loseRestartBtn.addEventListener('click', startGame);
+  hintBtn.addEventListener('click', showHint);
+  shuffleBtn.addEventListener('click', function() {
+    if (!gameRunning || paused) return;
+    score = Math.max(0, score - 30);
+    scoreEl.textContent = score;
+    shuffleBoard();
+  });
+  pauseBtn.addEventListener('click', togglePause);
+
+  // ========== Fullscreen ==========
+  function toggleFullscreen() {
+    isFullscreen = !isFullscreen;
+
+    if (isFullscreen) {
+      document.body.classList.add('fullscreen-mode');
+      fullscreenBtn.innerHTML = '✕';
+      fullscreenBtn.title = '退出全屏';
+      // Show info bar translucent
+      if (!winOverlay.classList.contains('hidden') || !loseOverlay.classList.contains('hidden')) {
+        infoBar.classList.add('visible');
+      } else {
+        infoBar.classList.remove('visible');
+      }
+    } else {
+      document.body.classList.remove('fullscreen-mode');
+      fullscreenBtn.innerHTML = '⛶';
+      fullscreenBtn.title = '全屏';
+      infoBar.classList.remove('visible');
+    }
+
+    setTimeout(function() {
+      resizeCanvas();
+      draw();
+    }, 50);
+  }
+
+  fullscreenBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleFullscreen();
+  });
+
+  // Fullscreen floating control buttons
+  fsHintBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    showHint();
+  });
+  fsHintBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    showHint();
+  }, { passive: false });
+
+  fsShuffleBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!gameRunning || paused) return;
+    score = Math.max(0, score - 30);
+    scoreEl.textContent = score;
+    shuffleBoard();
+  });
+  fsShuffleBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!gameRunning || paused) return;
+    score = Math.max(0, score - 30);
+    scoreEl.textContent = score;
+    shuffleBoard();
+  }, { passive: false });
+
+  function updateFsPauseBtn() {
+    fsPauseBtn.innerHTML = paused ? '▶' : '⏸';
+  }
+
+  fsPauseBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    togglePause();
+    updateFsPauseBtn();
+  });
+  fsPauseBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    togglePause();
+    updateFsPauseBtn();
+  }, { passive: false });
+
+  // Prevent scroll in fullscreen
+  document.addEventListener('touchmove', function(e) {
+    if (isFullscreen) e.preventDefault();
+  }, { passive: false });
+
+  // Difficulty buttons
+  diffBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      diffBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      gridSize = parseInt(this.getAttribute('data-size'));
+      if (gameRunning) {
+        startGame(); // restart with new size
+      } else {
+        resizeCanvas();
+      }
+    });
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'h' || e.key === 'H') {
+      showHint();
+    } else if (e.key === 's' || e.key === 'S') {
+      if (gameRunning && !paused) {
+        score = Math.max(0, score - 30);
+        scoreEl.textContent = score;
+        shuffleBoard();
+      }
+    } else if (e.key === ' ') {
+      e.preventDefault();
+      togglePause();
+    }
+  });
+
+  // Initial setup
+  resizeCanvas();
+  initBoard();
+  draw();
+
+})();
+</script>
+
+</body>
+</html>
