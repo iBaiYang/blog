@@ -13,8 +13,27 @@
         <nav class="navbar navbar-inverse">
             <div class="container">
                 <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                     <a class="navbar-brand" href="{{ site.baseurl }}">{{ site.author }}</a>
-                    <p class="navbar-text">{{ site.description }}</p>
+                    <p class="navbar-text hidden-xs">{{ site.description }}</p>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ site.baseurl }}/">首页</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                游戏 <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ site.baseurl }}/games/snake/">🐍 贪吃蛇</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
