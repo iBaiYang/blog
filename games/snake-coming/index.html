@@ -1,14 +1,14 @@
 ---
 layout: null
-title: 贪吃蛇小游戏
-permalink: /games/snake/
+title: 蛇来了
+permalink: /games/snake-coming/
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>贪吃蛇 · 白楊博客</title>
+<title>蛇来了 · 白楊博客</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -543,7 +543,7 @@ permalink: /games/snake/
 
 <!-- Game Header -->
 <div class="game-header">
-  <h1>🐍 贪吃蛇</h1>
+  <h1>🐍 蛇来了</h1>
   <p>经典小游戏，挑战最高分</p>
 </div>
 
@@ -571,7 +571,7 @@ permalink: /games/snake/
   <canvas id="gameCanvas" width="400" height="400"></canvas>
   <button class="fullscreen-btn" id="fullscreenBtn" title="全屏">⛶</button>
   <div class="overlay" id="startOverlay">
-    <h2>🐍 贪吃蛇</h2>
+    <h2>🐍 蛇来了</h2>
     <p>准备好了吗？</p>
     <button class="btn" id="startBtn">开始游戏</button>
   </div>
@@ -692,7 +692,7 @@ permalink: /games/snake/
   let dx = 0;
   let dy = 0;
   let score = 0;
-  let bestScore = parseInt(localStorage.getItem('snakeBestScore') || '0');
+  let bestScore = parseInt(localStorage.getItem('snakeComingBestScore') || '0');
   let gameRunning = false;
   let gameLoop = null;
   let speed = 100;
@@ -1180,7 +1180,7 @@ permalink: /games/snake/
     if (score > bestScore) {
       bestScore = score;
       bestScoreEl.textContent = bestScore;
-      localStorage.setItem('snakeBestScore', bestScore);
+      localStorage.setItem('snakeComingBestScore', bestScore);
       newRecordEl.style.display = 'block';
     } else {
       newRecordEl.style.display = 'none';
