@@ -740,11 +740,32 @@ permalink: /games/snake-coming/
 
   // Generate food
   function generateFood() {
+    const maxAttempts = tileCols * tileRows;
+    let attempts = 0;
     let valid = false;
-    while (!valid) {
+    while (!valid && attempts < maxAttempts) {
       food.x = Math.floor(Math.random() * tileCols);
       food.y = Math.floor(Math.random() * tileRows);
       valid = !isPositionOccupied(food.x, food.y);
+      attempts++;
+    }
+    // 如果随机找不到，遍历找第一个空位
+    if (!valid) {
+      let found = false;
+      for (let x = 0; x < tileCols && !found; x++) {
+        for (let y = 0; y < tileRows && !found; y++) {
+          if (!isPositionOccupied(x, y)) {
+            food.x = x;
+            food.y = y;
+            found = true;
+          }
+        }
+      }
+      // 真没位置了就随便放（游戏基本也结束了）
+      if (!found) {
+        food.x = 0;
+        food.y = 0;
+      }
     }
   }
 
@@ -779,6 +800,10 @@ permalink: /games/snake-coming/
     // If we have too many (e.g. snake shrank), remove extras
     while (monsters.length > target) {
       monsters.pop();
+    }
+    // If we have too few, spawn immediately (up to target, max 1 per tick)
+    if (monsters.length < target) {
+      spawnMonster();
     }
   }
 
@@ -1327,6 +1352,13 @@ permalink: /games/snake-coming/
     const oldCols = tileCols;
     const oldRows = tileRows;
 
+    // 切换期间暂停游戏循环，避免状态不一致
+    if (wasRunning && gameLoop) {
+      clearInterval(gameLoop);
+      gameLoop = null;
+    }
+    stopMonsterSpawner();
+
     isFullscreen = !isFullscreen;
 
     if (isFullscreen) {
@@ -1396,6 +1428,12 @@ permalink: /games/snake-coming/
       }
 
       draw();
+
+      // 恢复游戏循环
+      if (wasRunning) {
+        gameLoop = setInterval(tick, speed);
+        startMonsterSpawner();
+      }
     }, 50);
   }
 
@@ -1470,11 +1508,21 @@ permalink: /games/snake-coming/
     joystickKnob.style.transform = 'translate(0, 0)';
   }
 
+  // Helper: safe closest check
+  function safeClosest(el, selector) {
+    if (!el || !(el instanceof Element)) return null;
+    return el.closest(selector);
+  }
+
   // Touch events for joystick (left side area)
   document.addEventListener('touchstart', function(e) {
     if (!isFullscreen) return;
-    if (e.target.closest('.overlay')) return;
-    if (e.target.closest('#fullscreenBtn')) return;
+    const target = e.target;
+    if (safeClosest(target, '.overlay')) return;
+    if (safeClosest(target, '#fullscreenBtn')) return;
+    if (safeClosest(target, '#attackBtn')) return;
+    if (safeClosest(target, '#pauseBtn')) return;
+    if (safeClosest(target, '.joystick-area')) return; // 点到摇杆区域本身由全局逻辑处理
     // Only joystick if touch starts on left half of screen
     const touch = e.touches[0];
     if (touch.clientX < window.innerWidth * 0.5) {
