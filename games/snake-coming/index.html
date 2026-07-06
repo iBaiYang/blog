@@ -145,31 +145,31 @@ permalink: /games/snake-coming/
   }
   body.fullscreen-mode .score-board {
     position: fixed;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%);
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 100;
     margin-bottom: 0;
-    gap: 20px;
-    flex-direction: column;
-    background: rgba(0,0,0,0.4);
-    padding: 16px 12px;
-    border-radius: 12px;
+    gap: 24px;
+    flex-direction: row;
+    background: rgba(0,0,0,0.35);
+    padding: 6px 16px;
+    border-radius: 20px;
     backdrop-filter: blur(4px);
-    opacity: 0.6;
+    opacity: 0.7;
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
   body.fullscreen-mode .score-board.visible {
     opacity: 1;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.6);
     backdrop-filter: blur(8px);
   }
   body.fullscreen-mode .score-value {
-    font-size: 1.4rem;
+    font-size: 1rem;
   }
   body.fullscreen-mode .score-label {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
   body.fullscreen-mode .game-container {
     margin: 0;
@@ -194,14 +194,20 @@ permalink: /games/snake-coming/
   }
   body.fullscreen-mode .fullscreen-btn {
     position: fixed;
-    top: 16px;
+    bottom: 16px;
     right: 16px;
     z-index: 110;
-    width: 44px;
-    height: 44px;
-    font-size: 1.2rem;
-    background: rgba(0,0,0,0.7);
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.1);
     backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
+  body.fullscreen-mode .fullscreen-btn:hover {
+    opacity: 0.8;
   }
   body.fullscreen-mode .overlay {
     position: fixed;
@@ -561,8 +567,8 @@ permalink: /games/snake-coming/
 
 <!-- Difficulty -->
 <div class="difficulty">
-  <button class="diff-btn" data-speed="150">简单</button>
-  <button class="diff-btn active" data-speed="100">普通</button>
+  <button class="diff-btn" data-speed="300">简单</button>
+  <button class="diff-btn active" data-speed="150">普通</button>
   <button class="diff-btn" data-speed="60">困难</button>
 </div>
 
@@ -695,19 +701,19 @@ permalink: /games/snake-coming/
   let bestScore = parseInt(localStorage.getItem('snakeComingBestScore') || '0');
   let gameRunning = false;
   let gameLoop = null;
-  let speed = 100;
+  let speed = 150;
   let paused = false;
 
   // Monsters
   let monsters = [];
   let monsterMoveCounter = 0;
-  const monsterMoveInterval = 3; // move every N ticks
+  let monsterMoveInterval = 15; // 普通模式默认值，会随难度变化
   let monsterSpawnTimer = null;
   const monsterSpawnInterval = 5000; // spawn every 5 seconds
 
   // Projectiles (吐出去的圆球)
   let projectiles = [];
-  const projectileSpeed = 2; // tiles per tick
+  const projectileSpeedMultiplier = 2; // 圆球速度是蛇的几倍（分步移动保证碰撞精确）
 
   // Dropped food from dead monsters (3 per monster)
   let droppedFood = [];
@@ -716,11 +722,10 @@ permalink: /games/snake-coming/
 
   // Check if a position is occupied by snake, food, monsters, or dropped food
   function isPositionOccupied(x, y) {
-    if (snake.some(s => s.x === x && s.y === y)) return true;
-    if (food.x === x && food.y === y) return true;
-    if (monsters.some(m => m.x === x && m.y === y)) return true;
-    if (droppedFood.some(d => d.x === x && d.y === y)) return true;
-    return false;
+    return snake.some(s => s.x === x && s.y === y)
+      || (food.x === x && food.y === y)
+      || monsters.some(m => m.x === x && m.y === y)
+      || droppedFood.some(d => d.x === x && d.y === y);
   }
 
   // Initialize snake
@@ -740,32 +745,48 @@ permalink: /games/snake-coming/
 
   // Generate food
   function generateFood() {
-    const maxAttempts = tileCols * tileRows;
+    const totalTiles = tileCols * tileRows;
     let attempts = 0;
-    let valid = false;
-    while (!valid && attempts < maxAttempts) {
-      food.x = Math.floor(Math.random() * tileCols);
-      food.y = Math.floor(Math.random() * tileRows);
-      valid = !isPositionOccupied(food.x, food.y);
+    let found = false;
+
+    // 不断随机取点，直到找到空位或试完所有格子
+    while (attempts < totalTiles) {
+      const fx = Math.floor(Math.random() * tileCols);
+      const fy = Math.floor(Math.random() * tileRows);
+
+      // 判断是否在蛇身上
+      const onSnake = snake.some(s => s.x === fx && s.y === fy);
+      // 判断是否在妖怪位置
+      const onMonster = monsters.some(m => m.x === fx && m.y === fy);
+
+      if (!onSnake && !onMonster) {
+        food.x = fx;
+        food.y = fy;
+        found = true;
+        break;
+      }
       attempts++;
     }
-    // 如果随机找不到，遍历找第一个空位
-    if (!valid) {
-      let found = false;
+
+    // 如果随机找了一圈都没空位，就遍历找第一个空位
+    if (!found) {
       for (let x = 0; x < tileCols && !found; x++) {
         for (let y = 0; y < tileRows && !found; y++) {
-          if (!isPositionOccupied(x, y)) {
+          const onSnake = snake.some(s => s.x === x && s.y === y);
+          const onMonster = monsters.some(m => m.x === x && m.y === y);
+          if (!onSnake && !onMonster) {
             food.x = x;
             food.y = y;
             found = true;
           }
         }
       }
-      // 真没位置了就随便放（游戏基本也结束了）
-      if (!found) {
-        food.x = 0;
-        food.y = 0;
-      }
+    }
+
+    // 真没位置了（极端情况），放中间
+    if (!found) {
+      food.x = Math.floor(tileCols / 2);
+      food.y = Math.floor(tileRows / 2);
     }
   }
 
@@ -876,63 +897,82 @@ permalink: /games/snake-coming/
       x: snake[0].x + dx,
       y: snake[0].y + dy,
       dx: dx,
-      dy: dy,
-      life: 30 // max travel distance
+      dy: dy
     });
+  }
+
+  // 检查单个圆球在当前位置的碰撞，返回碰撞类型：'food' 'dropped' 'monster' 'snake' 'out' 或 null
+  function checkProjectileCollision(p) {
+    // Out of bounds
+    if (p.x < 0 || p.x >= tileCols || p.y < 0 || p.y >= tileRows) return 'out';
+    // Hit normal food (red)
+    if (Math.abs(p.x - food.x) < 0.5 && Math.abs(p.y - food.y) < 0.5) return 'food';
+    // Hit dropped food (golden)
+    for (let d = 0; d < droppedFood.length; d++) {
+      if (Math.abs(p.x - droppedFood[d].x) < 0.5 && Math.abs(p.y - droppedFood[d].y) < 0.5) {
+        return { type: 'dropped', index: d };
+      }
+    }
+    // Hit monster
+    for (let j = 0; j < monsters.length; j++) {
+      const m = monsters[j];
+      if (Math.abs(p.x - m.x) < 0.5 && Math.abs(p.y - m.y) < 0.5) {
+        return { type: 'monster', index: j };
+      }
+    }
+    // Hit snake body (跳过蛇头，因为球从蛇头发出)
+    for (let s = 1; s < snake.length; s++) {
+      if (Math.abs(p.x - snake[s].x) < 0.5 && Math.abs(p.y - snake[s].y) < 0.5) {
+        return { type: 'snake', index: s };
+      }
+    }
+    return null;
+  }
+
+  // 处理碰撞结果，返回 true 表示圆球已消失
+  function handleProjectileCollision(p, collision) {
+    if (collision === 'out') return true;
+    if (collision === 'food') {
+      generateFood();
+      return true;
+    }
+    if (collision && collision.type === 'dropped') {
+      droppedFood.splice(collision.index, 1);
+      return true;
+    }
+    if (collision && collision.type === 'monster') {
+      const m = monsters[collision.index];
+      droppedFood.push({ x: m.x, y: m.y });
+      monsters.splice(collision.index, 1);
+      score += 20;
+      scoreEl.textContent = score;
+      return true;
+    }
+    if (collision && collision.type === 'snake') {
+      // 击中蛇身，蛇体长减少1（从尾部去掉一节），圆球消失
+      if (snake.length > 1) {
+        snake.pop();
+      }
+      return true;
+    }
+    return false;
   }
 
   // Update projectiles
   function updateProjectiles() {
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i];
-      p.x += p.dx * projectileSpeed;
-      p.y += p.dy * projectileSpeed;
-      p.life--;
-
-      // Out of bounds
-      if (p.x < 0 || p.x >= tileCols || p.y < 0 || p.y >= tileRows || p.life <= 0) {
-        projectiles.splice(i, 1);
-        continue;
-      }
-
-      // Hit normal food (red) - both disappear
-      if (Math.abs(p.x - food.x) < 0.8 && Math.abs(p.y - food.y) < 0.8) {
-        projectiles.splice(i, 1);
-        generateFood(); // respawn food at new position
-        continue;
-      }
-
-      // Hit dropped food (golden) - both disappear
-      let hitDropped = -1;
-      for (let d = 0; d < droppedFood.length; d++) {
-        if (Math.abs(p.x - droppedFood[d].x) < 0.8 && Math.abs(p.y - droppedFood[d].y) < 0.8) {
-          hitDropped = d;
+      let removed = false;
+      // 分步移动：每步1格，每步检测碰撞，保证速度倍数且不漏判
+      for (let step = 0; step < projectileSpeedMultiplier; step++) {
+        p.x += p.dx;
+        p.y += p.dy;
+        const collision = checkProjectileCollision(p);
+        if (handleProjectileCollision(p, collision)) {
+          projectiles.splice(i, 1);
+          removed = true;
           break;
         }
-      }
-      if (hitDropped >= 0) {
-        droppedFood.splice(hitDropped, 1);
-        projectiles.splice(i, 1);
-        continue;
-      }
-
-      // Hit monster
-      let hitMonster = -1;
-      for (let j = 0; j < monsters.length; j++) {
-        const m = monsters[j];
-        if (Math.abs(p.x - m.x) < 1 && Math.abs(p.y - m.y) < 1) {
-          hitMonster = j;
-          break;
-        }
-      }
-      if (hitMonster >= 0) {
-        // Monster dies, drop 1 golden food at its position
-        const m = monsters[hitMonster];
-        droppedFood.push({ x: m.x, y: m.y });
-        monsters.splice(hitMonster, 1);
-        projectiles.splice(i, 1);
-        score += 20; // bonus for killing monster
-        scoreEl.textContent = score;
       }
     }
   }
@@ -1217,11 +1257,19 @@ permalink: /games/snake-coming/
     }
   }
 
+  // 判断新方向是否是反向（会走到第二节身体）
+  function isReverseDirection(newDx, newDy) {
+    if (snake.length <= 1) return false;
+    const nextHeadX = snake[0].x + newDx;
+    const nextHeadY = snake[0].y + newDy;
+    return nextHeadX === snake[1].x && nextHeadY === snake[1].y;
+  }
+
   // Change direction
   function changeDirection(newDx, newDy) {
-    // Prevent 180 degree turn
-    if (newDx === -dx && newDy === -dy) return;
-    if (dx === 0 && dy === 0 && newDx === 0 && newDy === 0) return;
+    if (newDx === 0 && newDy === 0) return;
+    if (newDx === dx && newDy === dy) return;
+    if (isReverseDirection(newDx, newDy)) return;
     dx = newDx;
     dy = newDy;
   }
@@ -1312,6 +1360,7 @@ permalink: /games/snake-coming/
 
   canvas.addEventListener('touchend', function(e) {
     if (!gameRunning) return;
+    if (isFullscreen) return; // 全屏模式下用摇杆，禁用canvas滑动
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
     const diffX = touchEndX - touchStartX;
@@ -1323,19 +1372,19 @@ permalink: /games/snake-coming/
     if (Math.abs(diffX) > Math.abs(diffY)) {
       // Horizontal swipe
       if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) {
-          changeDirection(1, 0); // right
-        } else {
-          changeDirection(-1, 0); // left
+        const newDx = diffX > 0 ? 1 : -1;
+        const newDy = 0;
+        if (!isReverseDirection(newDx, newDy)) {
+          changeDirection(newDx, newDy);
         }
       }
     } else {
       // Vertical swipe
       if (Math.abs(diffY) > minSwipeDistance) {
-        if (diffY > 0) {
-          changeDirection(0, 1); // down
-        } else {
-          changeDirection(0, -1); // up
+        const newDx = 0;
+        const newDy = diffY > 0 ? 1 : -1;
+        if (!isReverseDirection(newDx, newDy)) {
+          changeDirection(newDx, newDy);
         }
       }
     }
@@ -1493,10 +1542,17 @@ permalink: /games/snake-coming/
       }
       // Only change if direction changed
       if (newDx !== joyLastDir.dx || newDy !== joyLastDir.dy) {
-        joyLastDir.dx = newDx;
-        joyLastDir.dy = newDy;
         if (gameRunning && !paused) {
-          changeDirection(newDx, newDy);
+          // 预判断：反向不转向
+          if (!isReverseDirection(newDx, newDy)) {
+            joyLastDir.dx = newDx;
+            joyLastDir.dy = newDy;
+            changeDirection(newDx, newDy);
+          }
+        } else {
+          // 游戏未运行或暂停时，只更新摇杆方向记录
+          joyLastDir.dx = newDx;
+          joyLastDir.dy = newDy;
         }
       }
     }
@@ -1597,12 +1653,27 @@ permalink: /games/snake-coming/
     }
   }, { passive: false });
 
+  // 设置难度：根据data-speed调整蛇速和妖怪移动间隔
+  function setDifficulty(dataSpeed) {
+    speed = dataSpeed;
+    // 妖怪移动间隔：简单×10、普通×5、困难×3（基准为3）
+    if (dataSpeed === 300) {
+      monsterMoveInterval = 30; // 简单
+    } else if (dataSpeed === 150) {
+      monsterMoveInterval = 15; // 普通
+    } else {
+      monsterMoveInterval = 9; // 困难
+    }
+    monsterMoveCounter = 0;
+  }
+
   // Difficulty buttons
   diffBtns.forEach(btn => {
     btn.addEventListener('click', function() {
       diffBtns.forEach(b => b.classList.remove('active'));
       this.classList.add('active');
-      speed = parseInt(this.getAttribute('data-speed'));
+      const dataSpeed = parseInt(this.getAttribute('data-speed'));
+      setDifficulty(dataSpeed);
       if (gameRunning) {
         clearInterval(gameLoop);
         gameLoop = setInterval(tick, speed);
