@@ -27,3 +27,13 @@ phpunit.phar
 /.vagrant
 
 add_post_.patch
+
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+Gemfile.lock
+
+
