@@ -304,6 +304,47 @@ permalink: /games/snake-coming/
     100% { opacity: 0.5; }
   }
 
+  /* Speed button (left of attack button in fullscreen) */
+  .speed-btn {
+    display: none;
+  }
+  body.fullscreen-mode .speed-btn {
+    display: flex;
+    position: fixed;
+    bottom: 80px;
+    right: 170px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(251, 191, 36, 0.2);
+    border: 2px solid rgba(251, 191, 36, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.4rem;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .speed-btn:active {
+    background: rgba(251, 191, 36, 0.45);
+    transform: scale(0.92);
+  }
+  .speed-btn.active {
+    background: rgba(251, 191, 36, 0.5);
+    border-color: rgba(251, 191, 36, 0.8);
+  }
+  .speed-btn.fade-hint {
+    animation: fadeOutSpeed 3s ease forwards;
+  }
+  @keyframes fadeOutSpeed {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0.5; }
+  }
+
   /* Pause button (right side in fullscreen, above attack button) */
   .pause-btn {
     display: none;
@@ -569,9 +610,9 @@ permalink: /games/snake-coming/
 
 <!-- Difficulty -->
 <div class="difficulty">
-  <button class="diff-btn" data-speed="300">简单</button>
-  <button class="diff-btn active" data-speed="150">普通</button>
-  <button class="diff-btn" data-speed="60">困难</button>
+  <button class="diff-btn" data-speed="360">简单</button>
+  <button class="diff-btn active" data-speed="180">普通</button>
+  <button class="diff-btn" data-speed="120">困难</button>
 </div>
 
 <!-- Game Canvas -->
@@ -621,6 +662,9 @@ permalink: /games/snake-coming/
 
 <!-- Attack button (fullscreen mode) -->
 <button class="attack-btn" id="attackBtn">💥</button>
+
+<!-- Speed button (fullscreen mode) -->
+<button class="speed-btn" id="speedBtn">⚡</button>
 
 <!-- Pause button (fullscreen mode) -->
 <button class="pause-btn" id="pauseBtn">⏸</button>
@@ -705,6 +749,8 @@ permalink: /games/snake-coming/
   let gameRunning = false;
   let gameLoop = null;
   let speed = 150;
+  let baseSpeed = 150; // 基础速度（用于加速计算）
+  let speedBoost = false; // 是否加速中
   let paused = false;
 
   // Monsters
@@ -821,11 +867,7 @@ permalink: /games/snake-coming/
   // Update monster count - spawn or remove as needed
   function updateMonsterCount() {
     const target = getMaxMonsters();
-    // If we have too many (e.g. snake shrank), remove extras
-    while (monsters.length > target) {
-      monsters.pop();
-    }
-    // If we have too few, spawn immediately (up to target, max 1 per tick)
+    // 妖怪一旦出现就不消失，只有达到上限时才生成新的
     if (monsters.length < target) {
       spawnMonster();
     }
@@ -1006,7 +1048,7 @@ permalink: /games/snake-coming/
     const fx = food.x * gridSize;
     const fy = food.y * gridSize;
     const padding = 2;
-    ctx.fillStyle = '#ef4444';
+    ctx.fillStyle = '#4ade80';
     ctx.beginPath();
     ctx.arc(fx + gridSize/2, fy + gridSize/2, gridSize/2 - padding, 0, Math.PI * 2);
     ctx.fill();
@@ -1063,12 +1105,12 @@ permalink: /games/snake-coming/
     projectiles.forEach(p => {
       const px = p.x * gridSize;
       const py = p.y * gridSize;
-      // Glowing green ball
-      ctx.fillStyle = 'rgba(74, 222, 128, 0.4)';
+      // Glowing red ball
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.4)';
       ctx.beginPath();
       ctx.arc(px + gridSize/2, py + gridSize/2, gridSize/2 + 3, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#4ade80';
+      ctx.fillStyle = '#ef4444';
       ctx.beginPath();
       ctx.arc(px + gridSize/2, py + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2);
       ctx.fill();
@@ -1212,6 +1254,9 @@ permalink: /games/snake-coming/
     monsterMoveCounter = 0;
     gameRunning = true;
     paused = false;
+    speedBoost = false;
+    if (speedBtn) speedBtn.classList.remove('active');
+    speed = baseSpeed;
     startOverlay.classList.add('hidden');
     gameOverOverlay.classList.add('hidden');
     if (isFullscreen) {
@@ -1229,12 +1274,14 @@ permalink: /games/snake-coming/
       showRightTapHint();
       joystickArea.classList.remove('fade-hint');
       attackBtn.classList.remove('fade-hint');
+      speedBtn.classList.remove('fade-hint');
       pauseBtn.classList.remove('fade-hint');
       updatePauseBtnIcon();
       // Trigger reflow
       void joystickArea.offsetWidth;
       joystickArea.classList.add('fade-hint');
       attackBtn.classList.add('fade-hint');
+      speedBtn.classList.add('fade-hint');
       pauseBtn.classList.add('fade-hint');
     }
   }
@@ -1320,6 +1367,12 @@ permalink: /games/snake-coming/
       case 'F':
         e.preventDefault();
         shootProjectile();
+        break;
+      case 'e':
+      case 'E':
+      case 'Shift':
+        e.preventDefault();
+        toggleSpeedBoost();
         break;
     }
   });
@@ -1417,9 +1470,10 @@ permalink: /games/snake-coming/
       document.body.classList.add('fullscreen-mode');
       fullscreenBtn.innerHTML = '✕';
       fullscreenBtn.title = '退出全屏';
-      // Show joystick, attack button, pause button fade hint
+      // Show joystick, attack button, speed button, pause button fade hint
       joystickArea.classList.add('fade-hint');
       attackBtn.classList.add('fade-hint');
+      speedBtn.classList.add('fade-hint');
       pauseBtn.classList.add('fade-hint');
       updatePauseBtnIcon();
       // Score board: visible if game over, else translucent
@@ -1437,6 +1491,7 @@ permalink: /games/snake-coming/
       fullscreenBtn.title = '全屏';
       joystickArea.classList.remove('fade-hint');
       attackBtn.classList.remove('fade-hint');
+      speedBtn.classList.remove('fade-hint');
       pauseBtn.classList.remove('fade-hint');
       scoreBoard.classList.remove('visible');
       swipeHint.classList.remove('show');
@@ -1580,6 +1635,7 @@ permalink: /games/snake-coming/
     if (safeClosest(target, '.overlay')) return;
     if (safeClosest(target, '#fullscreenBtn')) return;
     if (safeClosest(target, '#attackBtn')) return;
+    if (safeClosest(target, '#speedBtn')) return;
     if (safeClosest(target, '#pauseBtn')) return;
     if (safeClosest(target, '.joystick-area')) return; // 点到摇杆区域本身由全局逻辑处理
     // Only joystick if touch starts on left half of screen
@@ -1626,6 +1682,31 @@ permalink: /games/snake-coming/
     shootProjectile();
   });
 
+  // Speed button
+  const speedBtn = document.getElementById('speedBtn');
+
+  function toggleSpeedBoost() {
+    if (!gameRunning) return;
+    speedBoost = !speedBoost;
+    speed = speedBoost ? Math.floor(baseSpeed / 2) : baseSpeed;
+    speedBtn.classList.toggle('active', speedBoost);
+    if (gameLoop) {
+      clearInterval(gameLoop);
+      gameLoop = setInterval(tick, speed);
+    }
+  }
+
+  speedBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSpeedBoost();
+  }, { passive: false });
+
+  speedBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleSpeedBoost();
+  });
+
   // Pause button
   function updatePauseBtnIcon() {
     pauseBtn.innerHTML = paused ? '▶' : '⏸';
@@ -1658,7 +1739,9 @@ permalink: /games/snake-coming/
 
   // 设置难度：根据data-speed调整蛇速和妖怪移动间隔
   function setDifficulty(dataSpeed) {
-    speed = dataSpeed;
+    baseSpeed = dataSpeed;
+    // 如果加速中，使用加速后的速度；否则用基础速度
+    speed = speedBoost ? Math.floor(baseSpeed / 2) : baseSpeed;
     // 妖怪移动间隔：简单×10、普通×5、困难×3（基准为3）
     if (dataSpeed === 300) {
       monsterMoveInterval = 30; // 简单
