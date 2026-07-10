@@ -7,6 +7,15 @@ meta: Docker安装opus-mt-zh-en
 * content
 {:toc}
 
+## 引言
+
+opus-mt-zh-en 是一个用于中文到英文的机器翻译模型。 
+地址：<https://huggingface.co> 的国内镜像 <https://hf-mirror.com/> 下查看 Helsinki-NLP/opus-mt-zh-en 模型：
+<https://hf-mirror.com/Helsinki-NLP/opus-mt-zh-en>，还有源码：<https://hf-mirror.com/Helsinki-NLP/opus-mt-zh-en/tree/main>
+
+
+下面先把 Docker 用法讲一下，再讲opus-mt-zh-en。
+
 ## Docker 常用命令
 
 补充几个命令：
@@ -62,11 +71,6 @@ docker builder du
 # 清理构建缓存（能省 几个 GB）
 docker builder prune -a -f
 ```
-
-## 引言
-
-在 <https://huggingface.co> 的国内镜像 <https://hf-mirror.com/> 下查看 Helsinki-NLP/opus-mt-zh-en 模型：
-<https://hf-mirror.com/Helsinki-NLP/opus-mt-zh-en>，还有源码：<https://hf-mirror.com/Helsinki-NLP/opus-mt-zh-en/tree/main>
 
 
 ## Docker 安装opus-mt-zh-en
