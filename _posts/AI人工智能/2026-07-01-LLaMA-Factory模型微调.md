@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: AI人工智能
-title: 模型微调
-meta: 模型微调
+title: LLaMA-Factory 模型微调
+meta: LLaMA-Factory 模型微调
 ---
 * content
 {:toc}
@@ -10,6 +10,8 @@ meta: 模型微调
 ## 引言
 
 学习地址：https://www.bilibili.com/video/BV13QFxzCEXb
+
+LLaMA Factory官网：<https://llamafactory.readthedocs.io/zh-cn/latest/index.html>
 
 可以使用 WSL、魔搭社区(modelscope.cn)、AutoDL服务器(autodl.com/marker/list)等 三种方式进行模型微调。
 
@@ -8991,7 +8993,7 @@ model_name_or_path: Qwen/Qwen3-0.6B-base
 template: default
 output_dir: saves/Qwen3-0.6B/lora/sft
 
-# 3. 执行训练
+# 3. 执行训练 （USE_MODELSCOPE_HUB=1 表示使用modelscope对应的模型库）
 cd LLaMA-Factory
 USE_MODELSCOPE_HUB=1 llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
 ```
@@ -9042,6 +9044,32 @@ curl -s http://localhost:8000/v1/chat/completions \
     "temperature": 0.7
 }'
 ```
+
+
+```
+# 安装modelscope
+uv pip install modelscope -i https://mirrors.aliyun.com/pypi/simple
+
+# 下载模型
+modelscope download --model Qwen/Qwen3-0.6B --local_dir /mnt/d/test/models/Qwen3-0.6B
+
+# 修改 examples/train_lora/llama3_lora_sft.yaml 配置文件模型位置、输出目录
+
+# 执行训练命令（绝对路径，不需要 USE_MODELSCOPE_HUB=1）
+llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
+```
+
+```
+# 重点要准备数据
+# 1、收集历史数据
+# 2、没有历史数据可以如下蒸馏
+蒸馏数据 -> 训练模型 -> 上线模型 -> 收集数据 -> 用户应用 -> 训练模型 ...
+
+# 使用公开的数据集
+modelscope download --dataset alleyf/HusT-Student-Handbook --local_dir /mnt/d/test/datasets/HusT-Student-Handbook
+```
+
+
 
 
 ## 数据
