@@ -13,6 +13,8 @@ meta: LLaMA-Factory 模型微调
 
 LLaMA Factory官网：<https://llamafactory.readthedocs.io/zh-cn/latest/index.html>
 
+国内地址：https://llamafactory.cn/
+
 可以使用 WSL、魔搭社区(modelscope.cn)、AutoDL服务器(autodl.com/marker/list)等 三种方式进行模型微调。
 
 ## WSL
