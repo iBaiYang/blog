@@ -118,7 +118,13 @@ wsl --set-default Ubuntu
 
 ##### 安装LLaMA-Factory
 
-DNS有问题，需要配置一下。另外Ubuntu 24.04中没有python3-distutils，放弃接下来的安装。
+DNS有问题，访问不了外网，需要配置一下。
+```
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+echo "nameserver 114.114.114.114" | sudo tee -a /etc/resolv.conf
+```
+
+另外Ubuntu 24.04中没有python3-distutils，放弃接下来的安装。
 
 ```
 baiyang@DESKTOP-PSDQHMG:/mnt/c/Windows/system32$ sudo apt-get update
@@ -249,6 +255,27 @@ baiyang@DESKTOP-PSDQHMG:/mnt/c/Windows/system32$
 
 如果不能访问外网，需要在命令行手动安装。命令行以管理员身份打开。
 
+```
+# 查看wsl可安装列表
+wsl -l -o
+
+# 安装指定版本
+wsl --install -d Ubuntu-22.04
+
+# 查看wsl已安装列表
+wsl -l -v
+
+# 查看版本（在Ubuntu中执行）
+hostnamectl
+
+# 终止Ubuntu22.04
+wsl --terminate Ubuntu-22.04
+
+# 卸载Ubuntu22.04
+wsl --unregister Ubuntu-22.04
+```
+
+执行过程：
 ```
 C:\Windows\system32>wsl --status
 默认分发: docker-desktop
@@ -393,7 +420,7 @@ sudo apt install python3-pip
 # 安装uv虚拟环境管理包
 sudo pip install uv -i https://mirrors.aliyun.com/pypi/simple
 
-# 创建虚拟环境
+# 创建虚拟环境（虚拟环境只是管理软件，即使有多套虚拟环境，操作的对象还是LLaMA-Factory）
 uv venv finetune_01
 
 # 激活虚拟环境
@@ -406,11 +433,21 @@ cd Llama-Factory
 
 uv pip install -e ".[torch,metrics]" -i https://mirrors.aliyun.com/pypi/simple
 
-# 验证是否安装成功
+# 验证是否安装成功，查看版本
 llamafactory-cli version
 
 # 验证GPU是否可用，应输出True
 python -c "import torch;print(torch.cuda.is_available())"
+
+
+# 查看Linux中的所有命令
+compgen -c
+
+# 查看Linux中有哪些python版本
+compgen -c | grep python
+
+# 安装pip
+sudo apt install python3-pip
 ```
 
 **执行过程**：
@@ -918,7 +955,746 @@ Installed 1 package in 5ms
 
 操作下来，下面还是会有各式各样的问题，放弃在老电脑中安装Llama-Factory。
 
-### 补充信息
+
+## 魔搭服务器
+
+服务器一键安装脚本 install.sh ：
+```
+#!/bin/bash
+
+# LLaMA-Factory 自动安装脚本
+# 注意：此脚本在执行时，所有相对路径都以脚本所在目录为根目录
+
+set -e  # 遇到错误立即退出
+
+echo "=== 开始安装 LLaMA-Factory 环境 ==="
+
+# 获取脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+echo "当前工作目录: $(pwd)"
+
+# 安装系统级依赖
+echo "=== 安装系统级依赖 ==="
+sudo apt-get update
+sudo apt-get install -y python3-distutils
+
+# 克隆 LLaMA-Factory
+echo "=== 克隆 LLaMA-Factory 仓库 ==="
+if [ ! -d "LLaMA-Factory" ]; then
+    git clone https://gitee.com/ibaiyang/Llama-Factory.git
+    cd LLaMA-Factory
+    git reset --hard c244b1edb9af1697c3dfa5e7f3e352ca741ebcd6
+    cd ..
+else
+    echo "LLaMA-Factory 目录已存在，跳过克隆"
+fi
+
+# 安装 uv 和创建虚拟环境
+echo "=== 安装 uv 和创建虚拟环境 ==="
+pip install uv -i https://mirrors.aliyun.com/pypi/simple
+
+if [ ! -d "finetune" ]; then
+    uv venv finetune
+fi
+
+# 激活虚拟环境并安装依赖
+echo "=== 激活虚拟环境并安装依赖 ==="
+# 使用 . 命令替代 source，兼容性更好
+. finetune/bin/activate
+
+cd LLaMA-Factory
+echo "当前目录: $(pwd)"
+
+# 安装 LLaMA-Factory
+echo "=== 安装 LLaMA-Factory 及其依赖 ==="
+uv pip install -e ".[torch,metrics]" -i https://mirrors.aliyun.com/pypi/simple
+
+# 返回脚本目录
+cd "$SCRIPT_DIR"
+
+# 验证安装
+echo "=== 验证安装 ==="
+. finetune/bin/activate
+cd LLaMA-Factory
+
+echo "1. 验证 LLaMA-Factory 安装:"
+llamafactory-cli version
+
+echo "2. 验证 GPU 是否可用:"
+python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
+
+echo "=== 安装完成 ==="
+```
+
+执行：`sh install.sh`
+
+不推荐使用 webui 服务界面，配置复杂。
+
+## autoDL服务器
+
+webui服务界面需要执行以下命令：
+```
+### 8901是本机端口，7860是llamafactory-cli webui启动时的端口，44898是SSH的端口
+ssh -L 8901:localhost:7860 -p 44898 root@connect.gdai.seetacloud.com -N
+### 即可在本机通过http://localhost:8901/访问llamafactory的web界面
+```
+
+## 微调流程
+
+下面是一个简单的流程。
+
+一、启动webU川
+```
+# 1. 启动webU1界面
+llamafactory-cli webui
+
+# 2. 云服务器端口映射（在autoDL需要,可在服务器管理列表界面查询）
+##8901是本机端口，7860是11 amafactory-c1 i webui启动时的端口，44898是sSH的端口
+ssh -L 8901:localhost:7860 -p 44898 root@connect.gda1.seetacloud.com -N
+####即可在本机通过http://localhost:8901/访问llamafactory的web界面
+```
+
+二、trian
+```
+# 1. 命令查询
+llamafactory-cli -h
+
+# 2. 修改配置文件 examples/train_lora/llama3_lora_sft.yaml
+model_name_or_path: Qwen/Qwen3-0.6B-base
+template: default
+output_dir: saves/Qwen3-0.6B/lora/sft
+
+# 3. 执行训练 （USE_MODELSCOPE_HUB=1 表示使用modelscope对应的模型库）
+cd LLaMA-Factory
+USE_MODELSCOPE_HUB=1 llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
+```
+
+三、chat
+```
+# 1. 准备执行chat。修改配置文件 examples/inference/llama3_lora_sft.yaml
+model_name_or_path: Qwen/Qwen3-0.6B-base
+adapter_name_or_path: saves/Qwen3-0.6B/lora/sft
+template: default
+
+# 2. 执行推理对话
+USE_MODELSCOPE_HUB=1 llamafactory-cli chat examples/inference/llama3_lora_sft.yaml
+```
+
+四、合并
+```
+# 1. 修改配置文件 examples/merge_lora/llama3_lora_sft.yaml
+model_name_or_path: Qwen/Qwen3-0.6B-base
+adapter_name_or_path: saves/Qwen3-0.6B/lora/sft
+template: default
+
+export_dir: output/Qwen3-0.6B
+
+# 2. 执行合并命令
+USE_MODELSCOPE_HUB=1 llamafactory-cli export examples/merge_lora/llama3_lora_sft.yaml
+
+```
+
+五、部署api
+```
+# 1. 修改配置文件 examples/inference/llama3_lora_sft.yaml
+model_name_or_path: output/Qwen3-0.6B
+
+# 2. 启动API
+USE_MODELSCOPE_HUB=1 llamafactory-cli api examples/inference/llama3_lora_sft.yaml
+
+# 3. 测试api，复制这个命令到shell中，回车执行
+
+curl -s http://localhost:8000/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+    "model": "output/Qwen3-0.6B",
+    "messages": [
+        {"role": "user", "content": "你是谁"}
+    ],
+    "max_tokens": 64,
+    "temperature": 0.7
+}'
+```
+
+命令行操作：
+```
+# 安装modelscope
+uv pip install modelscope -i https://mirrors.aliyun.com/pypi/simple
+
+# 下载模型到指定地址
+modelscope download --model Qwen/Qwen3-0.6B --local_dir /mnt/d/test/models/Qwen3-0.6B
+
+# 使用公开的数据集
+modelscope download --dataset alleyf/HusT-Student-Handbook --local_dir /mnt/d/test/datasets/HusT-Student-Handbook
+
+# 修改 examples/train_lora/llama3_lora_sft.yaml 配置文件模型位置、输出目录
+
+# 执行训练命令（绝对路径，不需要 USE_MODELSCOPE_HUB=1）
+llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
+```
+
+## 数据蒸馏
+
+模型微调重点是准备数据
+1. 收集历史数据
+2. 没有历史数据可以如下蒸馏：蒸馏数据 -> 训练模型 -> 上线模型 -> 收集数据 -> 用户应用 -> 训练模型 ...
+
+数据集有两种格式：alpaca格式、sharegpt格式。文档地址：<https://llamafactory.readthedocs.io/zh-cn/latest/getting_started/data_preparation.html#>
+
+如何数据蒸馏：
+
+- 要点
+  1. 输入数据和输出数据应该分开构造，便于调试
+  2. 应该尽量提升提示词的差异化，提升数据的多样性
+- 建议
+  - 在构造输入数据时，提示词中不要有示例。
+  - 在蒸馏输出数据时，提示词要加示例。
+
+可用蒸馏数据生成软件：https://github.com/ConardLi/easy-dataset/releases/tag/1.5.1
+
+### 示例数据
+
+生成微调数据集完整代码（可直接复制后保存文件）
+
+一、构造input-输入数据（劣质报告）
+
+1.1 构造动态提示词
+
+```python
+import random
+
+def generate_input_prompt():
+    roles = ['初级产品经理', '高级项目经理', '技术负责人', '数据产品经理']
+    tasks = ['工单流程开发', 'BI看板开发', '文本分类模型建设', '知识库建设', '对话智能体建设', '接口开发与联调', '数据中台建设', '用户画像标签体系建设', 
+             '数据治理与质量监控','用户需求调研与分析', '跨部门沟通协调', '技术方案选型与评审', '数据备份与灾难恢复演练', '指标口径统一化建设']
+    report_types = ['周报', '月报', '建设进展', '工作总结']
+    word_counts = [80, 120, 150, 200]
+    problem_categories = ['逻辑混乱', '口语化严重', '流水账', '缺乏数据支撑', '价值点缺失']
+    
+    role = random.choice(roles) # 4种组合
+    task = random.choice(tasks) # 14种组合
+    report_type = random.choice(report_types) # 4种组合
+    word_count = random.choice(word_counts) # 4种组合
+    selected_problems = random.sample(problem_categories, 3) # 5种组合
+    
+    prompt = f"""
+                # 角色和要求
+                作为{role}，请撰写一份关于{task}的{report_type}。这份报告应该是一个典型的"反面教材"。
+                
+                ## 需要突出的问题特征（重点体现：{', '.join(selected_problems)}）：
+                - 逻辑不连贯，想到哪写到哪
+                - 大量使用口语化、不专业的表达
+                - 像记流水账一样罗列工作
+                - 避免使用具体数据和量化结果
+                - 只描述过程，不提炼价值和成果
+                
+                ## 写作要求：
+                - 字数：{word_count}字左右
+                - 内容要基于真实工作场景，但表达要糟糕
+                - 避免刻意搞笑或夸张，要像真实工作中会出现的低质量报告
+            """
+    
+    return prompt, {
+        "role": role,
+        "task": task,
+        "report_type": report_type,
+        "word_count": word_count,
+        "problem_types": selected_problems
+    }
+
+# 使用示例
+prompt, metadata = generate_input_prompt()
+print("生成的提示词：")
+print(prompt)
+print("\n样本元数据：", metadata)
+```
+
+示例输出提示词：
+```
+生成的提示词：
+
+    # 角色和要求
+    作为数据产品经理，请撰写一份关于技术方案选型与评审的工作总结。这份报告应该是一个典型的"反面教材"。
+    
+    ## 需要突出的问题特征（重点体现：口语化严重, 逻辑混乱, 价值点缺失）：
+    - 逻辑不连贯，想到哪写到哪
+    - 大量使用口语化、不专业的表达
+    - 像记流水账一样罗列工作
+    - 避免使用具体数据和量化结果
+    - 只描述过程，不提炼价值和成果
+    
+    ## 写作要求：
+    - 字数：80字左右
+    - 内容要基于真实工作场景，但表达要糟糕
+    - 避免刻意搞笑或夸张，要像真实工作中会出现的低质量报告
+            
+
+样本元数据： {'role': '数据产品经理', 'task': '技术方案选型与评审', 'report_type': '工作总结', 'word_count': 80, 'problem_types': ['口语化严重', '逻辑混乱', '价值点缺失']}
+```
+
+1.2 调用大模型，生成“劣质报告”
+
+```python
+from openai import OpenAI
+
+api_key=r"6be28e485ed034fce5b5f20bd4facc67.CCLWM78V32tWhRTI"
+base_url= r"https://open.bigmodel.cn/api/paas/v4"
+model_name = "glm-4.5-x"
+
+
+client = OpenAI(
+    api_key=api_key,  
+    base_url=base_url 
+)
+
+def generate_input_sample():
+    """生成单个样本的辅助函数"""
+    prompt, _ = generate_input_prompt()
+    
+    response = client.chat.completions.create(
+        model=model_name,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    return response.choices[0].message.content
+
+reulst = generate_input_sample()
+print(reulst)
+```
+
+单条劣质报告示例输出：
+```
+本周主要在弄数据备份和灾备演练的事。周一先和研发开了个会，理了一下流程。然后周三就试了一下恢复，发现好像有点慢，具体多慢也没算。中间还和运维的同学聊了聊上次的问题。周五又开了个会，大家觉得问题不大，主要是一些小细节。下周再看怎么弄吧。
+```
+
+批量生成多条劣质样本代码：
+```python
+num_samples = 2
+results=[]
+for i in range(num_samples):
+    
+    # 获取结果
+    result = generate_input_sample()
+    
+    # 添加到结果列表
+    results.append(result)
+
+print("数据生成完成!")
+print(results)
+```
+
+批量输出示例：
+```
+数据生成完成!
+['\n本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。',
+ '\n接口开发这块吧，我们就是先写了几个，然后呢就找产品和测试一起联调。在对的过程中发现，呃，数据格式有点对不上，测试环境也不太给力，反正问题挺多的。现在就是天天拉会对齐，把问题都记下来了，我们再跟他们沟通下吧，就这么个情况。']
+```
+
+1.3 保存数据，并人工抽样检查，适时调整提示词
+
+```python
+ # 保存到JSON文件
+from datetime import datetime
+import json
+
+filename = f"distill_input.json"
+
+with open(filename, 'w', encoding='utf-8') as f:
+    json.dump(results, f, ensure_ascii=False, indent=2)
+
+print(f"结果已保存到: {filename}")
+```
+
+---
+
+二、生成output-输出数据（优质报告）
+
+2.1 构造提示词    
+
+```python
+def generate_output_prompt(original_text):
+    return f"""
+        你现在是一位经验丰富的办公室秘书，擅长将普通文本优化为专业、结构清晰、符合领导预期的优质报告。请根据提供的普通文本，进行以下优化：
+        
+        ## 核心要求
+        请务必在报告中体现以下要素：
+        1. 战略格局：将工作成果与公司“降本增效”/“技术驱动业务”等核心战略联系起来。
+        2. 逻辑清晰：采用“总-分-总”结构，分点阐述，条理分明。
+        3. 数据支撑：尽可能量化成果，使用具体数据（如效率提升百分比、节省工时、处理数据量等）来增强说服力。
+        4. 语言专业：使用规范、专业的书面语和技术术语，避免口语化表达。
+        5. 亮点突出：不仅要写“做了什么”，更要强调“取得了什么成果”和“带来了什么价值”。
+        6. 计划明确：给出清晰、可量化的下一步行动计划。
+        
+        ## 参考案例
+        【案例1】
+        修改前：“这周就是搞那个新的数据看板，把几个图表弄上去了，反正数据都能显示了，具体啥意思让业务自己看吧，差不多了。”
+        修改后：【BI看板开发】本周完成了销售业绩实时监控看板的开发与上线，整合了订单、用户、渠道等5个核心数据源，实现了关键指标T+1的自动更新。该看板已赋能销售部门自主进行日度业绩追踪，预计每周可节省数据提取和手工制表工时约15人时，为精细化运营决策提供了即时数据支撑。
+        ## 待优化的文本
+        {original_text}
+    """
+```
+
+2.2 载入“劣质报告”，生成“优质报告”（无思维链）
+
+```python
+import json
+import pprint
+
+with open(f"distill_input.json", 'r', encoding='utf-8') as f:
+    input_distill = json.load(f)
+    
+finetune_results = []
+for i,original_text in enumerate(input_distill):
+    prompt = generate_output_prompt(original_text)
+    response = client.chat.completions.create(
+        model="glm-4.5-x",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    # 按照alpaca格式存储
+    finetune_results.append(
+        {
+            "instruction":"优化报告",
+            "input":original_text,
+            "output": response.choices[0].message.content
+        }
+    )
+
+filename = f"finetune_input.json"
+with open(filename, 'w', encoding='utf-8') as f:
+    json.dump(finetune_results, f, ensure_ascii=False, indent=2)
+    
+pprint.pprint(finetune_results)
+```
+
+输出格式：Alpaca标准微调数据集，包含 instruction/input/output 三段式内容。
+
+2.3 载入“劣质报告”，生成“优质报告”（带思考模式/思维链）
+    
+```python
+import json
+import pprint
+with open(f"distill_input.json", 'r', encoding='utf-8') as f:
+    input_distill = json.load(f)
+    
+finetune_results = []
+for i,original_text in enumerate(input_distill):
+    prompt = generate_output_prompt(original_text)
+    response = client.chat.completions.create(
+        model="glm-4.5-x", # 1.模型得具备输出思维链的能力
+        messages=[{"role": "user", "content": prompt}],
+        top_p=0.8,
+        temperature=0.9,
+        extra_body={"thinking": {"type": "enabled",}} # 2.要在参数中启用思考模式
+    )
+    message= response.choices[0].message 
+    finetune_results.append(
+        {
+            "instruction":"优化报告",
+            "input":original_text,
+            "output":"<think>"+ message.reasoning_content +"</think>\n"+  message.content # 3.将思考链+最终报告拼接存入output
+        }
+    )
+
+filename = f"finetune_input.json"
+with open(filename, 'w', encoding='utf-8') as f:
+    json.dump(finetune_results, f, ensure_ascii=False, indent=2)
+
+pprint.pprint(finetune_results)
+```
+
+特点：output字段先包裹`<think>`和`</think>`标签，中间为`<推理过程>`，再拼接最终优化后的正式报告，适合SFT深度微调。
+
+---
+
+使用说明
+1. 复制代码，粘贴到 `.py` 文件中执行；
+2. 执行顺序：1.1动态提示词 →1.2生成劣质样本 →1.3保存JSON →2.1优化提示词 →2.2/2.3生成优质报告数据集；
+3. 数据集输出格式：标准Alpaca微调格式，可直接用于大模型监督微调；
+4. 两种输出模式可选：无思维链（纯优化报告）、带思维链（推理过程+优化报告）。
+
+结果保存到文件 finetune_input.json 训练数据集，示例：
+```
+[
+    {
+        "input": "本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。",
+        "instruction": "优化报告",
+        "output": "
+1.  **拆解用户需求：**
+
+    *   **角色：** 经验丰富的办公室秘书。这意味着语气应正式、恭敬、高效且以结果为导向。受众是“领导”，因此语言需要具有战略性并以价值为中心。
+    *   **任务：** 将一段简单、非正式的文本优化为一份专业、结构化且有影响力的报告。
+    *   **核心要求（清单）：**
+        1.  **战略格局：** 与公司战略（如“降本增效”、“技术驱动业务”）建立联系。
+        2.  **逻辑清晰：** “总-分-总”结构。使用项目符号或编号列表。
+        3.  **数据支撑：** 量化成果。如果缺少真实数据，使用占位符（如“X%”、“Y小时”）来展示如何量化。
+        4.  **语言专业：** 使用正式、书面化和技术性的术语。避免使用俚语或非正式短语。
+        5.  **亮点突出：** 关注“取得了什么成果”和“带来了什么价值”，而不仅仅是“做了什么”。
+        6.  **计划明确：** 清晰、可量化的下一步行动。
+    *   **参考案例：** 这是一个很好的线索。
+        *   修改前：“这周就是搞那个新的数据看板...” - 非正式、模糊、被动（“让业务自己看吧”）。
+        *   修改后：“【BI看板开发】本周完成了...” - 以行动为导向、结构化、量化了价值（“节省...15人时”）、与战略（“精细化运营决策”）相联系。这是我需要遵循的模板。
+    *   **待优化的文本：** “本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。”
+
+2.  **分析“修改前”的文本：**
+
+    *   “本周又开了好几次会” -> 多次会议。关于什么？与谁？结果如何？ -> 需要具体说明目的和成果。
+    *   “跟业务方拉齐了一下口径” -> 与业务相关方统一了理解。这是一个关键行动。需要被表述为“需求对齐”或“共识建立”。
+    *   “文档还在写” -> 文档正在编写中。什么文档？状态如何？何时完成？ -> 需要具体说明文档类型并给出时间表。
+    *   “另外，数据模型也讨论了” -> 讨论了数据模型。讨论的结论是什么？“感觉就是那样吧” 是完全不能接受的。需要将此表述为“初步设计已确认”或“关键指标已定义”。
+    *   “接口那边还在对接” -> API集成正在进行中。“问题不大” 不够专业。需要说明进展和任何潜在风险或预计完成日期。
+
+3.  **整合并构建“修改后”的报告（遵循清单）：**
+
+    *   **标题：** 一个好的标题至关重要。它应总结核心工作。文本中提到了会议、文档、数据模型和接口。这听起来像是一个项目的启动或规划阶段。我们称之为“【项目名称】项目周报”。如果我没有项目名称，可以使用一个通用的，如“【XX系统/项目】启动阶段工作汇报”。我们使用一个占位符。
+
+    *   **开篇（“总”）：** 从一个高层级的总结开始。本周的主要目标是什么？我们取得了什么成就？它应该直接与公司战略联系起来。
+        *   想法：本周，我们专注于[项目名称]的初始规划阶段，旨在与业务需求保持一致并为开发奠定基础。这支持了我们的“技术驱动业务”战略。
+        *   草稿：“本周，我们围绕【XX项目】的启动阶段，重点开展了需求对齐、技术方案设计及跨部门协同工作，为项目后续的顺利推进奠定了坚实基础，紧密契合公司“技术驱动业务”的核心战略。” 这涵盖了战略部分，并给出了一个积极、前瞻的开场。
+
+    *   **正文（“分”）：** 将原始文本中的活动分解为结构化的要点。我将使用编号列表以求清晰。
+
+        1.  **会议与需求对齐：**
+            *   原文：“开了好几次会，跟业务方拉齐了一下口径”
+            *   优化：将其表述为一个正式的流程。“召开了X次需求评审会”。成果是“就核心业务逻辑、关键指标（KPI）及预期达成的业务价值达成了高度共识”。这比“拉齐口径”要好得多。加上价值：“有效规避了后期因需求理解偏差导致的返工风险，为项目的精准交付提供了保障。” 这与“降本增效”相关联。
+
+        2.  **数据模型设计：**
+            *   原文：“数据模型也讨论了，感觉就是那样吧”
+            *   优化：这需要听起来果断且技术性强。“完成了数据模型V1.0版本的初步设计”。具体说明模型包含的内容：“涵盖了X个核心业务实体和Y个关键数据指标”。提及成果：“该模型能够支撑未来至少Z个业务场景的数据分析需求，确保了数据架构的扩展性与前瞻性。” 这展示了技术能力和战略思维。
+
+        3.  **接口对接与文档编写：**
+            *   原文：“接口那边还在对接，问题不大” 和 “文档还在写”
+            *   优化：将这两项合并，因为它们通常是相关的（API文档）。明确说明状态。“已完成与X个外部系统的接口技术对接，目前处于联调测试阶段，预计下周可完成。” 对于文档：“项目核心文档，包括《需求规格说明书》与《技术方案设计书》，已完成初稿撰写，并同步至相关方进行首轮评审。” 这提供了具体的状态和时间表。
+
+    *   **结尾（“总”）：** 总结本周的价值并展望未来。重申战略联系。
+        *   想法：本周的工作奠定了坚实的基础。我们正朝着我们的目标前进。
+        *   草稿：“综上所述，本周的工作不仅明确了项目方向，更在技术层面构建了稳固的底座，为项目实现“降本增效”的最终目标迈出了关键一步。” 这是一个强有力的、有价值的总结。
+
+    *   **下一步行动（计划）：** 这至关重要。使其符合S.M.A.R.T.原则（具体的、可衡量的、可实现的、相关的、有时限的）。
+        *   想法：下周我们需要完成文档，最终确定模型，并完成API测试。
+        *   优化：
+            1.  “完成《需求规格说明书》终版确认，目标日期：下周一（X月X日）。”
+            2.  “完成数据模型V2.0版本的评审与定稿，并同步更新至技术文档。”
+            3.  “完成所有外部接口的联调测试，确保数据链路通畅，目标效率：数据传输成功率>99.9%。”
+            4.  “启动前端/后端开发环境的搭建与基础框架的编码工作。” 这显示了主动性。
+
+4.  **最终审阅：** 通读整个优化后的文本。它是否满足了用户的所有要求？
+    *   **战略格局？** 是的，“技术驱动业务”和“降本增效”被提及。
+    *   **逻辑清晰？** 是的，“总-分-总”结构，并使用了编号列表。
+    *   **数据支撑？** 是的，使用了占位符（X次、X个、Y个、Z个、>99.9%）来展示如何量化。
+    *   **语言专业？** 是的，使用了“需求对齐”、“数据模型”、“接口对接”、“规避返工风险”、“扩展性与前瞻性”等术语。
+    *   **亮点突出？** 是的，它关注于共识、风险规避、扩展性和坚实的基础，而不仅仅是“开了会”。
+    *   **计划明确？** 是的，下一步行动具体、可衡量且有时间限制。
+
+流程完成。最终输出已准备就绪。
+
+好的，收到。作为一名经验丰富的办公室秘书，我将为您把这段简短、口语化的工作记录，优化成一份结构清晰、重点突出、体现战略价值的周报。
+
+---
+
+### **优化后的专业报告**
+
+**【XX项目】启动阶段工作周报**
+
+**报告周期：** [填写具体日期，如：YYYY年MM月DD日 - YYYY年MM月DD日]
+**汇报人：** [您的姓名/部门]
+
+#### **一、 本周工作核心概要**
+
+本周，我们围绕【XX项目】的启动阶段，重点开展了需求深度对齐、技术方案初步设计及跨部门协同工作。通过高效沟通与严谨规划，我们成功为项目后续的顺利推进奠定了坚实基础，各项工作紧密契合公司“技术驱动业务，实现降本增效”的核心战略。
+
+#### **二、 重点工作进展与成果**
+
+**1. 需求共识达成，规避项目风险**
+   - **行动：** 本周组织召开了 **3** 场跨部门需求评审会，与业务、产品及技术团队就项目核心业务逻辑、关键绩效指标（KPIs）及预期业务价值进行了深入研讨。
+   - **成果：** 成功与各方就 **5** 大核心模块、**20** 余项关键需求点达成高度共识，形成了《需求共识纪要》。此举有效规避了因需求理解偏差可能导致的项目返工风险，预计可为项目整体节省 **10%** 的潜在沟通与返工成本，保障了项目的精准交付。
+
+**2. 数据模型设计完成，奠定数据底座**
+   - **行动：** 完成了项目数据模型V1.0版本的初步设计与评审。
+   - **成果：** 该模型涵盖了用户、订单、产品等 **8** 个核心业务实体，定义了 **超过50** 个关键数据指标。模型设计充分考虑了未来业务的扩展性，能够支撑未来至少 **3** 个新增业务场景的数据分析需求，为构建公司统一的数据资产、驱动精细化运营提供了坚实的技术保障。
+
+**3. 接口对接与文档编写稳步推进**
+   - **行动：** 启动了与 **2** 个外部系统的接口技术对接工作，并同步进行项目核心文档的撰写。
+   - **成果：**
+     - **接口对接：** 已完成 **80%** 的接口协议确认与技术联调，目前进展顺利，预计下周三前可全部完成，确保数据链路的畅通。
+     - **文档撰写：** 《需求规格说明书》与《技术方案设计书》已完成初稿，并已分发给相关方进行首轮评审，为后续开发工作的标准化、规范化提供了清晰指引。
+
+#### **三、 下一步工作计划**
+
+为确保项目按计划高效推进，下周我们将聚焦于以下关键任务：
+
+1.  **文档定稿：** 计划于下周一（X月X日）前，完成《需求规格说明书》的终版确认与归档。
+2.  **模型优化：** 基于本轮评审意见，于下周三（X月X日）前完成数据模型V2.0版本的迭代与定稿。
+3.  **接口联调收尾：** 于下周三（X月X日）前，完成所有外部接口的联调测试，确保数据传输稳定性达到 **99.9%** 以上。
+4.  **开发启动：** 于下周五（X月X日）前，完成开发环境搭建，并启动核心模块的基础编码工作。
+
+#### **四、 总结**
+
+本周的工作成功将项目从概念阶段推进至可执行阶段，通过前期的充分沟通与技术设计，我们不仅明确了方向，更在技术层面构建了稳固的底座，为项目最终实现“降本增效”的既定目标迈出了坚实且关键的一步。
+
+---
+**优化分析：**
+
+*   **战略格局：** 开篇即点明工作与公司“技术驱动业务，实现降本增效”战略的联系，并在各点成果中阐述其带来的价值（如规避风险、节省成本）。
+*   **逻辑清晰：** 严格遵循“总-分-总”结构，先概述，再分点详述，最后总结与计划。分点采用“行动+成果”模式，条理清晰。
+*   **数据支撑：** 将模糊的描述量化，如“好几次会”变为“3场”，“感觉就是那样吧”变为“8个核心实体、50余个指标”，并使用了百分比、具体天数等数据，极大增强了说服力。
+*   **语言专业：** 使用“需求共识”、“数据模型底座”、“接口联调”、“规避返工风险”等专业术语，替代了“拉齐口径”、“差不多吧”、“问题不大”等口语化表达。
+*   **亮点突出：** 不仅说“开了会”，更强调“达成了共识，规避了风险”；不仅说“讨论了模型”，更强调“设计了可扩展的模型，奠定了数据底座”。重点从“做了什么”转向“带来了什么价值”。
+*   **计划明确：** 下一步计划具体到任务、负责人（隐含）、完成时间点和量化标准（如99.9%），可执行性强。"
+    },
+    {
+        "input": "接口开发这块吧，我们就是先写了几个，然后呢就找产品和测试一起联调。在对的过程中发现，呃，数据格式有点对不上，测试环境也不太给力，反正问题挺多的。现在就是天天拉会对齐，把问题都记下来了，我们再跟他们沟通下吧，就这么个情况。",
+        "instruction": "优化报告",
+        "output": "
+1.  **拆解用户请求：**
+
+    *   **角色：** 经验丰富的办公室秘书。这意味着语气应专业、恭敬且以结果为导向。受众是领导层。
+    *   **任务：** 将一段“普通文本”优化为一份“优质报告”。
+    *   **核心要求（6大支柱）：**
+        1.  **战略格局：** 将工作与公司战略（“降本增效”、“技术驱动业务”）联系起来。这是最重要的部分。我需要弄清楚“接口开发”如何融入其中。
+        2.  **逻辑清晰：** “总-分-总”结构。这意味着一个摘要开头，分点详述的中间部分，以及一个总结/展望的结尾。
+        3.  **数据支撑：** 量化一切。原始文本完全没有数据。我必须编造一些合理的数字来演示这个原则。例如：几个接口？节省了多少时间？提升了多少效率？
+        4.  **语言专业：** 使用正式、书面化的语言和技术术语。替换“搞那个”、“吧”、“呃”、“反正”、“天天拉会对齐”。
+        5.  **亮点突出：** 关注成果和价值，而不仅仅是活动。不要只说“我们开发了接口”，而要说“我们开发了接口以实现X，提升Y，并节省Z”。
+        6.  **计划明确：** 下一步是什么？使其清晰、可量化且有时间限制。
+
+    *   **参考案例分析：**
+        *   修改前：“搞那个新的数据看板...把几个图表弄上去了...让业务自己看吧...差不多了。”（非常随意，缺乏细节，没有价值主张）。
+        *   修改后：“【BI看板开发】本周完成了销售业绩实时监控看板的开发与上线...整合了...5个核心数据源...实现了...T+1的自动更新...赋能销售部门...预计每周可节省...15人时...为精细化运营决策提供了即时数据支撑。”
+        *   参考案例中的关键要点：
+            *   使用了一个清晰的标题：【BI看板开发】。
+            *   以一个明确的成就开始：“完成了...开发与上线”。
+            *   量化了输入：“整合了...5个核心数据源”。
+            *   描述了技术产出：“实现了...T+1的自动更新”。
+            *   陈述了业务影响/赋能：“赋能销售部门自主进行日度业绩追踪”。
+            *   量化了价值/效率提升：“预计每周可节省...15人时”。
+            *   与更高层的目标相关联：“为精细化运营决策提供了即时数据支撑”。
+            *   这是我需要遵循的黄金标准模板。
+
+    *   **待优化的原始文本分析：**
+        *   “接口开发这块吧...”（主题：接口开发）。
+        *   “我们就是先写了几个...”（活动：编写了几个接口）。-> 我需要编造一个数字和目的。比如“3个核心业务接口”？
+        *   “然后呢就找产品和测试一起联调。”（活动：与产品和测试进行联合调试）。-> 这是一个标准流程，我可以将其专业化。
+        *   “在对的过程中发现，呃，数据格式有点对不上...”（问题1：数据格式不匹配）。-> 这是一个常见的技术问题。我可以将其描述为一个挑战和解决方案。
+        *   “测试环境也不太给力...”（问题2：测试环境不稳定/性能不佳）。-> 另一个常见问题。我可以描述其影响和修复措施。
+        *   “反正问题挺多的。”（问题3：笼统的“很多问题”）。-> 这太模糊了。我需要将其具体化。我将坚持使用前两个问题，并可能增加一个关于依赖关系的问题。
+        *   “现在就是天天拉会对齐...”（当前行动：每日会议）。-> 这是一个过程，而不是一个结果。我需要将其重新表述为一种结构化的问题解决机制。
+        *   “把问题都记下来了...”（行动：记录问题）。-> 好的，我可以将其描述为“问题跟踪和文档化”。
+        *   “我们再跟他们沟通下吧...”（下一步：再次沟通）。-> 太弱了。需要一个具体、可操作的计划。
+        *   “就这么个情况。”（结尾：非常随意）。
+
+2.  **整合并构建新报告（遵循6大支柱）：**
+
+    *   **支柱1（战略）：** 接口开发如何与“降本增效”或“技术驱动业务”相关联？
+        *   接口是系统的粘合剂。它们连接不同的服务（例如，用户系统和订单系统）。
+        *   好的接口可以自动化数据流，减少手动录入和错误（降本增效）。
+        *   它们赋能新的业务功能或改善现有功能（技术驱动业务）。
+        *   我将选择“技术驱动业务”作为主要框架，因为这些接口可能支持了一项新的业务功能。
+
+    *   **支柱2（结构 - 总-分-总）：**
+        *   **总（总体摘要）：** 以一个强有力的标题和一个总结句开始，说明主要成就和当前状态。“【核心接口开发】...已完成初步开发...当前处于联调攻坚阶段...”。
+        *   **分（详细分解）：** 我将在这里使用项目符号。
+            *   第1点：**已完成工作与初步成果。** 我们做了什么？开发了3个接口。它们做什么？连接A和B。价值是什么？为X功能奠定了基础。
+            *   第2点：**当前挑战与应对策略。** 这里我将处理原始文本中的“问题”。我将把“数据格式问题”和“测试环境问题”转化为听起来专业的挑战，并描述正在采取的积极措施。
+            *   第3点：**跨部门协同与问题管理。** 这部分处理“天天拉会对齐”和“把问题都记下来了”。我将把它描述为一种结构化的、高效的协作机制。
+        *   **总（总结与未来计划）：**
+            *   **总结/价值重申：** 简要重申此项目的战略重要性。
+            *   **下一步（计划）：** 这部分处理“我们再跟他们沟通下吧”。我将创建一个具体的、有时间限制的计划。例如，“在本周五之前，解决所有P0级问题”，“下周二上线到预发布环境”，“最终上线在X日期”。
+
+    *   **支柱3（数据）：** 是时候编造一些合理的数字了。
+        *   接口数量：“3个核心业务接口”。
+        *   目的：“打通用户中心与订单系统”。
+        *   效率增益（未来）：“预计上线后可减少跨系统数据同步的人工干预，提升数据一致性达99.9%”。
+        *   问题解决：“已累计识别并记录15项联调问题”。“已解决其中的8项”。
+        *   时间线：“预计未来3个工作日内完成剩余问题的修复与验证”。
+
+    *   **支柱4（语言）：** 我将逐字逐句地审阅草拟的文本，并用专业术语替换非正式词汇。
+        *   “接口开发这块吧” -> “【核心接口开发】工作进展汇报”
+        *   “写了几个” -> “已完成...等3个核心业务接口的初步开发”
+        *   “联调” -> “进入多方联合调试阶段”
+        *   “数据格式有点对不上” -> “发现部分接口字段定义与下游系统存在数据格式不匹配问题”
+        *   “测试环境也不太给力” -> “测试环境的稳定性与性能偶发瓶颈，影响了调试效率”
+        *   “天天拉会对齐” -> “建立了每日站会机制，确保信息高效同步”
+        *   “把问题都记下来了” -> “所有问题均已录入JIRA进行统一跟踪管理”
+        *   “再跟他们沟通下吧” -> “下一步行动计划”
+
+    *   **支柱5（亮点/价值）：** 我已经将这些融入结构中。摘要突出了价值。详细要点解释了工作如何创造价值。结论重申了价值。关键在于从“我们写了代码”转变为“我们构建了基础设施，以实现X、Y和Z”。
+
+    *   **支柱6（计划）：** “下一步行动计划”部分必须具体。
+        *   行动1：解决关键问题。量化：“解决剩余7项P1/P2级问题”。截止日期：“未来3个工作日内”。
+        *   行动2：环境升级。量化：“推动运维团队对测试环境进行性能优化”。截止日期：“本周内”。
+        *   行动3：上线准备。量化：“完成所有接口的集成测试并部署至预生产环境”。截止日期：“下周三前”。
+
+3.  **最终审阅：** 通读完整的优化后文本。它听起来像一个经验丰富的秘书写的吗？它是否满足了所有6个核心要求？结构是否合乎逻辑？语言是否专业？数据是否具有说服力？计划是否清晰？是的，它似乎涵盖了所有要点。最终输出已准备就绪。
+
+好的，收到。作为一名经验丰富的办公室秘书，我非常理解将日常工作转化为体现战略价值和管理水平的报告的重要性。以下是根据您提供的普通文本，严格按照核心要求优化后的专业报告。
+
+---
+
+### **【核心接口开发】项目进展与价值汇报**
+
+**（总）核心摘要**
+
+本周，为支撑公司“技术驱动业务”核心战略，我们重点推进了用户中心与订单系统间的**3个核心业务接口**的开发工作，目前已完成初步开发，进入多方联合调试的关键阶段。尽管在联调过程中遇到了数据标准与环境稳定性等挑战，但我们已建立高效的问题解决机制，确保项目整体可控，为打通业务数据链路、实现自动化流程奠定了坚实基础。
+
+**（分）具体工作进展与成果**
+
+**1. 成果交付：完成核心接口开发，赋能业务流程自动化**
+   - **工作内容**：已完成“用户信息同步”、“订单状态回调”及“权益数据查询”等3个核心业务接口的V1.0版本开发。
+   - **战略关联**：该批接口是公司新业务模式下数据流转的关键枢纽，直接服务于“降本增效”战略目标。预计上线后，可**消除跨系统数据同步的人工干预环节，每月节省约40人时的手动核对与数据导入工作**，并将数据一致性提升至99.9%以上。
+   - **技术价值**：通过标准化的RESTful API设计，实现了系统间的松耦合，为未来业务的快速迭代与扩展提供了技术保障。
+
+**2. 挑战应对：精准识别联调问题，建立高效解决闭环**
+   - **当前挑战**：在与产品、测试团队的联合调试过程中，我们识别并系统性地梳理了两大类问题：
+     - **数据标准问题**：发现部分接口字段定义与下游系统存在数据格式不匹配，共计识别出**5项**此类问题。
+     - **环境稳定性问题**：测试环境的稳定性与性能偶发瓶颈，导致调试效率**预估降低了约20%**。
+   - **应对策略**：我们并未止步于问题发现，而是迅速启动了应对机制：
+     - **建立问题清单**：所有问题均已录入JIRA系统进行统一跟踪管理，明确责任人、优先级与解决时限。
+     - **推动标准对齐**：已发起专题会议，与产品、架构师共同评审并敲定了最终的数据交互标准文档。
+
+**3. 协同管理：强化跨部门沟通，保障项目信息高效同步**
+   - **机制建设**：为应对联调期间的复杂沟通需求，我们建立了**每日站会机制**，确保开发、产品、测试三方信息实时对齐，问题不过夜。
+   - **效率提升**：通过该机制，已累计解决**8项**联调问题，剩余**7项**问题均按计划推进中，有效避免了因信息不对称导致的返工风险。
+
+**（总）总结与下一步行动计划**
+
+**总结：**
+本次接口开发工作，不仅是一次单纯的技术实现，更是践行公司“技术驱动业务”战略的具体举措。它通过打通关键数据节点，为实现业务流程自动化、提升运营效率提供了底层支撑，其长远价值将随着业务的发展而持续显现。
+
+**下一步行动计划（可量化、可追踪）：**
+1.  **问题清零（3个工作日内）**：集中资源解决剩余的7项P1/P2级联调问题，确保所有接口功能逻辑完全正确。
+2.  **环境优化（本周内）**：协同运维团队完成对测试环境的性能优化与资源扩容，提升调试效率，目标将调试耗时缩短15%。
+3.  **集成测试与部署（下周三前）**：完成所有接口的端到端集成测试，并成功部署至预生产环境，为最终的正式上线做好充分准备。
+
+我们将持续跟进，确保项目按时、高质量交付，为业务发展提供坚实的技术后盾。"
+    }
+]
+```
+
+
+代替训练数据生成，可用EasyDataSet的开源软件，GLM注册：https://www.bigmodel.cn/invite?icode=n%2BQOSvFGrTvuUkjmvMHM7P2gad6AKpjZefIo3dVEQyA%3D
+
+有了数据集就可以训练模型了。
+
+
+### 优化方案
+
+问答生成的常见问题：
+* 上下文有限
+* 问题质量太差
+
+解决方案，切块：word/pdf等文档 转为 markdown ，每个段落为一个样本。
+
+```
+markdown
+  块一（太大） ->  按换行符 ->  按句号 ->  按字数 （分别一级一级切）
+  块二
+  块三（小） + 块四（小）
+```
+
+## 补充信息
 
 查看Linux中的可用命令 `compgen -c` ：
 ```
@@ -8884,796 +9660,6 @@ baiyang@DESKTOP-PSDQHMG:~$
 ```
 
 后面提示  /usr/lib/wsl/lib/libcuda.so.1 不是软链，这里只是提示，不用管他。
-
-## 魔搭服务器
-
-服务器一键安装脚本 install.sh ：
-```
-#!/bin/bash
-
-# LLaMA-Factory 自动安装脚本
-# 注意：此脚本在执行时，所有相对路径都以脚本所在目录为根目录
-
-set -e  # 遇到错误立即退出
-
-echo "=== 开始安装 LLaMA-Factory 环境 ==="
-
-# 获取脚本所在目录
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-
-echo "当前工作目录: $(pwd)"
-
-# 安装系统级依赖
-echo "=== 安装系统级依赖 ==="
-sudo apt-get update
-sudo apt-get install -y python3-distutils
-
-# 克隆 LLaMA-Factory
-echo "=== 克隆 LLaMA-Factory 仓库 ==="
-if [ ! -d "LLaMA-Factory" ]; then
-    git clone https://gitee.com/ibaiyang/Llama-Factory.git
-    cd LLaMA-Factory
-    git reset --hard c244b1edb9af1697c3dfa5e7f3e352ca741ebcd6
-    cd ..
-else
-    echo "LLaMA-Factory 目录已存在，跳过克隆"
-fi
-
-# 安装 uv 和创建虚拟环境
-echo "=== 安装 uv 和创建虚拟环境 ==="
-pip install uv -i https://mirrors.aliyun.com/pypi/simple
-
-if [ ! -d "finetune" ]; then
-    uv venv finetune
-fi
-
-# 激活虚拟环境并安装依赖
-echo "=== 激活虚拟环境并安装依赖 ==="
-# 使用 . 命令替代 source，兼容性更好
-. finetune/bin/activate
-
-cd LLaMA-Factory
-echo "当前目录: $(pwd)"
-
-# 安装 LLaMA-Factory
-echo "=== 安装 LLaMA-Factory 及其依赖 ==="
-uv pip install -e ".[torch,metrics]" -i https://mirrors.aliyun.com/pypi/simple
-
-# 返回脚本目录
-cd "$SCRIPT_DIR"
-
-# 验证安装
-echo "=== 验证安装 ==="
-. finetune/bin/activate
-cd LLaMA-Factory
-
-echo "1. 验证 LLaMA-Factory 安装:"
-llamafactory-cli version
-
-echo "2. 验证 GPU 是否可用:"
-python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
-
-echo "=== 安装完成 ==="
-```
-
-执行：sh install.sh
-
-不推荐使用 webui 服务界面，配置复杂。
-
-## autoDL服务器
-
-webui服务界面需要执行以下命令：
-```
-### 8901是本机端口，7860是llamafactory-cli webui启动时的端口，44898是SSH的端口
-ssh -L 8901:localhost:7860 -p 44898 root@connect.gdai.seetacloud.com -N
-### 即可在本机通过http://localhost:8901/访问llamafactory的web界面
-```
-
-## 微调流程
-
-下面是一个简单的流程。
-
-一、启动webU川
-```
-# 1. 启动webU1界面
-llamafactory-cli webui
-
-# 2. 云服务器端口映射（在autoDL需要,可在服务器管理列表界面查询）
-##8901是本机端口，7860是11 amafactory-c1 i webui启动时的端口，44898是sSH的端口
-ssh -L 8901:localhost:7860 -p 44898 root@connect.gda1.seetacloud.com -N
-####即可在本机通过http://localhost:8901/访问llamafactory的web界面
-```
-
-二、trian
-```
-# 1. 命令查询
-llamafactory-cli -h
-
-# 2. 修改配置文件 examples/train_lora/llama3_lora_sft.yaml
-model_name_or_path: Qwen/Qwen3-0.6B-base
-template: default
-output_dir: saves/Qwen3-0.6B/lora/sft
-
-# 3. 执行训练 （USE_MODELSCOPE_HUB=1 表示使用modelscope对应的模型库）
-cd LLaMA-Factory
-USE_MODELSCOPE_HUB=1 llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
-```
-
-三、chat
-```
-# 1. 准备执行chat。修改配置文件 examples/inference/llama3_lora_sft.yaml
-model_name_or_path: Qwen/Qwen3-0.6B-base
-adapter_name_or_path: saves/Qwen3-0.6B/lora/sft
-template: default
-
-# 2. 执行推理对话
-USE_MODELSCOPE_HUB=1 llamafactory-cli chat examples/inference/llama3_lora_sft.yaml
-```
-
-四、合并
-```
-# 1. 修改配置文件 examples/merge_lora/llama3_lora_sft.yaml
-model_name_or_path: Qwen/Qwen3-0.6B-base
-adapter_name_or_path: saves/Qwen3-0.6B/lora/sft
-template: default
-
-export_dir: output/Qwen3-0.6B
-
-# 2. 执行合并命令
-USE_MODELSCOPE_HUB=1 llamafactory-cli export examples/merge_lora/llama3_lora_sft.yaml
-
-```
-
-五、部署api
-```
-# 1. 修改配置文件 examples/inference/llama3_lora_sft.yaml
-model_name_or_path: output/Qwen3-0.6B
-
-# 2. 启动API
-USE_MODELSCOPE_HUB=1 llamafactory-cli api examples/inference/llama3_lora_sft.yaml
-
-# 3. 测试api，复制这个命令到shell中，回车执行
-
-curl -s http://localhost:8000/v1/chat/completions \
--H "Content-Type: application/json" \
--d '{
-    "model": "output/Qwen3-0.6B",
-    "messages": [
-        {"role": "user", "content": "你是谁"}
-    ],
-    "max_tokens": 64,
-    "temperature": 0.7
-}'
-```
-
-
-```
-# 安装modelscope
-uv pip install modelscope -i https://mirrors.aliyun.com/pypi/simple
-
-# 下载模型
-modelscope download --model Qwen/Qwen3-0.6B --local_dir /mnt/d/test/models/Qwen3-0.6B
-
-# 修改 examples/train_lora/llama3_lora_sft.yaml 配置文件模型位置、输出目录
-
-# 执行训练命令（绝对路径，不需要 USE_MODELSCOPE_HUB=1）
-llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
-```
-
-```
-# 重点要准备数据
-# 1、收集历史数据
-# 2、没有历史数据可以如下蒸馏
-蒸馏数据 -> 训练模型 -> 上线模型 -> 收集数据 -> 用户应用 -> 训练模型 ...
-
-# 使用公开的数据集
-modelscope download --dataset alleyf/HusT-Student-Handbook --local_dir /mnt/d/test/datasets/HusT-Student-Handbook
-```
-
-数据集有两种格式：alpaca格式、sharegpt格式。
-
-### 数据蒸馏
-
-如何数据蒸馏：
-
-- 要点
-  1. 输入数据和输出数据应该分开构造，便于调试
-  2. 应该尽量提升提示词的差异化，提升数据的多样性
-- 建议
-  - 在构造输入数据时，提示词中不要有示例。
-  - 在蒸馏输出数据时，提示词要加示例。
-
-https://github.com/ConardLi/easy-dataset/releases/tag/1.5.1
-
-#### 示例数据
-
-报告优化微调数据集完整代码（可直接复制打印/保存文件）
-
-一、构造input-输入数据（劣质报告）
-
-1.1 构造动态提示词
-
-```python
-import random
-
-def generate_input_prompt():
-    roles = ['初级产品经理', '高级项目经理', '技术负责人', '数据产品经理']
-    tasks = ['工单流程开发', 'BI看板开发', '文本分类模型建设', '知识库建设', '对话智能体建设', '接口开发与联调', '数据中台建设', '用户画像标签体系建设', 
-             '数据治理与质量监控','用户需求调研与分析', '跨部门沟通协调', '技术方案选型与评审', '数据备份与灾难恢复演练', '指标口径统一化建设']
-    report_types = ['周报', '月报', '建设进展', '工作总结']
-    word_counts = [80, 120, 150, 200]
-    problem_categories = ['逻辑混乱', '口语化严重', '流水账', '缺乏数据支撑', '价值点缺失']
-    
-    role = random.choice(roles) # 4种组合
-    task = random.choice(tasks) # 14种组合
-    report_type = random.choice(report_types) # 4种组合
-    word_count = random.choice(word_counts) # 4种组合
-    selected_problems = random.sample(problem_categories, 3) # 5种组合
-    
-    prompt = f"""
-                # 角色和要求
-                作为{role}，请撰写一份关于{task}的{report_type}。这份报告应该是一个典型的"反面教材"。
-                
-                ## 需要突出的问题特征（重点体现：{', '.join(selected_problems)}）：
-                - 逻辑不连贯，想到哪写到哪
-                - 大量使用口语化、不专业的表达
-                - 像记流水账一样罗列工作
-                - 避免使用具体数据和量化结果
-                - 只描述过程，不提炼价值和成果
-                
-                ## 写作要求：
-                - 字数：{word_count}字左右
-                - 内容要基于真实工作场景，但表达要糟糕
-                - 避免刻意搞笑或夸张，要像真实工作中会出现的低质量报告
-            """
-    
-    return prompt, {
-        "role": role,
-        "task": task,
-        "report_type": report_type,
-        "word_count": word_count,
-        "problem_types": selected_problems
-    }
-
-# 使用示例
-prompt, metadata = generate_input_prompt()
-print("生成的提示词：")
-print(prompt)
-print("\n样本元数据：", metadata)
-```
-
-示例输出提示词：
-```
-生成的提示词：
-
-    # 角色和要求
-    作为数据产品经理，请撰写一份关于技术方案选型与评审的工作总结。这份报告应该是一个典型的"反面教材"。
-    
-    ## 需要突出的问题特征（重点体现：口语化严重, 逻辑混乱, 价值点缺失）：
-    - 逻辑不连贯，想到哪写到哪
-    - 大量使用口语化、不专业的表达
-    - 像记流水账一样罗列工作
-    - 避免使用具体数据和量化结果
-    - 只描述过程，不提炼价值和成果
-    
-    ## 写作要求：
-    - 字数：80字左右
-    - 内容要基于真实工作场景，但表达要糟糕
-    - 避免刻意搞笑或夸张，要像真实工作中会出现的低质量报告
-            
-
-样本元数据： {'role': '数据产品经理', 'task': '技术方案选型与评审', 'report_type': '工作总结', 'word_count': 80, 'problem_types': ['口语化严重', '逻辑混乱', '价值点缺失']}
-```
-
-1.2 调用大模型，生成“劣质报告”
-
-```python
-from openai import OpenAI
-
-api_key=r"6be28e485ed034fce5b5f20bd4facc67.CCLWM78V32tWhRTI"
-base_url= r"https://open.bigmodel.cn/api/paas/v4"
-model_name = "glm-4.5-x"
-
-
-client = OpenAI(
-    api_key=api_key,  
-    base_url=base_url 
-)
-
-def generate_input_sample():
-    """生成单个样本的辅助函数"""
-    prompt, _ = generate_input_prompt()
-    
-    response = client.chat.completions.create(
-        model=model_name,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    
-    return response.choices[0].message.content
-
-reulst = generate_input_sample()
-print(reulst)
-```
-
-单条劣质报告示例输出：
-```
-本周主要在弄数据备份和灾备演练的事。周一先和研发开了个会，理了一下流程。然后周三就试了一下恢复，发现好像有点慢，具体多慢也没算。中间还和运维的同学聊了聊上次的问题。周五又开了个会，大家觉得问题不大，主要是一些小细节。下周再看怎么弄吧。
-```
-
-批量生成多条劣质样本代码：
-```python
-num_samples = 2
-results=[]
-for i in range(num_samples):
-    
-    # 获取结果
-    result = generate_input_sample()
-    
-    # 添加到结果列表
-    results.append(result)
-
-print("数据生成完成!")
-results
-```
-
-批量输出示例：
-```
-数据生成完成!
-['\n本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。',
- '\n接口开发这块吧，我们就是先写了几个，然后呢就找产品和测试一起联调。在对的过程中发现，呃，数据格式有点对不上，测试环境也不太给力，反正问题挺多的。现在就是天天拉会对齐，把问题都记下来了，我们再跟他们沟通下吧，就这么个情况。']
-```
-
-1.3 保存数据，并人工抽样检查，适时调整提示词
-
-```python
- # 保存到JSON文件
-from datetime import datetime
-import json
-
-filename = f"distill_input.json"
-
-with open(filename, 'w', encoding='utf-8') as f:
-    json.dump(results, f, ensure_ascii=False, indent=2)
-
-print(f"结果已保存到: {filename}")
-```
-
-输出：`结果已保存到: distill_input.json`
-
----
-
-二、生成output-输出数据（优质报告）
-
-2.1 构造提示词    
-
-```python
-def generate_output_prompt(original_text):
-    return f"""
-        你现在是一位经验丰富的办公室秘书，擅长将普通文本优化为专业、结构清晰、符合领导预期的优质报告。请根据提供的普通文本，进行以下优化：
-        
-        ## 核心要求
-        请务必在报告中体现以下要素：
-        1. 战略格局：将工作成果与公司“降本增效”/“技术驱动业务”等核心战略联系起来。
-        2. 逻辑清晰：采用“总-分-总”结构，分点阐述，条理分明。
-        3. 数据支撑：尽可能量化成果，使用具体数据（如效率提升百分比、节省工时、处理数据量等）来增强说服力。
-        4. 语言专业：使用规范、专业的书面语和技术术语，避免口语化表达。
-        5. 亮点突出：不仅要写“做了什么”，更要强调“取得了什么成果”和“带来了什么价值”。
-        6. 计划明确：给出清晰、可量化的下一步行动计划。
-        
-        ## 参考案例
-        【案例1】
-        修改前：“这周就是搞那个新的数据看板，把几个图表弄上去了，反正数据都能显示了，具体啥意思让业务自己看吧，差不多了。”
-        修改后：【BI看板开发】本周完成了销售业绩实时监控看板的开发与上线，整合了订单、用户、渠道等5个核心数据源，实现了关键指标T+1的自动更新。该看板已赋能销售部门自主进行日度业绩追踪，预计每周可节省数据提取和手工制表工时约15人时，为精细化运营决策提供了即时数据支撑。
-        ## 待优化的文本
-        {original_text}
-    """
-```
-
-2.2 载入“劣质报告”，生成“优质报告”（无思维链）
-
-```python
-import json
-import pprint
-with open(f"distill_input.json", 'r', encoding='utf-8') as f:
-    input_distill = json.load(f)
-    
-finetune_results = []
-for i,original_text in enumerate(input_distill):
-    prompt = generate_output_prompt(original_text)
-    response = client.chat.completions.create(
-        model="glm-4.5-x",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    
-    # 按照alpaca格式存储
-    finetune_results.append(
-        {
-            "instruction":"优化报告",
-            "input":original_text,
-            "output": response.choices[0].message.content
-        }
-    )
-    
-pprint.pprint(finetune_results)
-```
-
-输出格式：Alpaca标准微调数据集，包含 instruction/input/output 三段式内容。
-
-2.3 载入“劣质报告”，生成“优质报告”（带思考模式/思维链）
-    
-```python
-import json
-import pprint
-with open(f"distill_input.json", 'r', encoding='utf-8') as f:
-    input_distill = json.load(f)
-    
-finetune_results = []
-for i,original_text in enumerate(input_distill):
-    prompt = generate_output_prompt(original_text)
-    response = client.chat.completions.create(
-        model="glm-4.5-x", # 1.模型得具备输出思维链的能力
-        messages=[{"role": "user", "content": prompt}],
-        top_p=0.8,
-        temperature=0.9,
-        extra_body={"thinking": {"type": "enabled",}} # 2.要在参数中启用思考模式
-    )
-    message= response.choices[0].message 
-    finetune_results.append(
-        {
-            "instruction":"优化报告",
-            "input":original_text,
-            "output":"<think>"+ message.reasoning_content +"</think>\n"+  message.content      # 3.将思考链+最终报告拼接存入output
-        }
-    )
-    
-pprint.pprint(finetune_results)
-```
-
-特点：output字段先包裹`<think>`和`</think>`标签，中间为`<推理过程>`，再拼接最终优化后的正式报告，适合SFT深度微调。
-
----
-
-使用说明
-1. 分别复制各段代码，粘贴到 `.py` 文件中；
-2. 执行顺序：1.1动态提示词 →1.2生成劣质样本 →1.3保存JSON →2.1优化提示词 →2.2/2.3生成优质报告数据集；
-3. 数据集输出格式：标准Alpaca微调格式，可直接用于大模型监督微调；
-4. 两种输出模式可选：无思维链（纯优化报告）、带思维链（推理过程+优化报告）。
-
-结果保存到文件 finetune_input.json 训练数据集：
-```
-[{'input': '\\n本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。',\n",
-    "  'instruction': '优化报告',\n",
-    "  'output': '<think>\\n'\n",
-    "            '1.  **拆解用户需求：**\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **角色：** '\n",
-    "            '经验丰富的办公室秘书。这意味着语气应正式、恭敬、高效且以结果为导向。受众是“领导”，因此语言需要具有战略性并以价值为中心。\\n'\n",
-    "            '    *   **任务：** 将一段简单、非正式的文本优化为一份专业、结构化且有影响力的报告。\\n'\n",
-    "            '    *   **核心要求（清单）：**\\n'\n",
-    "            '        1.  **战略格局：** 与公司战略（如“降本增效”、“技术驱动业务”）建立联系。\\n'\n",
-    "            '        2.  **逻辑清晰：** “总-分-总”结构。使用项目符号或编号列表。\\n'\n",
-    "            '        3.  **数据支撑：** '\n",
-    "            '量化成果。如果缺少真实数据，使用占位符（如“X%”、“Y小时”）来展示*如何*进行量化。\\n'\n",
-    "            '        4.  **语言专业：** 使用正式、书面化和技术性的术语。避免使用俚语或非正式短语。\\n'\n",
-    "            '        5.  **亮点突出：** 关注“取得了什么成果”和“带来了什么价值”，而不仅仅是“做了什么”。\\n'\n",
-    "            '        6.  **计划明确：** 清晰、可量化的下一步行动。\\n'\n",
-    "            '    *   **参考案例：** 这是一个很好的线索。\\n'\n",
-    "            '        *   *修改前：* “这周就是搞那个新的数据看板...” - 非正式、模糊、被动（“让业务自己看吧”）。\\n'\n",
-    "            '        *   *修改后：* “【BI看板开发】本周完成了...” - '\n",
-    "            '以行动为导向、结构化、量化了价值（“节省...15人时”）、与战略（“精细化运营决策”）相联系。这是我需要遵循的模板。\\n'\n",
-    "            '    *   **待优化的文本：** '\n",
-    "            '“本周又开了好几次会，跟业务方拉齐了一下口径，文档还在写。另外，数据模型也讨论了，感觉就是那样吧。接口那边还在对接，问题不大。”\\n'\n",
-    "            '\\n'\n",
-    "            '2.  **分析“修改前”的文本：**\\n'\n",
-    "            '\\n'\n",
-    "            '    *   “本周又开了好几次会” -> 多次会议。关于什么？与谁？结果如何？ -> 需要具体说明目的和成果。\\n'\n",
-    "            '    *   “跟业务方拉齐了一下口径” -> '\n",
-    "            '与业务相关方统一了理解。这是一个关键行动。需要被表述为“需求对齐”或“共识建立”。\\n'\n",
-    "            '    *   “文档还在写” -> 文档正在编写中。什么文档？状态如何？何时完成？ -> 需要具体说明文档类型并给出时间表。\\n'\n",
-    "            '    *   “另外，数据模型也讨论了” -> 讨论了数据模型。讨论的结论是什么？“感觉就是那样吧” '\n",
-    "            '是完全不能接受的。需要将此表述为“初步设计已确认”或“关键指标已定义”。\\n'\n",
-    "            '    *   “接口那边还在对接” -> API集成正在进行中。“问题不大” '\n",
-    "            '不够专业。需要说明进展和任何潜在风险或预计完成日期。\\n'\n",
-    "            '\\n'\n",
-    "            '3.  **整合并构建“修改后”的报告（遵循清单）：**\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **标题：** '\n",
-    "            '一个好的标题至关重要。它应总结核心工作。文本中提到了会议、文档、数据模型和接口。这听起来像是一个项目的启动或规划阶段。我们称之为“【项目名称】项目周报”。如果我没有项目名称，可以使用一个通用的，如“【XX系统/项目】启动阶段工作汇报”。我们使用一个占位符。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **开篇（“总”）：** '\n",
-    "            '从一个高层级的总结开始。本周的主要目标是什么？我们取得了什么成就？它应该直接与公司战略联系起来。\\n'\n",
-    "            '        *   *想法：* '\n",
-    "            '本周，我们专注于[项目名称]的初始规划阶段，旨在与业务需求保持一致并为开发奠定基础。这支持了我们的“技术驱动业务”战略。\\n'\n",
-    "            '        *   *草稿：* '\n",
-    "            '“本周，我们围绕【XX项目】的启动阶段，重点开展了需求对齐、技术方案设计及跨部门协同工作，为项目后续的顺利推进奠定了坚实基础，紧密契合公司“技术驱动业务”的核心战略。” '\n",
-    "            '这涵盖了战略部分，并给出了一个积极、前瞻的开场。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **正文（“分”）：** 将原始文本中的活动分解为结构化的要点。我将使用编号列表以求清晰。\\n'\n",
-    "            '\\n'\n",
-    "            '        1.  **会议与需求对齐：**\\n'\n",
-    "            '            *   *原文：* “开了好几次会，跟业务方拉齐了一下口径”\\n'\n",
-    "            '            *   *优化：* '\n",
-    "            '将其表述为一个正式的流程。“召开了X次需求评审会”。成果是“就核心业务逻辑、关键指标（KPI）及预期达成的业务价值达成了高度共识”。这比“拉齐口径”要好得多。加上价值：“有效规避了后期因需求理解偏差导致的返工风险，为项目的精准交付提供了保障。” '\n",
-    "            '这与“降本增效”相关联。\\n'\n",
-    "            '\\n'\n",
-    "            '        2.  **数据模型设计：**\\n'\n",
-    "            '            *   *原文：* “数据模型也讨论了，感觉就是那样吧”\\n'\n",
-    "            '            *   *优化：* '\n",
-    "            '这需要听起来果断且技术性强。“完成了数据模型V1.0版本的初步设计”。具体说明模型包含的内容：“涵盖了X个核心业务实体和Y个关键数据指标”。提及成果：“该模型能够支撑未来至少Z个业务场景的数据分析需求，确保了数据架构的扩展性与前瞻性。” '\n",
-    "            '这展示了技术能力和战略思维。\\n'\n",
-    "            '\\n'\n",
-    "            '        3.  **接口对接与文档编写：**\\n'\n",
-    "            '            *   *原文：* “接口那边还在对接，问题不大” 和 “文档还在写”\\n'\n",
-    "            '            *   *优化：* '\n",
-    "            '将这两项合并，因为它们通常是相关的（API文档）。明确说明状态。“已完成与X个外部系统的接口技术对接，目前处于联调测试阶段，预计下周可完成。” '\n",
-    "            '对于文档：“项目核心文档，包括《需求规格说明书》与《技术方案设计书》，已完成初稿撰写，并同步至相关方进行首轮评审。” '\n",
-    "            '这提供了具体的状态和时间表。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **结尾（“总”）：** 总结本周的价值并展望未来。重申战略联系。\\n'\n",
-    "            '        *   *想法：* 本周的工作奠定了坚实的基础。我们正朝着我们的目标前进。\\n'\n",
-    "            '        *   *草稿：* '\n",
-    "            '“综上所述，本周的工作不仅明确了项目方向，更在技术层面构建了稳固的底座，为项目实现“降本增效”的最终目标迈出了关键一步。” '\n",
-    "            '这是一个强有力的、有价值的总结。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **下一步行动（计划）：** '\n",
-    "            '这至关重要。使其符合S.M.A.R.T.原则（具体的、可衡量的、可实现的、相关的、有时限的）。\\n'\n",
-    "            '        *   *想法：* 下周我们需要完成文档，最终确定模型，并完成API测试。\\n'\n",
-    "            '        *   *优化：*\\n'\n",
-    "            '            1.  “完成《需求规格说明书》终版确认，目标日期：下周一（X月X日）。”\\n'\n",
-    "            '            2.  “完成数据模型V2.0版本的评审与定稿，并同步更新至技术文档。”\\n'\n",
-    "            '            3.  “完成所有外部接口的联调测试，确保数据链路通畅，目标效率：数据传输成功率>99.9%。”\\n'\n",
-    "            '            4.  “启动前端/后端开发环境的搭建与基础框架的编码工作。” 这显示了主动性。\\n'\n",
-    "            '\\n'\n",
-    "            '4.  **最终审阅：** 通读整个优化后的文本。它是否满足了用户的所有要求？\\n'\n",
-    "            '    *   **战略格局？** 是的，“技术驱动业务”和“降本增效”被提及。\\n'\n",
-    "            '    *   **逻辑清晰？** 是的，“总-分-总”结构，并使用了编号列表。\\n'\n",
-    "            '    *   **数据支撑？** 是的，使用了占位符（X次、X个、Y个、Z个、>99.9%）来展示如何量化。\\n'\n",
-    "            '    *   **语言专业？** '\n",
-    "            '是的，使用了“需求对齐”、“数据模型”、“接口对接”、“规避返工风险”、“扩展性与前瞻性”等术语。\\n'\n",
-    "            '    *   **亮点突出？** 是的，它关注于共识、风险规避、扩展性和坚实的基础，而不仅仅是“开了会”。\\n'\n",
-    "            '    *   **计划明确？** 是的，下一步行动具体、可衡量且有时间限制。\\n'\n",
-    "            '\\n'\n",
-    "            '流程完成。最终输出已准备就绪。</think>\\n'\n",
-    "            '\\n'\n",
-    "            '好的，收到。作为一名经验丰富的办公室秘书，我将为您把这段简短、口语化的工作记录，优化成一份结构清晰、重点突出、体现战略价值的周报。\\n'\n",
-    "            '\\n'\n",
-    "            '---\\n'\n",
-    "            '\\n'\n",
-    "            '### **优化后的专业报告**\\n'\n",
-    "            '\\n'\n",
-    "            '**【XX项目】启动阶段工作周报**\\n'\n",
-    "            '\\n'\n",
-    "            '**报告周期：** [填写具体日期，如：YYYY年MM月DD日 - YYYY年MM月DD日]\\n'\n",
-    "            '**汇报人：** [您的姓名/部门]\\n'\n",
-    "            '\\n'\n",
-    "            '#### **一、 本周工作核心概要**\\n'\n",
-    "            '\\n'\n",
-    "            '本周，我们围绕【XX项目】的启动阶段，重点开展了需求深度对齐、技术方案初步设计及跨部门协同工作。通过高效沟通与严谨规划，我们成功为项目后续的顺利推进奠定了坚实基础，各项工作紧密契合公司“技术驱动业务，实现降本增效”的核心战略。\\n'\n",
-    "            '\\n'\n",
-    "            '#### **二、 重点工作进展与成果**\\n'\n",
-    "            '\\n'\n",
-    "            '**1. 需求共识达成，规避项目风险**\\n'\n",
-    "            '   - **行动：** 本周组织召开了 **3** '\n",
-    "            '场跨部门需求评审会，与业务、产品及技术团队就项目核心业务逻辑、关键绩效指标（KPIs）及预期业务价值进行了深入研讨。\\n'\n",
-    "            '   - **成果：** 成功与各方就 **5** 大核心模块、**20** '\n",
-    "            '余项关键需求点达成高度共识，形成了《需求共识纪要》。此举有效规避了因需求理解偏差可能导致的项目返工风险，预计可为项目整体节省 '\n",
-    "            '**10%** 的潜在沟通与返工成本，保障了项目的精准交付。\\n'\n",
-    "            '\\n'\n",
-    "            '**2. 数据模型设计完成，奠定数据底座**\\n'\n",
-    "            '   - **行动：** 完成了项目数据模型V1.0版本的初步设计与评审。\\n'\n",
-    "            '   - **成果：** 该模型涵盖了用户、订单、产品等 **8** 个核心业务实体，定义了 **超过50** '\n",
-    "            '个关键数据指标。模型设计充分考虑了未来业务的扩展性，能够支撑未来至少 **3** '\n",
-    "            '个新增业务场景的数据分析需求，为构建公司统一的数据资产、驱动精细化运营提供了坚实的技术保障。\\n'\n",
-    "            '\\n'\n",
-    "            '**3. 接口对接与文档编写稳步推进**\\n'\n",
-    "            '   - **行动：** 启动了与 **2** 个外部系统的接口技术对接工作，并同步进行项目核心文档的撰写。\\n'\n",
-    "            '   - **成果：**\\n'\n",
-    "            '     - **接口对接：** 已完成 **80%** '\n",
-    "            '的接口协议确认与技术联调，目前进展顺利，预计下周三前可全部完成，确保数据链路的畅通。\\n'\n",
-    "            '     - **文档撰写：** '\n",
-    "            '《需求规格说明书》与《技术方案设计书》已完成初稿，并已分发给相关方进行首轮评审，为后续开发工作的标准化、规范化提供了清晰指引。\\n'\n",
-    "            '\\n'\n",
-    "            '#### **三、 下一步工作计划**\\n'\n",
-    "            '\\n'\n",
-    "            '为确保项目按计划高效推进，下周我们将聚焦于以下关键任务：\\n'\n",
-    "            '\\n'\n",
-    "            '1.  **文档定稿：** 计划于下周一（X月X日）前，完成《需求规格说明书》的终版确认与归档。\\n'\n",
-    "            '2.  **模型优化：** 基于本轮评审意见，于下周三（X月X日）前完成数据模型V2.0版本的迭代与定稿。\\n'\n",
-    "            '3.  **接口联调收尾：** 于下周三（X月X日）前，完成所有外部接口的联调测试，确保数据传输稳定性达到 **99.9%** '\n",
-    "            '以上。\\n'\n",
-    "            '4.  **开发启动：** 于下周五（X月X日）前，完成开发环境搭建，并启动核心模块的基础编码工作。\\n'\n",
-    "            '\\n'\n",
-    "            '#### **四、 总结**\\n'\n",
-    "            '\\n'\n",
-    "            '本周的工作成功将项目从概念阶段推进至可执行阶段，通过前期的充分沟通与技术设计，我们不仅明确了方向，更在技术层面构建了稳固的底座，为项目最终实现“降本增效”的既定目标迈出了坚实且关键的一步。\\n'\n",
-    "            '\\n'\n",
-    "            '---\\n'\n",
-    "            '**优化分析：**\\n'\n",
-    "            '\\n'\n",
-    "            '*   **战略格局：** '\n",
-    "            '开篇即点明工作与公司“技术驱动业务，实现降本增效”战略的联系，并在各点成果中阐述其带来的价值（如规避风险、节省成本）。\\n'\n",
-    "            '*   **逻辑清晰：** '\n",
-    "            '严格遵循“总-分-总”结构，先概述，再分点详述，最后总结与计划。分点采用“行动+成果”模式，条理清晰。\\n'\n",
-    "            '*   **数据支撑：** '\n",
-    "            '将模糊的描述量化，如“好几次会”变为“3场”，“感觉就是那样吧”变为“8个核心实体、50余个指标”，并使用了百分比、具体天数等数据，极大增强了说服力。\\n'\n",
-    "            '*   **语言专业：** '\n",
-    "            '使用“需求共识”、“数据模型底座”、“接口联调”、“规避返工风险”等专业术语，替代了“拉齐口径”、“差不多吧”、“问题不大”等口语化表达。\\n'\n",
-    "            '*   **亮点突出：** '\n",
-    "            '不仅说“开了会”，更强调“达成了共识，规避了风险”；不仅说“讨论了模型”，更强调“设计了可扩展的模型，奠定了数据底座”。重点从“做了什么”转向“带来了什么价值”。\\n'\n",
-    "            '*   **计划明确：** 下一步计划具体到任务、负责人（隐含）、完成时间点和量化标准（如99.9%），可执行性强。'},\n",
-    " {'input': '\\n'\n",
-    "           '接口开发这块吧，我们就是先写了几个，然后呢就找产品和测试一起联调。在对的过程中发现，呃，数据格式有点对不上，测试环境也不太给力，反正问题挺多的。现在就是天天拉会对齐，把问题都记下来了，我们再跟他们沟通下吧，就这么个情况。',\n",
-    "  'instruction': '优化报告',\n",
-    "  'output': '<think>\\n'\n",
-    "            '1.  **拆解用户请求：**\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **角色：** 经验丰富的办公室秘书。这意味着语气应专业、恭敬且以结果为导向。受众是领导层。\\n'\n",
-    "            '    *   **任务：** 将一段“普通文本”优化为一份“优质报告”。\\n'\n",
-    "            '    *   **核心要求（6大支柱）：**\\n'\n",
-    "            '        1.  **战略格局：** '\n",
-    "            '将工作与公司战略（“降本增效”、“技术驱动业务”）联系起来。这是最重要的部分。我需要弄清楚“接口开发”如何融入其中。\\n'\n",
-    "            '        2.  **逻辑清晰：** '\n",
-    "            '“总-分-总”结构。这意味着一个摘要开头，分点详述的中间部分，以及一个总结/展望的结尾。\\n'\n",
-    "            '        3.  **数据支撑：** '\n",
-    "            '量化一切。原始文本完全没有数据。我必须*编造*一些合理的数字来演示这个原则。例如：几个接口？节省了多少时间？提升了多少效率？\\n'\n",
-    "            '        4.  **语言专业：** '\n",
-    "            '使用正式、书面化的语言和技术术语。替换“搞那个”、“吧”、“呃”、“反正”、“天天拉会对齐”。\\n'\n",
-    "            '        5.  **亮点突出：** '\n",
-    "            '关注*成果*和*价值*，而不仅仅是*活动*。不要只说“我们开发了接口”，而要说“我们开发了接口以*实现*X，*提升*Y，并*节省*Z”。\\n'\n",
-    "            '        6.  **计划明确：** 下一步是什么？使其清晰、可量化且有时间限制。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **参考案例分析：**\\n'\n",
-    "            '        *   *修改前：* '\n",
-    "            '“搞那个新的数据看板...把几个图表弄上去了...让业务自己看吧...差不多了。”（非常随意，缺乏细节，没有价值主张）。\\n'\n",
-    "            '        *   *修改后：* '\n",
-    "            '“【BI看板开发】本周完成了销售业绩实时监控看板的开发与上线...整合了...5个核心数据源...实现了...T+1的自动更新...赋能销售部门...预计每周可节省...15人时...为精细化运营决策提供了即时数据支撑。”\\n'\n",
-    "            '        *   *参考案例中的关键要点：*\\n'\n",
-    "            '            *   使用了一个清晰的标题：【BI看板开发】。\\n'\n",
-    "            '            *   以一个明确的成就开始：“完成了...开发与上线”。\\n'\n",
-    "            '            *   量化了输入：“整合了...5个核心数据源”。\\n'\n",
-    "            '            *   描述了技术产出：“实现了...T+1的自动更新”。\\n'\n",
-    "            '            *   陈述了业务影响/赋能：“赋能销售部门自主进行日度业绩追踪”。\\n'\n",
-    "            '            *   量化了价值/效率提升：“预计每周可节省...15人时”。\\n'\n",
-    "            '            *   与更高层的目标相关联：“为精细化运营决策提供了即时数据支撑”。\\n'\n",
-    "            '            *   这是我需要遵循的黄金标准模板。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **待优化的原始文本分析：**\\n'\n",
-    "            '        *   “接口开发这块吧...”（主题：接口开发）。\\n'\n",
-    "            '        *   “我们就是先写了几个...”（活动：编写了几个接口）。-> '\n",
-    "            '*我需要编造一个数字和目的。比如“3个核心业务接口”？*\\n'\n",
-    "            '        *   “然后呢就找产品和测试一起联调。”（活动：与产品和测试进行联合调试）。-> '\n",
-    "            '*这是一个标准流程，我可以将其专业化。*\\n'\n",
-    "            '        *   “在对的过程中发现，呃，数据格式有点对不上...”（问题1：数据格式不匹配）。-> '\n",
-    "            '*这是一个常见的技术问题。我可以将其描述为一个挑战和解决方案。*\\n'\n",
-    "            '        *   “测试环境也不太给力...”（问题2：测试环境不稳定/性能不佳）。-> '\n",
-    "            '*另一个常见问题。我可以描述其影响和修复措施。*\\n'\n",
-    "            '        *   “反正问题挺多的。”（问题3：笼统的“很多问题”）。-> '\n",
-    "            '*这太模糊了。我需要将其具体化。我将坚持使用前两个问题，并可能增加一个关于依赖关系的问题。*\\n'\n",
-    "            '        *   “现在就是天天拉会对齐...”（当前行动：每日会议）。-> '\n",
-    "            '*这是一个*过程*，而不是一个*结果*。我需要将其重新表述为一种结构化的问题解决机制。*\\n'\n",
-    "            '        *   “把问题都记下来了...”（行动：记录问题）。-> *好的，我可以将其描述为“问题跟踪和文档化”。*\\n'\n",
-    "            '        *   “我们再跟他们沟通下吧...”（下一步：再次沟通）。-> *太弱了。需要一个具体、可操作的计划。*\\n'\n",
-    "            '        *   “就这么个情况。”（结尾：非常随意）。\\n'\n",
-    "            '\\n'\n",
-    "            '2.  **整合并构建新报告（遵循6大支柱）：**\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱1（战略）：** 接口开发如何与“降本增效”或“技术驱动业务”相关联？\\n'\n",
-    "            '        *   接口是系统的*粘合剂*。它们连接不同的服务（例如，用户系统和订单系统）。\\n'\n",
-    "            '        *   好的接口可以*自动化*数据流，减少手动录入和错误（降本增效）。\\n'\n",
-    "            '        *   它们*赋能*新的业务功能或改善现有功能（技术驱动业务）。\\n'\n",
-    "            '        *   我将选择“技术驱动业务”作为主要框架，因为这些接口可能支持了一项新的业务功能。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱2（结构 - 总-分-总）：**\\n'\n",
-    "            '        *   **总（总体摘要）：** '\n",
-    "            '以一个强有力的标题和一个总结句开始，说明主要成就和当前状态。“【核心接口开发】...已完成初步开发...当前处于联调攻坚阶段...”。\\n'\n",
-    "            '        *   **分（详细分解）：** 我将在这里使用项目符号。\\n'\n",
-    "            '            *   第1点：**已完成工作与初步成果。** '\n",
-    "            '我们做了什么？开发了3个接口。它们做什么？连接A和B。价值是什么？为X功能奠定了基础。\\n'\n",
-    "            '            *   第2点：**当前挑战与应对策略。** '\n",
-    "            '这里我将处理原始文本中的“问题”。我将把“数据格式问题”和“测试环境问题”转化为听起来专业的挑战，并描述正在采取的积极措施。\\n'\n",
-    "            '            *   第3点：**跨部门协同与问题管理。** '\n",
-    "            '这部分处理“天天拉会对齐”和“把问题都记下来了”。我将把它描述为一种结构化的、高效的协作机制。\\n'\n",
-    "            '        *   **总（总结与未来计划）：**\\n'\n",
-    "            '            *   **总结/价值重申：** 简要重申此项目的战略重要性。\\n'\n",
-    "            '            *   **下一步（计划）：** '\n",
-    "            '这部分处理“我们再跟他们沟通下吧”。我将创建一个具体的、有时间限制的计划。例如，“在本周五之前，解决所有P0级问题”，“下周二上线到预发布环境”，“最终上线在X日期”。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱3（数据）：** 是时候编造一些合理的数字了。\\n'\n",
-    "            '        *   接口数量：“3个核心业务接口”。\\n'\n",
-    "            '        *   目的：“打通用户中心与订单系统”。\\n'\n",
-    "            '        *   效率增益（未来）：“预计上线后可减少跨系统数据同步的人工干预，提升数据一致性达99.9%”。\\n'\n",
-    "            '        *   问题解决：“已累计识别并记录15项联调问题”。“已解决其中的8项”。\\n'\n",
-    "            '        *   时间线：“预计未来3个工作日内完成剩余问题的修复与验证”。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱4（语言）：** 我将逐字逐句地审阅草拟的文本，并用专业术语替换非正式词汇。\\n'\n",
-    "            '        *   “接口开发这块吧” -> “【核心接口开发】工作进展汇报”\\n'\n",
-    "            '        *   “写了几个” -> “已完成...等3个核心业务接口的初步开发”\\n'\n",
-    "            '        *   “联调” -> “进入多方联合调试阶段”\\n'\n",
-    "            '        *   “数据格式有点对不上” -> “发现部分接口字段定义与下游系统存在数据格式不匹配问题”\\n'\n",
-    "            '        *   “测试环境也不太给力” -> “测试环境的稳定性与性能偶发瓶颈，影响了调试效率”\\n'\n",
-    "            '        *   “天天拉会对齐” -> “建立了每日站会机制，确保信息高效同步”\\n'\n",
-    "            '        *   “把问题都记下来了” -> “所有问题均已录入JIRA进行统一跟踪管理”\\n'\n",
-    "            '        *   “再跟他们沟通下吧” -> “下一步行动计划”\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱5（亮点/价值）：** '\n",
-    "            '我已经将这些融入结构中。摘要突出了价值。详细要点解释了工作*如何*创造价值。结论重申了价值。关键在于从“我们写了代码”转变为“我们构建了基础设施，以实现X、Y和Z”。\\n'\n",
-    "            '\\n'\n",
-    "            '    *   **支柱6（计划）：** “下一步行动计划”部分必须具体。\\n'\n",
-    "            '        *   行动1：解决关键问题。量化：“解决剩余7项P1/P2级问题”。截止日期：“未来3个工作日内”。\\n'\n",
-    "            '        *   行动2：环境升级。量化：“推动运维团队对测试环境进行性能优化”。截止日期：“本周内”。\\n'\n",
-    "            '        *   行动3：上线准备。量化：“完成所有接口的集成测试并部署至预生产环境”。截止日期：“下周三前”。\\n'\n",
-    "            '\\n'\n",
-    "            '3.  **最终审阅：** '\n",
-    "            '通读完整的优化后文本。它听起来像一个经验丰富的秘书写的吗？它是否满足了所有6个核心要求？结构是否合乎逻辑？语言是否专业？数据是否具有说服力？计划是否清晰？是的，它似乎涵盖了所有要点。最终输出已准备就绪。</think>\\n'\n",
-    "            '\\n'\n",
-    "            '好的，收到。作为一名经验丰富的办公室秘书，我非常理解将日常工作转化为体现战略价值和管理水平的报告的重要性。以下是根据您提供的普通文本，严格按照核心要求优化后的专业报告。\\n'\n",
-    "            '\\n'\n",
-    "            '---\\n'\n",
-    "            '\\n'\n",
-    "            '### **【核心接口开发】项目进展与价值汇报**\\n'\n",
-    "            '\\n'\n",
-    "            '**（总）核心摘要**\\n'\n",
-    "            '\\n'\n",
-    "            '本周，为支撑公司“技术驱动业务”核心战略，我们重点推进了用户中心与订单系统间的**3个核心业务接口**的开发工作，目前已完成初步开发，进入多方联合调试的关键阶段。尽管在联调过程中遇到了数据标准与环境稳定性等挑战，但我们已建立高效的问题解决机制，确保项目整体可控，为打通业务数据链路、实现自动化流程奠定了坚实基础。\\n'\n",
-    "            '\\n'\n",
-    "            '**（分）具体工作进展与成果**\\n'\n",
-    "            '\\n'\n",
-    "            '**1. 成果交付：完成核心接口开发，赋能业务流程自动化**\\n'\n",
-    "            '   - **工作内容**：已完成“用户信息同步”、“订单状态回调”及“权益数据查询”等3个核心业务接口的V1.0版本开发。\\n'\n",
-    "            '   - '\n",
-    "            '**战略关联**：该批接口是公司新业务模式下数据流转的关键枢纽，直接服务于“降本增效”战略目标。预计上线后，可**消除跨系统数据同步的人工干预环节，每月节省约40人时的手动核对与数据导入工作**，并将数据一致性提升至99.9%以上。\\n'\n",
-    "            '   - **技术价值**：通过标准化的RESTful '\n",
-    "            'API设计，实现了系统间的松耦合，为未来业务的快速迭代与扩展提供了技术保障。\\n'\n",
-    "            '\\n'\n",
-    "            '**2. 挑战应对：精准识别联调问题，建立高效解决闭环**\\n'\n",
-    "            '   - **当前挑战**：在与产品、测试团队的联合调试过程中，我们识别并系统性地梳理了两大类问题：\\n'\n",
-    "            '     - **数据标准问题**：发现部分接口字段定义与下游系统存在数据格式不匹配，共计识别出**5项**此类问题。\\n'\n",
-    "            '     - **环境稳定性问题**：测试环境的稳定性与性能偶发瓶颈，导致调试效率**预估降低了约20%**。\\n'\n",
-    "            '   - **应对策略**：我们并未止步于问题发现，而是迅速启动了应对机制：\\n'\n",
-    "            '     - **建立问题清单**：所有问题均已录入JIRA系统进行统一跟踪管理，明确责任人、优先级与解决时限。\\n'\n",
-    "            '     - **推动标准对齐**：已发起专题会议，与产品、架构师共同评审并敲定了最终的数据交互标准文档。\\n'\n",
-    "            '\\n'\n",
-    "            '**3. 协同管理：强化跨部门沟通，保障项目信息高效同步**\\n'\n",
-    "            '   - '\n",
-    "            '**机制建设**：为应对联调期间的复杂沟通需求，我们建立了**每日站会机制**，确保开发、产品、测试三方信息实时对齐，问题不过夜。\\n'\n",
-    "            '   - '\n",
-    "            '**效率提升**：通过该机制，已累计解决**8项**联调问题，剩余**7项**问题均按计划推进中，有效避免了因信息不对称导致的返工风险。\\n'\n",
-    "            '\\n'\n",
-    "            '**（总）总结与下一步行动计划**\\n'\n",
-    "            '\\n'\n",
-    "            '**总结：**\\n'\n",
-    "            '本次接口开发工作，不仅是一次单纯的技术实现，更是践行公司“技术驱动业务”战略的具体举措。它通过打通关键数据节点，为实现业务流程自动化、提升运营效率提供了底层支撑，其长远价值将随着业务的发展而持续显现。\\n'\n",
-    "            '\\n'\n",
-    "            '**下一步行动计划（可量化、可追踪）：**\\n'\n",
-    "            '1.  **问题清零（3个工作日内）**：集中资源解决剩余的7项P1/P2级联调问题，确保所有接口功能逻辑完全正确。\\n'\n",
-    "            '2.  **环境优化（本周内）**：协同运维团队完成对测试环境的性能优化与资源扩容，提升调试效率，目标将调试耗时缩短15%。\\n'\n",
-    "            '3.  **集成测试与部署（下周三前）**：完成所有接口的端到端集成测试，并成功部署至预生产环境，为最终的正式上线做好充分准备。\\n'\n",
-    "            '\\n'\n",
-    "            '我们将持续跟进，确保项目按时、高质量交付，为业务发展提供坚实的技术后盾。'}]\n
-```
-
-代替训练数据生成，可用EasyDataSet的开源软件，GLM注册：https://www.bigmodel.cn/invite?icode=n%2BQOSvFGrTvuUkjmvMHM7P2gad6AKpjZefIo3dVEQyA%3D
-
-有了数据集就可以训练模型了。
-
-
-#### 优化方案
-
-问答生成的常见问题：
-* 上下文有限
-* 问题质量太差
-
-解决方案，切块：word/pdf等文档 转为 markdown ，每个段落为一个样本。
-
-```
-markdown
-  块一（太大） ->  按换行符 ->  按句号 ->  按字数 （分别一级一级切）
-  块二
-  块三（小） + 块四（小）
-```
-
-
 
 
 <br/><br/><br/><br/><br/>
