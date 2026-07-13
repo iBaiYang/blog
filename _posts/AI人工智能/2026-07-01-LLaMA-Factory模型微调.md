@@ -9790,7 +9790,7 @@ baiyang@DESKTOP-PSDQHMG:~$
 <br/><br/><br/><br/><br/>
 ## 参考资料 
 
-
+AI大模型微调全流程实战 <https://www.bilibili.com/video/BV17CX6YnEUS>
 
 
 
