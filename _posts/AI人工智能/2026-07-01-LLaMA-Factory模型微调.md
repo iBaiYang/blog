@@ -1678,7 +1678,6 @@ pprint.pprint(finetune_results)
 
 有了数据集就可以训练模型了。
 
-
 ### 优化方案
 
 问答生成的常见问题：
@@ -1693,6 +1692,139 @@ markdown
   块二
   块三（小） + 块四（小）
 ```
+
+## 调参技巧
+
+微调最难的是什么？不是跑通流程，而是调参。
+
+循环：配置 -> x训练 -> 调参 -> 配置 ...
+
+微调的场景：
+1. 把模型变强，学会原本不会做的事
+2. 把模型变小，用小模型做大模型的事
+
+参数配置全解析，常用参数分为5个部分：
+* 基础参数 -> 学习深度 -> 测试集 -> 显存控制 -> 其他功能
+
+参数文档：https://llamafactory.readthedocs.io/zh-cn/latest/advanced/arguments.html
+
+讲解视频：https://www.bilibili.com/video/BV1z9FpzyENu
+
+参数整理：
+```
+##基础功能
+model_name_or_path:/mnt/f/models/Base/Qwen3-0.6B-Base
+template:default
+dataset:report
+stage:sft
+finetuning_type:Lora
+do_train:true
+
+###控制学习深度
+Lora_rank:8
+Learning_rate:1.0e-5
+Lr_scheduler_type:cosine
+warmup_ratio:0.1
+max_samples:1500
+num_train_epochs:1
+
+###控制测试集
+#eval_dataset:
+val_size:0.1
+per_device_eval_batch_size:1
+eval_strategy:steps
+eval_steps:50
+save_steps:50
+
+##控制显存
+cutoff_len:2048
+per_device_train_batch_size:1
+gradient_accumulation_steps:4
+
+###启用glora
+quantization_bit:8
+
+#功能性参数-swanlab专场
+use_swanlab:true
+swanlab_mode:cloud
+swanlab_project:report-0131
+swanlab_run_name:rerport_Qwen3-0.6B-0201
+swanlab_api_key:qh4Hr6q1fgVv3q7szd7VO
+
+#功能性参数
+output_dir:saves/report/Qwen3-0.6B
+Logging_steps:10
+overwrite_output_dir:true
+logging_steps:10
+
+```
+
+SwanLab评估：https://swanlab.cn/
+
+部署与人工评估：
+```
+训练模型   ->    |               部署                |           ->   评估
+                |    HuggingFace、vLLM、SGLang      |   人工对话体验    高级模型自动评分
+
+                            -------
+
+                            VLLM配置
+                            -------
+
+                    infer_backend:vllm
+                    vllm_maxlen:最长输出长度
+                    vlm_gpu_uti:显存占用比例
+
+
+人工对话体验：
+直德交互测试模型的
+响应质量与流畅度，
+拥捉细做的人类反愦。
+
+高级模型自动评分：
+利用更强大的榄型对
+输出进行量化评分，
+确保评估的一致性与
+可扩晨性。
+```
+
+自动化评估架构：以高阶智能驱动模型性能闭环。
+```
+[TEST_DATASET_V1.0]结构化测试集准备   ->   
+[SFT_MODEL_INFERENCE]微调模型批量产出结果   ->   
+[ADVANCED_JUDGE_MODEL]高阶模型质量评估(LLM-as-a-Judge) 
+---  
+| SCORE:0-10  |  准确性：回答是否事实正确？  |  相似性：是否符合优化标准？  |
+---
+->   
+评估报告
+```
+
+### vLLM
+
+vLLM部署：
+```
+# 下载 vLLM
+uv pip install vLLM -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 启动模型服务（Llamafactory文件夹下），访问地址：http://localhost:8000
+API_MODEL_NAME="report-06B-0201" Llamafactory-cli api my_yaml/API.yaml
+```
+
+配置文件：my_yaml > report_qwen3-0.6B > API.yaml
+```
+model_name_or_path:/mnt/f/models/Base/Qwen3-0.6B-Base
+adapter_name_or_path:saves/report/Qwen3-0.6B
+template:default
+infer_backend:VLlm
+vLlm_maxlen:1024
+vLLm_gpu_util:0.7
+
+enable_thinking:False
+```
+
+Cherry Studio 工具：https://www.cherry-ai.com/
+
 
 ## 补充信息
 
