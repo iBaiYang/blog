@@ -90,11 +90,54 @@ python -m venv --without-pip .venv
 
 继续开发或部署项目。
 
+写入项目依赖：
+> .venv\Scripts\pip3 freeze > requirements.txt
+
 退出虚拟环境：
 > deactivate
 
 删除虚拟环境：
 > 手动删除 .venv 文件夹
+
+---
+
+venv是python自带的虚拟环境管理工具，只负责 “创建隔离文件夹”，无包管理、Python 版本管理能力。
+关于虚拟环境管理，还是推荐使用 uv 管理，uv的定位是一体化工具：虚拟环境 + 极速包管理 + Python 版本管理 + 锁文件 + 项目构建一体。
+
+命令：
+```
+# 安装pip
+sudo apt install python3-pip
+
+# 安装uv虚拟环境管理包
+pip install uv -i https://mirrors.aliyun.com/pypi/simple
+
+# 创建虚拟环境（虚拟环境只是管理软件，即使有多套虚拟环境，操作的对象还是当前项目）
+uv venv .venv
+
+# 【可选】手动激活（习惯用python/pip命令时才需要，uv命令本身不需要激活）
+source .venv/bin/activate
+
+# 生成严格锁文件，跨平台可复现（不激活环境也能运行）
+uv pip compile requirements.in
+
+# 同步环境
+uv pip sync requirements.txt
+
+继续开发或部署项目。
+
+# 新增项目依赖
+echo "fastapi uvicorn requests" >> requirements.in
+
+锁定项目依赖：
+uv pip compile requirements.in -o requirements.txt
+
+退出虚拟环境：
+deactivate
+```
+
+
+
 
 ## 正文
 
