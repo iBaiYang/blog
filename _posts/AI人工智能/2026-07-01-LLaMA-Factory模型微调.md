@@ -9792,7 +9792,7 @@ baiyang@DESKTOP-PSDQHMG:~$
 
 AI大模型微调全流程实战 <https://www.bilibili.com/video/BV17CX6YnEUS>
 
-
+大模型微调三部曲“SFT -> RLHF -> LoRA/QLoRA” <https://zhuanlan.zhihu.com/p/2034228529169180270>
 
 
 
