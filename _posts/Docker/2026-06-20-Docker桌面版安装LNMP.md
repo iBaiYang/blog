@@ -67,7 +67,7 @@ D:\develop\DockerEnv>
 ```
 
 
-### 安装MySQL：
+### 安装MySQL
 
 MySQL 不要放进自定义 Image。如果把 MySQL 打包进镜像，删除容器会丢失数据库数据，无法持久化；分离容器更灵活，可单独重启、备份、更换 MySQL 版本。
 
@@ -400,3 +400,37 @@ centos:stream9-minimal 为精简镜像，缺少好多东西，我们直接用cen
 ```
 docker run -d --name centos9-nginx-php83 --network web-net -v D:/develop/www:/usr/share/nginx/www -v D:/develop/DockerEnv/docker-multi-web/nginx/vhost:/etc/nginx/conf.d -p 8081:80 centos9-nginx-php83
 ```
+
+## 安装Redis
+
+在 D:\develop\DockerEnv\redis-server 目录下创建 redis.conf 文件，内容如下：
+```
+# 允许远程连接（Docker环境下通常注释掉 bind 或设为 0.0.0.0）
+# bind 127.0.0.1 
+bind 0.0.0.0
+
+# 关闭保护模式（如果设置了密码，可以保持 yes；若需兼容旧客户端可设 no）
+protected-mode no
+
+# 设置密码
+requirepass 123456
+
+# 开启 AOF 持久化
+appendonly yes
+
+# 内存限制与淘汰策略（防止内存溢出）
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+
+# 日志级别
+loglevel notice
+```
+
+执行命令启动 Redis 容器：
+```
+docker run -d  --name redis74  --network web-net  -v D:/develop/DockerEnv/redis-server/redis-data:/data -v D:/develop/DockerEnv/redis-server/redis.conf:/usr/local/etc/redis/redis.conf  -p 6379:6379  redis:7.4 redis-server /usr/local/etc/redis/redis.conf
+```
+
+外部连接时，宿主机连接地址要使用 127.0.0.1。
+
+
