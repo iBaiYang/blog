@@ -238,6 +238,7 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-mbstring \
         php-opcache \
         php-xml \
+        php-redis \
         vim unzip && \
     dnf clean all
 
