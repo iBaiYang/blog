@@ -431,6 +431,6 @@ loglevel notice
 docker run -d  --name redis74  --network web-net  -v D:/develop/DockerEnv/redis-server/redis-data:/data -v D:/develop/DockerEnv/redis-server/redis.conf:/usr/local/etc/redis/redis.conf  -p 6379:6379  redis:7.4 redis-server /usr/local/etc/redis/redis.conf
 ```
 
-外部连接时，宿主机连接地址要使用 127.0.0.1。
+外部连接时，宿主机连接地址要使用 127.0.0.1:6379，同一个宿主机内的其他docker容器中使用 web-net:6379连接。
 
 
