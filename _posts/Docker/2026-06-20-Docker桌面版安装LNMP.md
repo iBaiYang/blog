@@ -230,6 +230,7 @@ RUN dnf module enable -y php:remi-7.4 && \
         nginx \
         php-fpm \
         php-cli \
+        php-bcmath \
         php-mysqlnd \
         php-pdo \
         php-gd \
@@ -237,8 +238,11 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-curl \
         php-mbstring \
         php-opcache \
+        php-fileinfo \
         php-xml \
         php-redis \
+        php-intl \
+        php-sodium \
         vim unzip && \
     dnf clean all
 
@@ -299,6 +303,18 @@ docker run -d --name centos9-nginx-php74 --network web-net -v D:/develop/www:/us
 - 站点 1：http://test1.local:8080
 - 站点 2：http://test2.local:8080
 
+另外php可以安装的几个拓展：
+```
+连接协议
+soap
+swoole
+
+进程管理
+sysvsem
+posix
+shmop
+```
+
 ### 新项目配置
 
 和第二个项目一样，除了项目文件，另外需要写site3.conf配置，修改hosts文件。
@@ -343,6 +359,7 @@ RUN dnf module enable -y php:remi-7.4 && \
         git \
         php-fpm \
         php-cli \
+        php-bcmath \
         php-mysqlnd \
         php-pdo \
         php-gd \
@@ -350,7 +367,11 @@ RUN dnf module enable -y php:remi-7.4 && \
         php-curl \
         php-mbstring \
         php-opcache \
+        php-fileinfo \
         php-xml \
+        php-redis \
+        php-intl \
+        php-sodium \
         vim unzip && \
     dnf clean all
 
