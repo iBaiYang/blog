@@ -770,7 +770,8 @@ docker-desktop:~#
 可以发现：
 1. docker-desktop 是 **Alpine 迷你容器式 WSL 发行版**
 2. 用户是 `root`，家目录：`/root`
-3. 已有 docker 网络：`web-net`，我们继续复用它
+3. shell 是 sh
+4. 已有 docker 网络：`web-net`，我们继续复用它
 
 另外：Windows 资源管理器 `\\wsl.localhost\docker-desktop` ，对应 WSL 内 `/` 根目录。
 
@@ -791,6 +792,10 @@ docker-desktop:~#
 └── www
     └── catchadmin  # 示例：CatchAdmin项目代码
 ```
+
+如果用户不是 root，可以在家目录下创建目录，如 `/home/sam/lnmp-web/`。
+
+catchadmin 是一个基于 Laravel-12 的PHP项目，不要把代码放 Windows 的 C 盘挂载目录 `/mnt/c/xxx`，不然 IO 会很慢，全部放在 WSL 内部路径。
 
 先把各文件内容写好，再进行安装。
 
@@ -970,6 +975,11 @@ docker exec nginx nginx -s reload
 
 
 
+## 附录
 
+执行过程：
+```
+
+```
 
 
