@@ -459,6 +459,66 @@ docker compose up -d
 docker exec php85 chown -R www-data:www-data /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
 ```
 
+### 安装PHP拓展
 
+在正式开发中如果发现安装的 php85 容器中缺少php拓展，如 pdo_mysql，可以通过以下命令安装：
+```
+# 进入容器
+docker exec -it php85 bash
 
+# 1. 先装编译依赖
+apt-get update && apt-get install -y --no-install-recommends libmysqlclient-dev
+
+# 2. 使用官方脚本编译安装
+docker-php-ext-install pdo_mysql
+```
+
+如果是 gd 拓展：
+```
+docker exec -it php85 bash
+# 先装gd依赖库
+apt-get update && apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+# 配置编译参数
+docker-php-ext-configure gd --with-freetype --with-jpeg
+# 编译安装gd
+docker-php-ext-install -j$(nproc) gd
+```
+
+如果是 redis 拓展，可以使用 PHP 的扩展包管理器 PECL 安装：
+```
+docker exec -it php85 bash
+# pecl安装指定版本redis扩展
+pecl install redis-7.4.10
+# 注册ini配置，加载扩展
+docker-php-ext-enable redis
+```
+
+Swoole（PECL 第三方扩展）:
+```
+docker exec -it php85 bash
+
+apt-get update && apt-get install -y libssl-dev
+
+pecl install swoole
+
+docker-php-ext-enable swoole
+```
+
+#### Xdebug 扩展
+
+Xdebug（PECL 第三方调试扩展）:
+```
+docker exec -it php85 bash
+pecl install xdebug
+docker-php-ext-enable xdebug
+```
+
+装好后还需要在 ini 里面配置调试参数（端口、idekey 等），不然只是加载了扩展，调试功能不生效：
+```
+xdebug.mode=debug
+xdebug.client_host=host.docker.internal
+xdebug.client_port=9003
+```
+
+还需要其他一些配合。
 
