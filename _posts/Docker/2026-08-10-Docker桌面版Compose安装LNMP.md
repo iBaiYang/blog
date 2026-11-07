@@ -11,6 +11,350 @@ meta: Docker桌面版Compose安装LNMP
 
 前面Docker桌面版安装过一次LNMP环境，但 PHP 和 Nginx 是放在一个容器中的，这里分成两个容器进行安装和运行。而且原来项目目录是映射到 Windows 的 C 盘挂载目录 `/mnt/c/xxx`，现在为了提速，要把文件挂载在 WSL 内部路径。前文地址 <https://ibaiyang.github.io/blog/docker/2026/06/20/Docker桌面版安装LNMP.html/>
 
+## Compose介绍
+
+### Compose是什么
+
+**Docker Compose 通俗介绍**
+
+一句话：**Docker Compose 是 Docker 官方的「多容器编排工具」，用来一次性管理一组关联的容器**。
+
+**背景**
+
+单独用 `docker run` 启动容器：
+每一个服务（Nginx、PHP、MySQL、Redis）都要敲很长一串命令，写端口、挂载卷、网络、环境变量；
+服务多了，命令很难记、不好复用，还要手动保证网络互通、顺序启动。
+
+比如你的项目：Nginx + PHP85，是两个配合在一起工作的容器，属于**一套业务**。
+
+**Compose 核心作用**
+
+把这一整套服务的配置，全部写到一个 `docker-compose.yml` 文件里：
+- 每个服务：镜像/怎么构建、端口映射、挂载目录、网络、依赖、重启策略
+- 定义统一网络，让容器之间可以互相访问（`php85:9000` 这种容器名通信）
+- 一键启动、停止、重启整套服务，不用一条一条敲 docker run
+
+```yaml
+# 就是你一直在写的这种
+services:
+  php85:
+    build: ./php
+  nginx:
+    image: nginx:stable
+```
+
+**几个核心概念**
+1. **service（服务）**
+   一个 service 对应一个容器（Nginx、PHP 各是一个service），描述这个容器怎么跑。
+2. **project（项目）**
+   同一个目录下的 `docker-compose.yml` 就是一个项目，compose 会给这套容器统一加上项目前缀，隔离不同项目。
+3. **network（网络）**
+   默认自动创建独立网桥，同项目容器之间互通；也可以接入外部网络（像你用的 `web-net`）。
+4. **volume（数据卷）**
+   统一管理持久化数据，比如MySQL数据。
+
+**和原生 docker 的关系**
+- `docker`：管理单个容器、镜像（底层）
+- `docker compose`：基于docker，**批量管理一组有关系的容器**（上层工具）
+
+> 旧版叫独立工具 `docker-compose`（横杠）；新版是 `docker compose`（空格，作为docker内置子命令）
+
+**它能干什么**
+- ✅ 一键启动整套环境：`docker compose up -d`
+- ✅ 一键关停整套：`docker compose down`
+- ✅ 按依赖顺序启动（比如先启动php，再启动nginx）
+- ✅ 统一查看所有服务日志
+- ✅ 同一个机器上，多套项目互不干扰（多个yml，分开管理）
+
+**它不能干什么（区分清楚）**
+Compose **适合单机**，只是在一台服务器上管理多个容器。
+如果是多台服务器集群、负载均衡、自动扩缩容，那是 Kubernetes（K8s）干的，Compose 不适合。
+
+**结合你现在的场景理解**
+
+你这套 LNMP：Nginx容器 + PHP容器，放在同一个 compose yml 里，属于**一个项目**。
+- 启动：同时拉起nginx和php
+- 网络互通：nginx 可以直接用服务名 `php85` 访问php-fpm
+- 改配置：只需要改yml，不用记一长串docker run参数
+
+### Docker / Docker Compose / K8s 简单对比
+
+**Docker / Docker Compose / K8s 简单对比表**
+| 项目 | Docker（原生） | Docker Compose | Kubernetes(K8s) |
+| ---- | ---- | ---- | ---- |
+| **定位** | 容器引擎，底层核心 | 单机多容器编排工具 | 分布式集群编排平台 |
+| **运行范围** | 单容器 | **一台机器**，管理一组关联容器 | **多台服务器组成集群** |
+| 核心用途 | 拉镜像、启动、停止、删除单个容器 | 把 Nginx/PHP/Redis/MySQL 写在yml，一键启停整套环境 | 集群调度、自动扩缩容、故障自愈、负载均衡、滚动更新 |
+| 配置文件 | 没有统一配置文件，靠 `docker run` 长命令 | `docker-compose.yml` | yaml（deployment/service/ingress等多种资源） |
+| 启动方式 | `docker run` | `docker compose up -d` | kubectl apply |
+| 自动重启 | 容器内配置 `restart` | 每个service配置 `restart` | 节点挂了可以自动把容器调度到别的机器 |
+| 扩容 | 手动多run几次 | `--scale`，单机扩容 | 横向扩容，跨机器 |
+| 故障自愈 | 容器退出可以重启；**机器挂了就没办法** | 容器退出可以重启；**机器挂了整套直接挂** | 检测节点故障，自动迁移实例到其他正常服务器 |
+| 学习难度 | 低 | 低（你现在正在用） | 很高，组件多、概念复杂 |
+| 适合场景 | 临时测试、单个容器 | 开发环境、单机部署项目（你的LNMP就是典型） | 生产集群、高可用业务、流量大、需要多服务器 |
+| 不适合 | 一次性管理一大堆关联容器 | 多服务器集群、高可用 | 本地简单开发环境，太重了 |
+
+**一句话通俗总结**
+1. **Docker**：只是“容器发动机”，负责跑一个容器；
+2. **Docker Compose**：发动机的简易遥控器，**一台机器上**同时控制一堆配套的容器（Nginx+PHP+Redis），适合开发、单机部署；
+3. **K8s**：大型机房调度系统，管一堆服务器，保证服务不宕机、负载均衡，适合线上集群。
+
+补充：还有一个容易听到的：Docker Swarm
+- 也是docker官方的集群工具，介于compose和k8s之间，现在基本被K8s淘汰，很少用。
+
+### Docker Compose 常用命令
+
+> 前提：必须在 `docker-compose.yml` 所在目录执行，或者用 `-f` 指定配置文件
+
+**基础启停**
+
+```
+# 启动所有服务（后台守护运行，最常用）
+docker compose up -d
+
+# 启动并看实时日志（前台，ctrl+c停止）
+docker compose up
+
+# 只启动指定服务
+docker compose up -d php85
+
+# 停止服务，容器保留（数据卷还在）
+docker compose stop
+
+# 启动已经停止的容器
+docker compose start
+
+# 重启全部服务
+docker compose restart
+
+# 只重启指定服务
+docker compose restart php85
+
+# 停止 + 删除容器（默认不删卷、镜像）【重点！日常重建用这个】
+docker compose down
+
+# down 的时候同时删除数据卷（⚠️ 会丢数据库数据，谨慎！）
+docker compose down -v
+```
+
+**构建镜像（你经常用到）**
+
+```
+# 检测yml、构建镜像，不启动
+docker compose build
+
+# 构建 + 启动（修改Dockerfile后必用）
+docker compose up -d --build
+
+# 只单独构建某一个服务镜像
+docker compose build php85
+
+# 不使用缓存构建（解决缓存导致修改不生效）
+docker compose build --no-cache
+```
+
+**查看状态、日志**
+
+```
+# 查看当前compose管理的容器状态
+docker compose ps
+
+# 查看日志（持续输出，实时看）
+docker compose logs -f
+
+# 只看某个服务日志（比如php85）
+docker compose logs -f php85
+
+# 看最后200行日志
+docker compose logs --tail=200 php85
+```
+
+**进入容器、执行命令**
+
+```
+# 交互式进入容器（你最常用）
+docker compose exec php85 bash
+
+# 如果容器里面没有bash，用sh
+docker compose exec php85 sh
+
+# 直接在容器里执行一条命令，不进入交互
+docker compose exec php85 php -m
+```
+
+**镜像、资源清理**
+
+```
+# 删掉compose对应的镜像（build出来的）
+docker compose rm
+
+# 清理本地无用镜像（悬空镜像<none>）
+docker image prune -f
+
+# 清理所有未使用镜像（⚠️ 谨慎）
+docker image prune -a
+```
+
+**配置校验**
+
+```
+# 校验yml语法是否写错（写好先检查，避免报错）
+docker compose config
+
+# 打印渲染后的完整配置（看变量替换、网络、挂载是否符合预期）
+docker compose config
+```
+
+**缩放（很少用，了解）**
+
+```
+# 启动多个同类型容器（php-fpm一般不用）
+docker compose up -d --scale php85=2
+```
+
+**指定别的yml文件（多环境很实用）**
+
+```
+# 使用自定义名字的配置文件
+docker compose -f docker-compose-dev.yml up -d
+```
+
+---
+
+**高频组合（你开发LNMP时最常用）**
+
+1. 修改 Dockerfile 后重建：
+
+```
+docker compose down
+docker compose up -d --build
+```
+
+2. 改配置文件（ini、nginx.conf），不需要重新build，只重启服务：
+
+```
+docker compose restart php85
+```
+
+3. 看php报错日志：
+
+```
+docker compose logs -f php85
+```
+
+4. 进php容器调试：
+
+```
+docker compose exec php85 bash
+```
+
+**容易踩坑提醒**
+
+- `docker compose down`：**删除容器，卷不会删**，MySQL数据还在；加 `-v` 才删卷
+- `--build` 只有Dockerfile改动时才需要，单纯改nginx.conf、ini不需要build
+- exec 是**进入正在运行的容器**，容器stop状态下exec会报错
+
+---
+
+**速查小卡片版**
+
+Docker Compose 速查卡片（v2，docker compose）
+
+> 提示：在 `docker-compose.yml` 所在目录执行；`-f` 指定其他配置文件
+
+🔹 启停服务
+
+```
+# 后台启动全部
+docker compose up -d
+# 前台启动，看日志
+docker compose up
+# 只启动指定服务
+docker compose up -d php85
+
+# 停止（保留容器）
+docker compose stop
+# 启动已停止容器
+docker compose start
+# 重启全部
+docker compose restart
+# 重启单个服务
+docker compose restart php85
+
+# 停止并删除容器（不删数据卷）
+docker compose down
+# down + 删除数据卷 ⚠️ 会丢数据，谨慎
+docker compose down -v
+```
+
+🔹 构建镜像
+
+```
+# 构建镜像，不启动
+docker compose build
+# 修改Dockerfile后，构建+启动
+docker compose up -d --build
+# 单独构建某个服务
+docker compose build php85
+# 无缓存构建
+docker compose build --no-cache
+```
+
+🔹 查看状态 & 日志
+
+```
+# 查看容器状态
+docker compose ps
+# 实时看全部日志
+docker compose logs -f
+# 实时看单个服务日志
+docker compose logs -f php85
+# 查看最后200行
+docker compose logs --tail=200 php85
+```
+
+🔹 进入容器、执行命令
+
+```
+# 进入交互终端
+docker compose exec php85 bash
+# 无bash时用sh
+docker compose exec php85 sh
+# 直接执行一条命令
+docker compose exec php85 php -m
+```
+
+🔹 配置校验
+
+```
+# 校验yml语法
+docker compose config
+# 使用自定义配置文件
+docker compose -f docker-compose-dev.yml up -d
+```
+
+🔹 清理
+
+```
+# 删除compose管理的容器（容器停止才能执行）
+docker compose rm
+# 清理悬空镜像 <none>
+docker image prune -f
+```
+
+✅ 高频组合（开发常用）
+
+1. 改Dockerfile重建：`docker compose down && docker compose up -d --build`
+2. 改nginx/ini配置：`docker compose restart php85`
+3. 调试进入容器：`docker compose exec php85 bash`
+
+💡 备注
+
+- `docker exec -it php85 bash`：容器固定container_name时可用，等价效果
+- `--build`：只改Dockerfile才需要；单纯改配置文件不用build
+- exec 只能进入**运行中**的容器
+
+
 ## 正文
 
 这里使用 Docker Compose 安装 LNMP 环境。PHP 需要编译安装，速度会很慢。
