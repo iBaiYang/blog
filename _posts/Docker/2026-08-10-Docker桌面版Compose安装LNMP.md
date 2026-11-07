@@ -506,7 +506,7 @@ docker-desktop:~#
 
 另外：Windows 资源管理器 `\\wsl.localhost\docker-desktop` ，对应 WSL 内 `/` 根目录。
 
-### 安装 PHP8.5 与 Ngnix
+## 安装 PHP8.5 与 Ngnix
 
 我们在 `root` 目录下创建 `lnmp-web` 目录，用于存放 LNMP 相关文件。下面是具体的目录结构：
 ```
@@ -695,7 +695,7 @@ docker network connect web-net redis
 
 
 
-### 部署 CatchAdmin
+## 部署 CatchAdmin
 
 在 Windows 资源管理器往 `\\wsl.localhost\docker-desktop\root\lnmp-web\www\` 上传代码包，然后再进容器 `composer install` 安装依赖。
 
