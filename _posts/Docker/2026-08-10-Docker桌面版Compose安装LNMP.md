@@ -508,9 +508,9 @@ docker-desktop:~#
 
 ## 安装 PHP8.5 与 Ngnix
 
-我们在 `root` 目录下创建 `lnmp-web` 目录，用于存放 LNMP 相关文件。下面是具体的目录结构：
+我们在 `D:\develop` 目录下创建 `lnmp-web` 目录，用于存放 LNMP 相关文件。下面是具体的目录结构：
 ```
-/root/lnmp-web/
+D:\develop\lnmp-web\
 ├── docker-compose.yml
 ├── php
 │   ├── Dockerfile
@@ -523,8 +523,6 @@ docker-desktop:~#
 └── www
     └── catchadmin  # 示例：CatchAdmin项目代码
 ```
-
-如果用户不是 root，可以在家目录下创建目录，如 `/home/sam/lnmp-web/`。
 
 catchadmin 是一个基于 Laravel-12 的PHP项目，不要把代码放 Windows 的 C 盘挂载目录 `/mnt/c/xxx`，不然 IO 会很慢，全部放在 WSL 内部路径。
 
@@ -544,17 +542,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     git \
     unzip \
+    nodejs \ 
+    npm \
+    yarn \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 # 安装 PHP 扩展，安装后默认是开启的
 RUN docker-php-ext-install -j$(nproc) \
+    bcmath \
     gd \
-    intl pdo_mysql \
+    intl \
+    mysqli \
+    pdo_mysql \
     zip
 
-# bcmath、ctype、fileinfo、mbstring 原生自带并默认开启
+# 手动生成扩展加载ini，解决php8.5下不自动生成ini的bug
+RUN echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/20-bcmath.ini \
+    && echo "extension=gd.so" > /usr/local/etc/php/conf.d/20-gd.ini \
+    && echo "extension=intl.so" > /usr/local/etc/php/conf.d/20-intl.ini \
+    && echo "extension=mysqli.so" > /usr/local/etc/php/conf.d/20-mysqli.ini \
+    && echo "extension=pdo_mysql.so" > /usr/local/etc/php/conf.d/20-pdo_mysql.ini \
+    && echo "extension=zip.so" > /usr/local/etc/php/conf.d/20-zip.ini
+
+# ctype、fileinfo、mbstring 原生自带并默认开启
 
 # 开启内置扩展（opcache 原生自带，是Zend 内核的内置优化模块）（不推荐 enable，因为内置扩展用 enable 会报错）
 # RUN docker-php-ext-enable opcache
@@ -575,6 +587,12 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY conf.d/*.ini /usr/local/etc/php/conf.d/
+
+# 安装 composer （从 Docker 镜像内直接复制二进制）
+# COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+# RUN chmod +x /usr/bin/composer
+# 优先官方源，如果需要可配置国内镜像源（建议在容器内进行修改）
+# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 WORKDIR /var/www/html
 ```
@@ -705,13 +723,17 @@ cd /var/www/html/catchadmin
 composer install
 cp .env.example .env
 php artisan key:generate
+
+php artisan catch:install
+
+# 也可以直接执行
+php artisan catch:install --no-build
 ```
 
 然后配置.env，权限，迁移：
 ```
 chown -R www-data:www-data /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
 php artisan migrate
-php artisan db:seed
 ```
 
 修改 `C:\Windows\System32\drivers\etc\hosts` 文件，添加 catch.test 记录：
@@ -727,6 +749,8 @@ docker exec nginx nginx -t
 docker exec nginx nginx -s reload
 ```
 
+或者进入容器修改权限：
+> chmod -R 775 /var/www/html/catchadmin/storage
 
 ## 附言
 
@@ -848,6 +872,50 @@ pecl install swoole
 docker-php-ext-enable swoole
 ```
 
+#### composer
+
+如果容器中没有 composer，需要安装 composer。可以执行下面的命令：
+```
+# 进入容器
+docker exec -it php85 bash
+
+# 安装依赖
+apt-get update && apt-get install -y --no-install-recommends git unzip && rm -rf /var/lib/apt/lists/*
+
+# 安装 composer
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# 阿里云镜像（推荐用composer命令设置，比直接写json更稳妥）
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+```
+
+但是要注意：Docker 容器是**分层 + 临时写入**，`docker exec` 进去装的东西，是写在**容器读写层**，**不是镜像里**。
+- 只要你执行：`docker compose down`（停止并删除容器）
+- 再 `docker compose up -d` 重新拉起
+容器会基于原来的镜像重新新建，**composer、git、unzip 全部消失，又要重新装一遍！**
+> 简单区分：
+> - Dockerfile 构建镜像：写入镜像，容器删了重建也还在（永久固化）
+> - exec 进容器手动安装：只在当前这个容器实例生效，容器销毁就没了（临时）
+
+查看执行过程：
+```
+root@e0650bf43609:/var/www/html# curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+All settings correct for using Composer
+Downloading...
+
+Composer (version 2.11.1) successfully installed to: /usr/local/bin/composer
+Use it: php /usr/local/bin/composer
+
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# composer --version
+Composer version 2.11.1 2026-10-30 14:52:10
+PHP version 8.5.12 (/usr/local/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+root@e0650bf43609:/var/www/html#
+```
+
 #### Xdebug 扩展
 
 Xdebug（PECL 第三方调试扩展）:
@@ -865,4 +933,265 @@ xdebug.client_port=9003
 ```
 
 还需要其他一些配合。
+
+## 执行查看
+
+```
+D:\develop\lnmp-web>docker compose up -d
+[+] up 1/2
+[+] up 1/2er php85 Starting                                                                      0.2s[+] up 1/2er php85 Starting                                                                                         0.3s[+] up 1/2er php85 Starting                                                                                         0.4s[+] up 2/2ner php85 Started                                                                                          0.4 ✔ Container php85 Started                                                                                          0.4s- Container nginx Starting                                                                                         0.4s ✔ Container nginx Started                                                                                          0.5s
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker ps
+CONTAINER ID   IMAGE                 COMMAND                   CREATED         STATUS              PORTS                                                                                NAMES
+b7844d81ab25   nginx:stable          "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes        0.0.0.0:8081->80/tcp, [::]:8081->80/tcp, 0.0.0.0:8444->443/tcp, [::]:8444->443/tcp   nginx
+e0650bf43609   lnmp-web-php85        "docker-php-entrypoi…"   2 minutes ago   Up 2 minutes        0.0.0.0:9001->9000/tcp, [::]:9001->9000/tcp                                          php85
+a30b1a6ccf85   centos9-nginx-php74   "sh -c 'mkdir -p /ru…"   3 months ago    Up About a minute   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp                                              centos9-nginx-php74
+d5046d1e795e   redis:7.4             "docker-entrypoint.s…"   3 months ago    Up About a minute   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp                                          redis74
+2009b3504497   mysql:8.0             "docker-entrypoint.s…"   3 months ago    Up About a minute   0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp                                          mysql8
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":80"
+  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       16648
+  TCP    0.0.0.0:8081           0.0.0.0:0              LISTENING       16648
+  TCP    127.0.0.1:8043         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8051         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8056         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8062         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8068         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8076         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8085         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8090         127.0.0.1:21151        TIME_WAIT       0
+  TCP    127.0.0.1:8097         127.0.0.1:21151        TIME_WAIT       0
+  TCP    192.168.30.101:2025    117.185.25.42:80       ESTABLISHED     40828
+  TCP    192.168.30.101:8001    101.132.144.139:30975  TIME_WAIT       0
+  TCP    192.168.30.101:8019    211.141.179.87:443     ESTABLISHED     14320
+  TCP    192.168.30.101:8026    112.28.231.77:443      TIME_WAIT       0
+  TCP    192.168.30.101:8036    112.28.231.77:443      TIME_WAIT       0
+  TCP    192.168.30.101:8041    112.29.220.51:443      TIME_WAIT       0
+  TCP    192.168.30.101:8047    112.28.231.77:443      TIME_WAIT       0
+  TCP    192.168.30.101:8059    112.28.231.81:443      TIME_WAIT       0
+  TCP    192.168.30.101:8064    36.150.160.206:443     ESTABLISHED     16364
+  TCP    [::]:8080              [::]:0                 LISTENING       16648
+  TCP    [::]:8081              [::]:0                 LISTENING       16648
+  TCP    [::1]:8080             [::]:0                 LISTENING       12620
+  TCP    [::1]:8081             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":443"
+  TCP    192.168.30.101:2181    42.186.118.109:443     ESTABLISHED     8596
+  TCP    192.168.30.101:3952    112.28.234.13:443      ESTABLISHED     14272
+  TCP    192.168.30.101:5630    20.184.175.22:443      ESTABLISHED     6296
+  TCP    192.168.30.101:5751    211.141.179.77:443     ESTABLISHED     16364
+  TCP    192.168.30.101:7327    146.75.45.91:443       ESTABLISHED     16364
+  TCP    192.168.30.101:7458    34.107.243.93:443      ESTABLISHED     16364
+  TCP    192.168.30.101:7498    103.45.131.133:443     ESTABLISHED     30700
+  TCP    192.168.30.101:7506    103.45.131.133:443     TIME_WAIT       0
+  TCP    192.168.30.101:7623    120.253.253.225:443    TIME_WAIT       0
+  TCP    192.168.30.101:7751    112.28.231.88:443      TIME_WAIT       0
+  TCP    192.168.30.101:7752    112.28.231.88:443      TIME_WAIT       0
+  TCP    192.168.30.101:7754    112.28.231.88:443      TIME_WAIT       0
+  TCP    192.168.30.101:7763    39.136.231.205:443     TIME_WAIT       0
+  TCP    192.168.30.101:7956    36.151.170.62:443      ESTABLISHED     16364
+  TCP    192.168.30.101:8019    211.141.179.87:443     ESTABLISHED     14320
+  TCP    192.168.30.101:8047    112.28.231.77:443      TIME_WAIT       0
+  TCP    192.168.30.101:8059    112.28.231.81:443      TIME_WAIT       0
+  TCP    192.168.30.101:8064    36.150.160.206:443     ESTABLISHED     16364
+  TCP    192.168.30.101:8105    112.28.231.77:443      TIME_WAIT       0
+  TCP    192.168.30.101:8118    112.29.220.51:443      TIME_WAIT       0
+  TCP    192.168.30.101:8141    146.75.45.91:443       ESTABLISHED     16364
+  TCP    192.168.30.101:8142    3.175.214.86:443       ESTABLISHED     16364
+  TCP    192.168.30.101:8166    112.30.160.179:443     ESTABLISHED     14272
+  TCP    192.168.30.101:8178    74.125.203.139:443     SYN_SENT        30700
+  TCP    192.168.30.101:8179    74.125.203.139:443     SYN_SENT        30700
+  TCP    192.168.30.101:8180    74.125.203.113:443     SYN_SENT        30700
+  TCP    192.168.30.101:8181    74.125.203.113:443     SYN_SENT        30700
+  TCP    192.168.30.101:8185    112.29.220.51:443      TIME_WAIT       0
+  TCP    192.168.30.101:8190    140.82.114.26:443      ESTABLISHED     16364
+  TCP    192.168.30.101:8200    104.18.95.41:443       ESTABLISHED     16364
+  TCP    192.168.30.101:8201    104.18.95.41:443       TIME_WAIT       0
+  TCP    192.168.30.101:8205    112.29.220.51:443      ESTABLISHED     13540
+  TCP    192.168.30.101:8608    36.155.197.218:443     ESTABLISHED     17740
+  TCP    192.168.30.101:9022    203.107.86.23:443      ESTABLISHED     32752
+  TCP    192.168.30.101:11642   36.151.170.62:443      ESTABLISHED     16364
+  TCP    192.168.30.101:11645   36.151.170.62:443      ESTABLISHED     16364
+  TCP    192.168.30.101:13136   111.62.36.224:443      ESTABLISHED     16364
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":8080"
+  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       16648
+  TCP    [::]:8080              [::]:0                 LISTENING       16648
+  TCP    [::1]:8080             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":3306"
+  TCP    0.0.0.0:3306           0.0.0.0:0              LISTENING       16648
+  TCP    [::]:3306              [::]:0                 LISTENING       16648
+  TCP    [::1]:3306             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":6379"
+  TCP    0.0.0.0:6379           0.0.0.0:0              LISTENING       16648
+  TCP    127.0.0.1:6379         127.0.0.1:7881         ESTABLISHED     16648
+  TCP    127.0.0.1:7881         127.0.0.1:6379         ESTABLISHED     12516
+  TCP    [::]:6379              [::]:0                 LISTENING       16648
+  TCP    [::1]:6379             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":9000"
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":8081"
+  TCP    0.0.0.0:8081           0.0.0.0:0              LISTENING       16648
+  TCP    [::]:8081              [::]:0                 LISTENING       16648
+  TCP    [::1]:8081             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":8444"
+  TCP    0.0.0.0:8444           0.0.0.0:0              LISTENING       16648
+  TCP    [::]:8444              [::]:0                 LISTENING       16648
+  TCP    [::1]:8444             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>netstat -ano | findstr ":9001"
+  TCP    0.0.0.0:9001           0.0.0.0:0              LISTENING       16648
+  TCP    [::]:9001              [::]:0                 LISTENING       16648
+  TCP    [::1]:9001             [::]:0                 LISTENING       12620
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker exec php85 php -v
+PHP 8.5.12 (cli) (built: Nov  5 2026 07:20:38) (NTS)
+Copyright (c) The PHP Group
+Built by https://github.com/docker-library/php
+Zend Engine v4.5.12, Copyright (c) Zend Technologies
+    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker exec php85 php -m
+[PHP Modules]
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+hash
+iconv
+json
+lexbor
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_sqlite
+Phar
+posix
+random
+readline
+Reflection
+session
+SimpleXML
+SPL
+sqlite3
+standard
+tokenizer
+uri
+xml
+xmlreader
+xmlwriter
+Zend OPcache
+zlib
+
+[Zend Modules]
+Zend OPcache
+
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker logs php85
+[08-Nov-2026 10:23:13] NOTICE: fpm is running, pid 1
+[08-Nov-2026 10:23:13] NOTICE: ready to handle connections
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker exec nginx nginx -v
+nginx version: nginx/1.30.6
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker exec nginx nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>docker logs nginx
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf is not a file or does not exist
+/docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+
+D:\develop\lnmp-web>
+D:\develop\lnmp-web>
+```
+
+
+```
+D:\develop\lnmp-web>docker exec -it php85 bash
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# php -m | grep -E "bcmath|ctype|fileinfo|mbstring|Zend OPcache|gd|intl|pdo_mysql|zip"
+ctype
+fileinfo
+mbstring
+Zend OPcache
+Zend OPcache
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# php -i | grep opcache.enable
+opcache.enable => On => On
+opcache.enable_cli => Off => Off
+opcache.enable_file_override => Off => Off
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# php -m | grep redis
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# php --ini
+Configuration File (php.ini) Path: "/usr/local/etc/php"
+Loaded Configuration File:         (none)
+Scan for additional .ini files in: "/usr/local/etc/php/conf.d"
+Additional .ini files parsed:      /usr/local/etc/php/conf.d/99-custom.ini
+
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# node -v
+v20.19.2
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# npm -v
+9.2.0
+root@e0650bf43609:/var/www/html#
+root@e0650bf43609:/var/www/html# yarn -v
+1.22.22
+root@e0650bf43609:/var/www/html#
+```
+
 
