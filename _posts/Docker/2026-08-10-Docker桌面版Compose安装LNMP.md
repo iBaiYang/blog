@@ -723,6 +723,28 @@ docker network connect web-net redis
 
 参考文档：https://doc.catchadmin.com/docs/5.0/start/install
 
+官方推荐的是自己的命令安装：
+```
+# 进入容器
+> docker exec -it php85 bash
+
+# 切换到 www 目录
+> cd /var/www/html
+
+# 拉取 CatchAdmin 代码
+> git clone https://gitee.com/catchadmin/catchAdmin.git catchadmin
+
+> cd catchadmin
+
+composer install
+
+// 安装项目, 按照提示输入对应信息，会自动下载前端项目。
+php artisan catch:install
+
+// 上传显示图片需要软连接
+php artisan storage:link
+```
+
 ### 后端
 
 在 `D:\develop\lnmp-web\www` 文件夹下安装 CatchAdmin 后端：
@@ -1018,7 +1040,134 @@ server: {
 
 浏览器访问 http://localhost:10086
 
+### 补充
 
+如果 `php artisan catch:install` 执行错误，可以按照下面给命令逐行执行。
+
+一、先说结论：你的 `.env` 已经存在，所以 `catch:install` 本来就会跳过安装步骤
+
+`handle()` 里有个硬判断（[InstallCommand.php:58-88](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/InstallCommand.php#L58-L88)）：**只有 `.env` 不存在时才执行"建库 → 发布配置 → 迁移 → 装前端"**，`.env` 存在就直接跳到打印欢迎信息。
+
+你当前 [.env](file:///d:/develop/lnmp-web/www/catchadmin/.env) 里已经配好了：
+
+```
+APP_KEY=base64:...          已有
+DB_CONNECTION=mysql
+DB_HOST=mysql8
+DB_PORT=3306
+DB_DATABASE=catchadDb
+DB_USERNAME=root / DB_PASSWORD=123456
+DB_PREFIX=ca_               ← 注意所有表都会带 ca_ 前缀
+APP_URL=http://catch.test:8081
+```
+
+同时 `config/catch.php` 已发布、`composer.json` 里 `"Modules\\": "modules/"` 已存在，但 **`web/` 前端目录和 `public/storage` 软链接都不存在**，`database/migrations` 里也没有 `personal_access_tokens` 迁移。
+
+所以**不要重复执行 `catch:install`**，手动按下面顺序补齐即可。
+
+---
+
+二、替代命令（按顺序执行）
+
+阶段 1：确认/创建数据库
+
+```bat
+mysql -h mysql8 -P 3306 -u root -p123456 -e "CREATE DATABASE IF NOT EXISTS catchadDb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+```
+
+如果是 Docker 起的 MySQL：
+
+```bat
+docker exec -it mysql8 mysql -uroot -p123456 -e "CREATE DATABASE IF NOT EXISTS catchadDb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+```
+
+验证连通性（能连上再往下走）：
+
+```bat
+php artisan db:show
+```
+
+阶段 2：配置与基础迁移
+
+```bat
+php artisan key:generate
+php artisan vendor:publish --tag=catch-config
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
+```
+
+对应 `catch:install` 里的 `publishConfig()`。第 2 条会提示 `config/catch.php` 已存在，选 `no` 覆盖即可跳过；第 4 条会创建 `users / password_reset_tokens / sessions / cache / jobs / migrations / personal_access_tokens` 等基础表。
+
+阶段 3：四个业务模块的迁移 + 种子（顺序不能乱）
+
+```bat
+php artisan catch:migrate user
+php artisan catch:db:seed user
+
+php artisan catch:migrate permissions
+php artisan catch:db:seed permissions
+
+php artisan catch:migrate system
+php artisan catch:db:seed system
+
+php artisan catch:migrate develop
+php artisan catch:db:seed develop
+```
+
+顺序说明：`system` 模块的 `system_mcp_tokens` 表带外键指向 `admin_users`，所以 **user 必须排在 system 之前**，否则会报外键错误。
+
+执行完确认表都建好了（会带 `ca_` 前缀）：
+
+```bat
+php artisan db:show --counts
+```
+
+应能看到：`ca_admin_users`、`ca_log_login`、`ca_log_operate`、`ca_roles`、`ca_positions`、`ca_departments`、`ca_permissions`、`ca_user_has_roles`、`ca_role_has_permissions`、`ca_user_has_jobs`、`ca_role_has_departments`、`ca_schemas`、`ca_schema_files`、`ca_system_dictionary`、`ca_system_dictionary_values`、`ca_system_config`、`ca_system_sms_template`、`ca_system_sms_code`、`ca_system_attachments`、`ca_system_attachment_category`、`ca_system_mcp_tokens`。
+
+阶段 4：收尾（软链接 + 插件 + 前端）
+
+```bat
+php artisan storage:link
+php artisan catch:plugin-install
+```
+
+前端（`catch:install` 里 `installFrontProject()` 做的事，需先装好 git / node / yarn）：
+
+```bat
+git clone https://gitee.com/catchadmin/catch-admin-vue.git web
+cd web
+yarn config set registry https://registry.npmmirror.com
+yarn install
+cd ..
+```
+
+新建 `web\.env`，内容两行：
+
+```ini
+VITE_BASE_URL=http://catch.test:8081/api/
+VITE_APP_NAME=CatchAdmin后台管理系统
+```
+
+最后清缓存：
+
+```bat
+php artisan optimize:clear
+```
+
+---
+
+三、几个容易踩的坑
+
+| 问题 | 说明 |
+|---|---|
+| **重复执行是安全的** | `catch:migrate` 会逐个文件比对 `migrations` 表里的文件名（[MigrateRun.php:60-72](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/Migrate/MigrateRun.php#L60-L72)），已执行过的会跳过，可以放心重跑 |
+| **`catch:db:seed` 不是幂等的** | `SeedRun` 直接 `require_once` 所有 seeder 并 `run()`。用户 seeder 内部有 email 去重；菜单 seeder 的 `ImportPermissions` 按 `permission_name + module + permission_mark` 去重，所以也能重复跑，但**自定义 seeder 需自己保证幂等** |
+| **生产环境要加 `--force`** | `APP_ENV=production` 时 `migrate` / `catch:migrate` / `catch:db:seed` 都会交互确认，加上 `--force` 才能无人值守，例如 `php artisan catch:migrate system --force` |
+| **`develop` 模块没有 seeder 目录** | 执行 `catch:db:seed develop` 会自动创建一个空的 `modules/Develop/database/seeder/` 目录，不报错也无数据，属正常 |
+| **`admin_modules` 表不会被创建** | 因为 `catch.module.driver` 默认是 `file` 且 `autoload=true`，模块不落库。只有改用 database 驱动时才需要 `php artisan vendor:publish --tag=catch-module` 再 `migrate` |
+| **重装想彻底重来** | 删 `.env` → `php artisan catch:install`；或直接 `php artisan catch:migrate:fresh user --force` 等逐模块重建（会丢数据） |
+
+如果 `catch:install` 失败的具体报错是 **Node / Yarn / Git 未安装**，那前三个阶段（建库、配置、迁移、种子）其实都能正常完成，只是前端没装；把阶段 1~3 + `storage:link` + `catch:plugin-install` 跑完，后端就能用了，前端单独补装即可。
 
 ### 其他
 
