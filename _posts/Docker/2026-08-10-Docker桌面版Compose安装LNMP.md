@@ -544,8 +544,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     nodejs \ 
     npm \
-    yarn \
     && rm -rf /var/lib/apt/lists/*
+
+# 配置npm镜像源为npmmirror，并下载yarn的镜像及配置镜像源
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm config set ignore-engines true \
+    && npm install -g yarn \
+    && yarn config set registry https://registry.npmmirror.com \
+    && yarn config set sass_binary_site https://npmmirror.com/mirrors/node-sass/
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
@@ -559,10 +565,8 @@ RUN docker-php-ext-install -j$(nproc) \
     zip
 
 # 手动生成扩展加载ini，解决php8.5下不自动生成ini的bug
-RUN echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/20-bcmath.ini \
-    && echo "extension=gd.so" > /usr/local/etc/php/conf.d/20-gd.ini \
+RUN echo "extension=gd.so" > /usr/local/etc/php/conf.d/20-gd.ini \
     && echo "extension=intl.so" > /usr/local/etc/php/conf.d/20-intl.ini \
-    && echo "extension=mysqli.so" > /usr/local/etc/php/conf.d/20-mysqli.ini \
     && echo "extension=pdo_mysql.so" > /usr/local/etc/php/conf.d/20-pdo_mysql.ini \
     && echo "extension=zip.so" > /usr/local/etc/php/conf.d/20-zip.ini
 
@@ -592,7 +596,7 @@ COPY conf.d/*.ini /usr/local/etc/php/conf.d/
 # COPY --from=composer/composer:2-bin /composer /usr/bin/composer
 # RUN chmod +x /usr/bin/composer
 # 优先官方源，如果需要可配置国内镜像源（建议在容器内进行修改）
-# composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+# RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 WORKDIR /var/www/html
 ```
@@ -631,9 +635,10 @@ services:
     environment:
       TZ: Asia/Shanghai
 
-    # 如果有别的服务器需要外网/局域网直连这个php-fpm才加下面这行，否则不要加
+    # 如果有别的服务器需要外网/局域网直连这个php-fpm才加下面90001:9000这行，否则不要加。下面 10086 可以作为 vite dev 热更新开发端口
     # ports:
     #   - "9001:9000"
+        - "10086:10086"
 
   nginx:
     image: nginx:stable
@@ -644,7 +649,7 @@ services:
       # - "443:443"
       # 如果上面端口已被占用，这里直接写 8081:80，代表监听宿主机所有网卡（0.0.0.0），局域网、外网都能访问
       - "8081:80"
-      - "8444:443"
+      # - "8444:443"
     networks:
       - web-net
     volumes:
@@ -671,7 +676,7 @@ server {
     server_name catch.test;
 
     root /var/www/html/catchadmin/public;
-    index index.php;
+    index index.html index.php index.htm default.php default.htm default.html;
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
         expires 7d;
@@ -679,16 +684,19 @@ server {
     }
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+       if (!-e $request_filename) {
+        rewrite  ^(.*)$  /index.php?s=/$1  last;
+        break;
+      }
     }
 
     location ~ \.php$ {
-        fastcgi_pass php85:9000;  # 容器内部同一net访问
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php85:9000;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
-        fastcgi_buffer_size 128k;
-        fastcgi_buffers 4 128k;
     }
 
     location ~ /\.env { deny all; }
@@ -711,46 +719,318 @@ docker network connect web-net redis
 
 然后再执行上面的 `docker compose` 命令。
 
-
-
 ## 部署 CatchAdmin
 
-在 Windows 资源管理器往 `\\wsl.localhost\docker-desktop\root\lnmp-web\www\` 上传代码包，然后再进容器 `composer install` 安装依赖。
+参考文档：https://doc.catchadmin.com/docs/5.0/start/install
 
-```
-docker exec -it php85 bash
-cd /var/www/html/catchadmin
-composer install
-cp .env.example .env
-php artisan key:generate
+### 后端
 
-php artisan catch:install
+在 `D:\develop\lnmp-web\www` 文件夹下安装 CatchAdmin 后端：
+```
+# 进入容器
+> docker exec -it php85 bash
 
-# 也可以直接执行
-php artisan catch:install --no-build
+# 切换到 www 目录
+> cd /var/www/html
+
+# 拉取 CatchAdmin 代码
+> git clone https://gitee.com/catchadmin/catchAdmin.git catchadmin
+
+> cd catchadmin
+
+# 切官方源
+> composer config repo.packagist composer https://repo.packagist.org
+
+# 安装依赖
+> composer install
+
+# 复制环境变量模板
+> cp .env.example .env
+
+# 生成应用密钥
+> php artisan key:generate
+
+# 数据库迁移
+> php artisan migrate
+
+# 上传显示图片需要软连接
+> php artisan storage:link
+
+# 修改权限
+> ls -1h
+> chmod -R 775 /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
 ```
 
-然后配置.env，权限，迁移：
-```
-chown -R www-data:www-data /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
-php artisan migrate
-```
+打开 `.env` 文件配置数据库连接等信息。
 
 修改 `C:\Windows\System32\drivers\etc\hosts` 文件，添加 catch.test 记录：
 ```
 127.0.0.1 catch.test
 ```
 
+在 config 目录下新建文件 catch.php，并写入内容：
+```php
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | catch-admin 超级管理员
+    |--------------------------------------------------------------------------
+    |
+    | 可以设置超级管理的用户 ID
+    | 支持数组
+    |
+    |--------------------------------------------------------------------------
+    */
+    'super_admin' => 1,
+
+    /*
+    |--------------------------------------------------------------------------
+    | catch-admin 请求允许
+    |--------------------------------------------------------------------------
+    |
+    | 默认允许 GET 请求通过 RBAC 权限
+    |
+    |--------------------------------------------------------------------------
+    */
+    'request_allowed' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | catch-admin 模块设置
+    |--------------------------------------------------------------------------
+    |
+    | 设置模块根目录
+    | 设置模块的根命名空间
+    | 设置模块默认生成的文件夹
+    |
+    |--------------------------------------------------------------------------
+    */
+    'module' => [
+        'root' => 'modules',
+
+        'namespace' => 'Modules',
+
+        /**
+         * 默认启动的模块
+         */
+        'default' => ['develop', 'user', 'common'],
+
+        'default_dirs' => [
+            'Http'.DIRECTORY_SEPARATOR,
+
+            'Http'.DIRECTORY_SEPARATOR.'Requests'.DIRECTORY_SEPARATOR,
+
+            'Http'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR,
+
+            'Models'.DIRECTORY_SEPARATOR,
+        ],
+
+        // 模块存储驱动
+        // 默认使用文件驱动
+        'driver' => [
+            // currently, catchadmin support file and database
+            // the default is driver
+            'default' => 'file',
+
+            // use database driver
+            'table_name' => 'admin_modules',
+        ],
+
+        /**
+         * 模块路由集合
+         */
+        'routes' => [],
+
+        /**
+         * 模块是否自动加载
+         *
+         * 如果设置成 true，模块会自动全部加载
+         */
+        'autoload' => env('CATCH_MODULE_AUTOLOAD', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | catch-admin 响应
+    |--------------------------------------------------------------------------
+    */
+    'response' => [
+        // JSON 响应, 保证响应数据都是 json
+        'always_json' => \Catch\Middleware\JsonResponseMiddleware::class,
+
+        // 响应监听者
+        // 监听[RequestHandled]事件
+        'request_handled_listener' => \Catch\Listeners\RequestHandledListener::class,
+    ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | 数据库 SQL 日志
+   |--------------------------------------------------------------------------
+   */
+    'listen_db_log' => env('APP_DEBUG', true),
+
+    /*
+   |--------------------------------------------------------------------------
+   | 管理员授权认证模型
+   |--------------------------------------------------------------------------
+   */
+    'auth_model' => \Modules\User\Models\User::class,
+
+    /*
+   |--------------------------------------------------------------------------
+   | 管理员授权 Guard
+   |--------------------------------------------------------------------------
+   */
+    'auth' => 'admin',
+
+    /*
+   |--------------------------------------------------------------------------
+   | 路由配置
+   |--------------------------------------------------------------------------
+   */
+    'route' => [
+        'prefix' => 'api',
+
+        'middlewares' => [
+            \Catch\Middleware\AuthMiddleware::class,
+            \Catch\Middleware\JsonResponseMiddleware::class,
+        ],
+    ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | 前端 Vue 视图文件夹路径
+   |
+   | 如果不设置，将不会生成相关的 Vue 文件
+   |--------------------------------------------------------------------------
+   */
+    'views_path' => base_path('web'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR),
+
+    /*
+   |--------------------------------------------------------------------------
+   | 开启系统接口日志分析
+   |
+   | 接口日志依赖 Redis，提高性能
+   |--------------------------------------------------------------------------
+   */
+    'system_api_log' => env('CATCH_SYSTEM_API_LOG', false),
+
+    /*
+   |--------------------------------------------------------------------------
+   | 图片处理
+   |
+   | 默认使用 GD
+   |--------------------------------------------------------------------------
+   */
+    'image' => [
+        'driver' => env('CATCH_IMAGE_DRIVER', 'gd'),
+
+        'options' => [
+
+        ],
+
+        /**
+         * 默认读取磁盘
+         */
+        'read_from' => env('CATCH_IMAGE_READ_FROM', 'uploads'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | 后台缓存统一管理
+    |
+    | 配置后台缓存前缀，便于清理后台管理的缓存
+    |--------------------------------------------------------------------------
+    */
+    'admin_cache_key' => env('CATCH_ADMIN_CACHE_KEY', 'admin_dashboard_'),
+
+     /*
+    |--------------------------------------------------------------------------
+    | 模型相关配置
+    |
+    | 配置模型的配置
+    |--------------------------------------------------------------------------
+    */
+    'model' => [
+        // created_at & updated_at format
+        'date_format' => 'Y-m-d H:i:s',
+
+        // update creator id
+        'change_creator_id' => (bool) env('CATCH_CHANGE_CREATOR_ID', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Excel 配置
+    |--------------------------------------------------------------------------
+    */
+    'excel' => [
+        /**
+         * 导出路径, 相对于 storage 目录得相对路径
+         */
+        'export_path' => 'excel/export',
+    ],
+];
+```
+
 浏览器访问 http://catch.test:8081
 
-后续修改 nginx 配置后的重载命令（CMD）：
+### 前端
+
+安装 CatchAdmin 前端：
+```
+# 拉取 CatchAdmin 前端代码
+git clone -b v5 https://gitee.com/catchadmin/catch-admin-vue.git web
+
+# 切换到 web 目录
+> cd web
+
+# 切国内源
+> yarn config set registry https://registry.npmmirror.com
+
+# 安装依赖
+> yarn install --ignore-engines
+
+# 复制环境变量模板
+> cp .env.example .env
+```
+
+打开 `.env` 文件配置api连接地址信息：
+```
+VITE_BASE_URL=http://catch.test:8081/api
+```
+
+修改 `vite.config.ts` 文件中的 server 配置：
+```
+server: {
+    hmr: true,
+    host: '0.0.0.0',
+    port: 10086,
+    ...
+}
+```
+
+启动前端项目
+> yarn dev
+
+浏览器访问 http://localhost:10086
+
+
+
+### 其他
+
+后续有其他项目配置后，修改 nginx 配置后的重载命令（CMD）：
 ```
 docker exec nginx nginx -t
 docker exec nginx nginx -s reload
-```
 
-或者进入容器修改权限：
-> chmod -R 775 /var/www/html/catchadmin/storage
+docker compose restart nginx
+
+docker compose up -d nginx
+```
 
 ## 附言
 
@@ -820,11 +1100,6 @@ docker compose down
 
 # 重新启动（不重新构建镜像）
 docker compose up -d
-```
-
-权限坑：
-```
-docker exec php85 chown -R www-data:www-data /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
 ```
 
 ### 安装PHP拓展
@@ -933,6 +1208,17 @@ xdebug.client_port=9003
 ```
 
 还需要其他一些配合。
+
+### 补充
+
+在容器中安装一些软件：
+```
+apt-get install -y nodejs
+
+curl -fsSL https://www.npmjs.com/install.sh | sh
+
+npm install -g yarn@1.22.22
+```
 
 ## 执行查看
 
