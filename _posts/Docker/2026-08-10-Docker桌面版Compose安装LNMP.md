@@ -25,7 +25,7 @@ meta: Docker桌面版Compose安装LNMP
 每一个服务（Nginx、PHP、MySQL、Redis）都要敲很长一串命令，写端口、挂载卷、网络、环境变量；
 服务多了，命令很难记、不好复用，还要手动保证网络互通、顺序启动。
 
-比如你的项目：Nginx + PHP85，是两个配合在一起工作的容器，属于**一套业务**。
+比如项目：Nginx + PHP85，是两个配合在一起工作的容器，属于**一套业务**。
 
 **Compose 核心作用**
 
@@ -35,7 +35,6 @@ meta: Docker桌面版Compose安装LNMP
 - 一键启动、停止、重启整套服务，不用一条一条敲 docker run
 
 ```yaml
-# 就是你一直在写的这种
 services:
   php85:
     build: ./php
@@ -49,7 +48,7 @@ services:
 2. **project（项目）**
    同一个目录下的 `docker-compose.yml` 就是一个项目，compose 会给这套容器统一加上项目前缀，隔离不同项目。
 3. **network（网络）**
-   默认自动创建独立网桥，同项目容器之间互通；也可以接入外部网络（像你用的 `web-net`）。
+   默认自动创建独立网桥，同项目容器之间互通；也可以接入外部网络（如自建的 `web-net`）。
 4. **volume（数据卷）**
    统一管理持久化数据，比如MySQL数据。
 
@@ -70,9 +69,9 @@ services:
 Compose **适合单机**，只是在一台服务器上管理多个容器。
 如果是多台服务器集群、负载均衡、自动扩缩容，那是 Kubernetes（K8s）干的，Compose 不适合。
 
-**结合你现在的场景理解**
+**结合现在的场景理解**
 
-你这套 LNMP：Nginx容器 + PHP容器，放在同一个 compose yml 里，属于**一个项目**。
+这套 LNMP：Nginx容器 + PHP容器，放在同一个 compose yml 里，属于**一个项目**。
 - 启动：同时拉起nginx和php
 - 网络互通：nginx 可以直接用服务名 `php85` 访问php-fpm
 - 改配置：只需要改yml，不用记一长串docker run参数
@@ -80,6 +79,7 @@ Compose **适合单机**，只是在一台服务器上管理多个容器。
 ### Docker / Docker Compose / K8s 简单对比
 
 **Docker / Docker Compose / K8s 简单对比表**
+
 | 项目 | Docker（原生） | Docker Compose | Kubernetes(K8s) |
 | ---- | ---- | ---- | ---- |
 | **定位** | 容器引擎，底层核心 | 单机多容器编排工具 | 分布式集群编排平台 |
@@ -90,8 +90,8 @@ Compose **适合单机**，只是在一台服务器上管理多个容器。
 | 自动重启 | 容器内配置 `restart` | 每个service配置 `restart` | 节点挂了可以自动把容器调度到别的机器 |
 | 扩容 | 手动多run几次 | `--scale`，单机扩容 | 横向扩容，跨机器 |
 | 故障自愈 | 容器退出可以重启；**机器挂了就没办法** | 容器退出可以重启；**机器挂了整套直接挂** | 检测节点故障，自动迁移实例到其他正常服务器 |
-| 学习难度 | 低 | 低（你现在正在用） | 很高，组件多、概念复杂 |
-| 适合场景 | 临时测试、单个容器 | 开发环境、单机部署项目（你的LNMP就是典型） | 生产集群、高可用业务、流量大、需要多服务器 |
+| 学习难度 | 低 | 低 | 很高，组件多、概念复杂 |
+| 适合场景 | 临时测试、单个容器 | 开发环境、单机部署项目 | 生产集群、高可用业务、流量大、需要多服务器 |
 | 不适合 | 一次性管理一大堆关联容器 | 多服务器集群、高可用 | 本地简单开发环境，太重了 |
 
 **一句话通俗总结**
@@ -104,7 +104,7 @@ Compose **适合单机**，只是在一台服务器上管理多个容器。
 
 ### Docker Compose 常用命令
 
-> 前提：必须在 `docker-compose.yml` 所在目录执行，或者用 `-f` 指定配置文件
+> 前提：必须在 `docker-compose.yml` 所在目录执行，或者用 `-f` 指定配置文件位置
 
 **基础启停**
 
@@ -223,26 +223,26 @@ docker compose -f docker-compose-dev.yml up -d
 
 **高频组合（你开发LNMP时最常用）**
 
-1. 修改 Dockerfile 后重建：
+* 修改 Dockerfile 后重建：
 
 ```
 docker compose down
 docker compose up -d --build
 ```
 
-2. 改配置文件（ini、nginx.conf），不需要重新build，只重启服务：
+* 改配置文件（ini、nginx.conf），不需要重新build，只重启服务：
 
 ```
 docker compose restart php85
 ```
 
-3. 看php报错日志：
+* 看php报错日志：
 
 ```
 docker compose logs -f php85
 ```
 
-4. 进php容器调试：
+* 进php容器调试：
 
 ```
 docker compose exec php85 bash
@@ -253,6 +253,9 @@ docker compose exec php85 bash
 - `docker compose down`：**删除容器，卷不会删**，MySQL数据还在；加 `-v` 才删卷
 - `--build` 只有Dockerfile改动时才需要，单纯改nginx.conf、ini不需要build
 - exec 是**进入正在运行的容器**，容器stop状态下exec会报错
+- Dockerfile 文件修改后执行命令`docker compose down`停止和删除容器，然后执行 `docker compose up -d --build` 重新创建新镜像和容器并运行。
+- docker-compose.yml文件修改后，不需要重建镜像，只需要执行命令`docker compose down`停止和删除容器，然后执行`docker compose up -d`重新创建容器即可。
+- `docker compose down --rmi local` 会同时删掉这个项目对应的镜像。`--rmi local`：只删除 compose 里 build 出来的本地镜像（如php85 这个），`docker compose down --rmi all` 会把所有用到的镜像全部删掉（包含 mysql、redis）。
 
 ---
 
@@ -354,14 +357,13 @@ docker image prune -f
 - `--build`：只改Dockerfile才需要；单纯改配置文件不用build
 - exec 只能进入**运行中**的容器
 
-
-## 正文
-
-这里使用 Docker Compose 安装 LNMP 环境。PHP 需要编译安装，速度会很慢。
-
 ## Compose 编排
 
+这里使用 Docker Compose 安装 LNMP 环境。PHP 需要下载后编译安装，所以速度会很慢。
+
 前面安装好了 MySQL 和 Redis，下面按照：官方镜像 + 职责分离 + Compose 编排 + 复用已有网络， 来安装 php:8.5-fpm 和 nginx 两个独立容器，不自己拼 LNMP 大镜像。PHP 升级只换 tag，Nginx 调参只动配置，互不影响。
+
+### 环境查看
 
 先看一下环境：
 ```
@@ -506,7 +508,7 @@ docker-desktop:~#
 
 另外：Windows 资源管理器 `\\wsl.localhost\docker-desktop` ，对应 WSL 内 `/` 根目录。
 
-## 安装 PHP8.5 与 Ngnix
+### 安装 PHP8.5 与 Ngnix
 
 我们在 `D:\develop` 目录下创建 `lnmp-web` 目录，用于存放 LNMP 相关文件。下面是具体的目录结构：
 ```
@@ -528,7 +530,7 @@ catchadmin 是一个基于 Laravel-12 的PHP项目，不要把代码放 Windows 
 
 先把各文件内容写好，再进行安装。
 
-/root/lnmp-web/php/Dockerfile 文件内容：
+/lnmp-web/php/Dockerfile 文件内容：
 ```
 FROM php:8.5-fpm
 
@@ -548,10 +550,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # 配置npm镜像源为npmmirror，并下载yarn的镜像及配置镜像源
 RUN npm config set registry https://registry.npmmirror.com \
-    && npm config set ignore-engines true \
     && npm install -g yarn \
     && yarn config set registry https://registry.npmmirror.com \
-    && yarn config set sass_binary_site https://npmmirror.com/mirrors/node-sass/
+    && yarn config set sass_binary_site https://npmmirror.com/mirrors/node-sass/ \
+    && yarn config set ignore-engines true
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
@@ -581,11 +583,16 @@ RUN echo "extension=gd.so" > /usr/local/etc/php/conf.d/20-gd.ini \
 #     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/99-custom.ini \
 #     && echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/99-custom.ini
 
-# 安装 Redis 扩展（pecl 是 PHP 的扩展包管理器，选固定版本，太新PHP可能会不支持）
-RUN pecl install redis-7.4.10
+# 引入一键扩展安装器（这里redis拓展安装总是失败，构建成功后在容器内安装）
+# COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+# 一行安装redis，自动开启
+# RUN install-php-extensions redis
 
+# 安装 Redis 扩展（pecl 是 PHP 的扩展包管理器，选固定版本，太新PHP可能会不支持）
+# RUN pecl install redis-6.1.0
 # 启用 Redis 扩展
-RUN docker-php-ext-enable redis
+# RUN docker-php-ext-enable redis
+
 
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -601,7 +608,7 @@ COPY conf.d/*.ini /usr/local/etc/php/conf.d/
 WORKDIR /var/www/html
 ```
 
-/root/lnmp-web/php/conf.d/99-custom.ini 文件内容：
+/lnmp-web/php/conf.d/99-custom.ini 文件内容：
 ```
 date.timezone = Asia/Shanghai
 memory_limit = 256M
@@ -618,9 +625,9 @@ opcache.revalidate_freq=60
 opcache.validate_timestamps=1
 ```
 
-这里已经有了 opcache 的配置，重复加载，后面的覆盖前面的，属于冗余，可以把上面 `RUN echo "opcache.enable=1"` 这一大段注释掉。
+这里已经有了 opcache 的配置，重复加载，后面的覆盖前面的，属于冗余，所以可以把上面Dockerfile中的 `RUN echo "opcache.enable=1"` 这一大段注释掉。
 
-/root/lnmp-web/docker-compose.yml 文件内容（核心，包含 nginx 服务定义）：
+/lnmp-web/docker-compose.yml 文件内容（核心，包含 nginx 服务定义）：
 ```
 services:
   php85:
@@ -635,7 +642,7 @@ services:
     environment:
       TZ: Asia/Shanghai
 
-    # 如果有别的服务器需要外网/局域网直连这个php-fpm才加下面90001:9000这行，否则不要加。下面 10086 可以作为 vite dev 热更新开发端口
+    # 如果有别的服务器需要外网/局域网直连这个php-fpm才加下面9001:9000这行，否则不要加。下面 10086 可以作为 vite dev 热更新开发端口
     # ports:
     #   - "9001:9000"
         - "10086:10086"
@@ -664,12 +671,13 @@ networks:
     external: true
 ```
 
-这个架构里 nginx 和 php 在同一个 docker 网桥 web-net，`fastcgi_pass php85:9000` 容器内部 DNS 互通，不需要映射 9000 端口。
+这个架构里 nginx 和 php 在同一个 docker 网桥 web-net，容器内部 DNS 互通，不需要映射 9000 端口，`fastcgi_pass php85:9000`，php85 是内部容器，服务端口是 9000。
 本机：http://127.0.0.1:8081 可以访问 nginx 项目。
 
 如果允许同一局域网内的其他机器访问，需要Windows 防火墙放行 8081、8444 端口：防火墙 → 高级设置 → 入站规则 → 新建规则，放行 TCP 8081、8444。
 
-/root/lnmp-web/nginx/conf.d/catch.conf 文件内容：
+举个nginx项目配置的例子。下面是 CatchAdmin项目 的 nginx 配置文件：
+/lnmp-web/nginx/conf.d/catch.conf 文件内容：
 ```
 server {
     listen 80;
@@ -706,7 +714,7 @@ server {
 
 在 Windows CMD / PowerShell 中执行 compose：
 ```
-docker compose -f \\wsl$\docker-desktop\root\lnmp-web\docker-compose.yml up -d --build
+docker compose -f D:\develop\lnmp-web\docker-compose.yml up -d --build
 ```
 
 不要在 WSL 中执行 `docker` / `docker compose` 命令，否则会报错。所有 `docker compose`、`docker ps`、`docker network` 全部在 Windows CMD / PowerShell 执行。
