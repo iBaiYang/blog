@@ -734,7 +734,7 @@ docker network connect web-net redis
 官方推荐的是自己的命令安装：
 ```
 # 进入容器
-> docker exec -it php85 bash
+> docker compose exec -it php85 bash
 
 # 切换到 www 目录
 > cd /var/www/html
@@ -744,12 +744,16 @@ docker network connect web-net redis
 
 > cd catchadmin
 
-composer install
+# 切官方源
+> composer config repo.packagist composer https://repo.packagist.org
 
-// 安装项目, 按照提示输入对应信息，会自动下载前端项目。
+# 安装依赖
+> composer install
+
+# 安装项目, 按照提示输入对应信息，会自动下载前端项目。
 php artisan catch:install
 
-// 上传显示图片需要软连接
+# 上传显示图片需要软连接
 php artisan storage:link
 ```
 
