@@ -1042,6 +1042,138 @@ server: {
 
 ### 补充
 
+`php artisan catch:install` 是catchadmin的一键安装命令。
+
+#### 安装命令
+
+看一下 `php artisan catch:install`  做了什么。
+
+一、`php artisan catch:install` 的执行流程
+
+命令定义在 [InstallCommand.php](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/InstallCommand.php#L36-L90)（签名 `catch:install {--prod}`），主流程 `handle()` 如下：
+
+1. **环境检测** `detectionEnvironment()`
+   - 检查 `git`、`composer`、`node`、`yarn`、`exec` 函数是否可用
+   - PHP 版本必须 ≥ 8.2
+   - 检查扩展：`bcmath, ctype, intl, dom, mysqli, fileinfo, json, mbstring, openssl, pcre, pdo, tokenizer, xml, pdo_mysql`
+
+2. **关键判断：只有 `.env` 不存在时才执行安装**（[L58-L88](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/InstallCommand.php#L58-L88)）。如果 `.env` 已存在，会直接跳到 `showInfo()` 打印欢迎信息。所以想重装必须先删 `.env`。
+
+3. 安装步骤（`.env` 不存在时）：
+   - `askForCreatingDatabase()`：交互式收集应用名称、URL、数据库驱动（mysql/pgsql）、库名、表前缀、host/port/用户名/密码，写入 `.env`（APP_NAME/APP_ENV/APP_DEBUG/APP_URL/DB_*），并执行 `create database if not exists ... default charset utf8mb4 collate utf8mb4_general_ci`（pgsql 走另一条 SQL）
+   - `publishConfig()`：见下一节（数据库迁移的核心）
+   - `createStorageLink()`：`storage:link`
+   - `installed()`：克隆前端仓库 `catch-admin-vue` 到 `web/`、`yarn config set registry` + `yarn install`、生成 `web/.env`、往根 `composer.json` 写入 `Modules\` 的 PSR-4 自动加载并 `dump-autoload`、执行 `catch:plugin-install`
+
+4. `showInfo()`：打印默认账号 `catch@admin.com / catchadmin`，可选打开文档，并改写 `composer run dev` 脚本
+
+5. 任何异常都会触发 `rollback()`：删除 `.env`、`web/.env`，并 **drop 掉刚创建的数据库**。
+
+---
+
+二、数据库迁移相关的具体动作
+
+`publishConfig()`（[L262-L295](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/InstallCommand.php#L262-L295)）内部依次执行：
+
+| 步骤 | 命令 | 作用 |
+|---|---|---|
+| 1 | `key:generate` | 生成 APP_KEY |
+| 2 | `vendor:publish --tag=catch-config` | 发布 `config/catch.php` |
+| 3 | `vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"` | 仅在缺少 `sanctum.php` 或 `personal_access_tokens` 迁移时发布 |
+| 4 | `migrate` | 跑根目录 `database/migrations` 的 Laravel 原生迁移 |
+| 5 | `catch:migrate user` + `catch:db:seed user` | 用户模块 |
+| 6 | `catch:migrate develop` + `catch:db:seed develop` | 开发模块 |
+| 7 | `catch:migrate permissions` + `catch:db:seed permissions` | 权限模块 |
+| 8 | `catch:migrate system` + `catch:db:seed system` | 系统模块 |
+
+**模块迁移机制**（[MigrateRun.php](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/Migrate/MigrateRun.php#L52-L78)）：
+- 遍历 `modules/{module}/database/migrations/` 下的**每个文件**，逐个调用 `artisan migrate --path=...`
+- 执行前用 `migrations` 表按文件名判断是否已执行过 → **所有模块共用同一张 `migrations` 表**，可重复执行、增量迁移
+- 因此每个模块的迁移文件都是"单体迁移"，而不是一次批量执行
+
+**模块填充机制**（[SeedRun.php](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Commands/Migrate/SeedRun.php#L52-L72)）：`require_once` 载入 `modules/{module}/database/seeder/*.php` 中的匿名 Seeder 类并调用 `run()`。
+
+**需要注意的两个点**：
+- `catch:install` 直接调用 `catch:migrate` / `catch:db:seed`，**没有走模块的 `Installer::install()`**（[Installer.php](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Support/Module/Installer.php#L75-L105)），所以不会写模块注册表。默认 `catch.module.driver=file` 且 `autoload=true`，`admin_modules` 表根本不会被创建（该表迁移只在 `vendor:publish --tag=catch-module` 时才发布）。
+- `modules/Develop` 下**没有 `database/seeder` 目录**，`catch:db:seed develop` 会抛异常并被外层 `catch` 吞掉，可能导致后面的 `permissions`、`system` 的迁移/填充没跑。若发现表缺失，手动补跑：
+
+```bash
+php artisan catch:migrate permissions
+php artisan catch:db:seed permissions
+php artisan catch:migrate system
+php artisan catch:db:seed system
+```
+
+**字段宏约定**（[Blueprint.php](file:///d:/develop/lnmp-web/www/catchadmin/vendor/catchadmin/core/src/Support/Macros/Blueprint.php#L36-L110)）：`createdAt()/updatedAt()/deletedAt()` 都是 `unsignedInteger default 0` 的 **Unix 时间戳**（`deleted_at=0` 表示未删除，即软删除）；`creatorId()` 为 `unsignedInteger`；`status()` 为 `tinyInteger`，1 正常 / 2 禁用。
+
+---
+
+三、迁移会创建的具体表
+
+1. Laravel 基础表（根 `database/migrations`，`migrate` 执行）
+- `users`、`password_reset_tokens`、`sessions` — [0001_01_01_000000_create_users_table.php](file:///d:/develop/lnmp-web/www/catchadmin/database/migrations/0001_01_01_000000_create_users_table.php)
+- `cache`、`cache_locks` — 0001_01_01_000001
+- `jobs`、`job_batches`、`failed_jobs` — 0001_01_01_000002
+- `migrations`（Laravel 自动建）
+- `personal_access_tokens`（Sanctum 发布后执行）
+
+2. User 模块（`catch:migrate user`）
+| 表 | 说明 | 主要字段 |
+|---|---|---|
+| `admin_users` | 后台用户表 | username, password, email, avatar, remember_token, department_id, creator_id, status, login_ip, login_at, 时间戳/软删 |
+| `log_login` | 登录日志 | account, login_ip, browser, platform, login_at, status（后续迁移追加 location、token_id） |
+| `log_operate` | 操作日志 | module, action, params, ip, http_method, http_code, start_at, time_taken, creator_id, created_at |
+
+后续迁移对 `admin_users` 追加 `mobile`、改 `password`、追加 `open_id/unionid`。
+
+3. Permissions 模块
+| 表 | 说明 |
+|---|---|
+| `roles` | 角色表：role_name, identify, parent_id, description, data_range |
+| `positions` | 岗位表（原 `jobs` 被重命名为 `positions`）：job_name, coding, status, sort, description |
+| `departments` | 部门表：parent_id, department_name, principal, mobile, email, status, sort |
+| `permissions` | 权限/菜单表：parent_id, permission_name, route, icon, module, permission_mark, component, redirect, keepalive, type(1目录/2菜单/3按钮), hidden, sort |
+| `user_has_roles` | 用户-角色关联（user_id, role_id） |
+| `role_has_permissions` | 角色-权限关联（role_id, permission_id） |
+| `user_has_jobs` | 用户-岗位关联（user_id, job_id） |
+| `role_has_departments` | 角色-部门关联（role_id, department_id） |
+
+4. Develop 模块（代码生成器）
+| 表 | 说明 |
+|---|---|
+| `schemas` | 生成方案：module, name, columns, is_soft_delete, generate_params |
+| `schema_files` | 生成产物：schema_id + controller/model/request/vue table/vue form 的路径与文件内容 |
+
+5. System 模块
+| 表 | 说明 |
+|---|---|
+| `system_dictionary` | 字典：name, key, status, description |
+| `system_dictionary_values` | 字典值：dic_id, label, key, value, sort, status |
+| `system_config` | 配置项 key/value |
+| `system_sms_template` | 短信模板：channel, template_id, content, variables |
+| `system_sms_code` | 短信验证码记录：mobile, code, behavior, channel, status, expired_at |
+| `system_attachments` | 附件表：category_id, filename, path, extension, filesize, mimetype, driver |
+| `system_attachment_category` | 附件分类：parent_id, title |
+| `system_mcp_tokens` | MCP Token：user_id, name, token_hash, status, expires_at, revoked_at, last_used_at, last_used_ip，外键指向 `admin_users` |
+
+6. 可选表
+- `admin_modules`（`config('catch.module.table_name')`）：模块注册表，仅在使用 database 驱动时需要，执行 `php artisan vendor:publish --tag=catch-module` 后再 `migrate`。
+
+---
+
+四、种子数据（seeders）
+
+| 模块 | Seeder | 写入内容 |
+|---|---|---|
+| user | [User.php](file:///d:/develop/lnmp-web/www/catchadmin/modules/User/database/seeder/User.php#L10-L34) | 创建超管 `catchadmin / catch@admin.com / catchadmin`（已存在则跳过） |
+| permissions | [PermissionsMenusSeeder.php](file:///d:/develop/lnmp-web/www/catchadmin/modules/Permissions/database/seeder/PermissionsMenusSeeder.php#L14-L25) | 通过 `ImportPermissions::import()` 递归写入"权限管理"菜单树到 `permissions` 表（按 permission_name+module+permission_mark 去重） |
+| system | [SystemMenusSeeder.php](file:///d:/develop/lnmp-web/www/catchadmin/modules/System/database/seeder/SystemMenusSeeder.php#L14-L25) | 写入"系统管理"菜单树到 `permissions` 表 |
+| 安装收尾 | `catch:plugin-install` | 发布插件视图 + 往 `permissions` 写入"插件管理"菜单（`/plugin`），之后可在后台 `/plugins` 安装插件 |
+
+> 补充：`roles`、`departments` 等表在安装时只有表结构、没有预置数据，需要登录后台自行创建；默认超管 `id=1` 由 `config('catch.super_admin')` 视为超级管理员，绕过 RBAC 校验。
+
+#### 安装步骤
+
 如果 `php artisan catch:install` 执行错误，可以按照下面给命令逐行执行。
 
 一、先说结论：你的 `.env` 已经存在，所以 `catch:install` 本来就会跳过安装步骤
