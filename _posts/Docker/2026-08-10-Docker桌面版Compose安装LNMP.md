@@ -30,7 +30,7 @@ meta: Docker桌面版Compose安装LNMP
 **Compose 核心作用**
 
 把这一整套服务的配置，全部写到一个 `docker-compose.yml` 文件里：
-- 每个服务：镜像/怎么构建、端口映射、挂载目录、网络、依赖、重启策略
+- 每个服务：镜像怎么-构建、端口映射、挂载目录、网络、依赖、重启策略
 - 定义统一网络，让容器之间可以互相访问（`php85:9000` 这种容器名通信）
 - 一键启动、停止、重启整套服务，不用一条一条敲 docker run
 
@@ -221,7 +221,7 @@ docker compose -f docker-compose-dev.yml up -d
 
 ---
 
-**高频组合（你开发LNMP时最常用）**
+**高频组合（开发LNMP时最常用）**
 
 * 修改 Dockerfile 后重建：
 
