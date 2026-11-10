@@ -600,10 +600,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY conf.d/*.ini /usr/local/etc/php/conf.d/
 
 # 安装 composer （从 Docker 镜像内直接复制二进制）
-# COPY --from=composer/composer:2-bin /composer /usr/bin/composer
-# RUN chmod +x /usr/bin/composer
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+RUN chmod +x /usr/bin/composer
 # 优先官方源，如果需要可配置国内镜像源（建议在容器内进行修改）
-# RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 WORKDIR /var/www/html
 ```
