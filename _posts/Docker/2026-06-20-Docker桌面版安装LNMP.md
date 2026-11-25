@@ -752,43 +752,64 @@ docker run -d --name php74 -p 9000:9000 --network web-net -v D:/develop/lnmp74-w
 执行记录：
 ```
 D:\develop\lnmp74-web\php>docker build -t php74-fpm .
-[+] Building 51.9s (22/22) FINISHED                                                                docker:desktop-linux
- => [internal] load build definition from Dockerfile                                                               0.0s
- => => transferring dockerfile: 2.67kB                                                                             0.0s
- => [internal] load metadata for docker.io/composer/composer:2-bin                                                 2.4s
- => [internal] load metadata for docker.io/library/php:7.4-fpm                                                     1.6s
- => [internal] load .dockerignore                                                                                  0.0s
- => => transferring context: 2B                                                                                    0.0s
- => [stage-0  1/15] FROM docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a  0.0s
- => => resolve docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811  0.0s
- => [internal] load build context                                                                                  0.0s
- => => transferring context: 65B                                                                                   0.0s
- => CACHED FROM docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a0  0.0s
- => => resolve docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a01  0.0s
- => CACHED [stage-0  2/15] RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free" > /e  0.0s
- => CACHED [stage-0  3/15] RUN apt-get update && apt-get install -y --no-install-recommends     libfreetype6-dev   0.0s
- => CACHED [stage-0  4/15] RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /  0.0s
- => [stage-0  5/15] RUN docker-php-ext-configure gd     --with-freetype     --with-jpeg                            2.9s
- => [stage-0  6/15] RUN docker-php-ext-install -j$(nproc)     bcmath     gd     intl     mysqli     pdo_mysql     16.9s
- => [stage-0  7/15] RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini     && echo "opcache.m  0.2s
- => [stage-0  8/15] RUN pecl install redis-5.3.7                                                                  18.0s
- => [stage-0  9/15] RUN docker-php-ext-enable redis                                                                0.2s
- => [stage-0 10/15] COPY conf.d/*.ini /usr/local/etc/php/conf.d/                                                   0.0s
- => [stage-0 11/15] COPY --from=composer/composer:2-bin /composer /usr/bin/composer                                0.0s
- => [stage-0 12/15] RUN chmod +x /usr/bin/composer                                                                 0.2s
- => [stage-0 13/15] RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/            0.2s
- => [stage-0 14/15] RUN npm config set registry https://registry.npmmirror.com     && npm install -g yarn     &&   2.1s
- => [stage-0 15/15] WORKDIR /var/www/html                                                                          0.0s
- => exporting to image                                                                                             8.5s
- => => exporting layers                                                                                            5.8s
- => => exporting manifest sha256:3dc20d2347f7b04cf4e3041922fb9a2d010a05f2a3bfaf271558b7f970ad9f0e                  0.0s
- => => exporting config sha256:7a9bdfff1f09ed332128000d07e0c145400f9290b721b4ba05be63fa0ccb059e                    0.0s
- => => exporting attestation manifest sha256:064f30049babf3b2aabefbb4cd3b4c977e7fbb00d394566737e72fbefcf03a37      0.0s
- => => exporting manifest list sha256:1498219639cd195adbe6764e423a3207c0abb02f1f93711fb4c2bf010b98c297             0.0s
- => => naming to docker.io/library/php74:latest                                                                    0.0s
- => => unpacking to docker.io/library/php74:latest                                                                 2.7s
+[+] Building 154.5s (22/22) FINISHED                                                             docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                             0.0s
+ => => transferring dockerfile: 3.48kB                                                                           0.0s
+ => [internal] load metadata for docker.io/composer/composer:2-bin                                               5.2s
+ => [internal] load metadata for docker.io/library/php:7.4-fpm                                                   5.2s
+ => [internal] load .dockerignore                                                                                0.0s
+ => => transferring context: 2B                                                                                  0.0s
+ => [stage-0  1/16] FROM docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6e  22.3s
+ => => resolve docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a00843728  0.0s
+ => => sha256:6137f893bda625dc11ea72d9c226f43b358e49cd9284c6cb129e3f1369e61d5e 246B / 246B                       1.0s
+ => => sha256:79b1a1b78461157a10b5103e206874c1417e79236e89515ad8411dc5b3839a85 8.44kB / 8.44kB                   1.5s
+ => => sha256:b922b67ca46b30a57ae7fa2105d7e0bfb954b004a70d0809cf19cfb45df83f48 2.45kB / 2.45kB                   1.6s
+ => => sha256:93346a3f46bcefa9de4ea57b9043f0b79042a32652169f8306529cde0d9bee96 25.40MB / 25.40MB                 4.4s
+ => => sha256:a8e3b94fe6c130216f4567f987d8a71cfebc44bb098f9f1d6d18d0e02d6a2c50 491B / 491B                       1.6s
+ => => sha256:972155ae644b037435eddf206152975f6fd3eaeb1ddeb632709f9c4f9b2bb180 10.74MB / 10.74MB                15.9s
+ => => sha256:fb5a4c8af82f00730b7427e47bda7f76cea2e2b9aea421750bc9025aface98d8 270B / 270B                       1.1s
+ => => sha256:156740b07ef8a632f9f7bea4e57e4ee5541ade376adf9169351a1265382e39de 91.63MB / 91.63MB                12.4s
+ => => sha256:c428f1a494230852524a2a5957cc5199c36c8b403305e0e877d580bd0ec9e763 226B / 226B                       1.6s
+ => => sha256:a603fa5e3b4127f210503aaa6189abf6286ee5a73deeaab460f8f33ebc6b64e2 31.41MB / 31.41MB                15.1s
+ => => extracting sha256:a603fa5e3b4127f210503aaa6189abf6286ee5a73deeaab460f8f33ebc6b64e2                        0.6s
+ => => extracting sha256:c428f1a494230852524a2a5957cc5199c36c8b403305e0e877d580bd0ec9e763                        0.0s
+ => => extracting sha256:156740b07ef8a632f9f7bea4e57e4ee5541ade376adf9169351a1265382e39de                        1.3s
+ => => extracting sha256:fb5a4c8af82f00730b7427e47bda7f76cea2e2b9aea421750bc9025aface98d8                        0.0s
+ => => extracting sha256:972155ae644b037435eddf206152975f6fd3eaeb1ddeb632709f9c4f9b2bb180                        0.0s
+ => => extracting sha256:a8e3b94fe6c130216f4567f987d8a71cfebc44bb098f9f1d6d18d0e02d6a2c50                        0.0s
+ => => extracting sha256:93346a3f46bcefa9de4ea57b9043f0b79042a32652169f8306529cde0d9bee96                        0.3s
+ => => extracting sha256:b922b67ca46b30a57ae7fa2105d7e0bfb954b004a70d0809cf19cfb45df83f48                        0.0s
+ => => extracting sha256:6137f893bda625dc11ea72d9c226f43b358e49cd9284c6cb129e3f1369e61d5e                        0.0s
+ => => extracting sha256:79b1a1b78461157a10b5103e206874c1417e79236e89515ad8411dc5b3839a85                        0.0s
+ => FROM docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a016242  1.9s
+ => => resolve docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a  0.0s
+ => => sha256:3014aedd6974b0cfaa114b0c6cca556ebd6c9aa725528607e8cb3715466d0cbb 880.86kB / 880.86kB               1.8s
+ => => extracting sha256:3014aedd6974b0cfaa114b0c6cca556ebd6c9aa725528607e8cb3715466d0cbb                        0.0s
+ => [stage-0  2/16] RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free" > /etc/ap  0.5s
+ => [stage-0  3/16] RUN apt-get update && apt-get install -y --no-install-recommends     libfreetype6-dev       79.2s
+ => [stage-0  4/16] RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/t  0.2s
+ => [stage-0  5/16] RUN docker-php-ext-configure gd     --with-freetype     --with-jpeg                          3.0s
+ => [stage-0  6/16] RUN docker-php-ext-install -j$(nproc)     bcmath     gd     intl     mysqli     pdo_mysql   17.1s
+ => [stage-0  7/16] RUN echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/20-bcmath.ini     && echo "exten  0.2s
+ => [stage-0  8/16] RUN echo "zend_extension=opcache.so" > /usr/local/etc/php/conf.d/99-custom.ini     && echo   0.2s
+ => [stage-0  9/16] RUN pecl install redis-5.3.7                                                                16.5s
+ => [stage-0 10/16] RUN docker-php-ext-enable redis                                                              0.2s
+ => [stage-0 11/16] RUN echo "extension=redis.so" >> /usr/local/etc/php/conf.d/20-redis.ini                      0.2s
+ => [stage-0 12/16] COPY --from=composer/composer:2-bin /composer /usr/bin/composer                              0.0s
+ => [stage-0 13/16] RUN chmod +x /usr/bin/composer                                                               0.2s
+ => [stage-0 14/16] RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/          0.3s
+ => [stage-0 15/16] RUN npm config set registry https://registry.npmmirror.com     && npm install -g yarn     &  1.7s
+ => [stage-0 16/16] WORKDIR /var/www/html                                                                        0.0s
+ => exporting to image                                                                                           7.3s
+ => => exporting layers                                                                                          4.5s
+ => => exporting manifest sha256:e5b6c676ecaf645850b85eb57f57b4d33e4117877a33ef35a84980505bdf325f                0.0s
+ => => exporting config sha256:3af4bfd785d8d163e4b3d19ffd10ce406dd136eaae34d50f5371f9e5ef5b9df8                  0.0s
+ => => exporting attestation manifest sha256:4c5cf67e51407afe0e564bba28af3adf3f3535ff80c976a6b66506dcabd748b2    0.0s
+ => => exporting manifest list sha256:4f993679a7b59723ab4e22e40cac51d2b83511ca6c1648a59babcad3fdb42b51           0.0s
+ => => naming to docker.io/library/php74-fpm:latest                                                              0.0s
+ => => unpacking to docker.io/library/php74-fpm:latest                                                           2.7s
 
-View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/1sekvz1182betjer876ecrrnw
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/zb69khrj80qafwg1ckswksgih
 
 D:\develop\lnmp74-web\php>
 D:\develop\lnmp74-web\php>docker run -d --name php74 -p 9000:9000 --network web-net -v D:/develop/lnmp74-web/www:/var/www/html -v D:/develop/lnmp74-web/php/conf.d:/usr/local/etc/php/conf.d php74-fpm
