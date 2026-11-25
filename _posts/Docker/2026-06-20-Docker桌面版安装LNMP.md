@@ -675,19 +675,31 @@ RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql \
     zip
 
+# 自动启用这些扩展
+RUN echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/20-bcmath.ini \
+    && echo "extension=gd.so" >> /usr/local/etc/php/conf.d/20-gd.ini \
+    && echo "extension=intl.so" >> /usr/local/etc/php/conf.d/20-intl.ini \
+    && echo "extension=mysqli.so" >> /usr/local/etc/php/conf.d/20-mysqli.ini \
+    && echo "extension=pdo_mysql.so" >> /usr/local/etc/php/conf.d/20-pdo_mysql.ini \
+    && echo "extension=zip.so" >> /usr/local/etc/php/conf.d/20-zip.ini
+
 # opcache 配置，直接写入自定义ini（7.4 opcache 内置，无需enable）
-RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini \
+RUN echo "zend_extension=opcache.so" > /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/99-custom.ini \
     && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/99-custom.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/99-custom.ini \
     && echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/99-custom.ini \
     && echo "opcache.save_comments=1" >> /usr/local/etc/php/conf.d/99-custom.ini
 
+# 也可以使用下面的方式覆盖，建议在 Dockerfile 内写死
+# COPY conf.d/*.ini /usr/local/etc/php/conf.d/
+
 # 安装 Redis 扩展（pecl 是 PHP 的扩展包管理器，选固定版本，太新PHP可能会不支持）
 RUN pecl install redis-5.3.7
 # 启用 Redis 扩展
 RUN docker-php-ext-enable redis
-
-COPY conf.d/*.ini /usr/local/etc/php/conf.d/
+RUN echo "extension=redis.so" >> /usr/local/etc/php/conf.d/20-redis.ini
 
 # 安装 composer （从 Docker 镜像内直接复制二进制）
 COPY --from=composer/composer:2-bin /composer /usr/bin/composer
@@ -704,6 +716,26 @@ RUN npm config set registry https://registry.npmmirror.com \
 
 WORKDIR /var/www/html
 ```
+
+我们也可以把上面 opcache配置 部分注释掉，在 D:\develop\lnmp74-web\php\conf.d\99-custom.ini 文件中写入：
+```
+date.timezone = Asia/Shanghai
+memory_limit = 256M
+upload_max_filesize = 20M
+post_max_size = 20M
+max_execution_time = 120
+
+opcache.enable=1
+opcache.enable_cli=0
+opcache.memory_consumption=128
+opcache.max_accelerated_files=15000
+opcache.max_wasted_percentage=10
+opcache.revalidate_freq=60
+opcache.validate_timestamps=1
+opcache.save_comments=1
+```
+
+`COPY conf.d/*.ini /usr/local/etc/php/conf.d/` 时会把 `echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini` 等一大段内容覆盖掉，所以需要注释掉。
 
 在 Dockerfile文件 同级目录下执行：
 > docker build -t php74-fpm .
@@ -810,7 +842,7 @@ zlib
 root@2c5747c653d7:/var/www/html#
 ```
 
-
+执行时碰到问题，具体分析解决下。
 
 
 
