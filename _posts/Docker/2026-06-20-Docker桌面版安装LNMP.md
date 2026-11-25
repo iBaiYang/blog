@@ -526,8 +526,8 @@ RUN dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
         -i /etc/yum.repos.d/remi*.repo && \
     dnf clean all && dnf makecache
 
-# 5. 安装 Nginx + 启用 php:remi-7.4 模块并安装全部组件 + 系统底层时区库
-RUN dnf module enable -y php:remi-7.4 && \
+# 5. 安装 Nginx + 启用 php:remi-8.3 模块并安装全部组件 + 系统底层时区库
+RUN dnf module enable -y php:remi-8.3 && \
     dnf install -y \
         nginx \
         git \
@@ -628,347 +628,186 @@ docker run -d  --name redis74  --network web-net  -v D:/develop/DockerEnv/redis-
 
 外部连接时，宿主机连接地址要使用 127.0.0.1:6379，同一个宿主机内的其他docker容器中使用 web-net:6379连接。
 
-## Compose 编排
+## PHP7.4 安装
 
-上面安装好了 MySQL 和 Redis，下面按照：官方镜像 + 职责分离 + Compose 编排 + 复用已有网络， 来安装 php:8.5-fpm 和 nginx 两个独立容器，不自己拼 LNMP 大镜像。PHP 升级只换 tag，Nginx 调参只动配置，互不影响。
+下面使用Docker安装PHP7.4。
 
-先看一下环境：
+D:\develop\lnmp74-web\php 中的 Dockerfile 文件内容：
 ```
-C:\Users\Administrator>wsl -l -v
-NAME              STATE           VERSION
+FROM php:7.4-fpm
 
-- docker-desktop    Running         2
+# 关闭apt交互，防止tzdata安装弹窗
+ENV DEBIAN_FRONTEND=noninteractive
 
-C:\Users\Administrator>
-C:\Users\Administrator>docker ps
-CONTAINER ID   IMAGE                 COMMAND                   CREATED        STATUS      PORTS                                         NAMES
-a30b1a6ccf85   centos9-nginx-php74   "sh -c 'mkdir -p /ru…"   2 months ago   Up 9 days   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp       centos9-nginx-php74
-d5046d1e795e   redis:7.4             "docker-entrypoint.s…"   2 months ago   Up 9 days   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   redis74
-2009b3504497   mysql:8.0             "docker-entrypoint.s…"   2 months ago   Up 9 days   0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp   mysql8
+# 中科大源
+RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free" > /etc/apt/sources.list \
+    && echo "deb https://mirrors.ustc.edu.cn/debian/ bullseye-updates main contrib non-free" >> /etc/apt/sources.list
 
-C:\Users\Administrator>
-C:\Users\Administrator>docker network ls
-NETWORK ID     NAME      DRIVER    SCOPE
-835013813fdf   bridge    bridge    local
-32c352e4a5ca   host      host      local
-0671617bb89a   none      null      local
-e9ba8523abf9   web-net   bridge    local
-
-C:\Users\Administrator>
-C:\Users\Administrator>docker network inspect web-net
-[
-    {
-        "Name": "web-net",
-        "Id": "e9ba8523abf9e6dabf39a46e3eef7505af94ce5b74f45cd01fb8db12c9e6dd3c",
-        "Created": "2026-08-08T16:17:21.675273113Z",
-        "Scope": "local",
-        "Driver": "bridge",
-        "EnableIPv4": true,
-        "EnableIPv6": false,
-        "IPAM": {
-            "Driver": "default",
-            "Options": {},
-            "Config": [
-                {
-                    "Subnet": "172.18.0.0/16",
-                    "Gateway": "172.18.0.1"
-                }
-            ]
-        },
-        "Internal": false,
-        "Attachable": false,
-        "Ingress": false,
-        "ConfigFrom": {
-            "Network": ""
-        },
-        "ConfigOnly": false,
-        "Options": {
-            "com.docker.network.enable_ipv4": "true",
-            "com.docker.network.enable_ipv6": "false"
-        },
-        "Labels": {},
-        "Containers": {
-            "2009b35044971280f3944e05dd912fa404f21a469163511fc8b4ddc48cb20fa1": {
-                "Name": "mysql8",
-                "EndpointID": "faedafb85b2938b8334c182c053290b5c1e2eb2be2da6ccfc777b021be38c71c",
-                "MacAddress": "22:10:d7:e4:0b:6b",
-                "IPv4Address": "172.18.0.4/16",
-                "IPv6Address": ""
-            },
-            "a30b1a6ccf85b51acb6dc0cf3e82c69d406b0bff15edede48cee4b153a3565ec": {
-                "Name": "centos9-nginx-php74",
-                "EndpointID": "3c57656f1de8fb77de983a492be80382c898c51dc3dc8dcf979ddc4deccaa57a",
-                "MacAddress": "f2:34:9a:d6:7e:c7",
-                "IPv4Address": "172.18.0.2/16",
-                "IPv6Address": ""
-            },
-            "d5046d1e795e62948c2c13b215925b6a530ad373f7f4a2501dc5c814064e099f": {
-                "Name": "redis74",
-                "EndpointID": "0b36d099a93cc71ab4b0caa8c0b53418b2f819ab14a20b690573be9c3e32a9de",
-                "MacAddress": "8a:db:e3:94:65:2c",
-                "IPv4Address": "172.18.0.3/16",
-                "IPv6Address": ""
-            }
-        },
-        "Status": {
-            "IPAM": {
-                "Subnets": {
-                    "172.18.0.0/16": {
-                        "IPsInUse": 6,
-                        "DynamicIPsAvailable": 65530
-                    }
-                }
-            }
-        }
-    }
-]
-
-C:\Users\Administrator>
-C:\Users\Administrator>docker network inspect web-net --format "{{range .Containers}}{{.Name}} {{.IPv4Address}}{{println}}{{end}}"
-mysql8 172.18.0.4/16
-centos9-nginx-php74 172.18.0.2/16
-redis74 172.18.0.3/16
-
-
-C:\Users\Administrator>
-C:\Users\Administrator>wsl -d docker-desktop
-docker-desktop:/tmp/docker-desktop-root/run/desktop/mnt/host/c/Users/Administrator#
-docker-desktop:/tmp/docker-desktop-root/run/desktop/mnt/host/c/Users/Administrator# pwd
-/tmp/docker-desktop-root/run/desktop/mnt/host/c/Users/Administrator
-docker-desktop:/tmp/docker-desktop-root/run/desktop/mnt/host/c/Users/Administrator#
-docker-desktop:/tmp/docker-desktop-root/run/desktop/mnt/host/c/Users/Administrator# cd ~
-docker-desktop:~#
-docker-desktop:~# pwd
-/root
-docker-desktop:~#
-docker-desktop:~# ll /home
--sh: ll: not found
-docker-desktop:~#
-docker-desktop:~# ls /home
-docker-desktop:~#
-docker-desktop:~# cat /etc/passwd
-root:x:0:0:root:/root:/bin/sh
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-mail:x:8:12:mail:/var/mail:/sbin/nologin
-news:x:9:13:news:/usr/lib/news:/sbin/nologin
-uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin
-cron:x:16:16:cron:/var/spool/cron:/sbin/nologin
-ftp:x:21:21::/var/lib/ftp:/sbin/nologin
-sshd:x:22:22:sshd:/dev/null:/sbin/nologin
-games:x:35:35:games:/usr/games:/sbin/nologin
-ntp:x:123:123:NTP:/var/empty:/sbin/nologin
-guest:x:405:100:guest:/dev/null:/sbin/nologin
-nobody:x:65534:65534:nobody:/:/sbin/nologin
-docker-desktop:~#
-```
-
-可以发现：
-1. docker-desktop 是 **Alpine 迷你容器式 WSL 发行版**
-2. 用户是 `root`，家目录：`/root`
-3. shell 是 sh
-4. 已有 docker 网络：`web-net`，我们继续复用它
-
-另外：Windows 资源管理器 `\\wsl.localhost\docker-desktop` ，对应 WSL 内 `/` 根目录。
-
-### 安装 PHP8.5 与 Ngnix
-
-我们在 `root` 目录下创建 `lnmp-web` 目录，用于存放 LNMP 相关文件。下面是具体的目录结构：
-```
-/root/lnmp-web/
-├── docker-compose.yml
-├── php
-│   ├── Dockerfile
-│   └── conf.d
-│       └── 99-custom.ini
-├── nginx
-│   ├── conf.d
-│   │   └── catch.conf
-│   └── logs
-└── www
-    └── catchadmin  # 示例：CatchAdmin项目代码
-```
-
-如果用户不是 root，可以在家目录下创建目录，如 `/home/sam/lnmp-web/`。
-
-catchadmin 是一个基于 Laravel-12 的PHP项目，不要把代码放 Windows 的 C 盘挂载目录 `/mnt/c/xxx`，不然 IO 会很慢，全部放在 WSL 内部路径。
-
-先把各文件内容写好，再进行安装。
-
-/root/lnmp-web/php/Dockerfile 文件内容：
-```
-FROM php:8.5-fpm
-
+# 先安装编译依赖及必要服务（gd需要libjpeg、freetype，zip、intl需要对应库）
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libzip-dev \
     libicu-dev \
-    libonig-dev \
     tzdata \
     git \
     unzip \
+    nodejs \ 
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-
-RUN docker-php-ext-install -j$(nproc) \
-    bcmath \
-    ctype \
-    fileinfo \
-    gd \
-    intl \
-    mbstring \
-    opcache \
-    pdo_mysql \
-    zip
-
-RUN pecl install redis \
-    && docker-php-ext-enable redis
-
+# 时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# GD 编译参数
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg
+
+# 安装 PHP 扩展（ctype、fileinfo、mbstring 原生自带并默认开启）
+RUN docker-php-ext-install -j$(nproc) \
+    bcmath \
+    gd \
+    intl \
+    mysqli \
+    pdo_mysql \
+    zip
+
+# opcache 配置，直接写入自定义ini（7.4 opcache 内置，无需enable）
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/99-custom.ini \
+    && echo "opcache.save_comments=1" >> /usr/local/etc/php/conf.d/99-custom.ini
+
+# 安装 Redis 扩展（pecl 是 PHP 的扩展包管理器，选固定版本，太新PHP可能会不支持）
+RUN pecl install redis-5.3.7
+# 启用 Redis 扩展
+RUN docker-php-ext-enable redis
+
 COPY conf.d/*.ini /usr/local/etc/php/conf.d/
+
+# 安装 composer （从 Docker 镜像内直接复制二进制）
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+RUN chmod +x /usr/bin/composer
+# 优先官方源，如果需要可配置国内镜像源（建议在容器内进行修改）
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+# 配置npm镜像源为npmmirror，并下载yarn的镜像及配置镜像源
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm install -g yarn \
+    && yarn config set registry https://registry.npmmirror.com \
+    && yarn config set sass_binary_site https://npmmirror.com/mirrors/node-sass/ \
+    && yarn config set ignore-engines true
 
 WORKDIR /var/www/html
 ```
 
-/root/lnmp-web/php/conf.d/99-custom.ini 文件内容：
-```
-date.timezone = Asia/Shanghai
-memory_limit = 256M
-upload_max_filesize = 20M
-post_max_size = 20M
-max_execution_time = 120
+在 Dockerfile文件 同级目录下执行：
+> docker build -t php74-fpm .
 
-opcache.enable=1
-opcache.enable_cli=0
-opcache.memory_consumption=128
-opcache.max_accelerated_files=15000
-opcache.max_wasted_percentage=10
-opcache.revalidate_freq=60
-opcache.validate_timestamps=1
+执行成功后便可以在 `docker images` 中查看生成的镜像了。
+
+创建容器：
+```
+docker run -d --name php74 -p 9000:9000 --network web-net -v D:/develop/lnmp74-web/www:/var/www/html -v D:/develop/lnmp74-web/php/conf.d:/usr/local/etc/php/conf.d php74-fpm
 ```
 
-/root/lnmp-web/docker-compose.yml 文件内容（核心，包含 nginx 服务定义）：
+创建成功后便可以用 `docker ps` 查看容器了。`docker exec -it php74 bash` 进入容器，`php -v` 查看 PHP 版本，`php -m` 查看 PHP 扩展。
+
+执行记录：
 ```
-services:
-  php85:
-    build: ./php
-    container_name: php85
-    restart: unless-stopped
-    networks:
-      - web-net
-    volumes:
-      - ./www:/var/www/html
-      - ./php/conf.d:/usr/local/etc/php/conf.d
-    environment:
-      TZ: Asia/Shanghai
+D:\develop\lnmp74-web\php>docker build -t php74-fpm .
+[+] Building 51.9s (22/22) FINISHED                                                                docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 2.67kB                                                                             0.0s
+ => [internal] load metadata for docker.io/composer/composer:2-bin                                                 2.4s
+ => [internal] load metadata for docker.io/library/php:7.4-fpm                                                     1.6s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 2B                                                                                    0.0s
+ => [stage-0  1/15] FROM docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a  0.0s
+ => => resolve docker.io/library/php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811  0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 65B                                                                                   0.0s
+ => CACHED FROM docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a0  0.0s
+ => => resolve docker.io/composer/composer:2-bin@sha256:2990de2e55e336422625cdac47b76dcf66a19e5b624d9c8b2f2c30a01  0.0s
+ => CACHED [stage-0  2/15] RUN echo "deb https://mirrors.ustc.edu.cn/debian/ bullseye main contrib non-free" > /e  0.0s
+ => CACHED [stage-0  3/15] RUN apt-get update && apt-get install -y --no-install-recommends     libfreetype6-dev   0.0s
+ => CACHED [stage-0  4/15] RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /  0.0s
+ => [stage-0  5/15] RUN docker-php-ext-configure gd     --with-freetype     --with-jpeg                            2.9s
+ => [stage-0  6/15] RUN docker-php-ext-install -j$(nproc)     bcmath     gd     intl     mysqli     pdo_mysql     16.9s
+ => [stage-0  7/15] RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/99-custom.ini     && echo "opcache.m  0.2s
+ => [stage-0  8/15] RUN pecl install redis-5.3.7                                                                  18.0s
+ => [stage-0  9/15] RUN docker-php-ext-enable redis                                                                0.2s
+ => [stage-0 10/15] COPY conf.d/*.ini /usr/local/etc/php/conf.d/                                                   0.0s
+ => [stage-0 11/15] COPY --from=composer/composer:2-bin /composer /usr/bin/composer                                0.0s
+ => [stage-0 12/15] RUN chmod +x /usr/bin/composer                                                                 0.2s
+ => [stage-0 13/15] RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/            0.2s
+ => [stage-0 14/15] RUN npm config set registry https://registry.npmmirror.com     && npm install -g yarn     &&   2.1s
+ => [stage-0 15/15] WORKDIR /var/www/html                                                                          0.0s
+ => exporting to image                                                                                             8.5s
+ => => exporting layers                                                                                            5.8s
+ => => exporting manifest sha256:3dc20d2347f7b04cf4e3041922fb9a2d010a05f2a3bfaf271558b7f970ad9f0e                  0.0s
+ => => exporting config sha256:7a9bdfff1f09ed332128000d07e0c145400f9290b721b4ba05be63fa0ccb059e                    0.0s
+ => => exporting attestation manifest sha256:064f30049babf3b2aabefbb4cd3b4c977e7fbb00d394566737e72fbefcf03a37      0.0s
+ => => exporting manifest list sha256:1498219639cd195adbe6764e423a3207c0abb02f1f93711fb4c2bf010b98c297             0.0s
+ => => naming to docker.io/library/php74:latest                                                                    0.0s
+ => => unpacking to docker.io/library/php74:latest                                                                 2.7s
 
-  nginx:
-    image: nginx:stable
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - web-net
-    volumes:
-      - ./www:/var/www/html
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/logs:/var/log/nginx
-    depends_on:
-      - php85
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/1sekvz1182betjer876ecrrnw
 
-networks:
-  web-net:
-    external: true
-```
+D:\develop\lnmp74-web\php>
+D:\develop\lnmp74-web\php>docker run -d --name php74 -p 9000:9000 --network web-net -v D:/develop/lnmp74-web/www:/var/www/html -v D:/develop/lnmp74-web/php/conf.d:/usr/local/etc/php/conf.d php74-fpm
+2c5747c653d763cf4e568ee247a9ec1f5435d88342b020583eaccbac9bb2a17d
 
-/root/lnmp-web/nginx/conf.d/catch.conf 文件内容：
-```
-server {
-    listen 80;
-    server_name catch.test;
+D:\develop\lnmp74-web\php>
+D:\develop\lnmp74-web\php>docker exec -it php74 bash
+root@2c5747c653d7:/var/www/html#
+root@2c5747c653d7:/var/www/html# php -v
+PHP 7.4.33 (cli) (built: Nov 15 2022 06:05:55) ( NTS )
+Copyright (c) The PHP Group
+Zend Engine v3.4.0, Copyright (c) Zend Technologies
+root@2c5747c653d7:/var/www/html#
+root@2c5747c653d7:/var/www/html# php -m
+[PHP Modules]
+Core
+ctype
+curl
+date
+dom
+fileinfo
+filter
+ftp
+hash
+iconv
+json
+libxml
+mbstring
+mysqlnd
+openssl
+pcre
+PDO
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+SPL
+sqlite3
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
 
-    root /var/www/html/catchadmin/public;
-    index index.php;
+[Zend Modules]
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        expires 7d;
-        try_files $uri =404;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        fastcgi_pass php85:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
-        fastcgi_buffer_size 128k;
-        fastcgi_buffers 4 128k;
-    }
-
-    location ~ /\.env { deny all; }
-    location ~ composer\.json { deny all; }
-}
-```
-
-在 Windows CMD / PowerShell 中执行 compose：
-```
-docker compose -f \\wsl$\docker-desktop\root\lnmp-web\docker-compose.yml up -d --build
-```
-
-不要在 WSL 中执行 `docker` / `docker compose` 命令，否则会报错。所有 `docker compose`、`docker ps`、`docker network` 全部在 Windows CMD / PowerShell 执行。
-
-如果 mysql、redis 未接入 web-net 网络，需要把 mysql、redis 接入 web-net 网络：
-```
-docker network connect web-net mysql
-docker network connect web-net redis
-```
-
-然后再执行上面的 `docker compose` 命令。
-
-### 部署 CatchAdmin
-
-在 Windows 资源管理器往 `\\wsl.localhost\docker-desktop\root\lnmp-web\www\` 上传代码包，然后再进容器 `composer install` 安装依赖。
-
-```
-docker exec -it php85 bash
-cd /var/www/html/catchadmin
-composer install
-cp .env.example .env
-php artisan key:generate
-```
-
-然后配置.env，权限，迁移：
-```
-chown -R www-data:www-data /var/www/html/catchadmin/storage /var/www/html/catchadmin/bootstrap/cache
-php artisan migrate
-php artisan db:seed
-```
-
-修改 `C:\Windows\System32\drivers\etc\hosts` 文件，添加 catch.test 记录：
-```
-127.0.0.1 catch.test
-```
-
-浏览器访问 http://catch.test
-
-后续修改 nginx 配置后的重载命令（CMD）：
-```
-docker exec nginx nginx -t
-docker exec nginx nginx -s reload
+root@2c5747c653d7:/var/www/html#
 ```
 
 
@@ -977,9 +816,5 @@ docker exec nginx nginx -s reload
 
 ## 附录
 
-执行过程：
-```
-
-```
 
 
